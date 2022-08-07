@@ -1,6 +1,3 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
-#include "pch.h"
-
 namespace Orion
 {
     namespace Module
@@ -38,8 +35,10 @@ BOOL APIENTRY DllEntryPoint(HMODULE moduleHandle, DWORD reason, LPVOID reserved)
     if (!_CRT_INIT(moduleHandle, reason, reserved))
         return FALSE;
 
-    if (DLL_PROCESS_ATTACH == reason)
+    if (reason == DLL_PROCESS_ATTACH) {
+        std::setlocale(LC_CTYPE, ".utf8");
         application.emplace(moduleHandle);
+    }
 
     return TRUE;
 }
