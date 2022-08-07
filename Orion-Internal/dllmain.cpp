@@ -24,9 +24,9 @@ namespace Orion
     private:
         HMODULE m_handle = {};
     };
-}
 
-std::optional<Orion::Application> application;
+    std::optional<Orion::Application> instance;
+}
 
 #include <clocale>
 
@@ -38,8 +38,13 @@ BOOL APIENTRY DllEntryPoint(HMODULE moduleHandle, DWORD reason, LPVOID reserved)
         return FALSE;
 
     if (reason == DLL_PROCESS_ATTACH) {
+
         std::setlocale(LC_CTYPE, ".utf8");
-        application.emplace(moduleHandle);
+
+        _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
+        _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+
+        Orion::instance.emplace(moduleHandle);
     }
 
     return TRUE;
