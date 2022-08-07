@@ -28,6 +28,8 @@ namespace Orion
 
 std::optional<Orion::Application> application;
 
+#include <clocale>
+
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
 BOOL APIENTRY DllEntryPoint(HMODULE moduleHandle, DWORD reason, LPVOID reserved)
