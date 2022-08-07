@@ -1,19 +1,45 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
+namespace Orion
 {
-    switch (ul_reason_for_call)
+    namespace Module
     {
-    case DLL_PROCESS_ATTACH:
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
+        class Console
+        {
+        public:
+            Console() noexcept {}
+            ~Console() noexcept {}
+        };
     }
-    return TRUE;
+
+    class Application
+    {
+    public:
+        Application(HMODULE moduleHandle) noexcept {}
+        ~Application() noexcept {}
+
+        Application(Application&&) = delete;
+        Application(const Application&) = delete;
+        Application& operator=(Application&&) = delete;
+        Application& operator=(const Application&) = delete;
+
+    private:
+        HMODULE m_handle = {};
+    };
 }
 
+std::optional<Orion::Application> application;
+
+EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
+
+BOOL APIENTRY DllEntryPoint(HMODULE moduleHandle, DWORD reason, LPVOID reserved)
+{
+    if (!_CRT_INIT(moduleHandle, reason, reserved))
+        return FALSE;
+
+    if (DLL_PROCESS_ATTACH == reason)
+        application.emplace(moduleHandle);
+
+    return TRUE;
+}

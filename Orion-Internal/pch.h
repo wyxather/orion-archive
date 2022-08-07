@@ -10,4 +10,8 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
+#include "Dependencies/lazy_importer.hpp"
+
+#include <optional>
+
 #endif //PCH_H
