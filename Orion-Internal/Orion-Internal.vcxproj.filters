@@ -18,6 +18,9 @@
     <ClInclude Include="framework.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\xorstr.hpp">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
