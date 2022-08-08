@@ -7,6 +7,9 @@
     <Filter Include="Source">
       <UniqueIdentifier>{48de0a27-233b-4b6d-b6fa-cda4bfc7017c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Module">
+      <UniqueIdentifier>{26252e08-005b-4e98-8944-222c2d7c9894}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\lazy_importer.hpp">
@@ -21,6 +24,12 @@
     <ClInclude Include="Dependencies\xorstr.hpp">
       <Filter>Dependencies</Filter>
     </ClInclude>
+    <ClInclude Include="Orion.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Module\Window.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -28,6 +37,12 @@
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Orion.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\Window.cpp">
+      <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

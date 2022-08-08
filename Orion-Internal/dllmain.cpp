@@ -1,34 +1,5 @@
-namespace Orion
-{
-    namespace Module
-    {
-        class Console
-        {
-        public:
-            Console() noexcept {}
-            ~Console() noexcept {}
-        };
-    }
-
-    class Application
-    {
-    public:
-        Application(HMODULE moduleHandle) noexcept {}
-        ~Application() noexcept {}
-
-        Application(Application&&) = delete;
-        Application(const Application&) = delete;
-        Application& operator=(Application&&) = delete;
-        Application& operator=(const Application&) = delete;
-
-    private:
-        HMODULE m_handle = {};
-    };
-
-    std::optional<Orion::Application> instance;
-}
-
 #include <clocale>
+#include "Orion.h"
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
@@ -45,6 +16,7 @@ BOOL APIENTRY DllEntryPoint(HMODULE moduleHandle, DWORD reason, LPVOID reserved)
         _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
 
         Orion::instance.emplace(moduleHandle);
+        Orion::instance->load();
     }
 
     return TRUE;

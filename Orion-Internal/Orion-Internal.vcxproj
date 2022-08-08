@@ -100,6 +100,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <CallingConvention>VectorCall</CallingConvention>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,6 +141,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <CallingConvention>VectorCall</CallingConvention>
       <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,6 +170,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <CallingConvention>VectorCall</CallingConvention>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -208,6 +211,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <CallingConvention>VectorCall</CallingConvention>
       <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -224,10 +228,14 @@
     <ClInclude Include="Dependencies\lazy_importer.hpp" />
     <ClInclude Include="Dependencies\xorstr.hpp" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Module\Window.h" />
+    <ClInclude Include="Orion.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Module\Window.cpp" />
+    <ClCompile Include="Orion.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
