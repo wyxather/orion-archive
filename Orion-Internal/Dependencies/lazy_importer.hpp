@@ -28,7 +28,8 @@
 #define LAZY_IMPORTER_HPP
 
 
-#define LI_FN(name) ::li::detail::lazy_function<LAZY_IMPORTER_KHASH(#name), decltype(&name)>()
+#define LI_FN_(name) ::li::detail::lazy_function<LAZY_IMPORTER_KHASH(#name), decltype(&name)>()
+#define LI_FN(name) LI_FN_(name)
 
 #define LI_FN_DEF(name) ::li::detail::lazy_function<LAZY_IMPORTER_KHASH(#name), name>()
 
