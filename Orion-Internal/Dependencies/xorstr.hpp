@@ -29,9 +29,13 @@
 #include <cstddef>
 #include <utility>
 #include <type_traits>
+#include <array>
 
 #define xorstr(str) ::jm::xor_string([]() { return str; }, std::integral_constant<std::size_t, sizeof(str) / sizeof(*str)>{}, std::make_index_sequence<::jm::detail::_buffer_size<sizeof(str)>()>{})
 #define xorstr_(str) xorstr(str).crypt_get()
+
+#define xorarr(str) ::jm::xor_string([]() { return str.data(); }, std::integral_constant<std::size_t, str.size()>{}, std::make_index_sequence<::jm::detail::_buffer_size<sizeof(str)>()>{})
+#define xorarr_(str) xorarr(str).crypt_get()
 
 #ifdef _MSC_VER
 #define XORSTR_FORCEINLINE __forceinline
