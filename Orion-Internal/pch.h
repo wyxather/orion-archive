@@ -8,5 +8,6 @@
 
 #include "Dependencies/lazy_importer.hpp"
 #include "Dependencies/xorstr.hpp"
+#include "Dependencies/stb.hh"
 
 #endif

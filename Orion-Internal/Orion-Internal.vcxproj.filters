@@ -30,6 +30,12 @@
     <ClInclude Include="Module\Window.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\stb.hh">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -42,6 +48,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Module\Window.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>
