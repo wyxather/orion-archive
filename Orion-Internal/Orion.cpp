@@ -7,7 +7,7 @@ Orion::Application::Application(HMODULE handle) noexcept : m_handle{ handle } {}
 
 void Orion::Application::load() noexcept
 {
-	(instance->m_window = std::make_unique<Window>())->hook();
+	(instance->m_window = std::make_unique<Module::Window>())->hook();
 }
 
 void Orion::Application::exit() const noexcept

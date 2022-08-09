@@ -1,24 +1,24 @@
 #include "Window.h"
 #include "Orion.h"
 
-void Orion::Window::hook() noexcept
+void Orion::Module::Window::hook() noexcept
 {
 	LI_FN(EnumWindows)(&Window::enumerate, GetCurrentProcessId());
 	m_proc.asLongPtr = LI_FN(SetWindowLongPtr)(m_handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::proc));
 }
 
-void Orion::Window::unhook() noexcept
+void Orion::Module::Window::unhook() noexcept
 {
 	LI_FN(SetWindowLongPtr)(m_handle, GWLP_WNDPROC, m_proc.asLongPtr);
 }
 
-Orion::Window::~Window() noexcept
+Orion::Module::Window::~Window() noexcept
 {
 	m_handle = {};
 	m_proc = {};
 }
 
-BOOL Orion::Window::enumerate(HWND handle, LPARAM id) noexcept
+BOOL Orion::Module::Window::enumerate(HWND handle, LPARAM id) noexcept
 {
 	DWORD windowThreadProcessId{};
 	if (!(LI_FN(GetWindowThreadProcessId)(handle, &windowThreadProcessId)) || id != windowThreadProcessId)
@@ -36,7 +36,7 @@ BOOL Orion::Window::enumerate(HWND handle, LPARAM id) noexcept
 	return 0;
 }
 
-LRESULT Orion::Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT Orion::Module::Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 {
 	if (message == WM_KEYUP) {
 		switch (wParam) {

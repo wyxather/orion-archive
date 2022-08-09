@@ -2,7 +2,10 @@
 
 namespace Orion
 {
-    class Window;
+    namespace Module
+    {
+        class Window;
+    }
 
     class Application
     {
@@ -24,7 +27,7 @@ namespace Orion
         [[noreturn]] static void CALLBACK unload(HMODULE handle) noexcept;
 
         HMODULE m_handle = {};
-        std::unique_ptr<Window> m_window;
+        std::unique_ptr<Module::Window> m_window;
     };
 
     inline std::optional<Orion::Application> instance;
