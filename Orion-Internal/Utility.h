@@ -19,5 +19,6 @@ namespace Orion
 		constexpr ~String() noexcept { value.crypt(); }
 
 		[[nodiscard]] static constexpr auto get() noexcept { return value.get(); }
+		[[nodiscard]] static constexpr auto size() noexcept { return value.size(); }
 	};
 }
