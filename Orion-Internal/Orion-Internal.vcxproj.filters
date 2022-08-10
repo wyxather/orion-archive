@@ -51,7 +51,7 @@
       <Filter>Source\Module</Filter>
     </ClCompile>
     <ClCompile Include="Utility.cpp">
-      <Filter>Source\Module</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
