@@ -229,6 +229,7 @@
     <ClInclude Include="Dependencies\stb.hh" />
     <ClInclude Include="Dependencies\xorstr.hpp" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Module\Console.h" />
     <ClInclude Include="Module\Window.h" />
     <ClInclude Include="Orion.h" />
     <ClInclude Include="pch.h" />
@@ -236,6 +237,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Module\Console.cpp" />
     <ClCompile Include="Module\Window.cpp" />
     <ClCompile Include="Orion.cpp" />
     <ClCompile Include="pch.cpp">

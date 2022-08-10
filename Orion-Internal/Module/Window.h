@@ -7,7 +7,7 @@ namespace Orion
         class Window
         {
         public:
-            Window() noexcept {}
+            Window() noexcept;
             ~Window() noexcept;
 
             Window(Window&&) = delete;
@@ -19,11 +19,10 @@ namespace Orion
             void unhook() noexcept;
 
         private:
-            static BOOL CALLBACK enumerate(HWND handle, LPARAM id) noexcept;
+            static BOOL CALLBACK enumerate(HWND handle, Window* window) noexcept;
             static LRESULT CALLBACK proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept;
 
-            constexpr void setHandle(HWND handle) noexcept { m_handle = handle; }
-
+            DWORD m_id = {};
             HWND m_handle = {};
             union {
                 WNDPROC asWndProc;

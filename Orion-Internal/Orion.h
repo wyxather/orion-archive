@@ -5,6 +5,7 @@ namespace Orion
     namespace Module
     {
         class Window;
+        class Console;
     }
 
     class Application
@@ -18,7 +19,8 @@ namespace Orion
         Application& operator=(Application&&) = delete;
         Application& operator=(const Application&) = delete;
 
-        auto getWindow() noexcept { return m_window.get(); }
+        [[nodiscard]] auto getWindow() noexcept { return m_window.get(); }
+        [[nodiscard]] auto getConsole() noexcept { return m_console.get(); }
 
         void load() noexcept;
         void exit() const noexcept;
@@ -28,6 +30,7 @@ namespace Orion
 
         HMODULE m_handle = {};
         std::unique_ptr<Module::Window> m_window;
+        std::unique_ptr<Module::Console> m_console;
     };
 
     inline std::optional<Orion::Application> instance;

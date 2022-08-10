@@ -36,6 +36,9 @@
     <ClInclude Include="Dependencies\stb.hh">
       <Filter>Dependencies</Filter>
     </ClInclude>
+    <ClInclude Include="Module\Console.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -52,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="Utility.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\Console.cpp">
+      <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
