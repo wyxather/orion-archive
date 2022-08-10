@@ -5,10 +5,11 @@
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
 Orion::Application::Application(HMODULE handle) noexcept :
+	m_id{ LI_FN(GetCurrentProcessId)() },
 	m_handle{ handle }
 {
-	m_window = std::make_unique<Module::Window>();
-	m_console = std::make_unique<Module::Console>();
+	m_window = std::make_unique<Module::Window>(*this);
+	m_console = std::make_unique<Module::Console>(*this);
 }
 
 Orion::Application::~Application() noexcept

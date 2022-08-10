@@ -2,12 +2,16 @@
 
 namespace Orion
 {
+    class Application;
+
     namespace Module
     {
         class Window
         {
+            const Application& m_app;
+
         public:
-            Window() noexcept;
+            Window(const Application& app) noexcept;
             ~Window() noexcept;
 
             Window(Window&&) = delete;
@@ -22,7 +26,6 @@ namespace Orion
             static BOOL CALLBACK enumerate(HWND handle, Window* window) noexcept;
             static LRESULT CALLBACK proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept;
 
-            DWORD m_id = {};
             HWND m_handle = {};
             union {
                 WNDPROC asWndProc;

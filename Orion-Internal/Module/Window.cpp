@@ -1,14 +1,13 @@
 #include "Window.h"
 
-Orion::Module::Window::Window() noexcept :
-	m_id{ LI_FN(GetCurrentProcessId)() }
+Orion::Module::Window::Window(const Application& app) noexcept :
+	m_app{ app }
 {
 	LI_FN(EnumWindows)(reinterpret_cast<WNDENUMPROC>(&Window::enumerate), reinterpret_cast<LPARAM>(this));
 }
 
 Orion::Module::Window::~Window() noexcept
 {
-	m_id = {};
 	m_handle = {};
 	m_proc = {};
 }
@@ -23,10 +22,12 @@ void Orion::Module::Window::unhook() noexcept
 	LI_FN(SetWindowLongPtr)(m_handle, GWLP_WNDPROC, m_proc.asLongPtr);
 }
 
+#include "Orion.h"
+
 BOOL Orion::Module::Window::enumerate(HWND handle, Window* window) noexcept
 {
 	DWORD windowThreadProcessId{};
-	if (!(LI_FN(GetWindowThreadProcessId)(handle, &windowThreadProcessId)) || window->m_id != windowThreadProcessId)
+	if (!(LI_FN(GetWindowThreadProcessId)(handle, &windowThreadProcessId)) || window->m_app.getId() != windowThreadProcessId)
 		return 1;
 
 	TCHAR className[MAX_PATH]{}, windowText[MAX_PATH]{};
@@ -40,8 +41,6 @@ BOOL Orion::Module::Window::enumerate(HWND handle, Window* window) noexcept
 
 	return 0;
 }
-
-#include "Orion.h"
 
 LRESULT Orion::Module::Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 {

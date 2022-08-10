@@ -2,12 +2,16 @@
 
 namespace Orion
 {
+	class Application;
+
 	namespace Module
 	{
 		class Console
 		{
+			const Application& m_app;
+
 		public:
-			Console() noexcept;
+			Console(const Application& app) noexcept;
 			~Console() noexcept;
 
 			Console(Console&&) = delete;
@@ -18,7 +22,6 @@ namespace Orion
 		private:
 			static BOOL CALLBACK enumerate(HWND handle, Console* console) noexcept;
 
-			DWORD m_id = {};
 			HWND m_handle = {};
 			FILE* m_stream = {};
 		};

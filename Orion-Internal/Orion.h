@@ -19,8 +19,9 @@ namespace Orion
         Application& operator=(Application&&) = delete;
         Application& operator=(const Application&) = delete;
 
-        [[nodiscard]] auto getWindow() noexcept { return m_window.get(); }
-        [[nodiscard]] auto getConsole() noexcept { return m_console.get(); }
+        [[nodiscard]] constexpr auto getId() const noexcept { return m_id; }
+        [[nodiscard]] constexpr auto getWindow() const noexcept { return m_window.get(); }
+        [[nodiscard]] constexpr auto getConsole() const noexcept { return m_console.get(); }
 
         void load() noexcept;
         void exit() const noexcept;
@@ -28,6 +29,7 @@ namespace Orion
     private:
         [[noreturn]] static void CALLBACK unload(HMODULE handle) noexcept;
 
+        DWORD m_id = {};
         HMODULE m_handle = {};
         std::unique_ptr<Module::Window> m_window;
         std::unique_ptr<Module::Console> m_console;
