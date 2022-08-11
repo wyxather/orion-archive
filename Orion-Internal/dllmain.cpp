@@ -1,6 +1,5 @@
 #include <clocale>
 #include "Orion.h"
-#include "Utility.h"
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 

@@ -10,4 +10,6 @@
 #include "Dependencies/xorstr.hpp"
 #include "Dependencies/stb.hh"
 
+#include "Utility.h"
+
 #endif
