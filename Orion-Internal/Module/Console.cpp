@@ -47,7 +47,7 @@ void Orion::Module::Console::time(char timeBuffer[9]) noexcept
 
 void Orion::Module::Console::color(Color color) noexcept
 {
-	LI_FN(SetConsoleTextAttribute)(m_output, static_cast<WORD>(color));
+	LI_FN(SetConsoleTextAttribute).cached()(m_output, static_cast<WORD>(color));
 }
 
 #include "Orion.h"
