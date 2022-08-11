@@ -35,8 +35,7 @@ BOOL Orion::Module::Console::enumerate(HWND handle, Console* console) noexcept
 	if (!(LI_FN(GetClassNameA)(handle, className, MAX_PATH)))
 		return 1;
 
-	String<"ConsoleWindowClass"> consoleClassName;
-	if (_strcmpi(consoleClassName.get(), className))
+	if (!Fnv<"ConsoleWindowClass">::compare(className))
 		return 1;
 
 	console->m_handle = handle;
