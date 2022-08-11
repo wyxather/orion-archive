@@ -39,6 +39,9 @@
     <ClInclude Include="Module\Console.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
+    <ClInclude Include="Module\Renderer.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -57,6 +60,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Module\Console.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\Renderer.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>

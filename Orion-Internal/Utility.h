@@ -2,7 +2,6 @@
 
 namespace Orion
 {
-
     template <stb::compiletime_string_wrapper str, typename _Ty = std::uint32_t>
     class Fnv
     {

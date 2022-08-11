@@ -44,6 +44,10 @@ BOOL Orion::Module::Window::enumerate(HWND handle, Window* window) noexcept
 
 LRESULT Orion::Module::Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 {
+	static const auto once = instance->start();
+	if (once) {
+
+	}
 	if (message == WM_KEYUP) {
 		switch (wParam) {
 		case VK_END: instance->exit(); break;

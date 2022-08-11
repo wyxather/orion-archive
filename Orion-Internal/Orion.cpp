@@ -1,6 +1,7 @@
 #include "Orion.h"
 #include "Module/Window.h"
 #include "Module/Console.h"
+#include "Module/Renderer.h"
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
@@ -10,27 +11,36 @@ Orion::Application::Application(HMODULE handle) noexcept :
 {
 	m_window = std::make_unique<Module::Window>(*this);
 	m_console = std::make_unique<Module::Console>(*this);
+	m_renderer = std::make_unique<Module::Renderer>(*this);
 }
 
 Orion::Application::~Application() noexcept
 {
+	m_renderer.reset();
 	m_console.reset();
 	m_window.reset();
 	m_handle = {};
 }
 
-void Orion::Application::load() noexcept
+void Orion::Application::load() const noexcept
 {
-	instance->m_window->hook();
+	m_window->hook();
+}
+
+bool Orion::Application::start() const noexcept
+{
+	m_renderer->hook();
+	return true;
 }
 
 void Orion::Application::exit() const noexcept
 {
-	instance->m_window->unhook();
+	m_window->unhook();
+	m_renderer->unhook();
 
 	std::unique_ptr<void, decltype(&CloseHandle)> thread
 	{
-		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), instance->m_handle, NULL, nullptr),
+		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), m_handle, NULL, nullptr),
 		LI_FN(CloseHandle).get()
 	};
 }

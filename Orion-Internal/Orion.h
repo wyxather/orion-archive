@@ -6,6 +6,7 @@ namespace Orion
     {
         class Window;
         class Console;
+        class Renderer;
     }
 
     class Application
@@ -23,7 +24,8 @@ namespace Orion
         [[nodiscard]] constexpr auto getWindow() const noexcept { return m_window.get(); }
         [[nodiscard]] constexpr auto getConsole() const noexcept { return m_console.get(); }
 
-        void load() noexcept;
+        [[nodiscard]] bool start() const noexcept;
+        void load() const noexcept;
         void exit() const noexcept;
 
     private:
@@ -33,6 +35,7 @@ namespace Orion
         HMODULE m_handle = {};
         std::unique_ptr<Module::Window> m_window;
         std::unique_ptr<Module::Console> m_console;
+        std::unique_ptr<Module::Renderer> m_renderer;
     };
 
     inline std::optional<Orion::Application> instance;
