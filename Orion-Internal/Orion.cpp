@@ -1,4 +1,5 @@
 #include "Orion.h"
+#include "Module/Hooks.h"
 #include "Module/Window.h"
 #include "Module/Console.h"
 #include "Module/Renderer.h"
@@ -9,6 +10,7 @@ Orion::Application::Application(HMODULE handle) noexcept :
 	m_id{ LI_FN(GetCurrentProcessId)() },
 	m_handle{ handle }
 {
+	m_hooks = std::make_unique<Module::Hooks>(*this);
 	m_window = std::make_unique<Module::Window>(*this);
 	m_console = std::make_unique<Module::Console>(*this);
 	m_renderer = std::make_unique<Module::Renderer>(*this);
@@ -19,6 +21,7 @@ Orion::Application::~Application() noexcept
 	m_renderer.reset();
 	m_console.reset();
 	m_window.reset();
+	m_hooks.reset();
 	m_handle = {};
 }
 

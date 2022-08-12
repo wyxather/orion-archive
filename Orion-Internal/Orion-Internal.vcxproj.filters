@@ -10,6 +10,18 @@
     <Filter Include="Source\Module">
       <UniqueIdentifier>{26252e08-005b-4e98-8944-222c2d7c9894}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\MinHook">
+      <UniqueIdentifier>{9c5a0eb0-161a-46f1-978f-c3227ea65d2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\MinHook\include">
+      <UniqueIdentifier>{44987db8-2a0d-4d08-8da4-806a7de769cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\MinHook\src">
+      <UniqueIdentifier>{0b3de9a1-b63b-4a92-b2da-70a364238b3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\MinHook\src\hde">
+      <UniqueIdentifier>{2ad787a0-0a51-4126-8213-6574519b378d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\lazy_importer.hpp">
@@ -42,6 +54,33 @@
     <ClInclude Include="Module\Renderer.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\include\MinHook.h">
+      <Filter>Dependencies\MinHook\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\buffer.h">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\trampoline.h">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\hde32.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\hde64.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\pstdint.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\table32.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\table64.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Module\Hooks.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -63,6 +102,27 @@
       <Filter>Source\Module</Filter>
     </ClCompile>
     <ClCompile Include="Module\Renderer.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\buffer.c">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\hook.c">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\trampoline.c">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\hde\hde32.c">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\hde\hde64.c">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClCompile>
+    <ClCompile Include="pch-c.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\Hooks.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>

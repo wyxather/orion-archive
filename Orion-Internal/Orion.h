@@ -4,6 +4,7 @@ namespace Orion
 {
     namespace Module
     {
+        class Hooks;
         class Window;
         class Console;
         class Renderer;
@@ -33,6 +34,7 @@ namespace Orion
 
         DWORD m_id = {};
         HMODULE m_handle = {};
+        std::unique_ptr<Module::Hooks> m_hooks;
         std::unique_ptr<Module::Window> m_window;
         std::unique_ptr<Module::Console> m_console;
         std::unique_ptr<Module::Renderer> m_renderer;

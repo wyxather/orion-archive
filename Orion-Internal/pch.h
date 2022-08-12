@@ -3,6 +3,7 @@
 
 #include "framework.h"
 
+#ifdef __cplusplus
 #include <optional>
 #include <memory>
 
@@ -11,5 +12,6 @@
 #include "Dependencies/stb.hh"
 
 #include "Utility.h"
+#endif
 
 #endif
