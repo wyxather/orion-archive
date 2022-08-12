@@ -1,30 +1,32 @@
 #include "Window.h"
 
-Orion::Module::Window::Window(const Application& app) noexcept :
+using namespace Orion::Module;
+
+Window::Window(const Application& app) noexcept :
 	m_app{ app }
 {
 	LI_FN(EnumWindows)(reinterpret_cast<WNDENUMPROC>(&Window::enumerate), reinterpret_cast<LPARAM>(this));
 }
 
-Orion::Module::Window::~Window() noexcept
+Window::~Window() noexcept
 {
 	m_handle = {};
 	m_proc = {};
 }
 
-void Orion::Module::Window::hook() noexcept
+void Window::hook() noexcept
 {
 	m_proc.asLongPtr = LI_FN(SetWindowLongPtr)(m_handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::proc));
 }
 
-void Orion::Module::Window::unhook() noexcept
+void Window::unhook() noexcept
 {
 	LI_FN(SetWindowLongPtr)(m_handle, GWLP_WNDPROC, m_proc.asLongPtr);
 }
 
 #include "Orion.h"
 
-BOOL Orion::Module::Window::enumerate(HWND handle, Window* window) noexcept
+BOOL Window::enumerate(HWND handle, Window* window) noexcept
 {
 	DWORD windowThreadProcessId{};
 	if (!(LI_FN(GetWindowThreadProcessId)(handle, &windowThreadProcessId)) || window->m_app.getId() != windowThreadProcessId)
@@ -42,7 +44,7 @@ BOOL Orion::Module::Window::enumerate(HWND handle, Window* window) noexcept
 	return 0;
 }
 
-LRESULT Orion::Module::Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 {
 	static const auto once = instance->start();
 	if (once) {

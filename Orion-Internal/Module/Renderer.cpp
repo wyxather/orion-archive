@@ -1,7 +1,9 @@
 #include "Renderer.h"
 #include <d3d9.h>
 
-Orion::Module::Renderer::Renderer(const Application& app) noexcept :
+using namespace Orion::Module;
+
+Renderer::Renderer(const Application& app) noexcept :
 	m_app{ app }
 {
 	{
@@ -22,7 +24,7 @@ Orion::Module::Renderer::Renderer(const Application& app) noexcept :
 	}
 }
 
-void Orion::Module::Renderer::hook() const noexcept
+void Renderer::hook() const noexcept
 {
 	switch (m_type) {
 
@@ -84,12 +86,12 @@ void Orion::Module::Renderer::hook() const noexcept
 	}
 }
 
-void Orion::Module::Renderer::unhook() const noexcept
+void Renderer::unhook() const noexcept
 {
 
 }
 
-Orion::Module::Renderer::~Renderer() noexcept
+Renderer::~Renderer() noexcept
 {
 	m_type = {};
 	m_handle = {};

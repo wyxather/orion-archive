@@ -2,9 +2,12 @@
 
 #if !NDEBUG
 #include <chrono>
+#include "Orion.h"
 #endif
 
-Orion::Module::Console::Console(const Application& app) noexcept :
+using namespace Orion::Module;
+
+Console::Console(const Application& app) noexcept :
 	m_app{ app }
 {
 #if !NDEBUG
@@ -20,7 +23,7 @@ Orion::Module::Console::Console(const Application& app) noexcept :
 #endif
 }
 
-Orion::Module::Console::~Console() noexcept
+Console::~Console() noexcept
 {
 #if !NDEBUG
 	fclose(m_stream);
@@ -33,7 +36,7 @@ Orion::Module::Console::~Console() noexcept
 }
 
 #if !NDEBUG
-void Orion::Module::Console::time(char timeBuffer[9]) noexcept
+void Console::time(char timeBuffer[9]) noexcept
 {
 	const auto _time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
@@ -45,14 +48,12 @@ void Orion::Module::Console::time(char timeBuffer[9]) noexcept
 	std::strftime(timeBuffer, 9, timeFormat.get(), &_tm);
 }
 
-void Orion::Module::Console::color(Color color) noexcept
+void Console::color(Color color) noexcept
 {
 	LI_FN(SetConsoleTextAttribute).cached()(m_output, static_cast<WORD>(color));
 }
 
-#include "Orion.h"
-
-BOOL Orion::Module::Console::enumerate(HWND handle, Console* console) noexcept
+BOOL Console::enumerate(HWND handle, Console* console) noexcept
 {
 	DWORD windowThreadProcessId{};
 	if (!(LI_FN(GetWindowThreadProcessId)(handle, &windowThreadProcessId)) || console->m_app.getId() != windowThreadProcessId)
