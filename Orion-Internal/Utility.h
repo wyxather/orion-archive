@@ -91,6 +91,54 @@ namespace Orion
         }
     };
 
+    template <typename _DataTy, typename _KeyTy = std::uint32_t>
+    class HashTable
+    {
+        std::vector<std::pair<_KeyTy, _DataTy>> m_data;
+
+    public:
+        HashTable() noexcept {}
+        ~HashTable() noexcept {}
+
+        HashTable(HashTable&&) = delete;
+        HashTable(const HashTable&) = delete;
+        HashTable& operator=(HashTable&&) = delete;
+        HashTable& operator=(const HashTable&) = delete;
+
+    private:
+        [[nodiscard]] constexpr _DataTy* find(const _KeyTy key) noexcept
+        {
+            if (const auto it = std::ranges::lower_bound(m_data, key, {}, &decltype(m_data)::value_type::first);
+                it != m_data.end() && it->first == key)
+                return &it->second;
+            return nullptr;
+        }
+
+        constexpr void insert(const _KeyTy key) noexcept
+        {
+            m_data.emplace_back(key, _DataTy{});
+            m_data.shrink_to_fit();
+            std::ranges::sort(m_data, {}, &decltype(m_data)::value_type::first);
+        }
+
+    public:
+        [[nodiscard]] constexpr _DataTy& operator[](const _KeyTy key) noexcept
+        {
+            if (const auto value = find(key))
+                return *value;
+            insert(key);
+            return *find(key);
+        }
+
+        [[nodiscard]] constexpr auto size() const noexcept { return m_data.size(); }
+
+        [[nodiscard]] constexpr auto begin() noexcept { return m_data.begin(); }
+        [[nodiscard]] constexpr auto begin() const noexcept { return m_data.cbegin(); }
+
+        [[nodiscard]] constexpr auto end() noexcept { return m_data.end(); }
+        [[nodiscard]] constexpr auto end() const noexcept { return m_data.cend(); }
+    };
+
 	template <stb::compiletime_string_wrapper str>
 	class String
 	{

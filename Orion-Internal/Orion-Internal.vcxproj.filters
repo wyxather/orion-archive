@@ -95,9 +95,6 @@
     <ClCompile Include="Module\Window.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
-    <ClCompile Include="Utility.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Module\Console.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>

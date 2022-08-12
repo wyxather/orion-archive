@@ -21,9 +21,10 @@ namespace Orion
         Application& operator=(Application&&) = delete;
         Application& operator=(const Application&) = delete;
 
-        [[nodiscard]] constexpr auto getId() const noexcept { return m_id; }
-        [[nodiscard]] constexpr auto getWindow() const noexcept { return m_window.get(); }
-        [[nodiscard]] constexpr auto getConsole() const noexcept { return m_console.get(); }
+        [[nodiscard]] constexpr auto&& getId() const noexcept { return m_id; }
+        [[nodiscard]] constexpr auto&& getHooks() const noexcept { return *m_hooks.get(); }
+        [[nodiscard]] constexpr auto&& getWindow() const noexcept { return *m_window.get(); }
+        [[nodiscard]] constexpr auto&& getConsole() const noexcept { return *m_console.get(); }
 
         [[nodiscard]] bool start() const noexcept;
         void load() const noexcept;

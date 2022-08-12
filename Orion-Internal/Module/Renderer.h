@@ -6,9 +6,12 @@ namespace Orion
 
 	namespace Module
 	{
+		class Hooks;
+
 		class Renderer
 		{
 			const Application& m_app;
+			Hooks& m_hooks;
 
 		public:
 			enum class Type
@@ -26,8 +29,8 @@ namespace Orion
 			Renderer& operator=(Renderer&&) = delete;
 			Renderer& operator=(const Renderer&) = delete;
 
-			void hook() const noexcept;
-			void unhook() const noexcept;
+			void hook() noexcept;
+			void unhook() noexcept;
 
 		private:
 			Type m_type = {};

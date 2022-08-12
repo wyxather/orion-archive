@@ -55,5 +55,5 @@ LRESULT Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) no
 		case VK_END: instance->exit(); break;
 		}
 	}
-	return LI_FN(CallWindowProc).cached()(instance->getWindow()->m_proc.asWndProc, handle, message, wParam, lParam);
+	return LI_FN(CallWindowProc).cached()(instance->getWindow().m_proc.asWndProc, handle, message, wParam, lParam);
 }

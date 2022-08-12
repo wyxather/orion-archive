@@ -1,10 +1,13 @@
 #include "Renderer.h"
+#include "Hooks.h"
+#include "Orion.h"
 #include <d3d9.h>
 
 using namespace Orion::Module;
 
 Renderer::Renderer(const Application& app) noexcept :
-	m_app{ app }
+	m_app{ app },
+	m_hooks{ app.getHooks() }
 {
 	{
 		String<"d3d9.dll"> moduleName;
@@ -24,7 +27,7 @@ Renderer::Renderer(const Application& app) noexcept :
 	}
 }
 
-void Renderer::hook() const noexcept
+void Renderer::hook() noexcept
 {
 	switch (m_type) {
 
@@ -75,6 +78,8 @@ void Renderer::hook() const noexcept
 			return;
 		}
 
+		auto&& hook = m_hooks[Fnv<"Renderer">::value];
+
 		device->Release();
 		direct3D9->Release();
 
@@ -86,9 +91,9 @@ void Renderer::hook() const noexcept
 	}
 }
 
-void Renderer::unhook() const noexcept
+void Renderer::unhook() noexcept
 {
-
+	m_hooks[Fnv<"Renderer">::value].restore();
 }
 
 Renderer::~Renderer() noexcept

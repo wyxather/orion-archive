@@ -6,6 +6,8 @@
 #ifdef __cplusplus
 #include <optional>
 #include <memory>
+#include <vector>
+#include <algorithm>
 
 #include "Dependencies/lazy_importer.hpp"
 #include "Dependencies/xorstr.hpp"
