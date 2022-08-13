@@ -12,6 +12,9 @@
 #include "Dependencies/lazy_importer.hpp"
 #include "Dependencies/xorstr.hpp"
 #include "Dependencies/stb.hh"
+#include "Dependencies/ImGui/imgui.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "Dependencies/ImGui/imgui_internal.h"
 
 #include "Utility.h"
 #endif

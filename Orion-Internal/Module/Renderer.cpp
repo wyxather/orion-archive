@@ -1,9 +1,36 @@
 #include "Renderer.h"
 #include "Hooks.h"
 #include "Orion.h"
+#include "Dependencies/ImGui/imgui_impl_dx9.h"
+#include "Dependencies/ImGui/imgui_impl_dx11.h"
 #include <d3d9.h>
 
 using namespace Orion::Module;
+
+namespace
+{
+	namespace D3D9
+	{
+		HRESULT __stdcall Reset(
+			const LPDIRECT3DDEVICE9 pDevice,
+			const D3DPRESENT_PARAMETERS* pPresentationParameters
+		) noexcept
+		{
+			return E_NOTIMPL;
+		}
+
+		HRESULT __stdcall Present(
+			const LPDIRECT3DDEVICE9 pDevice,
+			const LPRECT pSourceRect,
+			const LPRECT pDestRect,
+			const HWND hDestWindowOverride,
+			const LPRGNDATA pDirtyRegion
+		) noexcept
+		{
+			return E_NOTIMPL;
+		}
+	}
+}
 
 Renderer::Renderer(const Application& app) noexcept :
 	m_app{ app },
@@ -79,6 +106,9 @@ void Renderer::hook() noexcept
 		}
 
 		auto&& hook = m_hooks[Fnv<"Renderer">::value];
+		hook.init(device);
+		hook.hookAt(16, &D3D9::Reset);
+		hook.hookAt(17, &D3D9::Present);
 
 		device->Release();
 		direct3D9->Release();
@@ -94,6 +124,17 @@ void Renderer::hook() noexcept
 void Renderer::unhook() noexcept
 {
 	m_hooks[Fnv<"Renderer">::value].restore();
+
+	if (ImGui::GetIO().BackendRendererName) {
+		switch (m_type) {
+		case Type::D3D9:
+			ImGui_ImplDX9_Shutdown();
+			break;
+		case Type::D3D11:
+			ImGui_ImplDX11_Shutdown();
+			break;
+		}
+	}
 }
 
 Renderer::~Renderer() noexcept

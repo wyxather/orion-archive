@@ -7,7 +7,7 @@ std::size_t Hooks::calculateVmtLength(void* address) noexcept
 {
 	std::size_t length{};
 	MEMORY_BASIC_INFORMATION mbi{};
-	while (LI_FN(VirtualQuery)(static_cast<void* const*>(address)[length], &mbi, sizeof mbi) &&
+	while (LI_FN(VirtualQuery)(static_cast<void**>(address)[length], &mbi, sizeof mbi) &&
 		mbi.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY))
 		length++;
 	return length;
@@ -40,15 +40,16 @@ Hooks::MinHook::~MinHook() noexcept
 void Hooks::MinHook::init(void* address) noexcept
 {
 	m_base = address;
-	m_size = Hooks::calculateVmtLength(address);
+	m_size = Hooks::calculateVmtLength(*static_cast<void**>(address));
 	m_data = std::make_unique<decltype(m_data)::element_type[]>(m_size);
 }
 
 void Hooks::MinHook::hookAt(std::size_t index, void* function) noexcept
 {
-	m_data[index].first = (*reinterpret_cast<void***>(m_base))[index];
-	MH_CreateHook(m_data[index].first, function, &m_data[index].second);
-	MH_EnableHook(m_data[index].first);
+	auto&& data = m_data[index];
+	data.first = (*static_cast<void***>(m_base))[index];
+	MH_CreateHook(data.first, function, &data.second);
+	MH_EnableHook(data.first);
 }
 
 void Hooks::MinHook::restore() noexcept
