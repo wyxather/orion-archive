@@ -16,7 +16,15 @@ namespace
 			const D3DPRESENT_PARAMETERS* pPresentationParameters
 		) noexcept
 		{
-			return E_NOTIMPL;
+			using namespace Orion;
+
+			static const auto& hook = instance->getHooks()[Fnv<"Renderer">::value];
+			return hook.get<
+				16,
+				HRESULT,
+				Hooks::Function::STDCALL>(
+					pDevice,
+					pPresentationParameters);
 		}
 
 		HRESULT __stdcall Present(
@@ -27,7 +35,18 @@ namespace
 			const LPRGNDATA pDirtyRegion
 		) noexcept
 		{
-			return E_NOTIMPL;
+			using namespace Orion;
+
+			static const auto& hook = instance->getHooks()[Fnv<"Renderer">::value];
+			return hook.get<
+				17,
+				HRESULT,
+				Hooks::Function::STDCALL>(
+					pDevice,
+					pSourceRect,
+					pDestRect,
+					hDestWindowOverride,
+					pDirtyRegion);
 		}
 	}
 }

@@ -11,7 +11,13 @@ namespace Orion
 			const Application& m_app;
 
 		public:
-			static std::size_t calculateVmtLength(void* address) noexcept;
+			enum class Function {
+				NONE,
+				STDCALL,
+				THISCALL,
+				FASTCALL,
+				VECTORCALL
+			};
 
 			class MinHook
 			{
@@ -29,11 +35,31 @@ namespace Orion
 				void hookAt(std::size_t index, void* function) noexcept;
 				void restore() noexcept;
 
+				template <std::size_t index, typename returnType, Function function = Function::NONE, bool callTarget = false, typename ...Args>
+				[[nodiscard]] constexpr auto get(Args ...args) const noexcept
+				{
+					switch (function) {
+					case Function::STDCALL: return static_cast<returnType(__stdcall*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
+					case Function::THISCALL: return static_cast<returnType(__thiscall*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
+					case Function::FASTCALL: return static_cast<returnType(__fastcall*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
+					case Function::VECTORCALL: return static_cast<returnType(__vectorcall*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
+					}
+					return static_cast<returnType(__cdecl*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
+				}
+
+				template <std::size_t index, typename returnType, Function function = Function::NONE, bool callTarget = false, typename ...Args>
+				[[nodiscard]] constexpr auto call(Args ...args) const noexcept
+				{
+					return get<index, returnType, function, callTarget>(m_base, args...);
+				}
+
 			private:
 				void* m_base = {};
 				std::size_t m_size = {};
 				std::unique_ptr<std::pair<void*, void*>[]> m_data;
 			};
+
+			static std::size_t calculateVmtLength(void* address) noexcept;
 
 			Hooks(const Application& app) noexcept;
 			~Hooks() noexcept;
