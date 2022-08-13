@@ -63,7 +63,7 @@ void Hooks::MinHook::restore() noexcept
 
 		auto&& data = m_data[i];
 		if (!data.first)
-			return;
+			continue;
 
 		MH_DisableHook(data.first);
 		MH_RemoveHook(data.first);
