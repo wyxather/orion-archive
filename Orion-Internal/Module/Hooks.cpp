@@ -25,7 +25,12 @@ Hooks::~Hooks() noexcept
 	MH_Uninitialize();
 }
 
-Hooks::MinHook& Hooks::operator[](std::uint32_t key) noexcept
+Hooks::MinHook& Hooks::operator[](const std::uint32_t key) noexcept
+{
+	return m_data[key];
+}
+
+const Hooks::MinHook& Hooks::operator[](const std::uint32_t key) const noexcept
 {
 	return m_data[key];
 }

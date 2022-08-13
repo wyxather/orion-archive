@@ -114,6 +114,14 @@ namespace Orion
             return nullptr;
         }
 
+        [[nodiscard]] constexpr const _DataTy* find(const _KeyTy key) const noexcept
+        {
+            if (const auto it = std::ranges::lower_bound(m_data, key, {}, &decltype(m_data)::value_type::first);
+                it != m_data.cend() && it->first == key)
+                return &it->second;
+            return nullptr;
+        }
+
         constexpr void insert(const _KeyTy key) noexcept
         {
             m_data.emplace_back(key, _DataTy{});
@@ -127,6 +135,10 @@ namespace Orion
             if (const auto value = find(key))
                 return *value;
             insert(key);
+            return *find(key);
+        }
+        [[nodiscard]] constexpr const _DataTy& operator[](const _KeyTy key) const noexcept
+        {
             return *find(key);
         }
 
