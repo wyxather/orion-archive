@@ -30,11 +30,6 @@ Hooks::MinHook& Hooks::operator[](const std::uint32_t key) noexcept
 	return m_data[key];
 }
 
-const Hooks::MinHook& Hooks::operator[](const std::uint32_t key) const noexcept
-{
-	return m_data[key];
-}
-
 Hooks::MinHook::~MinHook() noexcept
 {
 	m_base = {};

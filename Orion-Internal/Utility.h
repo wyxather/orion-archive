@@ -114,14 +114,6 @@ namespace Orion
             return nullptr;
         }
 
-        [[nodiscard]] constexpr const _DataTy* find(const _KeyTy key) const noexcept
-        {
-            if (const auto it = std::ranges::lower_bound(m_data, key, {}, &decltype(m_data)::value_type::first);
-                it != m_data.cend() && it->first == key)
-                return &it->second;
-            return nullptr;
-        }
-
         constexpr void insert(const _KeyTy key) noexcept
         {
             m_data.emplace_back(key, _DataTy{});
@@ -137,10 +129,6 @@ namespace Orion
             insert(key);
             return *find(key);
         }
-        [[nodiscard]] constexpr const _DataTy& operator[](const _KeyTy key) const noexcept
-        {
-            return *find(key);
-        }
 
         [[nodiscard]] constexpr auto size() const noexcept { return m_data.size(); }
 
@@ -154,18 +142,16 @@ namespace Orion
 	template <stb::compiletime_string_wrapper str>
 	class String
 	{
-	public:
-		String(String&&) = delete;
-		String(const String&) = delete;
-		String& operator=(String&&) = delete;
-		String& operator=(const String&) = delete;
-
-	private:
 		static inline auto value{ xorarr(stb::compiletime_value<str()>::value) };
 
 	public:
 		constexpr String() noexcept { value.crypt(); }
 		constexpr ~String() noexcept { value.crypt(); }
+
+        String(String&&) = delete;
+        String(const String&) = delete;
+        String& operator=(String&&) = delete;
+        String& operator=(const String&) = delete;
 
 		[[nodiscard]] static constexpr auto get() noexcept { return value.get(); }
 		[[nodiscard]] static constexpr auto size() noexcept { return value.size(); }

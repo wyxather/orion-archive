@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "Orion.h"
+#include "Gui.h"
 #include "Dependencies/ImGui/imgui_impl_win32.h"
 
 using namespace Orion::Module;
@@ -53,14 +54,16 @@ BOOL Window::enumerate(HWND handle, Window* window) noexcept
 LRESULT Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 {
 	static const auto once = instance->start();
-	if (once) {
-		//if ( /*Menu is opened*/ )
-		//return ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam) ? FALSE : TRUE;
-	}
+	auto&& gui = instance->getGui();
 	if (message == WM_KEYUP) {
 		switch (wParam) {
 		case VK_END: instance->exit(); break;
+		case VK_INSERT: gui.toggle(); break;
 		}
+	}
+	if (once) {
+		if (gui.isOpen())
+			return ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam) ? FALSE : TRUE;
 	}
 	return LI_FN(CallWindowProc).cached()(instance->getWindow().m_proc.asWndProc, handle, message, wParam, lParam);
 }

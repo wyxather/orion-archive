@@ -111,6 +111,9 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
       <Filter>Dependencies\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Module\Gui.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -175,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
       <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\Gui.cpp">
+      <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

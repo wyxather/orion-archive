@@ -70,7 +70,6 @@ namespace Orion
 			Hooks& operator=(const Hooks&) = delete;
 
 			MinHook& operator[](const std::uint32_t key) noexcept;
-			const MinHook& operator[](const std::uint32_t key) const noexcept;
 
 		private:
 			HashTable<MinHook> m_data;

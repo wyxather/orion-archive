@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Hooks.h"
 #include "Orion.h"
+#include "Gui.h"
 #include "Dependencies/ImGui/imgui_impl_win32.h"
 #include "Dependencies/ImGui/imgui_impl_dx9.h"
 #include "Dependencies/ImGui/imgui_impl_dx11.h"
@@ -17,6 +18,7 @@ namespace
 			const D3DPRESENT_PARAMETERS* pPresentationParameters
 		) noexcept
 		{
+			Orion::instance->getGui().invalidate();
 			ImGui_ImplDX9_InvalidateDeviceObjects();
 			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
 			return hook.get<
@@ -36,17 +38,19 @@ namespace
 		) noexcept
 		{
 			static const auto imgui = ImGui_ImplDX9_Init(pDevice);
-			ImGui_ImplDX9_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			ImGui::NewFrame();
-			{
-
-			}
-			ImGui::EndFrame();
-			ImGui::Render();
-			if (pDevice->BeginScene() == D3D_OK) {
-				ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-				pDevice->EndScene();
+			if (imgui) {
+				ImGui_ImplDX9_NewFrame();
+				ImGui_ImplWin32_NewFrame();
+				ImGui::NewFrame();
+				{
+					Orion::instance->getGui().draw();
+				}
+				ImGui::EndFrame();
+				ImGui::Render();
+				if (pDevice->BeginScene() == D3D_OK) {
+					ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+					pDevice->EndScene();
+				}
 			}
 			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
 			return hook.get<

@@ -3,6 +3,7 @@
 #include "Module/Window.h"
 #include "Module/Console.h"
 #include "Module/Renderer.h"
+#include "Module/Gui.h"
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
@@ -14,10 +15,12 @@ Orion::Application::Application(HMODULE handle) noexcept :
 	m_window = std::make_unique<Module::Window>(*this);
 	m_console = std::make_unique<Module::Console>(*this);
 	m_renderer = std::make_unique<Module::Renderer>(*this);
+	m_gui = std::make_unique<Module::Gui>(*this);
 }
 
 Orion::Application::~Application() noexcept
 {
+	m_gui.reset();
 	m_renderer.reset();
 	m_console.reset();
 	m_window.reset();
