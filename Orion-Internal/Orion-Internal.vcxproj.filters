@@ -25,6 +25,12 @@
     <Filter Include="Dependencies\ImGui">
       <UniqueIdentifier>{6c0ac559-9c5d-4f35-a347-bd0dca0006d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{1437e532-2cd6-43a1-bd69-5b36c0f8e549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Fonts">
+      <UniqueIdentifier>{67f099b9-9b24-4b41-bbe0-85758ddbd1b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\lazy_importer.hpp">
@@ -113,6 +119,15 @@
     </ClInclude>
     <ClInclude Include="Module\Gui.h">
       <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Fonts\arialbd.h">
+      <Filter>Resources\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Fonts\ariblk.h">
+      <Filter>Resources\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Fonts\fontawesome.h">
+      <Filter>Resources\Fonts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

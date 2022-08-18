@@ -1,4 +1,7 @@
 #include "Gui.h"
+#include "Resources/Fonts/arialbd.h"
+#include "Resources/Fonts/ariblk.h"
+#include "Resources/Fonts/fontawesome.h"
 
 namespace
 {
@@ -67,9 +70,20 @@ Gui::Gui(const Application& app) noexcept :
 {
 	ImGui::StyleColorsDark();
 
-	auto& IO = ImGui::GetIO();
-	IO.IniFilename = nullptr;
-	IO.LogFilename = nullptr;
+	auto&& io = ImGui::GetIO();
+	io.IniFilename = nullptr;
+	io.LogFilename = nullptr;
+
+	auto&& style = ImGui::GetStyle();
+	style.WindowShadowSize = 25;
+
+	auto&& colors{ style.Colors };
+	colors[ImGuiCol_WindowShadow] = ImVec4{ 0, 0, 0, 1 };
+
+	m_fonts.arialbd_15 = io.Fonts->AddFontFromMemoryCompressedTTF(arialbd_compressed_data, arialbd_compressed_size, 15);
+	m_fonts.profile_15 = io.Fonts->AddFontFromMemoryCompressedTTF(arialbd_compressed_data, arialbd_compressed_size, 15);
+	m_fonts.navbar_15 = io.Fonts->AddFontFromMemoryCompressedTTF(arialbd_compressed_data, arialbd_compressed_size, 15);
+	m_fonts.ariblk_37 = io.Fonts->AddFontFromMemoryCompressedTTF(ariblk_compressed_data, ariblk_compressed_size, 37);
 }
 
 Gui::~Gui() noexcept

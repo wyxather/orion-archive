@@ -1,5 +1,7 @@
 #pragma once
 
+struct ImFont;
+
 namespace Orion
 {
 	class Application;
@@ -27,6 +29,12 @@ namespace Orion
 
 		private:
 			bool m_open = {};
+			struct {
+				ImFont* arialbd_15 = {};
+				ImFont* ariblk_37 = {};
+				ImFont* navbar_15 = {};
+				ImFont* profile_15 = {};
+			} m_fonts;
 		};
 	}
 }
