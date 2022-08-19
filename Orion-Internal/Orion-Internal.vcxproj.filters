@@ -129,6 +129,9 @@
     <ClInclude Include="Resources\Fonts\fontawesome.h">
       <Filter>Resources\Fonts</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_custom.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -196,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="Module\Gui.cpp">
       <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_custom.cpp">
+      <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

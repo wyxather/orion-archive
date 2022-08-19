@@ -13,6 +13,13 @@ namespace Orion
 			const Application& m_app;
 
 		public:
+			struct Fonts {
+				ImFont* arialbd_15 = {};
+				ImFont* ariblk_37 = {};
+				ImFont* navbar_15 = {};
+				ImFont* profile_15 = {};
+			};
+
 			Gui(const Application& app) noexcept;
 			~Gui() noexcept;
 
@@ -25,16 +32,12 @@ namespace Orion
 			void invalidate() noexcept;
 			void toggle() noexcept;
 
-			constexpr auto isOpen() const noexcept { return m_open; }
+			[[nodiscard]] constexpr auto isOpen() const noexcept { return m_open; }
+			[[nodiscard]] constexpr auto&& getFonts() const noexcept { return m_fonts; }
 
 		private:
 			bool m_open = {};
-			struct {
-				ImFont* arialbd_15 = {};
-				ImFont* ariblk_37 = {};
-				ImFont* navbar_15 = {};
-				ImFont* profile_15 = {};
-			} m_fonts;
+			Fonts m_fonts;
 		};
 	}
 }

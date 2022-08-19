@@ -1,5 +1,75 @@
 #pragma once
 
+class FontAwesome
+{
+public:
+    enum class Type
+    {
+        none,
+        gun = 0xE19B,
+        user = 0xF007,
+        gear = 0xF013,
+        download = 0xF019,
+        crosshairs = 0xF05B,
+        floppy_disk = 0xF0C7,
+        code = 0xF121,
+        bomb = 0xF1E2,
+        binoculars = 0xF1E5,
+        user_secret = 0xF21B,
+        rotate_left = 0xF2EA,
+        trash_can = 0xF2ED,
+        file_plus = 0xF319,
+        palette = 0xF53F,
+        file_signature = 0xF573,
+        globe_asia = 0xF57E,
+        backpack = 0xF5D4,
+        scalpel = 0xF61D,
+        screwdriver_wrench = 0xF7D9,
+        computer_mouse = 0xF8CC,
+        max
+    };
+
+    FontAwesome() = delete;
+
+private:
+    template <Type type>
+    static constexpr auto c_str() noexcept
+    {
+        switch (type) {
+        case Type::gun:                  return u8"\uE19B";
+        case Type::user:                 return u8"\uF007";
+        case Type::gear:                 return u8"\uF013";
+        case Type::download:             return u8"\uF019";
+        case Type::crosshairs:           return u8"\uF05B";
+        case Type::floppy_disk:          return u8"\uF0C7";
+        case Type::code:                 return u8"\uF121";
+        case Type::bomb:                 return u8"\uF1E2";
+        case Type::binoculars:           return u8"\uF1E5";
+        case Type::user_secret:          return u8"\uF21B";
+        case Type::rotate_left:          return u8"\uF2EA";
+        case Type::trash_can:            return u8"\uF2ED";
+        case Type::file_plus:            return u8"\uF319";
+        case Type::palette:              return u8"\uF53F";
+        case Type::file_signature:       return u8"\uF573";
+        case Type::globe_asia:           return u8"\uF57E";
+        case Type::backpack:             return u8"\uF5D4";
+        case Type::scalpel:              return u8"\uF61D";
+        case Type::screwdriver_wrench:   return u8"\uF7D9";
+        case Type::computer_mouse:       return u8"\uF8CC";
+        }
+        return u8"\u0000";
+    }
+
+public:
+    static constexpr unsigned short range[]{
+        static_cast<unsigned short>(FontAwesome::Type::gun), static_cast<unsigned short>(FontAwesome::Type::max),
+        static_cast<unsigned short>(FontAwesome::Type::none)
+    };
+
+    template <Type type>
+    [[nodiscard]] static constexpr auto get() noexcept { return reinterpret_cast<const char*>(c_str<type>()); }
+};
+
 constexpr unsigned int fa_compressed_size = 396565;
 inline unsigned int fa_compressed_data[396568 / 4] =
 {

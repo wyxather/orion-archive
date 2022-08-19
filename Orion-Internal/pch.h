@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <string>
+#include <cmath>
 
 #include "Dependencies/lazy_importer.hpp"
 #include "Dependencies/xorstr.hpp"

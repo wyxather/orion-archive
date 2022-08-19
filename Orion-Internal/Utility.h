@@ -100,12 +100,11 @@ namespace Orion
         HashTable() noexcept {}
         ~HashTable() noexcept {}
 
-        HashTable(HashTable&&) = delete;
+        HashTable(HashTable&&) = default;
         HashTable(const HashTable&) = delete;
-        HashTable& operator=(HashTable&&) = delete;
+        HashTable& operator=(HashTable&&) = default;
         HashTable& operator=(const HashTable&) = delete;
 
-    private:
         [[nodiscard]] constexpr _DataTy* find(const _KeyTy key) noexcept
         {
             if (const auto it = std::ranges::lower_bound(m_data, key, {}, &decltype(m_data)::value_type::first);
@@ -114,6 +113,7 @@ namespace Orion
             return nullptr;
         }
 
+    private:
         constexpr void insert(const _KeyTy key) noexcept
         {
             m_data.emplace_back(key, _DataTy{});
