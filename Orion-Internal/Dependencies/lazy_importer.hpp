@@ -27,6 +27,8 @@
 #ifndef LAZY_IMPORTER_HPP
 #define LAZY_IMPORTER_HPP
 
+#define LAZY_IMPORTER_CASE_INSENSITIVE
+#define LAZY_IMPORTER_RESOLVE_FORWARDED_EXPORTS
 
 #define LI_FN_(name) ::li::detail::lazy_function<LAZY_IMPORTER_KHASH(#name), decltype(&name)>()
 #define LI_FN(name) LI_FN_(name)
