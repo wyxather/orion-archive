@@ -10,6 +10,9 @@
 #include <algorithm>
 #include <string>
 #include <cmath>
+#include <filesystem>
+
+#include <ShlObj.h>
 
 #include "Dependencies/lazy_importer.hpp"
 #include "Dependencies/xorstr.hpp"

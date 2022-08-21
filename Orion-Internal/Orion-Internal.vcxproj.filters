@@ -132,6 +132,12 @@
     <ClInclude Include="Dependencies\ImGui\imgui_custom.h">
       <Filter>Dependencies\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Module\Config.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\json.hpp">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -202,6 +208,9 @@
     </ClCompile>
     <ClCompile Include="Dependencies\ImGui\imgui_custom.cpp">
       <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\Config.cpp">
+      <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

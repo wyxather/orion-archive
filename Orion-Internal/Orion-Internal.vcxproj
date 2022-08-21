@@ -235,6 +235,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\json.hpp" />
     <ClInclude Include="Dependencies\lazy_importer.hpp" />
     <ClInclude Include="Dependencies\MinHook\include\MinHook.h" />
     <ClInclude Include="Dependencies\MinHook\src\buffer.h" />
@@ -247,6 +248,7 @@
     <ClInclude Include="Dependencies\stb.hh" />
     <ClInclude Include="Dependencies\xorstr.hpp" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Module\Config.h" />
     <ClInclude Include="Module\Console.h" />
     <ClInclude Include="Module\Hooks.h" />
     <ClInclude Include="Module\Gui.h" />
@@ -300,6 +302,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Module\Config.cpp" />
     <ClCompile Include="Module\Console.cpp" />
     <ClCompile Include="Module\Hooks.cpp" />
     <ClCompile Include="Module\Gui.cpp" />

@@ -1,5 +1,6 @@
 #include "Gui.h"
 #include "Orion.h"
+#include "Config.h"
 #include "Resources/Fonts/arialbd.h"
 #include "Resources/Fonts/ariblk.h"
 #include "Resources/Fonts/fontawesome.h"
@@ -427,7 +428,7 @@ namespace
 			Component::EndChild();
 		}
 
-		[[nodiscard]] static bool Save() noexcept
+		[[nodiscard]] static void Save(Orion::Module::Config& config) noexcept
 		{
 			Orion::String<"Save"> name;
 			const auto label{ std::string{ FontAwesome::get<FontAwesome::Type::floppy_disk>() } + "    " + name.get() };
@@ -446,11 +447,15 @@ namespace
 				{ ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4{ .0823529f, .0823529f, .086274f, 1 } },
 			};
 
-			return ImGui::Button(label.c_str(), ImVec2{ 100, 29 });
+			if (!ImGui::Button(label.c_str(), ImVec2{ 100, 29 }))
+				return;
+
+			config.save();
+			config.update();
 		}
 
 		template <stb::compiletime_string_wrapper str>
-		[[nodiscard]] static bool Combo(int& value) noexcept
+		[[nodiscard]] static void Combo(Orion::Module::Config& config) noexcept
 		{
 			static float popupAlpha{};
 
@@ -481,17 +486,20 @@ namespace
 				{ ImGuiCol_::ImGuiCol_FrameBgHovered, ImVec4{ 0.082353f, 0.082353f, 0.086275f, 1.000000f } },
 			};
 
-			const auto result{ ImGui::Combo(name.get(), &value, items.get()) };
+			const auto result{ ImGui::Combo(name.get(), &config.getSort(), items.get()) };
 			bool popup_open = ImGui::IsPopupOpen(ImHashStr("##ComboPopup", 0, ImGui::GetCurrentWindow()->GetID(name.get())), ImGuiPopupFlags_::ImGuiPopupFlags_None);
 			if (popup_open)
 				popupAlpha = std::clamp(ImGui::GetIO().DeltaTime * 2 + popupAlpha, 0.f, 1.f);
 			else
 				popupAlpha = {};
 
-			return result;
+			if (!result)
+				return;
+
+			config.update();
 		}
 
-		[[nodiscard]] static bool Create() noexcept
+		[[nodiscard]] static void Create(Orion::Module::Config& config) noexcept
 		{
 			Orion::String<"Create"> name;
 
@@ -508,7 +516,11 @@ namespace
 				{ ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4{ 0.000000f, 0.525490f, 0.843137f, 1.000000f } },
 			};
 
-			return ImGui::Button(label.c_str(), ImVec2{ 130, 29 });
+			if (!ImGui::Button(label.c_str(), ImVec2{ 130, 29 }))
+				return;
+
+			config.create();
+			config.update();
 		}
 	};
 
@@ -599,12 +611,15 @@ namespace
 			INPUT
 		};
 
+		const Orion::Application& m_app;
 		const Orion::Module::Gui& m_gui;
 
-		Config(const Orion::Module::Gui& gui) noexcept :
+		Config(const Orion::Application& app, const Orion::Module::Gui& gui) noexcept :
+			m_app{ app },
 			m_gui{ gui }
 		{
 			ImGui::Dummy(ImVec2{ 0, 1 });
+
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_ChildRounding, 3);
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3);
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3);
@@ -613,7 +628,32 @@ namespace
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_ChildBg, ImVec4{ 0.047059f, 0.047059f, 0.047059f, 1.000000f });
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_Border, ImVec4{ 0.086275f, 0.086275f, 0.086275f, 1.000000f });
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_BorderShadow, ImVec4{ 0.019608f, 0.019608f, 0.019608f, 1.000000f });
-			Component::Continue(true);
+
+			auto&& config = m_app.getConfig();
+
+			for (auto&& file : config.getFiles()) {
+
+				bool resizing = false;
+
+				switch (Config::Draw(file.m_name, file.m_time, file.m_active, config.getInput())) {
+				case Menu::Body::Content::Main::Panel::Config::Event::SAVE: config.save();
+					config.update();
+					break;
+				case Menu::Body::Content::Main::Panel::Config::Event::LOAD: config.load(file);
+					config.update();
+					break;
+				case Menu::Body::Content::Main::Panel::Config::Event::REMOVE: config.remove(file);
+					config.update();
+					resizing = true;
+					break;
+				case Menu::Body::Content::Main::Panel::Config::Event::RENAME: config.rename(file);
+					config.update();
+					break;
+				}
+
+				if (resizing)
+					break;
+			}
 		}
 
 		Event Draw(std::string_view name, std::string_view time, bool active, std::array<char, 260>& input) noexcept
@@ -744,13 +784,15 @@ namespace
 					const StyleVar styleVar[] = {
 						{ ImGuiStyleVar_::ImGuiStyleVar_Alpha, std::sqrtf(popupAlpha) * style.Alpha },
 					};
-					ImGui::SetNextWindowSize(ImVec2{ 256, 35 } * style.Alpha, ImGuiCond_::ImGuiCond_Always);
+					ImGui::SetNextWindowSize(ImVec2{ 256, 35 } *style.Alpha, ImGuiCond_::ImGuiCond_Always);
 					if (ImGui::BeginPopup(rename.get(), ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar)) {
-						const StyleColor styleColor[] = {
-							{ ImGuiCol_::ImGuiCol_FrameBg, ImVec4{ 0.031373f, 0.031373f, 0.031373f, 0.941176f } },
-							{ ImGuiCol_::ImGuiCol_TextSelectedBg, ImVec4{ 0.250980f, 0.250980f, 0.250980f, 0.768627f } },
-						};
-						ImGui::InputText(rename.get(), input.data(), input.size(), ImGuiInputTextFlags_::ImGuiInputTextFlags_CallbackCharFilter, filterConfigNameInput);
+						{
+							const StyleColor styleColor[] = {
+								{ ImGuiCol_::ImGuiCol_FrameBg, ImVec4{ 0.031373f, 0.031373f, 0.031373f, 0.941176f } },
+								{ ImGuiCol_::ImGuiCol_TextSelectedBg, ImVec4{ 0.250980f, 0.250980f, 0.250980f, 0.768627f } },
+							};
+							ImGui::InputText(rename.get(), input.data(), input.size(), ImGuiInputTextFlags_::ImGuiInputTextFlags_CallbackCharFilter, filterConfigNameInput);
+						}
 						ImGui::EndPopup();
 						result = Event::INPUT;
 						popupAlpha = std::clamp(popupAlpha + ImGui::GetIO().DeltaTime * 4, 0.f, 1.f);
@@ -771,7 +813,7 @@ namespace
 
 				ImGui::SetCursorPos(pos);
 				{
-					const PushFont font{ m_gui.getFonts().arialbd_15, (17.f / 15.f)};
+					const PushFont font{ m_gui.getFonts().arialbd_15, (17.f / 15.f) };
 					ImGui::TextColored(ImVec4{ 0.941176f, 0.941176f, 0.941176f, 1.000000f }, name.data());
 				}
 				const auto descPos{ ImGui::GetCursorPos() };
@@ -1259,35 +1301,23 @@ void Gui::draw() noexcept
 		}
 		if (Menu::Body body{}) {
 			if (Menu::Body::Top top{}) {
-				if (Menu::Body::Top::Save()) {
-
-				}
-
+				Menu::Body::Top::Save(m_app.getConfig());
 				if (Menu::Tab tab{ *this, Orion::Fnv<"Configs">::value }) {
-					static int value;
-					if (Menu::Body::Top::Combo<"Name\0Date Modified\0">(value)) {
-
-					}
-					if (Menu::Body::Top::Create()) {
-
-					}
+					Menu::Body::Top::Combo<"Name\0Date Modified\0">(m_app.getConfig());
+					Menu::Body::Top::Create(m_app.getConfig());
 				}
 			}
 			if (Menu::Body::Content content{}) {
 				if (Menu::Body::Content::Main main{}) {
-
 					if (Menu::Tab tab{ *this, Orion::Fnv<"Configs">::value }) {
 						if (Menu::Body::Content::Main::Panel panel{ *this }) {
-							if (Menu::Body::Content::Main::Panel::Config config{ *this }) {
-
-							}
+							Menu::Body::Content::Main::Panel::Config config{ m_app, *this };
 						}
 					}
 
 					else if (Menu::Tab tab{ *this, Orion::Fnv<"Main">::value }) {
 						if (Menu::Body::Content::Main::Panel panel{ *this }) {
 							if (Menu::Body::Content::Main::Panel::Table table{}) {
-
 								if (Menu::Body::Content::Main::Panel::Table::Group<"General"> group{ *this }) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
 										static bool boolean[4];
@@ -1301,7 +1331,6 @@ void Gui::draw() noexcept
 										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(boolean);
 									}
 								}
-
 								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement"> group{ *this }) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
 										static bool boolean[4];
