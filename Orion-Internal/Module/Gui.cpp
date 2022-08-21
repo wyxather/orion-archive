@@ -7,22 +7,6 @@
 
 namespace
 {
-	struct TabData
-	{
-		struct GroupData
-		{
-			std::size_t m_widgetCount = {};
-		};
-		bool	m_active = {};
-		float	m_alpha = {};
-		Orion::HashTable<GroupData> m_groups;
-	};
-
-	Orion::HashTable<TabData> g_tabs;
-	TabData::GroupData* g_lastActiveGroup;
-	TabData* g_lastActiveTab;
-	TabData* g_lastClickedTab;
-
 	struct PushFont
 	{
 		PushFont(ImFont* font) noexcept :
@@ -114,7 +98,7 @@ namespace
 			m_continue = ImGui::BeginTable(str_id, column);
 		}
 
-		void EndTable() noexcept
+		void EndTable() const noexcept
 		{
 			if (m_continue)
 				ImGui::EndTable();
@@ -159,6 +143,7 @@ namespace
 	{
 		struct Header;
 		struct Body;
+		struct Tab;
 
 		Menu(float alpha, ImFont* defaultFont) noexcept :
 			m_font{ defaultFont }
@@ -191,6 +176,20 @@ namespace
 		PushFont m_font;
 	};
 
+	struct Menu::Tab : Component
+	{
+		Orion::Module::Gui& m_gui;
+
+		Tab(Orion::Module::Gui& gui, std::uint32_t hash) noexcept :
+			m_gui{ gui }
+		{
+			if (const auto tab = m_gui.getTabs().find(hash); tab && tab->m_alpha > 0.f) {
+				Component::Continue(true);
+				Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * tab->m_alpha);
+			}
+		}
+	};
+
 	struct Menu::Header : Component
 	{
 		struct Nav;
@@ -211,7 +210,10 @@ namespace
 	{
 		struct Items;
 
-		Nav() noexcept
+		Orion::Module::Gui& m_gui;
+
+		Nav(Orion::Module::Gui& gui) noexcept :
+			m_gui{ gui }
 		{
 			const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos();
 			const auto size = ImGui::GetContentRegionAvail();
@@ -233,13 +235,13 @@ namespace
 		}
 
 	private:
-		static void Watermark() noexcept
+		void Watermark() const noexcept
 		{
 			if (ImGui::BeginChild(Orion::Fnv<"##Menu::Header::Nav::Watermark">::value, ImVec2{ 0, 62 })) {
 
 				Orion::String<"ORION"> label;
 
-				const PushFont font{ Orion::instance->getGui().getFonts().ariblk_37 };
+				const PushFont font{ m_gui.getFonts().ariblk_37 };
 				const auto contentSize = ImGui::GetContentRegionAvail();
 				const auto textSize = ImGui::CalcTextSize(label.get());
 				const ImVec2 textPos{ (contentSize.x - textSize.x) * .5f, (contentSize.y - textSize.y) * .5f + 5 };
@@ -293,9 +295,11 @@ namespace
 
 	struct Menu::Header::Nav::Items : Component
 	{
-		Items() noexcept :
-			m_space{ false },
-			m_fonts{ &Orion::instance->getGui().getFonts() }
+		Orion::Module::Gui& m_gui;
+
+		Items(Orion::Module::Gui& gui) noexcept :
+			m_gui{ gui },
+			m_space{ false }
 		{
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2{ 5, 5 });
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 10, 8 });
@@ -313,7 +317,7 @@ namespace
 		constexpr void Text() noexcept
 		{
 			Orion::String<str> text;
-			const PushFont font{ m_fonts->arialbd_15, (13.f / 15.f) };
+			const PushFont font{ m_gui.getFonts().arialbd_15, (13.f / 15.f) };
 			if (m_space)
 				ImGui::Dummy(ImVec2{ 0, 10 });
 			else
@@ -334,10 +338,10 @@ namespace
 			std::string preview = text.get();
 			preview.insert(0, FontAwesome::get<icon>());
 
-			const PushFont font{ m_fonts->navbar_15 };
+			const PushFont font{ m_gui.getFonts().navbar_15 };
 			auto&& style = ImGui::GetStyle();
 
-			auto&& curTab = g_tabs[Orion::Fnv<str>::value];
+			auto&& curTab = m_gui.getTabs()[Orion::Fnv<str>::value];
 			auto curTabAlpha = style.Alpha * (!curTab.m_active ? std::sqrtf(curTab.m_alpha) : std::powf(curTab.m_alpha, 2));
 
 			const StyleVar styleVar[] = {
@@ -351,13 +355,13 @@ namespace
 			};
 
 			if (ImGui::ButtonIcon(preview.c_str(), ImVec2{ 171, 30 }, IM_COL32(0, 149, 235, style.Alpha * 255))) {
-				if (!g_lastActiveTab) {
-					g_lastActiveTab = &curTab;
+				if (!m_gui.getLastActiveTab()) {
+					m_gui.getLastActiveTab() = &curTab;
 					curTab.m_active = true;
 				}
-				else if (g_lastActiveTab != &curTab && !g_lastClickedTab) {
-					g_lastActiveTab->m_active = false;
-					g_lastClickedTab = &curTab;
+				else if (m_gui.getLastActiveTab() != &curTab && !m_gui.getLastClickedTab()) {
+					m_gui.getLastActiveTab()->m_active = false;
+					m_gui.getLastClickedTab() = &curTab;
 				}
 			}
 
@@ -366,16 +370,15 @@ namespace
 			else
 				curTab.m_alpha = std::clamp(curTab.m_alpha - ImGui::GetIO().DeltaTime * 2, 0.f, 1.f);
 
-			if (g_lastClickedTab && g_lastActiveTab->m_alpha <= 0.f) {
-				g_lastClickedTab->m_active = true;
-				g_lastActiveTab = g_lastClickedTab;
-				g_lastClickedTab = nullptr;
+			if (m_gui.getLastClickedTab() && m_gui.getLastActiveTab()->m_alpha <= 0.f) {
+				m_gui.getLastClickedTab()->m_active = true;
+				m_gui.getLastActiveTab() = m_gui.getLastClickedTab();
+				m_gui.getLastClickedTab() = nullptr;
 			}
 		}
 
 	private:
 		bool m_space = {};
-		const Orion::Module::Gui::Fonts* m_fonts = {};
 	};
 
 	struct Menu::Body : Component
@@ -423,6 +426,90 @@ namespace
 		{
 			Component::EndChild();
 		}
+
+		[[nodiscard]] static bool Save() noexcept
+		{
+			Orion::String<"Save"> name;
+			const auto label{ std::string{ FontAwesome::get<FontAwesome::Type::floppy_disk>() } + "    " + name.get() };
+
+			ImGui::SetCursorPos(ImVec2{ 18, 21 });
+
+			const StyleVar styleVar[] = {
+				{ ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3 },
+				{ ImGuiStyleVar_::ImGuiStyleVar_FrameBorderSize, 1 },
+			};
+			const StyleColor styleColor[] = {
+				{ ImGuiCol_::ImGuiCol_Text, ImVec4{ .5843137f, .6784313f, .7176470f, 1 } },
+				{ ImGuiCol_::ImGuiCol_Border, ImVec4{ .098039f, .098039f, .098039f, 1 } },
+				{ ImGuiCol_::ImGuiCol_Button, ImVec4{} },
+				{ ImGuiCol_::ImGuiCol_ButtonActive, ImVec4{ .086274f, .086274f, .0941176f, 1 } },
+				{ ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4{ .0823529f, .0823529f, .086274f, 1 } },
+			};
+
+			return ImGui::Button(label.c_str(), ImVec2{ 100, 29 });
+		}
+
+		template <stb::compiletime_string_wrapper str>
+		[[nodiscard]] static bool Combo(int& value) noexcept
+		{
+			static float popupAlpha{};
+
+			Orion::String<"##Menu::Body::Top::Combo"> name;
+			Orion::String<str> items;
+
+			ImGui::SameLine(0, 20);
+			ImGui::SetNextItemWidth(189);
+
+			const StyleVar styleVar[] = {
+				{ ImGuiStyleVar_::ImGuiStyleVar_DisabledAlpha, std::powf(popupAlpha, 2) },
+				{ ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3 },
+				{ ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3 },
+				{ ImGuiStyleVar_::ImGuiStyleVar_FrameBorderSize, 1 },
+				{ ImGuiStyleVar_::ImGuiStyleVar_FramePadding, ImVec2{ 7, 7 } },
+				{ ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2{ 8, 16 } },
+				{ ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 10, 7 } },
+			};
+			const StyleColor styleColor[] = {
+				{ ImGuiCol_::ImGuiCol_Border, ImVec4{ 0.098039f, 0.098039f, 0.098039f, 1.000000f } },
+				{ ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.564706f, 0.615686f, 0.647059f, 1.000000f } },
+				{ ImGuiCol_::ImGuiCol_Header, ImVec4{ 0.047059f, 0.047059f, 0.047059f, 0.784314f } },
+				{ ImGuiCol_::ImGuiCol_HeaderActive, ImVec4{ 0.031373f, 0.031373f, 0.031373f, 0.784314f } },
+				{ ImGuiCol_::ImGuiCol_HeaderHovered, ImVec4{ 0.062745f, 0.062745f, 0.062745f, 0.784314f } },
+				{ ImGuiCol_::ImGuiCol_Button, ImVec4{ 0.047059f, 0.047059f, 0.047059f, 1.000000f } },
+				{ ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4{ 0.082353f, 0.082353f, 0.086275f, 1.000000f } },
+				{ ImGuiCol_::ImGuiCol_FrameBg, ImVec4{ 0.047059f, 0.047059f, 0.047059f, 1.000000f } },
+				{ ImGuiCol_::ImGuiCol_FrameBgHovered, ImVec4{ 0.082353f, 0.082353f, 0.086275f, 1.000000f } },
+			};
+
+			const auto result{ ImGui::Combo(name.get(), &value, items.get()) };
+			bool popup_open = ImGui::IsPopupOpen(ImHashStr("##ComboPopup", 0, ImGui::GetCurrentWindow()->GetID(name.get())), ImGuiPopupFlags_::ImGuiPopupFlags_None);
+			if (popup_open)
+				popupAlpha = std::clamp(ImGui::GetIO().DeltaTime * 2 + popupAlpha, 0.f, 1.f);
+			else
+				popupAlpha = {};
+
+			return result;
+		}
+
+		[[nodiscard]] static bool Create() noexcept
+		{
+			Orion::String<"Create"> name;
+
+			const auto label{ std::string{FontAwesome::get<FontAwesome::Type::file_plus>() } + "    " + name.get() };
+
+			ImGui::SameLine(0, 20);
+
+			const StyleVar styleVar[] = {
+				{ ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3 },
+			};
+			const StyleColor styleColor[] = {
+				{ ImGuiCol_::ImGuiCol_Button, ImVec4{ 0.000000f, 0.435294f, 0.694118f, 1.000000f } },
+				{ ImGuiCol_::ImGuiCol_ButtonActive, ImVec4{ 0.000000f, 0.545098f, 0.874510f, 1.000000f } },
+				{ ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4{ 0.000000f, 0.525490f, 0.843137f, 1.000000f } },
+			};
+
+			return ImGui::Button(label.c_str(), ImVec2{ 130, 29 });
+		}
 	};
 
 	struct Menu::Body::Content : Component
@@ -450,7 +537,7 @@ namespace
 
 	struct Menu::Body::Content::Main : Component
 	{
-		struct Tab;
+		struct Panel;
 
 		Main() noexcept
 		{
@@ -466,24 +553,14 @@ namespace
 		}
 	};
 
-	struct Menu::Body::Content::Main::Tab : Component
-	{
-		struct Panel;
-
-		Tab(std::uint32_t hash) noexcept
-		{
-			if (const auto tab{ g_tabs.find(hash) }; tab && tab->m_alpha > 0.f) {
-				Component::Continue(true);
-				Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * tab->m_alpha);
-			}
-		}
-	};
-
-	struct Menu::Body::Content::Main::Tab::Panel : Component
+	struct Menu::Body::Content::Main::Panel : Component
 	{
 		struct Table;
 
-		Panel() noexcept
+		Orion::Module::Gui& m_gui;
+
+		Panel(Orion::Module::Gui& gui) noexcept :
+			m_gui{ gui }
 		{
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 18, 0 });
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_ScrollbarSize, 9);
@@ -493,10 +570,10 @@ namespace
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_ScrollbarGrabHovered, ImVec4{ .10980392f, .1411764f, .168627f, 1 });
 
 			const auto verticalOffset{ ImGui::GetContentRegionAvail().y * .02f };
-			if (!g_lastActiveTab->m_active)
-				ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, verticalOffset - verticalOffset * std::powf(g_lastActiveTab->m_alpha, 2) });
+			if (!m_gui.getLastActiveTab()->m_active)
+				ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, verticalOffset - verticalOffset * std::powf(m_gui.getLastActiveTab()->m_alpha, 2) });
 			else
-				ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, verticalOffset - verticalOffset * std::sqrtf(g_lastActiveTab->m_alpha) });
+				ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, verticalOffset - verticalOffset * std::sqrtf(m_gui.getLastActiveTab()->m_alpha) });
 
 			Component::BeginChild(Orion::Fnv<"##Menu::Body::Content::Main::Panel">::value, ImVec2{}, true,
 				ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysVerticalScrollbar |
@@ -509,7 +586,7 @@ namespace
 		}
 	};
 
-	struct Menu::Body::Content::Main::Tab::Panel::Table : Component
+	struct Menu::Body::Content::Main::Panel::Table : Component
 	{
 		template <stb::compiletime_string_wrapper str>
 		struct Group;
@@ -536,9 +613,12 @@ namespace
 	};
 
 	template <stb::compiletime_string_wrapper str>
-	struct Menu::Body::Content::Main::Tab::Panel::Table::Group : Component
+	struct Menu::Body::Content::Main::Panel::Table::Group : Component
 	{
-		Group() noexcept
+		Orion::Module::Gui& m_gui;
+
+		Group(Orion::Module::Gui& gui) noexcept :
+			m_gui{ gui }
 		{
 			Orion::String<str> name;
 
@@ -550,7 +630,7 @@ namespace
 
 			const auto& style{ ImGui::GetStyle() };
 
-			g_lastActiveGroup = &g_lastActiveTab->m_groups[hash];
+			m_gui.getLastActiveGroup() = &m_gui.getLastActiveTab()->m_groups[hash];
 
 			ImGui::TableNextColumn();
 
@@ -561,7 +641,7 @@ namespace
 
 			Component::BeginChild(hash, ImVec2{ 0,
 				title_height + line_height + seperator_height +
-				style.ItemSpacing.y * 2 + (21 + style.CellPadding.y * 2) * g_lastActiveGroup->m_widgetCount + style.WindowPadding.y }, true,
+				style.ItemSpacing.y * 2 + (21 + style.CellPadding.y * 2) * m_gui.getLastActiveGroup()->m_widgetCount + style.WindowPadding.y }, true,
 				ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar);
 
 			if (!Component::Continue())
@@ -583,11 +663,13 @@ namespace
 		}
 	};
 
-	struct Menu::Body::Content::Main::Tab::Panel::Table::Widget : Component
+	struct Menu::Body::Content::Main::Panel::Table::Widget : Component
 	{
-		Widget() noexcept :
-			m_count{ 0 },
-			m_fonts{ &Orion::instance->getGui().getFonts() }
+		Orion::Module::Gui& m_gui;
+
+		Widget(Orion::Module::Gui& gui) noexcept :
+			m_gui{ gui },
+			m_count{ 0 }
 		{
 			Orion::String<"##Menu::Body::Content::Panel::Table::Widget"> name;
 			Component::BeginTable(name.get(), 2);
@@ -597,12 +679,12 @@ namespace
 		{
 			if (Component::Continue()) {
 				ImGui::EndTable();
-				g_lastActiveGroup->m_widgetCount = m_count;
+				m_gui.getLastActiveGroup()->m_widgetCount = m_count;
 			}
 		}
 
 		template <stb::compiletime_string_wrapper str>
-		constexpr void Toggle(bool& value, float color[4]) noexcept
+		constexpr void Toggle(bool& value, float color[4], float colorReference[4], float& popupAlpha) noexcept
 		{
 			Orion::String<str> name;
 
@@ -610,7 +692,7 @@ namespace
 			constexpr auto toggleWidthMult = 1.35f;
 			constexpr auto textPositionVerticalOffset = 2.f;
 
-			const PushFont font{ m_fonts->arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ m_gui.getFonts().arialbd_15, (fontHeight / 15.f) };
 			float ratio = 0;
 
 			m_count++;
@@ -648,21 +730,24 @@ namespace
 
 					ImGui::SetCursorPos(pos - ImVec2{ ImGui::GetFrameHeight() * toggleWidthMult, 0 });
 					if (ImGui::Button(std::string{ std::string{ colorIcon } + "##" + name.get() }.c_str())) {
-						g_colorReference = { color[0], color[1], color[2], color[3] };
+						colorReference[0] = color[0];
+						colorReference[1] = color[1];
+						colorReference[2] = color[2];
+						colorReference[3] = color[3];
 						ImGui::OpenPopup(colorLabel.c_str());
-						g_togglePopupAlpha = {};
+						popupAlpha = {};
 					}
 					const StyleVar styleVar2[] = {
-						{ ImGuiStyleVar_::ImGuiStyleVar_Alpha, std::sqrtf(g_togglePopupAlpha) * style.Alpha }
+						{ ImGuiStyleVar_::ImGuiStyleVar_Alpha, std::sqrtf(popupAlpha) * style.Alpha }
 					};
 					ImGui::SetNextWindowSize(ImVec2{ 308, 256 } *style.Alpha, ImGuiCond_::ImGuiCond_Always);
 					if (ImGui::BeginPopup(colorLabel.c_str(), ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar)) {
 						ImGui::ColorPicker4(colorLabel.c_str(), color,
 							ImGuiColorEditFlags_::ImGuiColorEditFlags_NoLabel |
 							ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar |
-							ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaPreview, g_colorReference.data());
+							ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaPreview, colorReference);
 						ImGui::EndPopup();
-						g_togglePopupAlpha = std::clamp(g_togglePopupAlpha + ImGui::GetIO().DeltaTime * 4, 0.f, 1.f);
+						popupAlpha = std::clamp(popupAlpha + ImGui::GetIO().DeltaTime * 4, 0.f, 1.f);
 					}
 				}
 
@@ -686,7 +771,7 @@ namespace
 			constexpr auto textPositionVerticalOffset{ 2.00f };
 			constexpr auto framePadding{ 4.00f };
 
-			const PushFont font{ m_fonts->arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ m_gui.getFonts().arialbd_15, (fontHeight / 15.f) };
 
 			m_count++;
 
@@ -737,7 +822,7 @@ namespace
 			static std::string preview;
 			static float popupAlpha;
 
-			const PushFont font{ m_fonts->arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ m_gui.getFonts().arialbd_15, (fontHeight / 15.f) };
 
 			Orion::String<str> name;
 			Orion::String<items> item;
@@ -822,7 +907,7 @@ namespace
 			constexpr auto inputTextWidth{ 28.00f };
 			constexpr auto textPositionVerticalOffset{ 1.00f };
 
-			const PushFont font{ m_fonts->arialbd_15, fontHeight / 15.f };
+			const PushFont font{ m_gui.getFonts().arialbd_15, fontHeight / 15.f };
 			const auto& style = ImGui::GetStyle();
 
 			Orion::String<str> name;
@@ -851,7 +936,7 @@ namespace
 				};
 
 				{
-					const PushFont font{ m_fonts->arialbd_15, (fontHeight - 1) / 15.f };
+					const PushFont font{ m_gui.getFonts().arialbd_15, (fontHeight - 1) / 15.f };
 					const StyleColor styleColor2[] = {
 						{ ImGuiCol_::ImGuiCol_FrameBg, ImVec4{ .0470588f, .0470588f, .0470588f, 1 } },
 					};
@@ -877,11 +962,7 @@ namespace
 		}
 
 	private:
-		static inline std::array<float, 4> g_colorReference;
-		static inline float g_togglePopupAlpha;
-
 		int m_count = {};
-		const Orion::Module::Gui::Fonts* m_fonts = {};
 	};
 }
 
@@ -950,8 +1031,8 @@ void Gui::draw() noexcept
 
 	if (Menu menu{ m_alpha, m_fonts.arialbd_15 }) {
 		if (Menu::Header header{}) {
-			if (Menu::Header::Nav nav{}) {
-				if (Menu::Header::Nav::Items items{}) {
+			if (Menu::Header::Nav nav{ *this }) {
+				if (Menu::Header::Nav::Items items{ *this }) {
 					items.Text<"Aimbot">();
 					items.Button<"Ragebot", FontAwesome::Type::crosshairs>();
 					items.Button<"Anti Aim", FontAwesome::Type::rotate_left>();
@@ -972,22 +1053,34 @@ void Gui::draw() noexcept
 		}
 		if (Menu::Body body{}) {
 			if (Menu::Body::Top top{}) {
+				if (Menu::Body::Top::Save()) {
 
+				}
+
+				if (Menu::Tab tab{ *this, Orion::Fnv<"Configs">::value }) {
+					static int value;
+					if (Menu::Body::Top::Combo<"Name\0Date Modified\0">(value)) {
+
+					}
+					if (Menu::Body::Top::Create()) {
+
+					}
+				}
 			}
 			if (Menu::Body::Content content{}) {
 				if (Menu::Body::Content::Main main{}) {
 
-					if (Menu::Body::Content::Main::Tab tab{ Orion::Fnv<"Main">::value }) {
-						if (Menu::Body::Content::Main::Tab::Panel panel{}) {
-							if (Menu::Body::Content::Main::Tab::Panel::Table table{}) {
+					if (Menu::Tab tab{ *this, Orion::Fnv<"Main">::value }) {
+						if (Menu::Body::Content::Main::Panel panel{ *this }) {
+							if (Menu::Body::Content::Main::Panel::Table table{}) {
 
-								if (Menu::Body::Content::Main::Tab::Panel::Table::Group<"General"> group{}) {
-									if (Menu::Body::Content::Main::Tab::Panel::Table::Widget widget{}) {
+								if (Menu::Body::Content::Main::Panel::Table::Group<"General"> group{ *this }) {
+									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
 										static bool boolean[4];
 										static float color[8];
 										static int value[4];
-										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0]);
-										widget.Toggle<"Unlimited Works">(boolean[1], &color[4]);
+										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0], m_colorReference, m_popupAlpha);
+										widget.Toggle<"Unlimited Works">(boolean[1], &color[4], m_colorReference, m_popupAlpha);
 										widget.Combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(value[0]);
 										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(value[1]);
 										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(boolean);
@@ -995,12 +1088,12 @@ void Gui::draw() noexcept
 									}
 								}
 
-								if (Menu::Body::Content::Main::Tab::Panel::Table::Group<"Movement"> group{}) {
-									if (Menu::Body::Content::Main::Tab::Panel::Table::Widget widget{}) {
+								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement"> group{ *this }) {
+									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
 										static bool boolean[4];
 										static float color[8];
 										static int value[4];
-										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0]);
+										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0], m_colorReference, m_popupAlpha);
 										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(color[0]);
 									}
 								}
