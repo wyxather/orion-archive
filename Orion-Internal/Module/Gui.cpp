@@ -555,6 +555,7 @@ namespace
 
 	struct Menu::Body::Content::Main::Panel : Component
 	{
+		struct Config;
 		struct Table;
 
 		Orion::Module::Gui& m_gui;
@@ -583,6 +584,211 @@ namespace
 		~Panel() noexcept
 		{
 			Component::EndChild();
+		}
+	};
+
+	struct Menu::Body::Content::Main::Panel::Config : Component
+	{
+		enum class Event
+		{
+			UNDEFINED,
+			SAVE,
+			LOAD,
+			REMOVE,
+			RENAME,
+			INPUT
+		};
+
+		const Orion::Module::Gui& m_gui;
+
+		Config(const Orion::Module::Gui& gui) noexcept :
+			m_gui{ gui }
+		{
+			ImGui::Dummy(ImVec2{ 0, 1 });
+			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_ChildRounding, 3);
+			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3);
+			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3);
+			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 10 });
+			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 8, 7 });
+			Component::PushStyleColor(ImGuiCol_::ImGuiCol_ChildBg, ImVec4{ 0.047059f, 0.047059f, 0.047059f, 1.000000f });
+			Component::PushStyleColor(ImGuiCol_::ImGuiCol_Border, ImVec4{ 0.086275f, 0.086275f, 0.086275f, 1.000000f });
+			Component::PushStyleColor(ImGuiCol_::ImGuiCol_BorderShadow, ImVec4{ 0.019608f, 0.019608f, 0.019608f, 1.000000f });
+			Component::Continue(true);
+		}
+
+		Event Draw(std::string_view name, std::string_view time, bool active, std::array<char, 260>& input) noexcept
+		{
+			Event result = Event::UNDEFINED;
+
+			if (ImGui::BeginChild(name.data(), ImVec2{ 0, 54 }, true, ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar)) {
+
+				const auto pos = ImGui::GetCursorPos();
+
+				if (active) {
+					Orion::String<"Save"> label;
+					ImGui::SetCursorPos(pos + ImVec2{ ImGui::GetContentRegionAvail().x - 90, 6 });
+					const StyleVar styleVar[] = {
+						{ ImGuiStyleVar_::ImGuiStyleVar_FrameBorderSize, 1 },
+					};
+					const StyleColor styleColor[] = {
+						{ ImGuiCol_::ImGuiCol_Border, ImVec4{ 0.235294f, 0.352941f, 0.423529f, 1.000000f } },
+						{ ImGuiCol_::ImGuiCol_Button, ImVec4{ 0.043137f, 0.050980f, 0.050980f, 1.000000f } },
+						{ ImGuiCol_::ImGuiCol_ButtonActive, ImVec4{ 0.133333f, 0.156863f, 0.156863f, 1.000000f } },
+						{ ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4{ 0.078431f, 0.094118f, 0.094118f, 1.000000f } },
+					};
+					if (ImGui::Button(std::string{ std::string{ FontAwesome::get<FontAwesome::Type::floppy_disk>() } + "    " + label.get() }.c_str(), ImVec2{ 90, 27 }))
+						result = Event::SAVE;
+				}
+				else {
+					Orion::String<"Load"> label;
+					ImGui::SetCursorPos(pos + ImVec2{ ImGui::GetContentRegionAvail().x - 90, 6 });
+					const StyleColor styleColor[] = {
+						{ ImGuiCol_::ImGuiCol_Button, ImVec4{ 0.000000f, 0.435294f, 0.694118f, 1.000000f } },
+						{ ImGuiCol_::ImGuiCol_ButtonActive, ImVec4{ 0.000000f, 0.545098f, 0.874510f, 1.000000f } },
+						{ ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4{ 0.000000f, 0.525490f, 0.843137f, 1.000000f } },
+					};
+					if (ImGui::Button(std::string{ std::string{ FontAwesome::get<FontAwesome::Type::download>() } + "    " + label.get() }.c_str(), ImVec2{ 90, 27 }))
+						result = Event::LOAD;
+				}
+
+				Orion::String<"##Menu::Body::Content::Main::Panel::Config::Rename"> rename;
+				static std::string lastConfigName;
+				auto filterConfigNameInput{ [](ImGuiInputTextCallbackData* data) noexcept {
+					switch (data->EventChar) {
+					case ('A'): return 0;
+					case ('B'): return 0;
+					case ('C'): return 0;
+					case ('D'): return 0;
+					case ('E'): return 0;
+					case ('F'): return 0;
+					case ('G'): return 0;
+					case ('H'): return 0;
+					case ('I'): return 0;
+					case ('J'): return 0;
+					case ('K'): return 0;
+					case ('L'): return 0;
+					case ('M'): return 0;
+					case ('N'): return 0;
+					case ('O'): return 0;
+					case ('P'): return 0;
+					case ('Q'): return 0;
+					case ('R'): return 0;
+					case ('S'): return 0;
+					case ('T'): return 0;
+					case ('U'): return 0;
+					case ('V'): return 0;
+					case ('W'): return 0;
+					case ('X'): return 0;
+					case ('Y'): return 0;
+					case ('Z'): return 0;
+					case ('a'): return 0;
+					case ('b'): return 0;
+					case ('c'): return 0;
+					case ('d'): return 0;
+					case ('e'): return 0;
+					case ('f'): return 0;
+					case ('g'): return 0;
+					case ('h'): return 0;
+					case ('i'): return 0;
+					case ('j'): return 0;
+					case ('k'): return 0;
+					case ('l'): return 0;
+					case ('m'): return 0;
+					case ('n'): return 0;
+					case ('o'): return 0;
+					case ('p'): return 0;
+					case ('q'): return 0;
+					case ('r'): return 0;
+					case ('s'): return 0;
+					case ('t'): return 0;
+					case ('u'): return 0;
+					case ('v'): return 0;
+					case ('w'): return 0;
+					case ('x'): return 0;
+					case ('y'): return 0;
+					case ('z'): return 0;
+					case ('0'): return 0;
+					case ('1'): return 0;
+					case ('2'): return 0;
+					case ('3'): return 0;
+					case ('4'): return 0;
+					case ('5'): return 0;
+					case ('6'): return 0;
+					case ('7'): return 0;
+					case ('8'): return 0;
+					case ('9'): return 0;
+					case ('-'): return 0;
+					case (' '): return 0;
+					}
+					return 1;
+				} };
+
+				if (!Orion::Fnv<"Default", std::uint32_t>::compare(name.data())) {
+					static float popupAlpha{};
+					const auto& style = ImGui::GetStyle();
+					ImGui::SetCursorPos(pos + ImVec2{ ImGui::GetContentRegionAvail().x - 119, 10 });
+					const StyleColor styleColor[] = {
+						{ ImGuiCol_::ImGuiCol_Button, ImVec4{} },
+						{ ImGuiCol_::ImGuiCol_ButtonActive, ImVec4{ 0.188235f, 0.188235f, 0.188235f, 1.000000f } },
+						{ ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4{ 0.125490f, 0.125490f, 0.125490f, 1.000000f } },
+					};
+					if (ImGui::Button(FontAwesome::get<FontAwesome::Type::trash_can>()))
+						result = Event::REMOVE;
+					ImGui::SetCursorPos(pos + ImVec2{ ImGui::GetContentRegionAvail().x - 148, 10 });
+					if (ImGui::Button(FontAwesome::get<FontAwesome::Type::file_signature>())) {
+						ImGui::OpenPopup(rename.get());
+						strcpy_s(input.data(), input.size(), name.data());
+						lastConfigName = name;
+						popupAlpha = {};
+					}
+					const StyleVar styleVar[] = {
+						{ ImGuiStyleVar_::ImGuiStyleVar_Alpha, std::sqrtf(popupAlpha) * style.Alpha },
+					};
+					ImGui::SetNextWindowSize(ImVec2{ 256, 35 } * style.Alpha, ImGuiCond_::ImGuiCond_Always);
+					if (ImGui::BeginPopup(rename.get(), ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar)) {
+						const StyleColor styleColor[] = {
+							{ ImGuiCol_::ImGuiCol_FrameBg, ImVec4{ 0.031373f, 0.031373f, 0.031373f, 0.941176f } },
+							{ ImGuiCol_::ImGuiCol_TextSelectedBg, ImVec4{ 0.250980f, 0.250980f, 0.250980f, 0.768627f } },
+						};
+						ImGui::InputText(rename.get(), input.data(), input.size(), ImGuiInputTextFlags_::ImGuiInputTextFlags_CallbackCharFilter, filterConfigNameInput);
+						ImGui::EndPopup();
+						result = Event::INPUT;
+						popupAlpha = std::clamp(popupAlpha + ImGui::GetIO().DeltaTime * 4, 0.f, 1.f);
+					}
+					else if (lastConfigName == name && input != name) {
+						lastConfigName.clear();
+						result = Event::RENAME;
+					}
+				}
+
+				Orion::String<"Modified: "> modified;
+				Orion::String<"Author: "> author;
+				Orion::String<"Wyxather"> authorValue;
+
+				const StyleVar styleVar[] = {
+					{ ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 7 } },
+				};
+
+				ImGui::SetCursorPos(pos);
+				{
+					const PushFont font{ m_gui.getFonts().arialbd_15, (17.f / 15.f)};
+					ImGui::TextColored(ImVec4{ 0.941176f, 0.941176f, 0.941176f, 1.000000f }, name.data());
+				}
+				const auto descPos{ ImGui::GetCursorPos() };
+
+				ImGui::TextColored(ImVec4{ 0.647059f, 0.670588f, 0.698039f, 1.000000f }, modified.get());
+				ImGui::SameLine();
+				ImGui::TextColored(ImVec4{ 0.262745f, 0.513726f, 0.658824f, 1.000000f }, time.data());
+				ImGui::SameLine(0, 14);
+
+				ImGui::SetCursorPos(descPos + ImVec2{ 190, 0 });
+				ImGui::TextColored(ImVec4{ 0.647059f, 0.670588f, 0.698039f, 1.000000f }, author.get());
+				ImGui::SameLine();
+				ImGui::TextColored(ImVec4{ 0.262745f, 0.513726f, 0.658824f, 1.000000f }, authorValue.get());
+			}
+			ImGui::EndChild();
+
+			return result;
 		}
 	};
 
@@ -1070,7 +1276,15 @@ void Gui::draw() noexcept
 			if (Menu::Body::Content content{}) {
 				if (Menu::Body::Content::Main main{}) {
 
-					if (Menu::Tab tab{ *this, Orion::Fnv<"Main">::value }) {
+					if (Menu::Tab tab{ *this, Orion::Fnv<"Configs">::value }) {
+						if (Menu::Body::Content::Main::Panel panel{ *this }) {
+							if (Menu::Body::Content::Main::Panel::Config config{ *this }) {
+
+							}
+						}
+					}
+
+					else if (Menu::Tab tab{ *this, Orion::Fnv<"Main">::value }) {
 						if (Menu::Body::Content::Main::Panel panel{ *this }) {
 							if (Menu::Body::Content::Main::Panel::Table table{}) {
 
