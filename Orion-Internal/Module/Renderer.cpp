@@ -111,7 +111,7 @@ namespace
 				ComPtr<ID3D11DeviceContext> context;
 				device->GetImmediateContext(context.GetAddressOf());
 
-				return ImGui_ImplDX11_Init(device.Get(), context.Get());
+				return ImGui_ImplDX11_Init(swapChain, device.Get(), context.Get());
 			}();
 			if (imgui) {
 				ImGui_ImplDX11_NewFrame();

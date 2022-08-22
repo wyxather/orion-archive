@@ -40,6 +40,10 @@
 #pragma comment(lib, "d3dcompiler") // Automatically link with d3dcompiler.lib as we are using D3DCompile() below.
 #endif
 
+#include <wrl/client.h>
+
+using Microsoft::WRL::ComPtr;
+
 // DirectX11 data
 struct ImGui_ImplDX11_Data
 {
@@ -59,6 +63,8 @@ struct ImGui_ImplDX11_Data
     ID3D11DepthStencilState*    pDepthStencilState;
     int                         VertexBufferSize;
     int                         IndexBufferSize;
+    ComPtr<IDXGISwapChain>      pdxgiSwapChain;
+    ComPtr<ID3D11RenderTargetView> pRenderTarget;
 
     ImGui_ImplDX11_Data()       { memset((void*)this, 0, sizeof(*this)); VertexBufferSize = 5000; IndexBufferSize = 10000; }
 };
@@ -514,6 +520,13 @@ bool    ImGui_ImplDX11_CreateDeviceObjects()
         bd->pd3dDevice->CreateDepthStencilState(&desc, &bd->pDepthStencilState);
     }
 
+    // Create render target view
+    {
+        ComPtr<ID3D11Texture2D> tex2D;
+        bd->pdxgiSwapChain->GetBuffer(0, IID_PPV_ARGS(tex2D.GetAddressOf()));
+        bd->pd3dDevice->CreateRenderTargetView(tex2D.Get(), nullptr, bd->pRenderTarget.GetAddressOf());
+    }
+
     ImGui_ImplDX11_CreateFontsTexture();
 
     return true;
@@ -536,9 +549,10 @@ void    ImGui_ImplDX11_InvalidateDeviceObjects()
     if (bd->pVertexConstantBuffer)  { bd->pVertexConstantBuffer->Release(); bd->pVertexConstantBuffer = NULL; }
     if (bd->pInputLayout)           { bd->pInputLayout->Release(); bd->pInputLayout = NULL; }
     if (bd->pVertexShader)          { bd->pVertexShader->Release(); bd->pVertexShader = NULL; }
+    bd->pRenderTarget.Reset();
 }
 
-bool    ImGui_ImplDX11_Init(ID3D11Device* device, ID3D11DeviceContext* device_context)
+bool    ImGui_ImplDX11_Init(IDXGISwapChain* swap_chain, ID3D11Device* device, ID3D11DeviceContext* device_context)
 {
     ImGuiIO& io = ImGui::GetIO();
     IM_ASSERT(io.BackendRendererUserData == NULL && "Already initialized a renderer backend!");
@@ -561,6 +575,7 @@ bool    ImGui_ImplDX11_Init(ID3D11Device* device, ID3D11DeviceContext* device_co
                 bd->pd3dDevice = device;
                 bd->pd3dDeviceContext = device_context;
                 bd->pFactory = pFactory;
+                bd->pdxgiSwapChain = swap_chain;
             }
     if (pDXGIDevice) pDXGIDevice->Release();
     if (pDXGIAdapter) pDXGIAdapter->Release();
@@ -580,6 +595,7 @@ void ImGui_ImplDX11_Shutdown()
     if (bd->pFactory)             { bd->pFactory->Release(); }
     if (bd->pd3dDevice)           { bd->pd3dDevice->Release(); }
     if (bd->pd3dDeviceContext)    { bd->pd3dDeviceContext->Release(); }
+    bd->pdxgiSwapChain.Reset();
     io.BackendRendererName = NULL;
     io.BackendRendererUserData = NULL;
     IM_DELETE(bd);
@@ -592,4 +608,6 @@ void ImGui_ImplDX11_NewFrame()
 
     if (!bd->pFontSampler)
         ImGui_ImplDX11_CreateDeviceObjects();
+
+    bd->pd3dDeviceContext->OMSetRenderTargets(1, bd->pRenderTarget.GetAddressOf(), nullptr);
 }

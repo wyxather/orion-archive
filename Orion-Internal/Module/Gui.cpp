@@ -30,6 +30,7 @@
 #endif
 
 using Orion::Module::Gui;
+using Microsoft::WRL::ComPtr;
 
 namespace
 {
@@ -1362,11 +1363,11 @@ namespace
 
 	private:
 		INT m_size[2];
-		Microsoft::WRL::ComPtr<IDirect3DTexture9> m_textures[2];
-		Microsoft::WRL::ComPtr<IDirect3DSurface9> m_surfaces[2];
-		Microsoft::WRL::ComPtr<IDirect3DPixelShader9> m_shaders[2];
-		Microsoft::WRL::ComPtr<IDirect3DSurface9> m_renderTarget;
-		Microsoft::WRL::ComPtr<IDirect3DSurface9> m_backBuffer;
+		ComPtr<IDirect3DTexture9> m_textures[2];
+		ComPtr<IDirect3DSurface9> m_surfaces[2];
+		ComPtr<IDirect3DPixelShader9> m_shaders[2];
+		ComPtr<IDirect3DSurface9> m_renderTarget;
+		ComPtr<IDirect3DSurface9> m_backBuffer;
 	};
 
 	struct BlurD3D11 : Gui::PostProcess
