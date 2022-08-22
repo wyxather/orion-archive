@@ -15,8 +15,16 @@ namespace Orion
 			ImGuiIO& m_io;
 
 		public:
+			struct PostProcess
+			{
+				constexpr PostProcess() noexcept {}
+
+				virtual ~PostProcess() noexcept = default;
+				virtual void draw() noexcept = 0;
+				virtual void reset() noexcept = 0;
+			};
+
 			Gui(const Application& app) noexcept;
-			~Gui() noexcept;
 
 			Gui(Gui&&) = delete;
 			Gui(const Gui&) = delete;
@@ -33,6 +41,7 @@ namespace Orion
 			[[nodiscard]] constexpr auto&& getLastActiveTab() noexcept { return m_lastActiveTab; }
 			[[nodiscard]] constexpr auto&& getLastClickedTab() noexcept { return m_lastClickedTab; }
 			[[nodiscard]] constexpr auto&& getLastActiveGroup() noexcept { return m_lastActiveGroup; }
+			[[nodiscard]] constexpr auto getPostProcess() const noexcept { return m_postProcess.get(); }
 
 		private:
 			bool m_open = {};
@@ -64,6 +73,8 @@ namespace Orion
 			TabData* m_lastActiveTab = {};
 			TabData* m_lastClickedTab = {};
 			TabData::GroupData* m_lastActiveGroup = {};
+
+			std::unique_ptr<PostProcess> m_postProcess;
 		};
 	}
 }

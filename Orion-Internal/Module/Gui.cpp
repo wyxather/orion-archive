@@ -1,10 +1,35 @@
 #include "Gui.h"
 #include "Orion.h"
+#include "Renderer.h"
 #include "Config.h"
 #include "Resources/Fonts/arialbd.h"
 #include "Resources/Fonts/ariblk.h"
 #include "Resources/Fonts/fontawesome.h"
 #include "Dependencies/ImGui/imgui_custom.h"
+
+#include <d3d9.h>
+#include <d3d11.h>
+#include <wrl/client.h>
+
+#if _WIN64
+#if NDEBUG
+#include "../Resources/Shaders/Build/Release/x64/blur_x.h"
+#include "../Resources/Shaders/Build/Release/x64/blur_y.h"
+#else
+#include "../Resources/Shaders/Build/Debug/x64/blur_x.h"
+#include "../Resources/Shaders/Build/Debug/x64/blur_y.h"
+#endif
+#else
+#if NDEBUG
+#include "../Resources/Shaders/Build/Release/Win32/blur_x.h"
+#include "../Resources/Shaders/Build/Release/Win32/blur_y.h"
+#else
+#include "../Resources/Shaders/Build/Debug/Win32/blur_x.h"
+#include "../Resources/Shaders/Build/Debug/Win32/blur_y.h"
+#endif
+#endif
+
+using Orion::Module::Gui;
 
 namespace
 {
@@ -146,7 +171,7 @@ namespace
 		struct Body;
 		struct Tab;
 
-		Menu(float alpha, ImFont* defaultFont) noexcept :
+		Menu(Gui& gui, float alpha, ImFont* defaultFont) noexcept :
 			m_font{ defaultFont }
 		{
 			Orion::String<"##Menu"> id;
@@ -166,6 +191,8 @@ namespace
 				ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar |
 				ImGuiWindowFlags_::ImGuiWindowFlags_NoResize
 			);
+
+			gui.getPostProcess()->draw();
 		}
 
 		~Menu() noexcept
@@ -179,9 +206,9 @@ namespace
 
 	struct Menu::Tab : Component
 	{
-		Orion::Module::Gui& m_gui;
+		Gui& m_gui;
 
-		Tab(Orion::Module::Gui& gui, std::uint32_t hash) noexcept :
+		Tab(Gui& gui, std::uint32_t hash) noexcept :
 			m_gui{ gui }
 		{
 			if (const auto tab = m_gui.getTabs().find(hash); tab && tab->m_alpha > 0.f) {
@@ -211,9 +238,9 @@ namespace
 	{
 		struct Items;
 
-		Orion::Module::Gui& m_gui;
+		Gui& m_gui;
 
-		Nav(Orion::Module::Gui& gui) noexcept :
+		Nav(Gui& gui) noexcept :
 			m_gui{ gui }
 		{
 			const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos();
@@ -296,9 +323,9 @@ namespace
 
 	struct Menu::Header::Nav::Items : Component
 	{
-		Orion::Module::Gui& m_gui;
+		Gui& m_gui;
 
-		Items(Orion::Module::Gui& gui) noexcept :
+		Items(Gui& gui) noexcept :
 			m_gui{ gui },
 			m_space{ false }
 		{
@@ -570,9 +597,9 @@ namespace
 		struct Config;
 		struct Table;
 
-		Orion::Module::Gui& m_gui;
+		Gui& m_gui;
 
-		Panel(Orion::Module::Gui& gui) noexcept :
+		Panel(Gui& gui) noexcept :
 			m_gui{ gui }
 		{
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 18, 0 });
@@ -612,9 +639,9 @@ namespace
 		};
 
 		const Orion::Application& m_app;
-		const Orion::Module::Gui& m_gui;
+		const Gui& m_gui;
 
-		Config(const Orion::Application& app, const Orion::Module::Gui& gui) noexcept :
+		Config(const Orion::Application& app, const Gui& gui) noexcept :
 			m_app{ app },
 			m_gui{ gui }
 		{
@@ -863,9 +890,9 @@ namespace
 	template <stb::compiletime_string_wrapper str>
 	struct Menu::Body::Content::Main::Panel::Table::Group : Component
 	{
-		Orion::Module::Gui& m_gui;
+		Gui& m_gui;
 
-		Group(Orion::Module::Gui& gui) noexcept :
+		Group(Gui& gui) noexcept :
 			m_gui{ gui }
 		{
 			Orion::String<str> name;
@@ -913,9 +940,9 @@ namespace
 
 	struct Menu::Body::Content::Main::Panel::Table::Widget : Component
 	{
-		Orion::Module::Gui& m_gui;
+		Gui& m_gui;
 
-		Widget(Orion::Module::Gui& gui) noexcept :
+		Widget(Gui& gui) noexcept :
 			m_gui{ gui },
 			m_count{ 0 }
 		{
@@ -1212,9 +1239,149 @@ namespace
 	private:
 		int m_count = {};
 	};
-}
 
-using namespace Orion::Module;
+	struct BlurD3D9 : Gui::PostProcess
+	{
+		virtual void draw() noexcept override
+		{
+			const auto& io = ImGui::GetIO();
+
+			for (auto i = 0; i < IM_ARRAYSIZE(m_textures); i++) {
+				if (m_textures[i].Get())
+					continue;
+
+				m_size[0] = static_cast<int>(io.DisplaySize.x * .5f);
+				m_size[1] = static_cast<int>(io.DisplaySize.y * .5f);
+
+				const auto device{ *static_cast<LPDIRECT3DDEVICE9*>(io.BackendRendererUserData) };
+				if (device->CreateTexture(m_size[0], m_size[1], 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, m_textures[i].GetAddressOf(), nullptr) != D3D_OK)
+					return;
+			}
+
+			for (auto i = 0; i < IM_ARRAYSIZE(m_shaders); ++i) {
+				if (m_shaders[i].Get())
+					continue;
+
+				const auto device{ *static_cast<LPDIRECT3DDEVICE9*>(io.BackendRendererUserData) };
+				if (device->CreatePixelShader(reinterpret_cast<const DWORD*>(!i ? blur_x : blur_y), m_shaders[i].GetAddressOf()) != D3D_OK)
+					return;
+			}
+
+			auto&& drawList = *ImGui::GetWindowDrawList();
+			drawList.AddCallback(&begin, this);
+			for (auto i = 0; i < 8; ++i) {
+				drawList.AddCallback(&firstPass, this);
+				drawList.AddImage(reinterpret_cast<ImTextureID>(m_textures[0].Get()), ImVec2{ -1, -1 }, ImVec2{ 1, 1 });
+				drawList.AddCallback(&secondPass, this);
+				drawList.AddImage(reinterpret_cast<ImTextureID>(m_textures[1].Get()), ImVec2{ -1, -1 }, ImVec2{ 1, 1 });
+			}
+			drawList.AddCallback(&end, this);
+			drawList.AddCallback(ImDrawCallback_ResetRenderState, nullptr);
+			drawList.AddImage(reinterpret_cast<ImTextureID>(m_textures[0].Get()), ImVec2{}, io.DisplaySize);
+		}
+
+		virtual void reset() noexcept override
+		{
+			for (auto i = 0; i < IM_ARRAYSIZE(m_textures); i++)
+				m_textures->Reset();
+			for (auto i = 0; i < IM_ARRAYSIZE(m_surfaces); i++)
+				m_surfaces->Reset();
+			for (auto i = 0; i < IM_ARRAYSIZE(m_shaders); i++)
+				m_shaders->Reset();
+			m_renderTarget.Reset();
+			m_backBuffer.Reset();
+		}
+
+		private:
+			static void begin(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+			{
+				BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
+				const auto& io = ImGui::GetIO();
+				const auto device = *static_cast<IDirect3DDevice9**>(io.BackendRendererUserData);
+
+				if (!data.m_renderTarget)
+					device->GetRenderTarget(0, data.m_renderTarget.GetAddressOf());
+				if (!data.m_backBuffer)
+					device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, data.m_backBuffer.GetAddressOf());
+				if (!data.m_surfaces[0].Get())
+					data.m_textures[0]->GetSurfaceLevel(0, data.m_surfaces[0].GetAddressOf());
+
+				const D3DMATRIX projection
+				{ {{
+					1.f, 0.f, 0.f, 0.f,
+					0.f, 1.f, 0.f, 0.f,
+					0.f, 0.f, 1.f, 0.f,
+					-1.f / data.m_size[0], 1.f / data.m_size[1], 0.f, 1.f
+				}} };
+				device->StretchRect(data.m_backBuffer.Get(), nullptr, data.m_surfaces[0].Get(), nullptr, D3DTEXF_LINEAR);
+				device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+				device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+				device->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
+				device->SetVertexShaderConstantF(0, &projection.m[0][0], 4);
+			}
+
+			static void firstPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+			{
+				BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
+				const auto& io = ImGui::GetIO();
+				const auto device = *static_cast<LPDIRECT3DDEVICE9*>(io.BackendRendererUserData);
+				const float params[4] = { 1.f / data.m_size[0] };
+
+				if (!data.m_surfaces[1].Get())
+					data.m_textures[1]->GetSurfaceLevel(0, data.m_surfaces[1].GetAddressOf());
+
+				device->SetPixelShader(data.m_shaders[0].Get());
+				device->SetPixelShaderConstantF(0, params, 1);
+				device->SetRenderTarget(0, data.m_surfaces[1].Get());
+			};
+
+			static void secondPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+			{
+				BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
+				const auto& io = ImGui::GetIO();
+				const auto device = *static_cast<LPDIRECT3DDEVICE9*>(io.BackendRendererUserData);
+				const float params[4] = { 1.f / data.m_size[1] };
+
+				if (!data.m_surfaces[0].Get())
+					data.m_textures[0]->GetSurfaceLevel(0, data.m_surfaces[0].GetAddressOf());
+
+				device->SetPixelShader(data.m_shaders[1].Get());
+				device->SetPixelShaderConstantF(0, params, 1);
+				device->SetRenderTarget(0, data.m_surfaces[0].Get());
+			};
+
+			static void end(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+			{
+				BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
+				const auto device = *static_cast<LPDIRECT3DDEVICE9*>(ImGui::GetIO().BackendRendererUserData);
+
+				device->SetPixelShader(nullptr);
+				device->SetRenderTarget(0, data.m_renderTarget.Get());
+				device->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
+			};
+
+	private:
+		INT m_size[2];
+		Microsoft::WRL::ComPtr<IDirect3DTexture9> m_textures[2];
+		Microsoft::WRL::ComPtr<IDirect3DSurface9> m_surfaces[2];
+		Microsoft::WRL::ComPtr<IDirect3DPixelShader9> m_shaders[2];
+		Microsoft::WRL::ComPtr<IDirect3DSurface9> m_renderTarget;
+		Microsoft::WRL::ComPtr<IDirect3DSurface9> m_backBuffer;
+	};
+
+	struct BlurD3D11 : Gui::PostProcess
+	{
+		virtual void draw() noexcept override
+		{
+
+		}
+
+		virtual void reset() noexcept override
+		{
+
+		}
+	};
+}
 
 Gui::Gui(const Application& app) noexcept :
 	m_app{ app },
@@ -1257,10 +1424,21 @@ Gui::Gui(const Application& app) noexcept :
 		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 15, &cfg, FontAwesome::range);
 	}
 	m_fonts.ariblk_37 = m_io.Fonts->AddFontFromMemoryCompressedTTF(ariblk_compressed_data, ariblk_compressed_size, 37);
-}
 
-Gui::~Gui() noexcept
-{
+	switch (app.getRenderer().getType()) {
+
+		case Orion::Module::Renderer::Type::D3D9:
+		{
+			m_postProcess = std::make_unique<BlurD3D9>();
+		}
+		break;
+
+		case Orion::Module::Renderer::Type::D3D11:
+		{
+			m_postProcess = std::make_unique<BlurD3D11>();
+		}
+		break;
+	}
 }
 
 void Gui::draw() noexcept
@@ -1277,7 +1455,7 @@ void Gui::draw() noexcept
 	if (!m_alpha)
 		return;
 
-	if (Menu menu{ m_alpha, m_fonts.arialbd_15 }) {
+	if (Menu menu{ *this, m_alpha, m_fonts.arialbd_15 }) {
 		if (Menu::Header header{}) {
 			if (Menu::Header::Nav nav{ *this }) {
 				if (Menu::Header::Nav::Items items{ *this }) {
@@ -1351,6 +1529,7 @@ void Gui::draw() noexcept
 
 void Gui::invalidate() noexcept
 {
+	m_postProcess.reset();
 }
 
 void Gui::toggle() noexcept
