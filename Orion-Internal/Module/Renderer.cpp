@@ -6,8 +6,12 @@
 #include "Dependencies/ImGui/imgui_impl_dx9.h"
 #include "Dependencies/ImGui/imgui_impl_dx11.h"
 #include <d3d9.h>
+#include <d3d11.h>
+#include <wrl/client.h>
 
-using namespace Orion::Module;
+using Orion::Module::Renderer;
+using Orion::Module::Hooks;
+using Microsoft::WRL::ComPtr;
 
 namespace
 {
@@ -64,6 +68,73 @@ namespace
 					pDirtyRegion);
 		}
 	}
+
+	namespace D3D11
+	{
+		HRESULT __stdcall ResizeBuffers(
+			IDXGISwapChain* swapChain,
+			UINT bufferCount,
+			UINT width,
+			UINT height,
+			DXGI_FORMAT newFormat,
+			UINT swapChainFlags
+		) noexcept
+		{
+			Orion::instance->getGui().invalidate();
+			ImGui_ImplDX11_InvalidateDeviceObjects();
+			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
+			const auto result = hook.get<
+				13,
+				HRESULT,
+				Hooks::Function::STDCALL>(
+					swapChain,
+					bufferCount,
+					width,
+					height,
+					newFormat,
+					swapChainFlags);
+			return result;
+		}
+
+		HRESULT __stdcall Present(
+			IDXGISwapChain* swapChain,
+			UINT syncInterval,
+			UINT flags
+		) noexcept
+		{
+			static const auto imgui = [&]() noexcept
+			{
+				ComPtr<ID3D11Device> device;
+				if (swapChain->GetDevice(IID_PPV_ARGS(device.GetAddressOf())) != S_OK)
+					return false;
+
+				ComPtr<ID3D11DeviceContext> context;
+				device->GetImmediateContext(context.GetAddressOf());
+
+				return ImGui_ImplDX11_Init(device.Get(), context.Get());
+			}();
+			if (imgui) {
+				ImGui_ImplDX11_NewFrame();
+				ImGui_ImplWin32_NewFrame();
+				ImGui::NewFrame();
+				{
+					Orion::instance->getGui().draw();
+				}
+				ImGui::EndFrame();
+				ImGui::Render();
+				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+			}
+			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
+			return hook.get<
+				8,
+				HRESULT,
+				Hooks::Function::STDCALL>(
+					swapChain,
+					syncInterval,
+					flags);
+		}
+	}
+
 }
 
 Renderer::Renderer(const Application& app) noexcept :
@@ -149,6 +220,107 @@ void Renderer::hook() noexcept
 
 		LI_FN(DestroyWindow)(window);
 		LI_FN(UnregisterClass)(windowClass.lpszClassName, windowClass.hInstance);
+	}
+	break;
+
+	case Type::D3D11:
+	{
+		WNDCLASSEX windowClass{};
+		windowClass.cbSize = sizeof(windowClass);
+		windowClass.style = CS_HREDRAW | CS_VREDRAW;
+		windowClass.lpfnWndProc = LI_FN(DefWindowProc).get();
+		windowClass.cbClsExtra = 0;
+		windowClass.cbWndExtra = 0;
+		windowClass.hInstance = LI_FN(GetModuleHandle)(nullptr);
+		windowClass.hIcon = nullptr;
+		windowClass.hCursor = nullptr;
+		windowClass.hbrBackground = nullptr;
+		windowClass.lpszMenuName = nullptr;
+		windowClass.lpszClassName = TEXT(" ");
+		windowClass.hIconSm = nullptr;
+
+		LI_FN(RegisterClassEx)(&windowClass);
+		const auto window = LI_FN(CreateWindowEx)(NULL, windowClass.lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass.hInstance, nullptr);
+
+		String<"D3D11CreateDeviceAndSwapChain"> procName;
+		const auto createDeviceAndSwapChain{ LI_FN(GetProcAddress)(m_handle, procName.get()) };
+		
+		D3D_FEATURE_LEVEL featureLevel{};
+		const D3D_FEATURE_LEVEL featureLevels[]{ 
+			D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_10_1, 
+			D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0 };
+
+		DXGI_RATIONAL refreshRate{};
+		refreshRate.Numerator = 60;
+		refreshRate.Denominator = 1;
+
+		DXGI_MODE_DESC bufferDesc{};
+		bufferDesc.Width = 100;
+		bufferDesc.Height = 100;
+		bufferDesc.RefreshRate = refreshRate;
+		bufferDesc.Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+		bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		bufferDesc.Scaling = DXGI_MODE_SCALING::DXGI_MODE_SCALING_UNSPECIFIED;
+
+		DXGI_SAMPLE_DESC sampleDesc{};
+		sampleDesc.Count = 1;
+		sampleDesc.Quality = 0;
+
+		DXGI_SWAP_CHAIN_DESC swapChainDesc{};
+		swapChainDesc.BufferDesc = bufferDesc;
+		swapChainDesc.SampleDesc = sampleDesc;
+		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		swapChainDesc.BufferCount = 1;
+		swapChainDesc.OutputWindow = window;
+		swapChainDesc.Windowed = 1;
+		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
+		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+		IDXGISwapChain* swapChain{};
+		ID3D11Device* device{};
+		ID3D11DeviceContext* context{};
+
+		if (((HRESULT(__stdcall*)(
+			IDXGIAdapter*,
+			D3D_DRIVER_TYPE,
+			HMODULE,
+			UINT,
+			const D3D_FEATURE_LEVEL*,
+			UINT,
+			UINT,
+			const DXGI_SWAP_CHAIN_DESC*,
+			IDXGISwapChain**,
+			ID3D11Device**,
+			D3D_FEATURE_LEVEL*,
+			ID3D11DeviceContext**))(createDeviceAndSwapChain))(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, 2, D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &device, &featureLevel, &context) != S_OK) {
+			
+			LI_FN(DestroyWindow)(window);
+			LI_FN(UnregisterClass)(windowClass.lpszClassName, windowClass.hInstance);;
+		}
+
+		std::array<std::uintptr_t, 205> table{};
+
+		for (std::size_t index{ 0 }; index < 18; index++)
+			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(swapChain))[index];
+
+		for (std::size_t index{ 18 }; index < 61; index++)
+			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(device))[index];
+
+		for (std::size_t index{ 61 }; index < 205; index++)
+			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(context))[index];
+
+		auto&& hook = m_hooks[Fnv<"Renderer">::value];
+		const void* address = table.data();
+		hook.init(&address);
+		hook.hookAt(8, &D3D11::Present);
+		hook.hookAt(13, &D3D11::ResizeBuffers);
+
+		swapChain->Release();
+		device->Release();
+		context->Release();
+
+		LI_FN(DestroyWindow)(window);
+		LI_FN(UnregisterClass)(windowClass.lpszClassName, windowClass.hInstance);;
 	}
 	break;
 
