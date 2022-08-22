@@ -8,6 +8,8 @@ namespace Orion
 	{
 		class Config
 		{
+			const Application& m_app;
+
 		public:
 			class File;
 
@@ -22,6 +24,7 @@ namespace Orion
 			[[nodiscard]] constexpr auto&& getSort() noexcept { return m_settings.sort; }
 			[[nodiscard]] constexpr auto&& getFiles() const noexcept { return m_files; }
 
+			void init() noexcept;
 			void save() noexcept;
 			void update() noexcept;
 			void create() noexcept;

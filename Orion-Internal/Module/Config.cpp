@@ -5,9 +5,11 @@
 
 using Orion::Module::Config;
 
-Config::Config(const Application& app) noexcept
+Config::Config(const Application& app) noexcept : m_app{ app } {}
+
+void Config::init() noexcept
 {
-	if (PWSTR relativePath{}; SUCCEEDED(LI_FN(SHGetKnownFolderPath)(FOLDERID_Desktop, NULL, nullptr, &relativePath))) {
+	if (PWSTR relativePath{}; SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Desktop, NULL, nullptr, &relativePath))) {
 
 		Orion::String<"Orion"> name;
 
@@ -18,7 +20,7 @@ Config::Config(const Application& app) noexcept
 		save();
 		update();
 
-		LI_FN(CoTaskMemFree)(relativePath);
+		CoTaskMemFree(relativePath);
 	}
 }
 

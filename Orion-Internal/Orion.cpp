@@ -38,6 +38,7 @@ void Orion::Application::load() const noexcept
 
 bool Orion::Application::start() const noexcept
 {
+	m_config->init();
 	m_renderer->hook();
 	return true;
 }
