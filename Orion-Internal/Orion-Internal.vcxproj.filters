@@ -31,6 +31,9 @@
     <Filter Include="Resources\Fonts">
       <UniqueIdentifier>{67f099b9-9b24-4b41-bbe0-85758ddbd1b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{6b5899c2-314b-4fd5-9f3c-7b75fb08af5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\lazy_importer.hpp">
@@ -212,5 +215,10 @@
     <ClCompile Include="Module\Config.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\default_vs.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -35,6 +35,23 @@
 
 // DirectX
 #include <d3d9.h>
+#include <wrl/client.h>
+
+#ifdef _WIN64
+#ifdef NDEBUG
+#include "Resources/Shaders/Build/Release/x64/default_vs.h"
+#else
+#include "Resources/Shaders/Build/Debug/x64/default_vs.h"
+#endif
+#else
+#ifdef NDEBUG
+#include "Resources/Shaders/Build/Release/Win32/default_vs.h"
+#else
+#include "Resources/Shaders/Build/Debug/Win32/default_vs.h"
+#endif
+#endif
+
+using Microsoft::WRL::ComPtr;
 
 // DirectX data
 struct ImGui_ImplDX9_Data
@@ -46,14 +63,17 @@ struct ImGui_ImplDX9_Data
     int                         VertexBufferSize;
     int                         IndexBufferSize;
 
+    ComPtr<IDirect3DVertexShader9> vertexShader;
+    ComPtr<IDirect3DVertexDeclaration9> vertexDeclaration;
+
     ImGui_ImplDX9_Data()        { memset((void*)this, 0, sizeof(*this)); VertexBufferSize = 5000; IndexBufferSize = 10000; }
 };
 
 struct CUSTOMVERTEX
 {
-    float    pos[3];
-    D3DCOLOR col;
-    float    uv[2];
+    ImVec2  pos;
+    ImVec2  uv;
+    ImU32   col;
 };
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 
@@ -86,7 +106,7 @@ static void ImGui_ImplDX9_SetupRenderState(ImDrawData* draw_data)
 
     // Setup render state: fixed-pipeline, alpha-blending, no face culling, no depth testing, shade mode (for gradient), bilinear sampling.
     bd->pd3dDevice->SetPixelShader(NULL);
-    bd->pd3dDevice->SetVertexShader(NULL);
+    bd->pd3dDevice->SetVertexShader(bd->vertexShader.Get());
     bd->pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
     bd->pd3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
     bd->pd3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
@@ -137,6 +157,7 @@ static void ImGui_ImplDX9_SetupRenderState(ImDrawData* draw_data)
         bd->pd3dDevice->SetTransform(D3DTS_WORLD, &mat_identity);
         bd->pd3dDevice->SetTransform(D3DTS_VIEW, &mat_identity);
         bd->pd3dDevice->SetTransform(D3DTS_PROJECTION, &mat_projection);
+        bd->pd3dDevice->SetVertexShaderConstantF(0, &mat_projection.m[0][0], 4);
     }
 }
 
@@ -207,7 +228,6 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
         {
             vtx_dst->pos[0] = vtx_src->pos.x;
             vtx_dst->pos[1] = vtx_src->pos.y;
-            vtx_dst->pos[2] = 0.0f;
             vtx_dst->col = IMGUI_COL_TO_DX9_ARGB(vtx_src->col);
             vtx_dst->uv[0] = vtx_src->uv.x;
             vtx_dst->uv[1] = vtx_src->uv.y;
@@ -222,6 +242,7 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
     bd->pd3dDevice->SetStreamSource(0, bd->pVB, 0, sizeof(CUSTOMVERTEX));
     bd->pd3dDevice->SetIndices(bd->pIB);
     bd->pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
+    bd->pd3dDevice->SetVertexDeclaration(bd->vertexDeclaration.Get());
 
     // Setup desired DX state
     ImGui_ImplDX9_SetupRenderState(draw_data);
@@ -355,6 +376,20 @@ bool ImGui_ImplDX9_CreateDeviceObjects()
         return false;
     if (!ImGui_ImplDX9_CreateFontsTexture())
         return false;
+
+    if (!bd->vertexDeclaration.Get()) {
+        constexpr D3DVERTEXELEMENT9 elements[]{
+            { 0, IM_OFFSETOF(CUSTOMVERTEX, pos), D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+            { 0, IM_OFFSETOF(CUSTOMVERTEX, uv), D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+            { 0, IM_OFFSETOF(CUSTOMVERTEX, col), D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
+            D3DDECL_END()
+        };
+        bd->pd3dDevice->CreateVertexDeclaration(elements, bd->vertexDeclaration.GetAddressOf());
+    }
+
+    if (!bd->vertexShader.Get())
+        bd->pd3dDevice->CreateVertexShader(reinterpret_cast<const DWORD*>(default_vs), bd->vertexShader.GetAddressOf());
+
     return true;
 }
 
@@ -366,6 +401,7 @@ void ImGui_ImplDX9_InvalidateDeviceObjects()
     if (bd->pVB) { bd->pVB->Release(); bd->pVB = NULL; }
     if (bd->pIB) { bd->pIB->Release(); bd->pIB = NULL; }
     if (bd->FontTexture) { bd->FontTexture->Release(); bd->FontTexture = NULL; ImGui::GetIO().Fonts->SetTexID(NULL); } // We copied bd->pFontTextureView to io.Fonts->TexID so let's clear that as well.
+    bd->vertexShader.Reset();
 }
 
 void ImGui_ImplDX9_NewFrame()
