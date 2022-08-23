@@ -6,26 +6,38 @@
 #include "Resources/Fonts/ariblk.h"
 #include "Resources/Fonts/fontawesome.h"
 #include "Dependencies/ImGui/imgui_custom.h"
+#include "Dependencies/ImGui/imgui_impl_dx11.h"
 
 #include <d3d9.h>
 #include <d3d11.h>
-#include <wrl/client.h>
 
 #if _WIN64
 #if NDEBUG
 #include "../Resources/Shaders/Build/Release/x64/blur_x.h"
 #include "../Resources/Shaders/Build/Release/x64/blur_y.h"
+#include "../Resources/Shaders/Build/Release/x64/bloom_combine.h"
+#include "../Resources/Shaders/Build/Release/x64/bloom_extract.h"
+#include "../Resources/Shaders/Build/Release/x64/gaussian_blur.h"
 #else
 #include "../Resources/Shaders/Build/Debug/x64/blur_x.h"
 #include "../Resources/Shaders/Build/Debug/x64/blur_y.h"
+#include "../Resources/Shaders/Build/Debug/x64/bloom_combine.h"
+#include "../Resources/Shaders/Build/Debug/x64/bloom_extract.h"
+#include "../Resources/Shaders/Build/Debug/x64/gaussian_blur.h"
 #endif
 #else
 #if NDEBUG
 #include "../Resources/Shaders/Build/Release/Win32/blur_x.h"
 #include "../Resources/Shaders/Build/Release/Win32/blur_y.h"
+#include "../Resources/Shaders/Build/Release/Win32/bloom_combine.h"
+#include "../Resources/Shaders/Build/Release/Win32/bloom_extract.h"
+#include "../Resources/Shaders/Build/Release/Win32/gaussian_blur.h"
 #else
 #include "../Resources/Shaders/Build/Debug/Win32/blur_x.h"
 #include "../Resources/Shaders/Build/Debug/Win32/blur_y.h"
+#include "../Resources/Shaders/Build/Debug/Win32/bloom_combine.h"
+#include "../Resources/Shaders/Build/Debug/Win32/bloom_extract.h"
+#include "../Resources/Shaders/Build/Debug/Win32/gaussian_blur.h"
 #endif
 #endif
 
@@ -1293,73 +1305,73 @@ namespace
 			m_backBuffer.Reset();
 		}
 
-		private:
-			static void begin(const ImDrawList*, const ImDrawCmd* cmd) noexcept
-			{
-				BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
-				const auto& io = ImGui::GetIO();
-				const auto device = *static_cast<IDirect3DDevice9**>(io.BackendRendererUserData);
+	private:
+		static void begin(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+		{
+			BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
+			const auto& io = ImGui::GetIO();
+			const auto device = *static_cast<IDirect3DDevice9**>(io.BackendRendererUserData);
 
-				if (!data.m_renderTarget)
-					device->GetRenderTarget(0, data.m_renderTarget.GetAddressOf());
-				if (!data.m_backBuffer)
-					device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, data.m_backBuffer.GetAddressOf());
-				if (!data.m_surfaces[0].Get())
-					data.m_textures[0]->GetSurfaceLevel(0, data.m_surfaces[0].GetAddressOf());
+			if (!data.m_renderTarget)
+				device->GetRenderTarget(0, data.m_renderTarget.GetAddressOf());
+			if (!data.m_backBuffer)
+				device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, data.m_backBuffer.GetAddressOf());
+			if (!data.m_surfaces[0].Get())
+				data.m_textures[0]->GetSurfaceLevel(0, data.m_surfaces[0].GetAddressOf());
 
-				const D3DMATRIX projection
-				{ {{
-					1.f, 0.f, 0.f, 0.f,
-					0.f, 1.f, 0.f, 0.f,
-					0.f, 0.f, 1.f, 0.f,
-					-1.f / data.m_size[0], 1.f / data.m_size[1], 0.f, 1.f
-				}} };
-				device->StretchRect(data.m_backBuffer.Get(), nullptr, data.m_surfaces[0].Get(), nullptr, D3DTEXF_LINEAR);
-				device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-				device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-				device->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
-				device->SetVertexShaderConstantF(0, &projection.m[0][0], 4);
-			}
+			const D3DMATRIX projection
+			{ {{
+				1.f, 0.f, 0.f, 0.f,
+				0.f, 1.f, 0.f, 0.f,
+				0.f, 0.f, 1.f, 0.f,
+				-1.f / data.m_size[0], 1.f / data.m_size[1], 0.f, 1.f
+			}} };
+			device->StretchRect(data.m_backBuffer.Get(), nullptr, data.m_surfaces[0].Get(), nullptr, D3DTEXF_LINEAR);
+			device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+			device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+			device->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
+			device->SetVertexShaderConstantF(0, &projection.m[0][0], 4);
+		}
 
-			static void firstPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept
-			{
-				BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
-				const auto& io = ImGui::GetIO();
-				const auto device = *static_cast<LPDIRECT3DDEVICE9*>(io.BackendRendererUserData);
-				const float params[4] = { 1.f / data.m_size[0] };
+		static void firstPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+		{
+			BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
+			const auto& io = ImGui::GetIO();
+			const auto device = *static_cast<LPDIRECT3DDEVICE9*>(io.BackendRendererUserData);
+			const float params[4] = { 1.f / data.m_size[0] };
 
-				if (!data.m_surfaces[1].Get())
-					data.m_textures[1]->GetSurfaceLevel(0, data.m_surfaces[1].GetAddressOf());
+			if (!data.m_surfaces[1].Get())
+				data.m_textures[1]->GetSurfaceLevel(0, data.m_surfaces[1].GetAddressOf());
 
-				device->SetPixelShader(data.m_shaders[0].Get());
-				device->SetPixelShaderConstantF(0, params, 1);
-				device->SetRenderTarget(0, data.m_surfaces[1].Get());
-			};
+			device->SetPixelShader(data.m_shaders[0].Get());
+			device->SetPixelShaderConstantF(0, params, 1);
+			device->SetRenderTarget(0, data.m_surfaces[1].Get());
+		};
 
-			static void secondPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept
-			{
-				BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
-				const auto& io = ImGui::GetIO();
-				const auto device = *static_cast<LPDIRECT3DDEVICE9*>(io.BackendRendererUserData);
-				const float params[4] = { 1.f / data.m_size[1] };
+		static void secondPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+		{
+			BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
+			const auto& io = ImGui::GetIO();
+			const auto device = *static_cast<LPDIRECT3DDEVICE9*>(io.BackendRendererUserData);
+			const float params[4] = { 1.f / data.m_size[1] };
 
-				if (!data.m_surfaces[0].Get())
-					data.m_textures[0]->GetSurfaceLevel(0, data.m_surfaces[0].GetAddressOf());
+			if (!data.m_surfaces[0].Get())
+				data.m_textures[0]->GetSurfaceLevel(0, data.m_surfaces[0].GetAddressOf());
 
-				device->SetPixelShader(data.m_shaders[1].Get());
-				device->SetPixelShaderConstantF(0, params, 1);
-				device->SetRenderTarget(0, data.m_surfaces[0].Get());
-			};
+			device->SetPixelShader(data.m_shaders[1].Get());
+			device->SetPixelShaderConstantF(0, params, 1);
+			device->SetRenderTarget(0, data.m_surfaces[0].Get());
+		};
 
-			static void end(const ImDrawList*, const ImDrawCmd* cmd) noexcept
-			{
-				BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
-				const auto device = *static_cast<LPDIRECT3DDEVICE9*>(ImGui::GetIO().BackendRendererUserData);
+		static void end(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+		{
+			BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
+			const auto device = *static_cast<LPDIRECT3DDEVICE9*>(ImGui::GetIO().BackendRendererUserData);
 
-				device->SetPixelShader(nullptr);
-				device->SetRenderTarget(0, data.m_renderTarget.Get());
-				device->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
-			};
+			device->SetPixelShader(nullptr);
+			device->SetRenderTarget(0, data.m_renderTarget.Get());
+			device->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
+		};
 
 	private:
 		INT m_size[2];
@@ -1372,14 +1384,394 @@ namespace
 
 	struct BlurD3D11 : Gui::PostProcess
 	{
+	private:
+		enum DataType
+		{
+			PS_BLOOM_COMBINE = 0,
+			PS_BLOOM_EXTRACT = 1,
+			PS_GAUSSIAN_BLUR = 2,
+
+			CB_BLOOM_PARAMS = 0,
+			CB_BLUR_PARAMS_WIDTH = 1,
+			CB_BLUR_PARAMS_HEIGHT = 2,
+
+			RT_COPY = 0,
+			RT_FIRST_PASS = 1,
+			RT_SECOND_PASS = 2,
+
+			DATA_MAX = 3
+		};
+
+		struct DeviceResource
+		{
+			constexpr void emplace(ID3D11DeviceContext& ctx) noexcept
+			{
+				ctx.OMGetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.GetAddressOf());
+				m_renderTargetView->GetResource(reinterpret_cast<ID3D11Resource**>(m_renderTarget.GetAddressOf()));
+			}
+			void reset() noexcept
+			{
+				m_renderTarget.Reset();
+				m_renderTargetView.Reset();
+				m_depthStencilView.Reset();
+			}
+			operator bool() const noexcept { return m_renderTarget.Get() != nullptr; }
+			auto getRenderTarget() const noexcept { return m_renderTarget.Get(); }
+			auto getRenderTargetView() const noexcept { return m_renderTargetView.GetAddressOf(); }
+			auto getDepthStencilView() const noexcept { return m_depthStencilView.GetAddressOf(); }
+		private:
+			ComPtr<ID3D11Texture2D> m_renderTarget;
+			ComPtr<ID3D11RenderTargetView> m_renderTargetView;
+			ComPtr<ID3D11DepthStencilView> m_depthStencilView;
+		};
+
+		struct RenderTexture
+		{
+			void emplace(ID3D11Device& device, const DeviceResource& resource) noexcept
+			{
+				const auto renderTarget = resource.getRenderTarget();
+
+				D3D11_TEXTURE2D_DESC desc;
+				renderTarget->GetDesc(&desc);
+
+				m_size.x = static_cast<float>(desc.Width);
+				m_size.y = static_cast<float>(desc.Height);
+
+				desc = CD3D11_TEXTURE2D_DESC{
+					resolveFormat(desc.Format),
+					desc.Width,
+					desc.Height,
+					desc.ArraySize,
+					desc.MipLevels,
+					desc.BindFlags | D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE,
+					desc.Usage,
+					desc.CPUAccessFlags,
+					desc.MiscFlags | D3D11_RESOURCE_MISC_FLAG::D3D11_RESOURCE_MISC_GENERATE_MIPS
+				};
+
+				createTexture(device, desc);
+			}
+
+			void emplace(ID3D11Device& device, const DeviceResource& resource, const ImVec2& size) noexcept
+			{
+				const auto renderTarget = resource.getRenderTarget();
+
+				D3D11_TEXTURE2D_DESC desc;
+				renderTarget->GetDesc(&desc);
+
+				m_size.x = static_cast<float>(desc.Width);
+				m_size.y = static_cast<float>(desc.Height);
+
+				desc = CD3D11_TEXTURE2D_DESC{
+					resolveFormat(desc.Format),
+					static_cast<UINT>(size.x),
+					static_cast<UINT>(size.y),
+					desc.ArraySize,
+					desc.MipLevels,
+					desc.BindFlags | D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE,
+					desc.Usage,
+					desc.CPUAccessFlags,
+					desc.MiscFlags | D3D11_RESOURCE_MISC_FLAG::D3D11_RESOURCE_MISC_GENERATE_MIPS
+				};
+
+				createTexture(device, desc);
+			}
+
+			void reset() noexcept
+			{
+				m_size = {};
+				m_renderTarget.Reset();
+				m_renderTargetView.Reset();
+				m_shaderResourceView.Reset();
+			}
+
+			constexpr auto getSize() const noexcept { return m_size; }
+			auto getRenderTarget() const noexcept { return m_renderTarget.Get(); }
+			auto getRenderTargetView() const noexcept { return m_renderTargetView.Get(); }
+			auto getShaderResourceView() const noexcept { return m_shaderResourceView.Get(); }
+
+		private:
+			static constexpr DXGI_FORMAT resolveFormat(DXGI_FORMAT format) noexcept
+			{
+				switch (format) {
+				case DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_TYPELESS:
+					return DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+				}
+				return format;
+			}
+
+			void createTexture(ID3D11Device& device, const D3D11_TEXTURE2D_DESC& desc) noexcept
+			{
+				CD3D11_RENDER_TARGET_VIEW_DESC rtvDsc{
+					D3D11_RTV_DIMENSION::D3D11_RTV_DIMENSION_TEXTURE2D,
+					desc.Format };
+				CD3D11_SHADER_RESOURCE_VIEW_DESC srvDsc{
+					D3D11_SRV_DIMENSION::D3D11_SRV_DIMENSION_TEXTURE2D,
+					desc.Format, 0, desc.MipLevels };
+
+				device.CreateTexture2D(&desc, nullptr, m_renderTarget.GetAddressOf());
+				device.CreateRenderTargetView(m_renderTarget.Get(), &rtvDsc, &m_renderTargetView);
+				device.CreateShaderResourceView(m_renderTarget.Get(), &srvDsc, &m_shaderResourceView);
+			}
+
+			ImVec2 m_size = {};
+			ComPtr<ID3D11Texture2D> m_renderTarget;
+			ComPtr<ID3D11RenderTargetView> m_renderTargetView;
+			ComPtr<ID3D11ShaderResourceView> m_shaderResourceView;
+		};
+
+		struct PixelShader
+		{
+			constexpr void emplace(ID3D11Device& device, const void* data, SIZE_T size) noexcept { device.CreatePixelShader(data, size, nullptr, m_pixelShader.GetAddressOf()); }
+			void reset() noexcept { m_pixelShader.Reset(); }
+			auto getPixelShader() const noexcept { return m_pixelShader.Get(); }
+		private:
+			ComPtr<ID3D11PixelShader> m_pixelShader;
+		};
+
+		struct ConstantBuffer
+		{
+			void emplace(ID3D11Device& device, std::size_t size) noexcept
+			{
+				CD3D11_BUFFER_DESC desc{ static_cast<UINT>(size),
+					D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER };
+
+				device.CreateBuffer(&desc, nullptr, m_buffer.GetAddressOf());
+			}
+
+			void emplace(ID3D11Device& device, std::size_t size, const D3D11_SUBRESOURCE_DATA& data) noexcept
+			{
+				CD3D11_BUFFER_DESC desc{ static_cast<UINT>(size),
+					D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER };
+				device.CreateBuffer(&desc, &data, m_buffer.GetAddressOf());
+			}
+
+			void reset() noexcept { m_buffer.Reset(); }
+			auto getBuffer() const noexcept { return m_buffer.Get(); }
+			auto getAddressOf() const noexcept { return m_buffer.GetAddressOf(); }
+
+		private:
+			ComPtr<ID3D11Buffer> m_buffer;
+		};
+
+		DeviceResource m_deviceResource;
+		RenderTexture m_renderTarget[DATA_MAX];
+		PixelShader m_pixelShader[DATA_MAX];
+		ConstantBuffer m_constantBuffer[DATA_MAX];
+
+	public:
 		virtual void draw() noexcept override
 		{
+			auto& drawList = *ImGui::GetWindowDrawList();
+			const auto rtSRV = m_renderTarget[RT_COPY].getShaderResourceView();
 
+			if (!m_deviceResource) {
+				constexpr float multiplier{ 1.f };
+
+				const auto& io = ImGui::GetIO();
+				auto&& data = *static_cast<ImGui_ImplDX11_Data*>(io.BackendRendererUserData);
+
+				struct VS_BLOOM_PARAMETERS
+				{
+					float bloomThreshold;
+					float blurAmount;
+					float bloomIntensity;
+					float baseIntensity;
+					float bloomSaturation;
+					float baseSaturation;
+					uint8_t na[8];
+				};
+
+				static_assert(!(sizeof(VS_BLOOM_PARAMETERS) % 16), "VS_BLOOM_PARAMETERS needs to be 16 bytes aligned");
+
+				constexpr size_t SAMPLE_COUNT = 15;
+
+				struct VS_BLUR_PARAMETERS
+				{
+					struct XMFLOAT4
+					{
+						float x;
+						float y;
+						float z;
+						float w;
+
+						constexpr XMFLOAT4() noexcept = default;
+
+						constexpr XMFLOAT4(const XMFLOAT4&) noexcept = delete;
+						constexpr XMFLOAT4& operator=(const XMFLOAT4&) noexcept = delete;
+
+						constexpr XMFLOAT4(XMFLOAT4&&) noexcept = delete;
+						constexpr XMFLOAT4& operator=(XMFLOAT4&&) noexcept = delete;
+					};
+
+					struct Vector2
+					{
+						constexpr Vector2(float x, float y) noexcept : x{ x }, y{ y } {}
+						constexpr auto operator*=(float a) noexcept { x *= a; y *= a; }
+						float x, y;
+					};
+
+					XMFLOAT4 sampleOffsets[SAMPLE_COUNT];
+					XMFLOAT4 sampleWeights[SAMPLE_COUNT];
+
+					VS_BLUR_PARAMETERS(float dx, float dy, const VS_BLOOM_PARAMETERS& params) noexcept
+					{
+						sampleWeights[0].x = computeGaussian(0, params.blurAmount);
+						sampleOffsets[0].x = sampleOffsets[0].y = 0.f;
+
+						auto totalWeights = sampleWeights[0].x;
+
+						// Add pairs of additional sample taps, positioned
+						// along a line in both directions from the center.
+						for (std::size_t i = 0; i < (SAMPLE_COUNT / 2); i++)
+						{
+							// Store weights for the positive and negative taps.
+							auto weight = computeGaussian(static_cast<float>(i + 1), params.blurAmount);
+
+							sampleWeights[i * 2 + 1].x = weight;
+							sampleWeights[i * 2 + 2].x = weight;
+
+							totalWeights += weight * 2;
+
+							// To get the maximum amount of blurring from a limited number of
+							// pixel shader samples, we take advantage of the bilinear filtering
+							// hardware inside the texture fetch unit. If we position our texture
+							// coordinates exactly halfway between two texels, the filtering unit
+							// will average them for us, giving two samples for the price of one.
+							// This allows us to step in units of two texels per sample, rather
+							// than just one at a time. The 1.5 offset kicks things off by
+							// positioning us nicely in between two texels.
+							auto sampleOffset = static_cast<float>(i) * 2.f + 1.5f;
+
+							Vector2 delta{ dx, dy };
+							delta *= sampleOffset;
+
+							// Store texture coordinate offsets for the positive and negative taps.
+							sampleOffsets[i * 2 + 1].x = delta.x;
+							sampleOffsets[i * 2 + 1].y = delta.y;
+							sampleOffsets[i * 2 + 2].x = -delta.x;
+							sampleOffsets[i * 2 + 2].y = -delta.y;
+						}
+
+						for (std::size_t i = 0; i < SAMPLE_COUNT; i++)
+							sampleWeights[i].x /= totalWeights;
+					}
+
+				private:
+					static float computeGaussian(float n, float theta) noexcept
+					{
+						return (1.f / std::sqrtf(2.f * 3.141592654f * theta)) * std::expf(-(n * n) / (2.f * theta * theta));
+					}
+				};
+
+				static_assert(!(sizeof(VS_BLUR_PARAMETERS) % 16), "VS_BLUR_PARAMETERS needs to be 16 bytes aligned");
+				enum BloomPresets
+				{
+					Default = 0,
+					Soft,
+					Desaturated,
+					Saturated,
+					Blurry,
+					Subtle,
+					None,
+					Custom
+				};
+				constexpr BloomPresets g_Bloom = Custom;
+				static constexpr VS_BLOOM_PARAMETERS g_BloomPresets[] =
+				{
+					//Thresh	Blur	Bloom	Base	BloomSat	BaseSat
+					{ 0.25f,	4,		1.25f,	1,		1,			1 }, // Default
+					{ 0,		3,		1,		1,		1,			1 }, // Soft
+					{ 0.5f,		8,		2,		1,		0,			1 }, // Desaturated
+					{ 0.25f,	4,		2,		1,		2,			0 }, // Saturated
+					{ 0,		2,		1,		.1f,	1,			1 }, // Blurry
+					{ 0.5f,		2,		1,		1,		1,			1 }, // Subtle
+					{ 0.25f,	4,		1.25f,	1,		1,			1 }, // None
+					{ 0,		8,		1,		.1f,	1,			1 }, // Custom
+				};
+
+
+				m_deviceResource.emplace(*data.pd3dDeviceContext);
+				m_pixelShader[PS_BLOOM_COMBINE].emplace(*data.pd3dDevice, bloom_combine, IM_ARRAYSIZE(bloom_combine));
+				m_pixelShader[PS_BLOOM_EXTRACT].emplace(*data.pd3dDevice, bloom_extract, IM_ARRAYSIZE(bloom_extract));
+				m_pixelShader[PS_GAUSSIAN_BLUR].emplace(*data.pd3dDevice, gaussian_blur, IM_ARRAYSIZE(gaussian_blur));
+				m_renderTarget[RT_COPY].emplace(*data.pd3dDevice, m_deviceResource);
+				m_renderTarget[RT_FIRST_PASS].emplace(*data.pd3dDevice, m_deviceResource, io.DisplaySize * multiplier);
+				m_renderTarget[RT_SECOND_PASS].emplace(*data.pd3dDevice, m_deviceResource, io.DisplaySize * multiplier);
+				m_constantBuffer[CB_BLOOM_PARAMS].emplace(*data.pd3dDevice, sizeof(VS_BLOOM_PARAMETERS), D3D11_SUBRESOURCE_DATA{ &g_BloomPresets[g_Bloom], 0, 0 });
+				m_constantBuffer[CB_BLUR_PARAMS_WIDTH].emplace(*data.pd3dDevice, sizeof(VS_BLUR_PARAMETERS));
+				m_constantBuffer[CB_BLUR_PARAMS_HEIGHT].emplace(*data.pd3dDevice, sizeof(VS_BLUR_PARAMETERS));
+
+				data.pd3dDeviceContext->UpdateSubresource(m_constantBuffer[CB_BLOOM_PARAMS].getBuffer(), 0, nullptr, &g_BloomPresets[g_Bloom], 0, 0);
+
+				VS_BLUR_PARAMETERS blurDataWidth{ 1.f / (io.DisplaySize.x * multiplier), 0, g_BloomPresets[g_Bloom] };
+				data.pd3dDeviceContext->UpdateSubresource(m_constantBuffer[CB_BLUR_PARAMS_WIDTH].getBuffer(), 0, nullptr, &blurDataWidth, sizeof(VS_BLUR_PARAMETERS), 0);
+
+				VS_BLUR_PARAMETERS blurDataheight{ 0, 1.f / (io.DisplaySize.y * multiplier), g_BloomPresets[g_Bloom] };
+				data.pd3dDeviceContext->UpdateSubresource(m_constantBuffer[CB_BLUR_PARAMS_HEIGHT].getBuffer(), 0, nullptr, &blurDataheight, sizeof(VS_BLUR_PARAMETERS), 0);
+			}
+
+			// scene -> RT1 (downsample)
+			drawList.AddCallback(
+				[](const ImDrawList*, const ImDrawCmd* cmd) noexcept {
+					auto& data = *static_cast<BlurD3D11*>(cmd->UserCallbackData);
+					auto&& ctx = *static_cast<ImGui_ImplDX11_Data*>(ImGui::GetIO().BackendRendererUserData)->pd3dDeviceContext;
+					const auto rt1RT = data.m_renderTarget[RT_FIRST_PASS].getRenderTargetView();
+					ctx.CopyResource(data.m_renderTarget[RT_COPY].getRenderTarget(), data.m_deviceResource.getRenderTarget());
+					ctx.OMSetRenderTargets(1, &rt1RT, nullptr);
+					ctx.PSSetShader(data.m_pixelShader[PS_BLOOM_EXTRACT].getPixelShader(), nullptr, 0);
+					ctx.PSSetConstantBuffers(0, 1, data.m_constantBuffer[CB_BLOOM_PARAMS].getAddressOf());
+				}, this);
+			drawList.AddImage(rtSRV, ImVec2{}, m_renderTarget[RT_FIRST_PASS].getSize());
+
+			// RT1 -> RT2 (blur horizontal)
+			drawList.AddCallback(
+				[](const ImDrawList*, const ImDrawCmd* cmd) noexcept {
+					auto& data = *static_cast<BlurD3D11*>(cmd->UserCallbackData);
+					auto&& ctx = *static_cast<ImGui_ImplDX11_Data*>(ImGui::GetIO().BackendRendererUserData)->pd3dDeviceContext;
+					const auto rt2RT = data.m_renderTarget[RT_SECOND_PASS].getRenderTargetView();
+					ctx.OMSetRenderTargets(1, &rt2RT, nullptr);
+					ctx.PSSetShader(data.m_pixelShader[PS_GAUSSIAN_BLUR].getPixelShader(), nullptr, 0);
+					ctx.PSSetConstantBuffers(0, 1, data.m_constantBuffer[CB_BLUR_PARAMS_WIDTH].getAddressOf());
+				}, this);
+			drawList.AddImage(m_renderTarget[RT_FIRST_PASS].getShaderResourceView(), ImVec2{}, m_renderTarget[RT_FIRST_PASS].getSize());
+
+			// RT2 -> RT1 (blur vertical)
+			drawList.AddCallback(
+				[](const ImDrawList*, const ImDrawCmd* cmd) noexcept {
+					auto& data = *static_cast<BlurD3D11*>(cmd->UserCallbackData);
+					auto&& ctx = *static_cast<ImGui_ImplDX11_Data*>(ImGui::GetIO().BackendRendererUserData)->pd3dDeviceContext;
+					const auto rt1RT = data.m_renderTarget[RT_FIRST_PASS].getRenderTargetView();
+					ctx.OMSetRenderTargets(1, &rt1RT, nullptr);
+					ctx.PSSetShader(data.m_pixelShader[PS_GAUSSIAN_BLUR].getPixelShader(), nullptr, 0);
+					ctx.PSSetConstantBuffers(0, 1, data.m_constantBuffer[CB_BLUR_PARAMS_HEIGHT].getAddressOf());
+				}, this);
+			drawList.AddImage(m_renderTarget[RT_SECOND_PASS].getShaderResourceView(), ImVec2{}, m_renderTarget[RT_SECOND_PASS].getSize());
+
+			// RT1 + scene
+			drawList.AddCallback(
+				[](const ImDrawList*, const ImDrawCmd* cmd) noexcept {
+					auto& data = *static_cast<BlurD3D11*>(cmd->UserCallbackData);
+					auto&& ctx = *static_cast<ImGui_ImplDX11_Data*>(ImGui::GetIO().BackendRendererUserData)->pd3dDeviceContext;
+					const auto rt1SRV = data.m_renderTarget[RT_FIRST_PASS].getShaderResourceView();
+					ctx.OMSetRenderTargets(1, data.m_deviceResource.getRenderTargetView(), *data.m_deviceResource.getDepthStencilView());
+					ctx.PSSetShader(data.m_pixelShader[PS_BLOOM_COMBINE].getPixelShader(), nullptr, 0);
+					ctx.PSSetConstantBuffers(0, 1, data.m_constantBuffer[CB_BLOOM_PARAMS].getAddressOf());
+					ctx.PSSetShaderResources(1, 1, &rt1SRV);
+				}, this);
+			drawList.AddImage(rtSRV, ImVec2{}, m_renderTarget[RT_COPY].getSize());
+
+			drawList.AddCallback(ImDrawCallback_ResetRenderState, nullptr);
 		}
 
 		virtual void reset() noexcept override
 		{
-
+			m_deviceResource.reset();
+			for (int i = 0; i < DATA_MAX; i++) {
+				m_renderTarget[i].reset();
+				m_pixelShader[i].reset();
+				m_constantBuffer[i].reset();
+			}
 		}
 	};
 }
@@ -1428,17 +1820,17 @@ Gui::Gui(const Application& app) noexcept :
 
 	switch (app.getRenderer().getType()) {
 
-		case Orion::Module::Renderer::Type::D3D9:
-		{
-			m_postProcess = std::make_unique<BlurD3D9>();
-		}
-		break;
+	case Orion::Module::Renderer::Type::D3D9:
+	{
+		m_postProcess = std::make_unique<BlurD3D9>();
+	}
+	break;
 
-		case Orion::Module::Renderer::Type::D3D11:
-		{
-			m_postProcess = std::make_unique<BlurD3D11>();
-		}
-		break;
+	case Orion::Module::Renderer::Type::D3D11:
+	{
+		m_postProcess = std::make_unique<BlurD3D11>();
+	}
+	break;
 	}
 }
 
