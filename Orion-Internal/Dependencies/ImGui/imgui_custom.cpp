@@ -146,8 +146,8 @@
         draw_bb.Max.y -= shrink_amount;
     }
 
-    window->DrawList->AddRectFilled(draw_bb.Min, ImVec2(grab_bb.Min.x + (grab_bb.Max.x - grab_bb.Min.x) * 0.65f, draw_bb.Max.y), frame_col, style.FrameRounding, ImDrawCornerFlags_Left);
-    window->DrawList->AddRectFilled(ImVec2(grab_bb.Max.x - (grab_bb.Max.x - grab_bb.Min.x) * 0.35f, draw_bb.Min.y), draw_bb.Max, frame_col_after, style.FrameRounding, ImDrawCornerFlags_Right);
+    window->DrawList->AddRectFilled(draw_bb.Min, ImVec2(grab_bb.Min.x + (grab_bb.Max.x - grab_bb.Min.x) * 0.65f, draw_bb.Max.y), frame_col, style.FrameRounding, ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersBottomLeft);
+    window->DrawList->AddRectFilled(ImVec2(grab_bb.Max.x - (grab_bb.Max.x - grab_bb.Min.x) * 0.35f, draw_bb.Min.y), draw_bb.Max, frame_col_after, style.FrameRounding, ImDrawFlags_RoundCornersTopRight | ImDrawFlags_RoundCornersBottomRight);
     // Render grab
     if (grab_bb.Max.x > grab_bb.Min.x)
         window->DrawList->AddCircleFilled(grab_bb.GetCenter(), radius, GetColorU32(g.ActiveId == id ? ImGuiCol_SliderGrabActive : ImGuiCol_SliderGrab));
