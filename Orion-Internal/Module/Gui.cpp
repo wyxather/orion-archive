@@ -295,7 +295,7 @@ namespace
 			ImGui::EndChild();
 		}
 
-		static void Profile() noexcept
+		void Profile() const noexcept
 		{
 			auto&& drawList = *ImGui::GetWindowDrawList();
 			const auto drawPos = ImGui::GetWindowPos() + ImGui::GetCursorPos();
@@ -306,7 +306,6 @@ namespace
 			if (ImGui::BeginChild(Orion::Fnv<"##Menu::Header::Nav::Profile">::value)) {
 
 				auto&& style = ImGui::GetStyle();
-				auto&& fonts = Orion::instance->getGui().getFonts();
 
 				drawList.AddRectFilled(drawPos, drawPos + contentSize, IM_COL32(16, 16, 15, 230), 2,
 					ImDrawFlags_::ImDrawFlags_RoundCornersBottomLeft);
@@ -316,14 +315,14 @@ namespace
 
 				drawList.AddCircleFilled(profilePicturePosition, 19, IM_COL32(8, 8, 8, style.Alpha * 255));
 				{
-					const PushFont font{ fonts.profile_15 };
+					const PushFont font{ m_gui.getFonts().profile_15 };
 					const auto profileIcon = FontAwesome::get<FontAwesome::Type::user_secret>();
 					drawList.AddText(profilePicturePosition - ImGui::CalcTextSize(profileIcon) * .5f, IM_COL32(240, 240, 240, style.Alpha * 255), profileIcon);
 				}
 				{
 					Orion::String<"Wyxather"> author;
 					Orion::String<"Build:" __DATE__> build;
-					const PushFont font{ fonts.arialbd_15, (14.f / 15.f) };
+					const PushFont font{ m_gui.getFonts().arialbd_15, (14.f / 15.f) };
 					const ImVec2 textPos{ profilePicturePosition.x + 29, drawPos.y + 31 };
 					drawList.AddText(ImVec2{ profilePicturePosition.x + 29, drawPos.y + 12 }, IM_COL32(240, 240, 240, style.Alpha * 255), author.get());
 					drawList.AddText(textPos, IM_COL32(64, 69, 75, style.Alpha * 255), build.get(), &build.get()[6]);
@@ -939,7 +938,7 @@ namespace
 			Menu::Background(pos, pos + ImVec2{ ImGui::GetContentRegionAvail().x + line_width_offset * 2, line_height }, IM_COL32(24, 24, 24, style.Alpha * 255), 0,
 				ImDrawFlags_::ImDrawFlags_None);
 
-			const PushFont font{ Orion::instance->getGui().getFonts().arialbd_15, (16.f / 15.f) };
+			const PushFont font{ m_gui.getFonts().arialbd_15, (16.f / 15.f) };
 			ImGui::TextColored(ImVec4{ .9411764f, .9411764f, .9411764f, 1 }, name.get());
 
 			ImGui::Dummy(ImVec2{ 0, seperator_height });
