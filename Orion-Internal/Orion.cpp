@@ -45,8 +45,8 @@ bool Orion::Application::start() const noexcept
 
 void Orion::Application::exit() const noexcept
 {
-	m_window->unhook();
 	m_renderer->unhook();
+	m_window->unhook();
 
 	std::unique_ptr<void, decltype(&CloseHandle)> thread
 	{
