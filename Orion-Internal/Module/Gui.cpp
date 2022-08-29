@@ -1921,7 +1921,7 @@ void Gui::draw() noexcept
 
 void Gui::invalidate() noexcept
 {
-	m_postProcess.reset();
+	m_postProcess->reset();
 }
 
 void Gui::toggle() noexcept
