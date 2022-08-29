@@ -13,6 +13,11 @@ std::size_t Hooks::calculateVmtLength(void* address) noexcept
 	return length;
 }
 
+void Hooks::enable() noexcept
+{
+	MH_EnableHook(MH_ALL_HOOKS);
+}
+
 Hooks::Hooks(const Application& app) noexcept :
 	m_app{ app }
 {
@@ -44,12 +49,12 @@ void Hooks::MinHook::init(void* address) noexcept
 	m_data = std::make_unique<decltype(m_data)::element_type[]>(m_size);
 }
 
-void Hooks::MinHook::hookAt(std::size_t index, void* function) noexcept
+void Hooks::MinHook::hookAt(std::size_t index, void* function, bool enable) noexcept
 {
 	auto&& data = m_data[index];
 	data.first = (*static_cast<void***>(m_base))[index];
 	MH_CreateHook(data.first, function, &data.second);
-	MH_EnableHook(data.first);
+	if (enable) MH_EnableHook(data.first);
 }
 
 void Hooks::MinHook::restore() noexcept

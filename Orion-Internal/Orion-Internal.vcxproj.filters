@@ -141,6 +141,9 @@
     <ClInclude Include="Dependencies\json.hpp">
       <Filter>Dependencies</Filter>
     </ClInclude>
+    <ClInclude Include="Module\Input.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -213,6 +216,9 @@
       <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Module\Config.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\Input.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>

@@ -19,6 +19,8 @@ namespace Orion
             Window& operator=(Window&&) = delete;
             Window& operator=(const Window&) = delete;
 
+            [[nodiscard]] constexpr auto getHandle() const noexcept { return m_handle; }
+
             void hook() noexcept;
             void unhook() noexcept;
 

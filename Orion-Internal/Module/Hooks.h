@@ -32,7 +32,7 @@ namespace Orion
 				MinHook& operator=(const MinHook&) = delete;
 
 				void init(void* address) noexcept;
-				void hookAt(std::size_t index, void* function) noexcept;
+				void hookAt(std::size_t index, void* function, bool enable = false) noexcept;
 				void restore() noexcept;
 
 				template <std::size_t index, typename returnType, Function function = Function::NONE, bool callTarget = false, typename ...Args>
@@ -60,6 +60,7 @@ namespace Orion
 			};
 
 			static std::size_t calculateVmtLength(void* address) noexcept;
+			static void enable() noexcept;
 
 			Hooks(const Application& app) noexcept;
 			~Hooks() noexcept;

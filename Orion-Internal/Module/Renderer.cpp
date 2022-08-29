@@ -159,33 +159,55 @@ Renderer::Renderer(const Application& app) noexcept :
 	}
 }
 
+Renderer::~Renderer() noexcept
+{
+	m_type = {};
+	m_handle = {};
+}
+
 void Renderer::hook() noexcept
 {
 	switch (m_type) {
 
 	case Type::D3D9:
 	{
-		WNDCLASSEX windowClass{};
-		windowClass.cbSize = sizeof(windowClass);
-		windowClass.style = CS_HREDRAW | CS_VREDRAW;
-		windowClass.lpfnWndProc = LI_FN(DefWindowProc).get();
-		windowClass.cbClsExtra = 0;
-		windowClass.cbWndExtra = 0;
-		windowClass.hInstance = LI_FN(GetModuleHandle)(nullptr);
-		windowClass.hIcon = nullptr;
-		windowClass.hCursor = nullptr;
-		windowClass.hbrBackground = nullptr;
-		windowClass.lpszMenuName = nullptr;
-		windowClass.lpszClassName = TEXT(" ");
-		windowClass.hIconSm = nullptr;
+		std::unique_ptr<WNDCLASSEX, void(*)(WNDCLASSEX*)> windowClass
+		{
+			[]()
+			{
+				const auto windowClass = new WNDCLASSEX();
+				windowClass->cbSize = sizeof(windowClass);
+				windowClass->style = CS_HREDRAW | CS_VREDRAW;
+				windowClass->lpfnWndProc = LI_FN(DefWindowProc).get();
+				windowClass->cbClsExtra = 0;
+				windowClass->cbWndExtra = 0;
+				windowClass->hInstance = LI_FN(GetModuleHandle)(nullptr);
+				windowClass->hIcon = nullptr;
+				windowClass->hCursor = nullptr;
+				windowClass->hbrBackground = nullptr;
+				windowClass->lpszMenuName = nullptr;
+				windowClass->lpszClassName = TEXT(" ");
+				windowClass->hIconSm = nullptr;
+				LI_FN(RegisterClassEx)(windowClass);
+				return windowClass;
+			}(),
+			[](WNDCLASSEX* windowClass)
+			{
+				LI_FN(UnregisterClass)(windowClass->lpszClassName, windowClass->hInstance);
+				delete windowClass;
+			},
+		};
 
-		LI_FN(RegisterClassEx)(&windowClass);
-		const auto window = LI_FN(CreateWindowEx)(NULL, windowClass.lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass.hInstance, nullptr);
+		std::unique_ptr<HWND__, decltype(&DestroyWindow)> window
+		{
+			LI_FN(CreateWindowEx)(NULL, windowClass->lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass->hInstance, nullptr),
+			LI_FN(DestroyWindow).get(),
+		};
 
 		String<"Direct3DCreate9"> procName;
-		const auto direct3DCreate9 = LI_FN(GetProcAddress)(m_handle, procName.get());
-		const auto direct3D9 = ((LPDIRECT3D9(__stdcall*)(std::uint32_t))(direct3DCreate9))(D3D_SDK_VERSION);
-
+		const auto direct3DCreate9 = reinterpret_cast<LPDIRECT3D9(__stdcall*)(std::uint32_t)>(LI_FN(GetProcAddress)(m_handle, procName.get()));
+		const ComPtr<IDirect3D9> direct3D9 = direct3DCreate9(D3D_SDK_VERSION);
+		
 		D3DPRESENT_PARAMETERS params{};
 		params.BackBufferWidth = 0;
 		params.BackBufferHeight = 0;
@@ -194,7 +216,7 @@ void Renderer::hook() noexcept
 		params.MultiSampleType = D3DMULTISAMPLE_TYPE::D3DMULTISAMPLE_NONE;
 		params.MultiSampleQuality = 0;
 		params.SwapEffect = D3DSWAPEFFECT::D3DSWAPEFFECT_DISCARD;
-		params.hDeviceWindow = window;
+		params.hDeviceWindow = window.get();
 		params.Windowed = TRUE;
 		params.EnableAutoDepthStencil = FALSE;
 		params.AutoDepthStencilFormat = D3DFORMAT::D3DFMT_UNKNOWN;
@@ -202,52 +224,58 @@ void Renderer::hook() noexcept
 		params.FullScreen_RefreshRateInHz = 0;
 		params.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
-		LPDIRECT3DDEVICE9 device{};
-		if (direct3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE::D3DDEVTYPE_NULLREF, window, D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT, &params, &device) != D3D_OK) {
-			direct3D9->Release();
-			LI_FN(DestroyWindow)(window);
-			LI_FN(UnregisterClass)(windowClass.lpszClassName, windowClass.hInstance);
+		ComPtr<IDirect3DDevice9> device;
+		if (direct3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE::D3DDEVTYPE_NULLREF, window.get(), D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT, &params, device.GetAddressOf()) != D3D_OK)
 			return;
-		}
 
 		auto&& hook = m_hooks[Fnv<"Renderer">::value];
-		hook.init(device);
+		hook.init(device.Get());
 		hook.hookAt(16, &D3D9::Reset);
 		hook.hookAt(17, &D3D9::Present);
-
-		device->Release();
-		direct3D9->Release();
-
-		LI_FN(DestroyWindow)(window);
-		LI_FN(UnregisterClass)(windowClass.lpszClassName, windowClass.hInstance);
 	}
 	break;
 
 	case Type::D3D11:
 	{
-		WNDCLASSEX windowClass{};
-		windowClass.cbSize = sizeof(windowClass);
-		windowClass.style = CS_HREDRAW | CS_VREDRAW;
-		windowClass.lpfnWndProc = LI_FN(DefWindowProc).get();
-		windowClass.cbClsExtra = 0;
-		windowClass.cbWndExtra = 0;
-		windowClass.hInstance = LI_FN(GetModuleHandle)(nullptr);
-		windowClass.hIcon = nullptr;
-		windowClass.hCursor = nullptr;
-		windowClass.hbrBackground = nullptr;
-		windowClass.lpszMenuName = nullptr;
-		windowClass.lpszClassName = TEXT(" ");
-		windowClass.hIconSm = nullptr;
+		std::unique_ptr<WNDCLASSEX, void(*)(WNDCLASSEX*)> windowClass
+		{
+			[]()
+			{
+				const auto windowClass = new WNDCLASSEX();
+				windowClass->cbSize = sizeof(windowClass);
+				windowClass->style = CS_HREDRAW | CS_VREDRAW;
+				windowClass->lpfnWndProc = LI_FN(DefWindowProc).get();
+				windowClass->cbClsExtra = 0;
+				windowClass->cbWndExtra = 0;
+				windowClass->hInstance = LI_FN(GetModuleHandle)(nullptr);
+				windowClass->hIcon = nullptr;
+				windowClass->hCursor = nullptr;
+				windowClass->hbrBackground = nullptr;
+				windowClass->lpszMenuName = nullptr;
+				windowClass->lpszClassName = TEXT(" ");
+				windowClass->hIconSm = nullptr;
+				LI_FN(RegisterClassEx)(windowClass);
+				return windowClass;
+			}(),
+			[](WNDCLASSEX* windowClass)
+			{
+				LI_FN(UnregisterClass)(windowClass->lpszClassName, windowClass->hInstance);
+				delete windowClass;
+			},
+		};
 
-		LI_FN(RegisterClassEx)(&windowClass);
-		const auto window = LI_FN(CreateWindowEx)(NULL, windowClass.lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass.hInstance, nullptr);
+		std::unique_ptr<HWND__, decltype(&DestroyWindow)> window
+		{
+			LI_FN(CreateWindowEx)(NULL, windowClass->lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass->hInstance, nullptr),
+			LI_FN(DestroyWindow).get(),
+		};
 
 		String<"D3D11CreateDeviceAndSwapChain"> procName;
-		const auto createDeviceAndSwapChain{ LI_FN(GetProcAddress)(m_handle, procName.get()) };
-		
+		const auto createDeviceAndSwapChain = LI_FN(GetProcAddress)(m_handle, procName.get());
+
 		D3D_FEATURE_LEVEL featureLevel{};
-		const D3D_FEATURE_LEVEL featureLevels[]{ 
-			D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_10_1, 
+		const D3D_FEATURE_LEVEL featureLevels[]{
+			D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_10_1,
 			D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0 };
 
 		DXGI_RATIONAL refreshRate{};
@@ -271,14 +299,14 @@ void Renderer::hook() noexcept
 		swapChainDesc.SampleDesc = sampleDesc;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.BufferCount = 1;
-		swapChainDesc.OutputWindow = window;
+		swapChainDesc.OutputWindow = window.get();
 		swapChainDesc.Windowed = 1;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
 		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-		IDXGISwapChain* swapChain{};
-		ID3D11Device* device{};
-		ID3D11DeviceContext* context{};
+		ComPtr<IDXGISwapChain> swapChain;
+		ComPtr<ID3D11Device> device;
+		ComPtr<ID3D11DeviceContext> context;
 
 		if (((HRESULT(__stdcall*)(
 			IDXGIAdapter*,
@@ -292,35 +320,25 @@ void Renderer::hook() noexcept
 			IDXGISwapChain**,
 			ID3D11Device**,
 			D3D_FEATURE_LEVEL*,
-			ID3D11DeviceContext**))(createDeviceAndSwapChain))(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, 2, D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &device, &featureLevel, &context) != S_OK) {
-			
-			LI_FN(DestroyWindow)(window);
-			LI_FN(UnregisterClass)(windowClass.lpszClassName, windowClass.hInstance);;
-		}
+			ID3D11DeviceContext**))(createDeviceAndSwapChain))(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, 2, D3D11_SDK_VERSION, &swapChainDesc, swapChain.GetAddressOf(), device.GetAddressOf(), &featureLevel, context.GetAddressOf()) != S_OK)
+			return;
 
 		std::array<std::uintptr_t, 205> table{};
 
 		for (std::size_t index{ 0 }; index < 18; index++)
-			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(swapChain))[index];
+			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(swapChain.Get()))[index];
 
 		for (std::size_t index{ 18 }; index < 61; index++)
-			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(device))[index];
+			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(device.Get()))[index];
 
 		for (std::size_t index{ 61 }; index < 205; index++)
-			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(context))[index];
+			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(context.Get()))[index];
 
 		auto&& hook = m_hooks[Fnv<"Renderer">::value];
 		const void* address = table.data();
 		hook.init(&address);
 		hook.hookAt(8, &D3D11::Present);
 		hook.hookAt(13, &D3D11::ResizeBuffers);
-
-		swapChain->Release();
-		device->Release();
-		context->Release();
-
-		LI_FN(DestroyWindow)(window);
-		LI_FN(UnregisterClass)(windowClass.lpszClassName, windowClass.hInstance);;
 	}
 	break;
 
@@ -341,10 +359,4 @@ void Renderer::unhook() noexcept
 			break;
 		}
 	}
-}
-
-Renderer::~Renderer() noexcept
-{
-	m_type = {};
-	m_handle = {};
 }

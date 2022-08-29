@@ -29,7 +29,7 @@ namespace Orion
 			Renderer& operator=(Renderer&&) = delete;
 			Renderer& operator=(const Renderer&) = delete;
 
-			constexpr auto getType() const noexcept { return m_type; }
+			[[nodiscard]] constexpr auto getType() const noexcept { return m_type; }
 
 			void hook() noexcept;
 			void unhook() noexcept;
