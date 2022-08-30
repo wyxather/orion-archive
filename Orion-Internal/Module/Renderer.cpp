@@ -171,12 +171,11 @@ void Renderer::hook() noexcept
 
 	case Type::D3D9:
 	{
-		std::unique_ptr<WNDCLASSEX, void(*)(WNDCLASSEX*)> windowClass
-		{
-			[]()
+		std::unique_ptr<WNDCLASSEX, std::function<void(WNDCLASSEX*)>> windowClass(
+			[]() noexcept -> WNDCLASSEX*
 			{
 				const auto windowClass = new WNDCLASSEX();
-				windowClass->cbSize = sizeof(windowClass);
+				windowClass->cbSize = sizeof(WNDCLASSEX);
 				windowClass->style = CS_HREDRAW | CS_VREDRAW;
 				windowClass->lpfnWndProc = LI_FN(DefWindowProc).get();
 				windowClass->cbClsExtra = 0;
@@ -188,26 +187,40 @@ void Renderer::hook() noexcept
 				windowClass->lpszMenuName = nullptr;
 				windowClass->lpszClassName = TEXT(" ");
 				windowClass->hIconSm = nullptr;
-				LI_FN(RegisterClassEx)(windowClass);
+
+				if (LI_FN(RegisterClassEx)(windowClass) == NULL) {
+					delete windowClass;
+					return nullptr;
+				}
+
 				return windowClass;
 			}(),
-			[](WNDCLASSEX* windowClass)
+				[](WNDCLASSEX* windowClass) noexcept
 			{
-				LI_FN(UnregisterClass)(windowClass->lpszClassName, windowClass->hInstance);
-				delete windowClass;
-			},
-		};
+				if (windowClass != nullptr) {
+					LI_FN(UnregisterClass)(windowClass->lpszClassName, windowClass->hInstance);
+					delete windowClass;
+				}
+			});
 
-		std::unique_ptr<HWND__, decltype(&DestroyWindow)> window
-		{
+		if (!windowClass)
+			return;
+
+		std::unique_ptr<HWND__, std::function<void(HWND)>> window(
 			LI_FN(CreateWindowEx)(NULL, windowClass->lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass->hInstance, nullptr),
-			LI_FN(DestroyWindow).get(),
-		};
+			[](HWND hWnd) noexcept
+			{
+				if (hWnd)
+					LI_FN(DestroyWindow)(hWnd);
+			});
+
+		if (!window)
+			return;
 
 		String<"Direct3DCreate9"> procName;
 		const auto direct3DCreate9 = reinterpret_cast<LPDIRECT3D9(__stdcall*)(std::uint32_t)>(LI_FN(GetProcAddress)(m_handle, procName.get()));
 		const ComPtr<IDirect3D9> direct3D9 = direct3DCreate9(D3D_SDK_VERSION);
-		
+
 		D3DPRESENT_PARAMETERS params{};
 		params.BackBufferWidth = 0;
 		params.BackBufferHeight = 0;
@@ -237,12 +250,11 @@ void Renderer::hook() noexcept
 
 	case Type::D3D11:
 	{
-		std::unique_ptr<WNDCLASSEX, void(*)(WNDCLASSEX*)> windowClass
-		{
-			[]()
+		std::unique_ptr<WNDCLASSEX, std::function<void(WNDCLASSEX*)>> windowClass(
+			[]() noexcept -> WNDCLASSEX*
 			{
 				const auto windowClass = new WNDCLASSEX();
-				windowClass->cbSize = sizeof(windowClass);
+				windowClass->cbSize = sizeof(WNDCLASSEX);
 				windowClass->style = CS_HREDRAW | CS_VREDRAW;
 				windowClass->lpfnWndProc = LI_FN(DefWindowProc).get();
 				windowClass->cbClsExtra = 0;
@@ -254,21 +266,35 @@ void Renderer::hook() noexcept
 				windowClass->lpszMenuName = nullptr;
 				windowClass->lpszClassName = TEXT(" ");
 				windowClass->hIconSm = nullptr;
-				LI_FN(RegisterClassEx)(windowClass);
+
+				if (LI_FN(RegisterClassEx)(windowClass) == NULL) {
+					delete windowClass;
+					return nullptr;
+				}
+
 				return windowClass;
 			}(),
-			[](WNDCLASSEX* windowClass)
+				[](WNDCLASSEX* windowClass) noexcept
 			{
-				LI_FN(UnregisterClass)(windowClass->lpszClassName, windowClass->hInstance);
-				delete windowClass;
-			},
-		};
+				if (windowClass != nullptr) {
+					LI_FN(UnregisterClass)(windowClass->lpszClassName, windowClass->hInstance);
+					delete windowClass;
+				}
+			});
 
-		std::unique_ptr<HWND__, decltype(&DestroyWindow)> window
-		{
+		if (!windowClass)
+			return;
+
+		std::unique_ptr<HWND__, std::function<void(HWND)>> window(
 			LI_FN(CreateWindowEx)(NULL, windowClass->lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass->hInstance, nullptr),
-			LI_FN(DestroyWindow).get(),
-		};
+			[](HWND hWnd) noexcept
+			{
+				if (hWnd)
+					LI_FN(DestroyWindow)(hWnd);
+			});
+
+		if (!window)
+			return;
 
 		String<"D3D11CreateDeviceAndSwapChain"> procName;
 		const auto createDeviceAndSwapChain = LI_FN(GetProcAddress)(m_handle, procName.get());

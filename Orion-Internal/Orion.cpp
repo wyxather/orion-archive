@@ -54,11 +54,13 @@ void Orion::Application::exit() const noexcept
 	m_renderer->unhook();
 	m_window->unhook();
 
-	std::unique_ptr<void, decltype(&CloseHandle)> thread
-	{
+	std::unique_ptr<void, std::function<void(HANDLE)>> thread(
 		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), m_handle, NULL, nullptr),
-		LI_FN(CloseHandle).get()
-	};
+		[](HANDLE handle) noexcept
+		{
+			if (handle)
+				LI_FN(CloseHandle)(handle);
+		});
 }
 
 void Orion::Application::unload(HMODULE handle) noexcept

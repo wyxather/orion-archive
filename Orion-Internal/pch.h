@@ -11,6 +11,7 @@
 #include <string>
 #include <cmath>
 #include <filesystem>
+#include <functional>
 
 #include <ShlObj.h>
 
