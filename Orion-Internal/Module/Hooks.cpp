@@ -1,7 +1,7 @@
 #include "Hooks.h"
 #include "Dependencies/MinHook/include/MinHook.h"
 
-using namespace Orion::Module;
+using Orion::Module::Hooks;
 
 std::size_t Hooks::calculateVmtLength(void* address) noexcept
 {
@@ -13,11 +13,6 @@ std::size_t Hooks::calculateVmtLength(void* address) noexcept
 	return length;
 }
 
-void Hooks::enable() noexcept
-{
-	MH_EnableHook(MH_ALL_HOOKS);
-}
-
 Hooks::Hooks(const Application& app) noexcept :
 	m_app{ app }
 {
@@ -26,13 +21,27 @@ Hooks::Hooks(const Application& app) noexcept :
 
 Hooks::~Hooks() noexcept
 {
-	MH_DisableHook(MH_ALL_HOOKS);
 	MH_Uninitialize();
+}
+
+void Hooks::enable() noexcept
+{
+	MH_EnableHook(MH_ALL_HOOKS);
+}
+
+void Hooks::disable() noexcept
+{
+	MH_DisableHook(MH_ALL_HOOKS);
 }
 
 Hooks::MinHook& Hooks::operator[](const std::uint32_t key) noexcept
 {
 	return m_data[key];
+}
+
+Hooks::MinHook* Hooks::find(const std::uint32_t key) noexcept
+{
+	return m_data.find(key);
 }
 
 Hooks::MinHook::~MinHook() noexcept
@@ -54,7 +63,8 @@ void Hooks::MinHook::hookAt(std::size_t index, void* function, bool enable) noex
 	auto&& data = m_data[index];
 	data.first = (*static_cast<void***>(m_base))[index];
 	MH_CreateHook(data.first, function, &data.second);
-	if (enable) MH_EnableHook(data.first);
+	if (enable)
+		MH_EnableHook(data.first);
 }
 
 void Hooks::MinHook::restore() noexcept

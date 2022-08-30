@@ -59,8 +59,9 @@ namespace Orion
 				std::unique_ptr<std::pair<void*, void*>[]> m_data;
 			};
 
-			static std::size_t calculateVmtLength(void* address) noexcept;
+			[[nodiscard]] static std::size_t calculateVmtLength(void* address) noexcept;
 			static void enable() noexcept;
+			static void disable() noexcept;
 
 			Hooks(const Application& app) noexcept;
 			~Hooks() noexcept;
@@ -70,7 +71,8 @@ namespace Orion
 			Hooks& operator=(Hooks&&) = delete;
 			Hooks& operator=(const Hooks&) = delete;
 
-			MinHook& operator[](const std::uint32_t key) noexcept;
+			[[nodiscard]] MinHook& operator[](const std::uint32_t key) noexcept;
+			[[nodiscard]] MinHook* find(const std::uint32_t key) noexcept;
 
 		private:
 			HashTable<MinHook> m_data;

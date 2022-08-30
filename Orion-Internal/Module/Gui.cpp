@@ -1373,7 +1373,7 @@ namespace
 		};
 
 	private:
-		INT m_size[2];
+		INT m_size[2]{};
 		ComPtr<IDirect3DTexture9> m_textures[2];
 		ComPtr<IDirect3DSurface9> m_surfaces[2];
 		ComPtr<IDirect3DPixelShader9> m_shaders[2];
@@ -1589,10 +1589,10 @@ namespace
 				{
 					struct XMFLOAT4
 					{
-						float x;
-						float y;
-						float z;
-						float w;
+						float x = {};
+						float y = {};
+						float z = {};
+						float w = {};
 
 						constexpr XMFLOAT4() noexcept = default;
 

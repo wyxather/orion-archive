@@ -42,9 +42,11 @@ void Orion::Application::load() const noexcept
 bool Orion::Application::start() const noexcept
 {
 	m_config->init();
+
 	m_renderer->hook();
 	m_input->hook();
-	m_hooks->enable();
+	Module::Hooks::enable();
+
 	return true;
 }
 
@@ -52,6 +54,8 @@ void Orion::Application::exit() const noexcept
 {
 	m_input->unhook();
 	m_renderer->unhook();
+	Module::Hooks::disable();
+
 	m_window->unhook();
 
 	std::unique_ptr<void, std::function<void(HANDLE)>> thread(

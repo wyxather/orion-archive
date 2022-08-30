@@ -72,12 +72,12 @@ namespace
 	namespace D3D11
 	{
 		HRESULT __stdcall ResizeBuffers(
-			IDXGISwapChain* swapChain,
-			UINT bufferCount,
-			UINT width,
-			UINT height,
-			DXGI_FORMAT newFormat,
-			UINT swapChainFlags
+			IDXGISwapChain* const swapChain,
+			const UINT bufferCount,
+			const UINT width,
+			const UINT height,
+			const DXGI_FORMAT newFormat,
+			const UINT swapChainFlags
 		) noexcept
 		{
 			Orion::instance->getGui().invalidate();
@@ -97,9 +97,9 @@ namespace
 		}
 
 		HRESULT __stdcall Present(
-			IDXGISwapChain* swapChain,
-			UINT syncInterval,
-			UINT flags
+			IDXGISwapChain* const swapChain,
+			const UINT syncInterval,
+			const UINT flags
 		) noexcept
 		{
 			static const auto imgui = [&]() noexcept
@@ -373,7 +373,9 @@ void Renderer::hook() noexcept
 
 void Renderer::unhook() noexcept
 {
-	m_hooks[Fnv<"Renderer">::value].restore();
+	const auto hook = m_hooks.find(Fnv<"Renderer">::value);
+	if (hook != nullptr)
+		hook->restore();
 
 	if (ImGui::GetIO().BackendRendererName) {
 		switch (m_type) {
