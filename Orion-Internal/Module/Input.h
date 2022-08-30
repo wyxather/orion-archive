@@ -28,6 +28,8 @@ namespace Orion
             Input& operator=(Input&&) = delete;
             Input& operator=(const Input&) = delete;
 
+            [[nodiscard]] constexpr auto getType() const noexcept { return m_type; }
+
             void hook() noexcept;
             void unhook() noexcept;
 

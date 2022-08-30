@@ -1,9 +1,11 @@
 #include "Window.h"
 #include "Orion.h"
 #include "Gui.h"
+#include "Input.h"
 #include "Dependencies/ImGui/imgui_impl_win32.h"
 
-using namespace Orion::Module;
+using Orion::Module::Window;
+using Orion::Module::Input;
 
 LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
@@ -62,8 +64,16 @@ LRESULT Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) no
 		}
 	}
 	if (once) {
-		if (gui.isOpen())
-			return ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam) ? FALSE : TRUE;
+		if (gui.isOpen()) {
+			switch (instance->getInput().getType()) {
+			case Input::Type::DINPUT8:
+				if (ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam))
+					return FALSE;
+				break;
+			default:
+				return ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam) ? FALSE : TRUE;
+			}
+		}
 	}
 	return LI_FN(CallWindowProc).cached()(instance->getWindow().m_proc.asWndProc, handle, message, wParam, lParam);
 }
