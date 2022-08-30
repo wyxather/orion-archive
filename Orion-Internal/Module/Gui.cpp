@@ -1844,7 +1844,9 @@ void Gui::draw() noexcept
 			m_alpha = std::clamp(m_alpha - m_io.DeltaTime * 2, 0.f, 1.f);
 	}
 
-	if (!m_alpha)
+	m_io.MouseDrawCursor = m_alpha > 0;
+
+	if (!m_io.MouseDrawCursor)
 		return;
 
 	if (Menu menu{ *this, m_alpha, m_fonts.arialbd_15 }) {
