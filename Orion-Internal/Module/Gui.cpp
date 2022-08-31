@@ -971,7 +971,7 @@ namespace
 		}
 
 		template <stb::compiletime_string_wrapper str>
-		constexpr void Toggle(bool& value, float color[4], float colorReference[4], float& popupAlpha) noexcept
+		constexpr void Toggle(bool& value, float color[4], float colorReference[4], float* popupAlpha) noexcept
 		{
 			Orion::String<str> name;
 
@@ -1022,10 +1022,10 @@ namespace
 						colorReference[2] = color[2];
 						colorReference[3] = color[3];
 						ImGui::OpenPopup(colorLabel.c_str());
-						popupAlpha = {};
+						*popupAlpha = {};
 					}
 					const StyleVar styleVar2[] = {
-						{ ImGuiStyleVar_::ImGuiStyleVar_Alpha, std::sqrtf(popupAlpha) * style.Alpha }
+						{ ImGuiStyleVar_::ImGuiStyleVar_Alpha, std::sqrtf(*popupAlpha) * style.Alpha }
 					};
 					ImGui::SetNextWindowSize(ImVec2{ 308, 256 } *style.Alpha, ImGuiCond_::ImGuiCond_Always);
 					if (ImGui::BeginPopup(colorLabel.c_str(), ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar)) {
@@ -1034,7 +1034,7 @@ namespace
 							ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaBar |
 							ImGuiColorEditFlags_::ImGuiColorEditFlags_AlphaPreview, colorReference);
 						ImGui::EndPopup();
-						popupAlpha = std::clamp(popupAlpha + ImGui::GetIO().DeltaTime * 4, 0.f, 1.f);
+						*popupAlpha = std::clamp(*popupAlpha + ImGui::GetIO().DeltaTime * 4, 0.f, 1.f);
 					}
 				}
 
@@ -1044,6 +1044,9 @@ namespace
 				}
 			}
 		}
+
+		template <stb::compiletime_string_wrapper str>
+		constexpr void Toggle(bool& value) noexcept { return Toggle<str>(value, nullptr, nullptr, nullptr); }
 
 		template <stb::compiletime_string_wrapper str, stb::compiletime_string_wrapper items>
 		void Combo(int& value) noexcept
@@ -1895,8 +1898,8 @@ void Gui::draw() noexcept
 										static bool boolean[4];
 										static float color[8];
 										static int value[4];
-										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0], m_colorReference, m_popupAlpha);
-										widget.Toggle<"Unlimited Works">(boolean[1], &color[4], m_colorReference, m_popupAlpha);
+										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0], m_colorReference, &m_popupAlpha);
+										widget.Toggle<"Unlimited Works">(boolean[1]);
 										widget.Combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(value[0]);
 										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(value[1]);
 										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(boolean);
@@ -1908,7 +1911,7 @@ void Gui::draw() noexcept
 										static bool boolean[4];
 										static float color[8];
 										static int value[4];
-										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0], m_colorReference, m_popupAlpha);
+										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0], m_colorReference, &m_popupAlpha);
 										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(color[0]);
 									}
 								}
