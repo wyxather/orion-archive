@@ -11,6 +11,7 @@ namespace Orion
         class Gui;
         class Config;
         class Input;
+        class Game;
     }
 
     class Application
@@ -50,6 +51,7 @@ namespace Orion
         std::unique_ptr<Module::Gui> m_gui;
         std::unique_ptr<Module::Config> m_config;
         std::unique_ptr<Module::Input> m_input;
+        std::unique_ptr<Module::Game> m_game;
     };
 
     inline std::optional<Orion::Application> instance;

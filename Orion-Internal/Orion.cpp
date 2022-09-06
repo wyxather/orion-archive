@@ -6,6 +6,7 @@
 #include "Module/Gui.h"
 #include "Module/Config.h"
 #include "Module/Input.h"
+#include "Module/Game.h"
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
@@ -20,10 +21,12 @@ Orion::Application::Application(HMODULE handle) noexcept :
 	m_config = std::make_unique<Module::Config>(*this);
 	m_gui = std::make_unique<Module::Gui>(*this);
 	m_input = std::make_unique<Module::Input>(*this);
+	m_game = std::make_unique<Module::Game>(*this);
 }
 
 Orion::Application::~Application() noexcept
 {
+	m_game.reset();
 	m_input.reset();
 	m_gui.reset();
 	m_config.reset();
@@ -45,6 +48,7 @@ bool Orion::Application::start() const noexcept
 
 	m_renderer->hook();
 	m_input->hook();
+	m_game->hook();
 	Module::Hooks::enable();
 
 	return true;
@@ -52,6 +56,7 @@ bool Orion::Application::start() const noexcept
 
 void Orion::Application::exit() const noexcept
 {
+	m_game->unhook();
 	m_input->unhook();
 	m_renderer->unhook();
 	Module::Hooks::disable();

@@ -246,6 +246,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="Module\Config.h" />
     <ClInclude Include="Module\Console.h" />
+    <ClInclude Include="Module\Game.h" />
     <ClInclude Include="Module\Hooks.h" />
     <ClInclude Include="Module\Gui.h" />
     <ClInclude Include="Module\Input.h" />
@@ -301,6 +302,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Module\Config.cpp" />
     <ClCompile Include="Module\Console.cpp" />
+    <ClCompile Include="Module\Game.cpp" />
     <ClCompile Include="Module\Hooks.cpp" />
     <ClCompile Include="Module\Gui.cpp" />
     <ClCompile Include="Module\Input.cpp" />

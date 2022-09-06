@@ -38,13 +38,20 @@ namespace stb {
             return idx;
         }
 
-        template<size_t N>
-        constexpr auto find_last_of(const std::array<char, N>& data, char ch) {
-            size_t idx = data.size() - 2;
-            while (data[idx] != ch && idx >= 0)
-                --idx;
+        template <std::uintmax_t size>
+        [[nodiscard]] constexpr auto find_last_of(const std::array<char, size>& data, const char delimiter) noexcept
+        {
+            auto start = static_cast<int>(size - 1);
+            do { if (data[start] == delimiter) break; --start; } while (start >= 0);
+            return start;
+        }
 
-            return idx;
+        template <std::uintmax_t size>
+        [[nodiscard]] constexpr auto find_last_of(const std::array<unsigned char, size>& data, const unsigned char delimiter) noexcept
+        {
+            auto start = static_cast<int>(size - 1);
+            do { if (data[start] == delimiter) break; --start; } while (start >= 0);
+            return start;
         }
 
         template<size_t N>
@@ -99,7 +106,7 @@ namespace stb {
     template<size_t N>
     compiletime_string_wrapper(const char(&)[N])->compiletime_string_wrapper<N - 1>;
 
-    template<char delimiter, char mask, int masked>
+    template<byte delimiter, byte mask, byte masked>
     struct basic_compiletime_string_to_byte_array_data {
         template<compiletime_string_wrapper str>
         struct getter {
@@ -146,7 +153,7 @@ namespace stb {
                 constexpr auto next = data.next;
                 constexpr auto end = data.end;
 
-                std::array<int, count> result = {};
+                std::array<byte, count> result = {};
                 std::array<size_t, count> skips = {};
                 size_t skipped = 0;
                 size_t traversed = start;
@@ -186,7 +193,7 @@ namespace stb {
         };
     };
 
-    using compiletime_string_to_byte_array_data = basic_compiletime_string_to_byte_array_data<' ', '?', -1>;
+    using compiletime_string_to_byte_array_data = basic_compiletime_string_to_byte_array_data<' ', '?', '\xFF'>;
 }  // namespace stb
 
 #endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Psapi.h>
+
 namespace Orion
 {
     template <stb::compiletime_string_wrapper str, typename _Ty = std::uint32_t>
@@ -139,21 +141,126 @@ namespace Orion
         [[nodiscard]] constexpr auto end() const noexcept { return m_data.cend(); }
     };
 
-	template <stb::compiletime_string_wrapper str>
-	class String
-	{
-		static inline auto value{ xorarr(stb::compiletime_value<str()>::value) };
+    template <stb::compiletime_string_wrapper str>
+    class Pattern
+    {
+        static inline auto value{ xorarr(stb::compiletime_string_to_byte_array_data::getter<str>::value) };
 
-	public:
-		constexpr String() noexcept { value.crypt(); }
-		constexpr ~String() noexcept { value.crypt(); }
+    public:
+        constexpr Pattern() noexcept { value.crypt(); }
+        constexpr ~Pattern() noexcept { value.crypt(); }
+
+        Pattern(Pattern&&) = delete;
+        Pattern(const Pattern&) = delete;
+        Pattern& operator=(Pattern&&) = delete;
+        Pattern& operator=(const Pattern&) = delete;
+
+        [[nodiscard]] static constexpr auto get() noexcept { return value.get(); }
+        [[nodiscard]] static constexpr auto size() noexcept { return value.size() + 1; }
+    };
+
+    template <stb::compiletime_string_wrapper str>
+    class String
+    {
+        static inline auto value{ xorarr(stb::compiletime_value<str()>::value) };
+
+    public:
+        constexpr String() noexcept { value.crypt(); }
+        constexpr ~String() noexcept { value.crypt(); }
 
         String(String&&) = delete;
         String(const String&) = delete;
         String& operator=(String&&) = delete;
         String& operator=(const String&) = delete;
 
-		[[nodiscard]] static constexpr auto get() noexcept { return value.get(); }
-		[[nodiscard]] static constexpr auto size() noexcept { return value.size(); }
-	};
+        [[nodiscard]] static constexpr auto get() noexcept { return value.get(); }
+        [[nodiscard]] static constexpr auto size() noexcept { return value.size(); }
+    };
+
+    template <stb::compiletime_string_wrapper str>
+    class BadCharTable
+    {
+        struct Generator
+        {
+            constexpr Generator() noexcept
+            {
+                constexpr auto pattern = stb::compiletime_string_to_byte_array_data::getter<str>::value;
+                constexpr auto patternLength = pattern.size() - 1;
+                constexpr auto lastWildCard = stb::detail::find_last_of(pattern, '\xFF');
+                constexpr auto lastWildCardIndex = lastWildCard == -1 ? 0 : lastWildCard;
+                constexpr auto defaultShift = (std::max)(std::size_t{ 1 }, std::size_t{ patternLength - lastWildCardIndex });
+                table.fill(defaultShift);
+                for (auto i = lastWildCardIndex; i < patternLength; i++)
+                    table[pattern[i]] = patternLength - i;
+            }
+
+            std::array<std::size_t, (std::numeric_limits<std::uint8_t>::max)() + 1> table = {};
+        };
+
+        static inline auto value{ xorarr(stb::compiletime_value<Generator().table>::value) };
+
+    public:
+        constexpr BadCharTable() noexcept { value.crypt(); }
+        constexpr ~BadCharTable() noexcept { value.crypt(); }
+
+        BadCharTable(BadCharTable&&) = delete;
+        BadCharTable(const BadCharTable&) = delete;
+        BadCharTable& operator=(BadCharTable&&) = delete;
+        BadCharTable& operator=(const BadCharTable&) = delete;
+
+        [[nodiscard]] static constexpr auto get() noexcept { return value.get(); }
+        [[nodiscard]] static constexpr auto size() noexcept { return value.size() + 1; }
+    };
+
+    template <typename returnType>
+    [[nodiscard]] constexpr returnType relativeToAbsolute(std::uintptr_t address) noexcept
+    {
+        return (returnType)(address + 4 + *reinterpret_cast<std::int32_t*>(address));
+    }
+
+    template <stb::compiletime_string_wrapper moduleName>
+    [[nodiscard]] constexpr bool getModuleInfo(MODULEINFO& moduleInfo) noexcept
+    {
+        String<moduleName> name;
+        if (const auto handle = LI_FN(GetModuleHandleA)(name.get()))
+            return (LI_FN(GetModuleInformation)(LI_FN(GetCurrentProcess)(), handle, &moduleInfo, static_cast<DWORD>(sizeof(MODULEINFO)))) != 0;
+        return false;
+    }
+
+    template <
+        typename returnType,
+        stb::compiletime_string_wrapper moduleName,
+        stb::compiletime_string_wrapper patternName,
+        stb::compiletime_string_wrapper pattern,
+        bool reportError = false>
+    [[nodiscard]] returnType findPattern() noexcept
+    {
+        if (MODULEINFO moduleInfo{}; getModuleInfo<moduleName>(moduleInfo)) {
+            if (moduleInfo.lpBaseOfDll && moduleInfo.SizeOfImage) {
+                Pattern<pattern> pat;
+                BadCharTable<pattern> tab;
+
+                constexpr auto lastIdx = pat.size() - 1;
+                auto start = static_cast<const std::uint8_t*>(moduleInfo.lpBaseOfDll);
+                const auto end = start + moduleInfo.SizeOfImage - pat.size();
+
+                while (start <= end) {
+                    std::intmax_t i = lastIdx;
+                    while (i >= 0 && (pat.get()[i] == '\xFF' || start[i] == pat.get()[i]))
+                        --i;
+                    if (i < 0)
+                        return reinterpret_cast<returnType>(reinterpret_cast<void*>(reinterpret_cast<std::uintptr_t>(start)));
+                    start += tab.get()[static_cast<std::uint8_t>(start[lastIdx])];
+                }
+            }
+        }
+        if constexpr (reportError) {
+            String<moduleName> modName;
+            String<patternName> patName;
+            String<"Failed to find pattern "> msgBegin;
+            String<"!"> msgEnd;
+            LI_FN(MessageBoxA)(nullptr, std::string{ std::string{ msgBegin.get() } + patName.get() + msgEnd.get() }.c_str(), modName.get(), MB_OK | MB_ICONWARNING);
+        }
+        return returnType{};
+    }
 }

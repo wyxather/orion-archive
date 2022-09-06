@@ -144,6 +144,9 @@
     <ClInclude Include="Module\Input.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
+    <ClInclude Include="Module\Game.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -219,6 +222,9 @@
       <Filter>Source\Module</Filter>
     </ClCompile>
     <ClCompile Include="Module\Input.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\Game.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>
