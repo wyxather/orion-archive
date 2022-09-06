@@ -173,11 +173,53 @@ void Config::load(void* json, const File& file) noexcept
 	}
 }
 
+template <stb::compiletime_string_wrapper key, typename T>
+constexpr static auto write(nlohmann::json& j, const T& o) noexcept
+{
+	Orion::String<key> k;
+	j[k.get()] = o;
+}
+
+template <stb::compiletime_string_wrapper key>
+static constexpr auto read(const nlohmann::json& j, bool& o) noexcept
+{
+	if (Orion::String<key> k; j.contains(k.get()))
+		if (const auto& v{ j[k.get()] }; v.is_boolean())
+			v.get_to(o);
+}
+
+template <stb::compiletime_string_wrapper key>
+static constexpr auto read(const nlohmann::json& j, int& o) noexcept
+{
+	if (Orion::String<key> k; j.contains(k.get()))
+		if (const auto& v{ j[k.get()] }; v.is_number_integer())
+			v.get_to(o);
+}
+
+template <stb::compiletime_string_wrapper key>
+static constexpr auto read(const nlohmann::json& j, float& o) noexcept
+{
+	if (Orion::String<key> k; j.contains(k.get()))
+		if (const auto& v{ j[k.get()] }; v.is_number_float())
+			v.get_to(o);
+}
+
 void Config::save() noexcept
 {
 	nlohmann::json o;
 	{
-
+#pragma push_macro("CONFIG")
+#define CONFIG(v) write<#v>(o, v)
+		CONFIG(orion.hitbox[0]);
+		CONFIG(orion.hitbox[1]);
+		CONFIG(orion.hitbox[2]);
+		CONFIG(orion.hitbox[3]);
+		CONFIG(orion.color[0]);
+		CONFIG(orion.color[1]);
+		CONFIG(orion.color[2]);
+		CONFIG(orion.color[3]);
+		CONFIG(orion.target);
+#pragma pop_macro("CONFIG")
 	}
 	save(static_cast<const void*>(&o));
 }
@@ -187,6 +229,17 @@ void Config::load(const File& file) noexcept
 	nlohmann::json o;
 	load(static_cast<void*>(&o), file);
 	{
-
+#pragma push_macro("CONFIG")
+#define CONFIG(v) read<#v>(o, v)
+		CONFIG(orion.hitbox[0]);
+		CONFIG(orion.hitbox[1]);
+		CONFIG(orion.hitbox[2]);
+		CONFIG(orion.hitbox[3]);
+		CONFIG(orion.color[0]);
+		CONFIG(orion.color[1]);
+		CONFIG(orion.color[2]);
+		CONFIG(orion.color[3]);
+		CONFIG(orion.target);
+#pragma pop_macro("CONFIG")
 	}
 }

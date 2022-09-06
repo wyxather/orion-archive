@@ -17,16 +17,16 @@ Orion::Application::Application(HMODULE handle) noexcept :
 	m_window = std::make_unique<Module::Window>(*this);
 	m_console = std::make_unique<Module::Console>(*this);
 	m_renderer = std::make_unique<Module::Renderer>(*this);
-	m_gui = std::make_unique<Module::Gui>(*this);
 	m_config = std::make_unique<Module::Config>(*this);
+	m_gui = std::make_unique<Module::Gui>(*this);
 	m_input = std::make_unique<Module::Input>(*this);
 }
 
 Orion::Application::~Application() noexcept
 {
 	m_input.reset();
-	m_config.reset();
 	m_gui.reset();
+	m_config.reset();
 	m_renderer.reset();
 	m_console.reset();
 	m_window.reset();

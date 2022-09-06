@@ -13,6 +13,14 @@ namespace Orion
 		public:
 			class File;
 
+			class Data
+			{
+			public:
+				bool hitbox[4] = {};
+				float color[4] = {};
+				int target = {};
+			};
+
 			Config(const Application& app) noexcept;
 
 			Config(Config&&) = delete;
@@ -23,6 +31,7 @@ namespace Orion
 			[[nodiscard]] constexpr auto&& getInput() noexcept { return m_input; }
 			[[nodiscard]] constexpr auto&& getSort() noexcept { return m_settings.sort; }
 			[[nodiscard]] constexpr auto&& getFiles() const noexcept { return m_files; }
+			[[nodiscard]] constexpr auto&& getData() noexcept { return orion; }
 
 			void init() noexcept;
 			void save() noexcept;
@@ -51,6 +60,7 @@ namespace Orion
 				std::filesystem::path path;
 
 			} m_settings;
+			Data orion;
 			std::string m_name;
 			std::vector<File> m_files;
 			std::array<char, 260> m_input = {};

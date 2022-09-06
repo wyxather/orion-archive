@@ -1780,6 +1780,7 @@ namespace
 
 Gui::Gui(const Application& app) noexcept :
 	m_app{ app },
+	m_config{ app.getConfig() },
 	m_open{ true },
 	m_io{ ImGui::GetIO() }
 {
@@ -1895,24 +1896,18 @@ void Gui::draw() noexcept
 							if (Menu::Body::Content::Main::Panel::Table table{}) {
 								if (Menu::Body::Content::Main::Panel::Table::Group<"General"> group{ *this }) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
-										static bool boolean[4];
-										static float color[8];
-										static int value[4];
-										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0], m_colorReference, &m_popupAlpha);
-										widget.Toggle<"Unlimited Works">(boolean[1]);
-										widget.Combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(value[0]);
-										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(value[1]);
-										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(boolean);
-										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(boolean);
+										widget.Toggle<"Unlimited Blade">(m_config.getData().hitbox[0], m_config.getData().color, m_colorReference, &m_popupAlpha);
+										widget.Toggle<"Unlimited Works">(m_config.getData().hitbox[1]);
+										widget.Combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(m_config.getData().target);
+										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(m_config.getData().target);
+										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(m_config.getData().hitbox);
+										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(m_config.getData().hitbox);
 									}
 								}
 								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement"> group{ *this }) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
-										static bool boolean[4];
-										static float color[8];
-										static int value[4];
-										widget.Toggle<"Unlimited Blade">(boolean[0], &color[0], m_colorReference, &m_popupAlpha);
-										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(color[0]);
+										widget.Toggle<"Unlimited Blade">(m_config.getData().hitbox[0], m_config.getData().color, m_colorReference, &m_popupAlpha);
+										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(m_config.getData().color[0]);
 									}
 								}
 							}

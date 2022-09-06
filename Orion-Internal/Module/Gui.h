@@ -9,9 +9,12 @@ namespace Orion
 
 	namespace Module
 	{
+		class Config;
+
 		class Gui
 		{
 			const Application& m_app;
+			Config& m_config;
 			ImGuiIO& m_io;
 
 		public:
