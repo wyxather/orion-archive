@@ -158,7 +158,7 @@ void Input::hook() noexcept
 
 void Input::unhook() noexcept
 {
-	const auto hook = m_hooks.find(Fnv<"Input">::value);
-	if (hook != nullptr)
+	if (const auto hook = m_hooks.find(Fnv<"Input">::value);
+		hook != nullptr)
 		hook->restore();
 }

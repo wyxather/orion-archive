@@ -373,8 +373,8 @@ void Renderer::hook() noexcept
 
 void Renderer::unhook() noexcept
 {
-	const auto hook = m_hooks.find(Fnv<"Renderer">::value);
-	if (hook != nullptr)
+	if (const auto hook = m_hooks.find(Fnv<"Renderer">::value);
+		hook != nullptr)
 		hook->restore();
 
 	if (ImGui::GetIO().BackendRendererName) {
