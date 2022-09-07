@@ -32,7 +32,9 @@ namespace Orion
 				MinHook& operator=(const MinHook&) = delete;
 
 				void init(void* address) noexcept;
+				void init(std::size_t size) noexcept;
 				void hookAt(std::size_t index, void* function, bool enable = false) noexcept;
+				void hookAt(std::size_t index, void* target, void* function, bool enable = false) noexcept;
 				void restore() noexcept;
 
 				template <std::size_t index, typename returnType, Function function = Function::NONE, bool callTarget = false, typename ...Args>

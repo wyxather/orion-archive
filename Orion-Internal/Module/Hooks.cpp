@@ -54,14 +54,24 @@ Hooks::MinHook::~MinHook() noexcept
 void Hooks::MinHook::init(void* address) noexcept
 {
 	m_base = address;
-	m_size = Hooks::calculateVmtLength(*static_cast<void**>(address));
+	return init(Hooks::calculateVmtLength(*static_cast<void**>(address)));
+}
+
+void Hooks::MinHook::init(std::size_t size) noexcept
+{
+	m_size = size;
 	m_data = std::make_unique<decltype(m_data)::element_type[]>(m_size);
 }
 
 void Hooks::MinHook::hookAt(std::size_t index, void* function, bool enable) noexcept
 {
+	return hookAt(index, (*static_cast<void***>(m_base))[index], function, enable);
+}
+
+void Hooks::MinHook::hookAt(std::size_t index, void* target, void* function, bool enable) noexcept
+{
 	auto&& data = m_data[index];
-	data.first = (*static_cast<void***>(m_base))[index];
+	data.first = target;
 	MH_CreateHook(data.first, function, &data.second);
 	if (enable)
 		MH_EnableHook(data.first);
