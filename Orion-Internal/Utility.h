@@ -246,7 +246,7 @@ namespace Orion
 
                 while (start <= end) {
                     std::intmax_t i = lastIdx;
-                    while (i >= 0 && (pat.get()[i] == '\xFF' || start[i] == pat.get()[i]))
+                    while (i >= 0 && (static_cast<std::byte>(pat.get()[i]) == static_cast<std::byte>('\xFF') || start[i] == pat.get()[i]))
                         --i;
                     if (i < 0)
                         return reinterpret_cast<returnType>(reinterpret_cast<void*>(reinterpret_cast<std::uintptr_t>(start)));
