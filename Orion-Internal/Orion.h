@@ -28,12 +28,13 @@ namespace Orion
         [[nodiscard]] constexpr auto&& getId() const noexcept { return m_id; }
         [[nodiscard]] constexpr auto&& getHandle() const noexcept { return m_handle; }
         [[nodiscard]] constexpr auto&& getHooks() const noexcept { return *m_hooks.get(); }
-        [[nodiscard]] constexpr auto&& getWindow() const noexcept { return *m_window.get(); }
-        [[nodiscard]] constexpr auto&& getConsole() const noexcept { return *m_console.get(); }
-        [[nodiscard]] constexpr auto&& getRenderer() const noexcept { return *m_renderer.get(); }
+        [[nodiscard]] constexpr const auto& getWindow() const noexcept { return *m_window.get(); }
+        [[nodiscard]] constexpr const auto& getConsole() const noexcept { return *m_console.get(); }
+        [[nodiscard]] constexpr const auto& getRenderer() const noexcept { return *m_renderer.get(); }
         [[nodiscard]] constexpr auto&& getGui() const noexcept { return *m_gui.get(); }
         [[nodiscard]] constexpr auto&& getConfig() const noexcept { return *m_config.get(); }
-        [[nodiscard]] constexpr auto&& getInput() const noexcept { return *m_input.get(); }
+        [[nodiscard]] constexpr const auto& getInput() const noexcept { return *m_input.get(); }
+        [[nodiscard]] constexpr const auto& getGame() const noexcept { return *m_game.get(); }
 
         [[nodiscard]] bool start() const noexcept;
         void load() const noexcept;

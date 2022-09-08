@@ -12,7 +12,7 @@ namespace Orion
 		class Game
 		{
 			const Application& m_app;
-			Console& m_console;
+			const Console& m_console;
 			Hooks& m_hooks;
 
 		public:

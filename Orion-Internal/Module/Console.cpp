@@ -48,7 +48,7 @@ void Console::time(char timeBuffer[9]) noexcept
 	std::strftime(timeBuffer, 9, timeFormat.get(), &_tm);
 }
 
-void Console::color(Color color) noexcept
+void Console::color(Color color) const noexcept
 {
 	LI_FN(SetConsoleTextAttribute).cached()(m_output, static_cast<WORD>(color));
 }

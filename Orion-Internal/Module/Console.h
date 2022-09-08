@@ -40,7 +40,7 @@ namespace Orion
 			Console& operator=(const Console&) = delete;
 
 			template <stb::compiletime_string_wrapper printFormat, Color color = Color::LIGHTGREEN, typename ...Args>
-			constexpr void print(Args&& ...args) noexcept
+			constexpr void print(Args&& ...args) const noexcept
 			{
 #if !NDEBUG
 				Console::color(color);
@@ -50,7 +50,7 @@ namespace Orion
 			}
 
 			template <stb::compiletime_string_wrapper printFormat, Color color = Color::LIGHTGREEN, typename ...Args>
-			constexpr void log(Args&& ...args) noexcept
+			constexpr void log(Args&& ...args) const noexcept
 			{
 #if !NDEBUG
 				char timeBuffer[9]{};
@@ -66,7 +66,7 @@ namespace Orion
 			static BOOL CALLBACK enumerate(HWND handle, Console* console) noexcept;
 			static void time(char timeBuffer[9]) noexcept;
 
-			void color(Color color) noexcept;
+			void color(Color color) const noexcept;
 
 			HWND m_handle = {};
 			HANDLE m_output = {};
