@@ -257,6 +257,7 @@
     <ClInclude Include="Resources\Fonts\arialbd.h" />
     <ClInclude Include="Resources\Fonts\ariblk.h" />
     <ClInclude Include="Resources\Fonts\fontawesome.h" />
+    <ClInclude Include="SDK\Vector3.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>

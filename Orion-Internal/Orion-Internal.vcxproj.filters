@@ -34,6 +34,12 @@
     <Filter Include="Resources\Shaders">
       <UniqueIdentifier>{6b5899c2-314b-4fd5-9f3c-7b75fb08af5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\SDK">
+      <UniqueIdentifier>{ce8f7cae-42ab-4538-b646-f22280d7e6fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Hacks">
+      <UniqueIdentifier>{d90cb006-59c0-460f-8ef4-94c6a17d7077}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\lazy_importer.hpp">
@@ -147,6 +153,7 @@
     <ClInclude Include="Module\Game.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
+    <ClInclude Include="SDK\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
