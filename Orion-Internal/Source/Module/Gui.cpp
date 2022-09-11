@@ -1,10 +1,10 @@
 #include "Gui.h"
-#include "Orion.h"
 #include "Renderer.h"
 #include "Config.h"
-#include "Resources/Fonts/arialbd.h"
-#include "Resources/Fonts/ariblk.h"
-#include "Resources/Fonts/fontawesome.h"
+#include "Source/Orion.h"
+#include "Source/Resources/Fonts/arialbd.h"
+#include "Source/Resources/Fonts/ariblk.h"
+#include "Source/Resources/Fonts/fontawesome.h"
 #include "Dependencies/ImGui/imgui_custom.h"
 #include "Dependencies/ImGui/imgui_impl_dx11.h"
 
@@ -13,31 +13,31 @@
 
 #if _WIN64
 #if NDEBUG
-#include "../Resources/Shaders/Build/Release/x64/blur_x.h"
-#include "../Resources/Shaders/Build/Release/x64/blur_y.h"
-#include "../Resources/Shaders/Build/Release/x64/bloom_combine.h"
-#include "../Resources/Shaders/Build/Release/x64/bloom_extract.h"
-#include "../Resources/Shaders/Build/Release/x64/gaussian_blur.h"
+#include "Source/Resources/Shaders/Build/Release/x64/blur_x.h"
+#include "Source/Resources/Shaders/Build/Release/x64/blur_y.h"
+#include "Source/Resources/Shaders/Build/Release/x64/bloom_combine.h"
+#include "Source/Resources/Shaders/Build/Release/x64/bloom_extract.h"
+#include "Source/Resources/Shaders/Build/Release/x64/gaussian_blur.h"
 #else
-#include "../Resources/Shaders/Build/Debug/x64/blur_x.h"
-#include "../Resources/Shaders/Build/Debug/x64/blur_y.h"
-#include "../Resources/Shaders/Build/Debug/x64/bloom_combine.h"
-#include "../Resources/Shaders/Build/Debug/x64/bloom_extract.h"
-#include "../Resources/Shaders/Build/Debug/x64/gaussian_blur.h"
+#include "Source/Resources/Shaders/Build/Debug/x64/blur_x.h"
+#include "Source/Resources/Shaders/Build/Debug/x64/blur_y.h"
+#include "Source/Resources/Shaders/Build/Debug/x64/bloom_combine.h"
+#include "Source/Resources/Shaders/Build/Debug/x64/bloom_extract.h"
+#include "Source/Resources/Shaders/Build/Debug/x64/gaussian_blur.h"
 #endif
 #else
 #if NDEBUG
-#include "../Resources/Shaders/Build/Release/Win32/blur_x.h"
-#include "../Resources/Shaders/Build/Release/Win32/blur_y.h"
-#include "../Resources/Shaders/Build/Release/Win32/bloom_combine.h"
-#include "../Resources/Shaders/Build/Release/Win32/bloom_extract.h"
-#include "../Resources/Shaders/Build/Release/Win32/gaussian_blur.h"
+#include "Source/Resources/Shaders/Build/Release/Win32/blur_x.h"
+#include "Source/Resources/Shaders/Build/Release/Win32/blur_y.h"
+#include "Source/Resources/Shaders/Build/Release/Win32/bloom_combine.h"
+#include "Source/Resources/Shaders/Build/Release/Win32/bloom_extract.h"
+#include "Source/Resources/Shaders/Build/Release/Win32/gaussian_blur.h"
 #else
-#include "../Resources/Shaders/Build/Debug/Win32/blur_x.h"
-#include "../Resources/Shaders/Build/Debug/Win32/blur_y.h"
-#include "../Resources/Shaders/Build/Debug/Win32/bloom_combine.h"
-#include "../Resources/Shaders/Build/Debug/Win32/bloom_extract.h"
-#include "../Resources/Shaders/Build/Debug/Win32/gaussian_blur.h"
+#include "Source/Resources/Shaders/Build/Debug/Win32/blur_x.h"
+#include "Source/Resources/Shaders/Build/Debug/Win32/blur_y.h"
+#include "Source/Resources/Shaders/Build/Debug/Win32/bloom_combine.h"
+#include "Source/Resources/Shaders/Build/Debug/Win32/bloom_extract.h"
+#include "Source/Resources/Shaders/Build/Debug/Win32/gaussian_blur.h"
 #endif
 #endif
 

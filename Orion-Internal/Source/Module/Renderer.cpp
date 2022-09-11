@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include "Hooks.h"
-#include "Orion.h"
 #include "Gui.h"
+#include "Source/Orion.h"
 #include "Dependencies/ImGui/imgui_impl_win32.h"
 #include "Dependencies/ImGui/imgui_impl_dx9.h"
 #include "Dependencies/ImGui/imgui_impl_dx11.h"

@@ -39,15 +39,15 @@
 
 #ifdef _WIN64
 #ifdef NDEBUG
-#include "Resources/Shaders/Build/Release/x64/default_vs.h"
+#include "Source/Resources/Shaders/Build/Release/x64/default_vs.h"
 #else
-#include "Resources/Shaders/Build/Debug/x64/default_vs.h"
+#include "Source/Resources/Shaders/Build/Debug/x64/default_vs.h"
 #endif
 #else
 #ifdef NDEBUG
-#include "Resources/Shaders/Build/Release/Win32/default_vs.h"
+#include "Source/Resources/Shaders/Build/Release/Win32/default_vs.h"
 #else
-#include "Resources/Shaders/Build/Debug/Win32/default_vs.h"
+#include "Source/Resources/Shaders/Build/Debug/Win32/default_vs.h"
 #endif
 #endif
 

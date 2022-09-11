@@ -2,7 +2,7 @@
 
 #if !NDEBUG
 #include <chrono>
-#include "Orion.h"
+#include "Source/Orion.h"
 #endif
 
 using namespace Orion::Module;

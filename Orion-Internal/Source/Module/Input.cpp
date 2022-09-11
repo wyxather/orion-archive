@@ -1,8 +1,8 @@
 #include "Input.h"
 #include "Hooks.h"
-#include "Orion.h"
 #include "Gui.h"
 #include "Window.h"
+#include "Source/Orion.h"
 
 #include <wrl/client.h>
 #define DIRECTINPUT_VERSION 0x0800

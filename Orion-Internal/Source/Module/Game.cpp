@@ -1,7 +1,7 @@
 #include "Game.h"
-#include "Orion.h"
 #include "Console.h"
 #include "Hooks.h"
+#include "Source/Orion.h"
 
 using Orion::Module::Game;
 

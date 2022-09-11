@@ -1,7 +1,7 @@
 #include "Window.h"
-#include "Orion.h"
 #include "Gui.h"
 #include "Input.h"
+#include "Source/Orion.h"
 #include "Dependencies/ImGui/imgui_impl_win32.h"
 
 using Orion::Module::Window;

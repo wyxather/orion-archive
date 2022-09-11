@@ -25,51 +25,51 @@
     <Filter Include="Dependencies\ImGui">
       <UniqueIdentifier>{6c0ac559-9c5d-4f35-a347-bd0dca0006d1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{1437e532-2cd6-43a1-bd69-5b36c0f8e549}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Fonts">
-      <UniqueIdentifier>{67f099b9-9b24-4b41-bbe0-85758ddbd1b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Shaders">
-      <UniqueIdentifier>{6b5899c2-314b-4fd5-9f3c-7b75fb08af5b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\SDK">
       <UniqueIdentifier>{ce8f7cae-42ab-4538-b646-f22280d7e6fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Hacks">
       <UniqueIdentifier>{d90cb006-59c0-460f-8ef4-94c6a17d7077}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Resources">
+      <UniqueIdentifier>{1437e532-2cd6-43a1-bd69-5b36c0f8e549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Resources\Fonts">
+      <UniqueIdentifier>{67f099b9-9b24-4b41-bbe0-85758ddbd1b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Resources\Shaders">
+      <UniqueIdentifier>{6b5899c2-314b-4fd5-9f3c-7b75fb08af5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\lazy_importer.hpp">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="Source\pch.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="Source\framework.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\xorstr.hpp">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="Orion.h">
+    <ClInclude Include="Source\Orion.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Module\Window.h">
+    <ClInclude Include="Source\Module\Window.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
+    <ClInclude Include="Source\Utility.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\stb.hh">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="Module\Console.h">
+    <ClInclude Include="Source\Module\Console.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
-    <ClInclude Include="Module\Renderer.h">
+    <ClInclude Include="Source\Module\Renderer.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\MinHook\include\MinHook.h">
@@ -96,7 +96,7 @@
     <ClInclude Include="Dependencies\MinHook\src\hde\table64.h">
       <Filter>Dependencies\MinHook\src\hde</Filter>
     </ClInclude>
-    <ClInclude Include="Module\Hooks.h">
+    <ClInclude Include="Source\Module\Hooks.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\ImGui\imconfig.h">
@@ -126,54 +126,54 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
       <Filter>Dependencies\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Module\Gui.h">
+    <ClInclude Include="Source\Module\Gui.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\Fonts\arialbd.h">
-      <Filter>Resources\Fonts</Filter>
+    <ClInclude Include="Source\Resources\Fonts\arialbd.h">
+      <Filter>Source\Resources\Fonts</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\Fonts\ariblk.h">
-      <Filter>Resources\Fonts</Filter>
+    <ClInclude Include="Source\Resources\Fonts\ariblk.h">
+      <Filter>Source\Resources\Fonts</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\Fonts\fontawesome.h">
-      <Filter>Resources\Fonts</Filter>
+    <ClInclude Include="Source\Resources\Fonts\fontawesome.h">
+      <Filter>Source\Resources\Fonts</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\ImGui\imgui_custom.h">
       <Filter>Dependencies\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Module\Config.h">
+    <ClInclude Include="Source\Module\Config.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\json.hpp">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="Module\Input.h">
+    <ClInclude Include="Source\Module\Input.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
-    <ClInclude Include="Module\Game.h">
+    <ClInclude Include="Source\Module\Game.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\Vector3.h">
+    <ClInclude Include="Source\SDK\Vector3.h">
       <Filter>Source\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Source\pch.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain.cpp">
+    <ClCompile Include="Source\dllmain.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Orion.cpp">
+    <ClCompile Include="Source\Orion.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Module\Window.cpp">
+    <ClCompile Include="Source\Module\Window.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
-    <ClCompile Include="Module\Console.cpp">
+    <ClCompile Include="Source\Module\Console.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
-    <ClCompile Include="Module\Renderer.cpp">
+    <ClCompile Include="Source\Module\Renderer.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
     <ClCompile Include="Dependencies\MinHook\src\buffer.c">
@@ -191,10 +191,10 @@
     <ClCompile Include="Dependencies\MinHook\src\hde\hde64.c">
       <Filter>Dependencies\MinHook\src\hde</Filter>
     </ClCompile>
-    <ClCompile Include="pch-c.c">
+    <ClCompile Include="Source\pch-c.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Module\Hooks.cpp">
+    <ClCompile Include="Source\Module\Hooks.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
     <ClCompile Include="Dependencies\ImGui\imgui.cpp">
@@ -221,40 +221,40 @@
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
       <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Module\Gui.cpp">
+    <ClCompile Include="Source\Module\Gui.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
     <ClCompile Include="Dependencies\ImGui\imgui_custom.cpp">
       <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Module\Config.cpp">
+    <ClCompile Include="Source\Module\Config.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
-    <ClCompile Include="Module\Input.cpp">
+    <ClCompile Include="Source\Module\Input.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
-    <ClCompile Include="Module\Game.cpp">
+    <ClCompile Include="Source\Module\Game.cpp">
       <Filter>Source\Module</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\default_vs.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="Source\Resources\Shaders\default_vs.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\blur_x.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="Source\Resources\Shaders\blur_x.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\blur_y.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="Source\Resources\Shaders\blur_y.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\bloom_combine.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="Source\Resources\Shaders\bloom_combine.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\bloom_extract.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="Source\Resources\Shaders\bloom_extract.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\gaussian_blur.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="Source\Resources\Shaders\gaussian_blur.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
