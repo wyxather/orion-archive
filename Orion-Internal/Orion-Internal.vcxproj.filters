@@ -153,7 +153,9 @@
     <ClInclude Include="Module\Game.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
-    <ClInclude Include="SDK\Vector3.h" />
+    <ClInclude Include="SDK\Vector3.h">
+      <Filter>Source\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
