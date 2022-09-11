@@ -16,6 +16,13 @@ namespace Orion
 			class Data
 			{
 			public:
+				constexpr Data() noexcept = default;
+
+				Data(Data&&) = delete;
+				Data(const Data&) = delete;
+				Data& operator=(Data&&) = delete;
+				Data& operator=(const Data&) = delete;
+
 				bool hitbox[4] = {};
 				float color[4] = {};
 				int target = {};
