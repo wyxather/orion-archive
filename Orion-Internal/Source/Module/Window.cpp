@@ -37,8 +37,7 @@ void Window::unhook() noexcept
 
 BOOL Window::enumerate(HWND handle, Window* window) noexcept
 {
-	DWORD windowThreadProcessId{};
-	if (!(LI_FN(GetWindowThreadProcessId)(handle, &windowThreadProcessId)) || window->m_app.getId() != windowThreadProcessId)
+	if (DWORD processId{}; !(LI_FN(GetWindowThreadProcessId)(handle, &processId)) || window->m_app.getId() != processId)
 		return 1;
 
 	TCHAR className[MAX_PATH]{}, windowText[MAX_PATH]{};
