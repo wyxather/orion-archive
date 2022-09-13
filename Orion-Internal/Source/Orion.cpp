@@ -3,8 +3,8 @@
 #include "Module/Window.h"
 #include "Module/Console.h"
 #include "Module/Renderer.h"
-#include "Module/Gui.h"
 #include "Module/Config.h"
+#include "Module/Gui.h"
 #include "Module/Input.h"
 #include "Module/Game.h"
 
@@ -18,7 +18,7 @@ Orion::Application::~Application() noexcept
 	m_input.reset();
 	m_gui.reset();
 	m_config.reset();
-	m_renderer.reset();
+	renderer.reset();
 	console.reset();
 	window.reset();
 	m_hooks.reset();
@@ -32,7 +32,7 @@ void Orion::Application::load() noexcept
 	m_hooks = std::make_unique<Module::Hooks>(*this);
 	window.emplace();
 	console.emplace();
-	m_renderer = std::make_unique<Module::Renderer>(*this);
+	renderer.emplace();
 	m_config = std::make_unique<Module::Config>(*this);
 	m_gui = std::make_unique<Module::Gui>(*this);
 	m_input = std::make_unique<Module::Input>(*this);
@@ -45,7 +45,7 @@ bool Orion::Application::start() const noexcept
 {
 	m_config->init();
 
-	m_renderer->hook();
+	renderer->hook();
 	m_input->hook();
 	game->hook();
 	Module::Hooks::enable();
@@ -57,7 +57,7 @@ void Orion::Application::exit() const noexcept
 {
 	game->unhook();
 	m_input->unhook();
-	m_renderer->unhook();
+	renderer->unhook();
 	Module::Hooks::disable();
 
 	window->unhook();
@@ -66,7 +66,7 @@ void Orion::Application::exit() const noexcept
 		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), m_handle, NULL, nullptr),
 		[](HANDLE handle) noexcept
 		{
-			if (handle)
+			if (handle != nullptr)
 				LI_FN(CloseHandle)(handle);
 		});
 }

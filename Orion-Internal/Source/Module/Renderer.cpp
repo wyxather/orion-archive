@@ -9,7 +9,6 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 
-using Orion::Module::Renderer;
 using Orion::Module::Hooks;
 using Microsoft::WRL::ComPtr;
 
@@ -137,27 +136,27 @@ namespace
 
 }
 
-Renderer::Renderer(const Application& app, Type type) noexcept :
-	m_app{ app },
-	m_hooks{ app.getHooks() }
+Renderer::Renderer(Type type) noexcept
 {
+	Orion::String<"Renderer"> caption;
+
 	switch (type) {
 
 	case Type::NONE:
 	{
 		{
-			String<"d3d9.dll"> moduleName;
-			m_handle = LI_FN(GetModuleHandleA)(moduleName.get());
-			if (m_handle && LI_FN(MessageBoxA)(nullptr, moduleName.get(), moduleName.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
-				m_type = Type::D3D9;
+			Orion::String<"d3d9.dll"> name;
+			handle = LI_FN(GetModuleHandleA)(name.get());
+			if (handle && LI_FN(MessageBoxA)(nullptr, name.get(), caption.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
+				this->type = Type::D3D9;
 				break;
 			}
 		}
 		{
-			String<"d3d11.dll"> moduleName;
-			m_handle = LI_FN(GetModuleHandleA)(moduleName.get());
-			if (m_handle && LI_FN(MessageBoxA)(nullptr, moduleName.get(), moduleName.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
-				m_type = Type::D3D11;
+			Orion::String<"d3d11.dll"> name;
+			handle = LI_FN(GetModuleHandleA)(name.get());
+			if (handle && LI_FN(MessageBoxA)(nullptr, name.get(), caption.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
+				this->type = Type::D3D11;
 				break;
 			}
 		}
@@ -166,17 +165,17 @@ Renderer::Renderer(const Application& app, Type type) noexcept :
 
 	case Type::D3D9:
 	{
-		String<"d3d9.dll"> moduleName;
-		if (m_handle = LI_FN(GetModuleHandleA)(moduleName.get()))
-			m_type = Type::D3D9;
+		Orion::String<"d3d9.dll"> name;
+		if (handle = LI_FN(GetModuleHandleA)(name.get()))
+			this->type = Type::D3D9;
 	}
 	break;
 
 	case Type::D3D11:
 	{
-		String<"d3d11.dll"> moduleName;
-		if (m_handle = LI_FN(GetModuleHandleA)(moduleName.get()))
-			m_type = Type::D3D11;
+		Orion::String<"d3d11.dll"> name;
+		if (handle = LI_FN(GetModuleHandleA)(name.get()))
+			this->type = Type::D3D11;
 	}
 	break;
 
@@ -185,13 +184,13 @@ Renderer::Renderer(const Application& app, Type type) noexcept :
 
 Renderer::~Renderer() noexcept
 {
-	m_type = {};
-	m_handle = {};
+	type = {};
+	handle = {};
 }
 
 void Renderer::hook() noexcept
 {
-	switch (m_type) {
+	switch (type) {
 
 	case Type::D3D9:
 	{
@@ -234,18 +233,18 @@ void Renderer::hook() noexcept
 			LI_FN(CreateWindowEx)(NULL, windowClass->lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass->hInstance, nullptr),
 			[](HWND hWnd) noexcept
 			{
-				if (hWnd)
+				if (hWnd != nullptr)
 					LI_FN(DestroyWindow)(hWnd);
 			});
 
 		if (!window)
 			return;
 
-		String<"Direct3DCreate9"> procName;
-		const auto direct3DCreate9 = reinterpret_cast<LPDIRECT3D9(__stdcall*)(std::uint32_t)>(LI_FN(GetProcAddress)(m_handle, procName.get()));
+		Orion::String<"Direct3DCreate9"> proc;
+		const auto direct3DCreate9 = reinterpret_cast<LPDIRECT3D9(__stdcall*)(std::uint32_t)>(LI_FN(GetProcAddress)(handle, proc.get()));
 		const ComPtr<IDirect3D9> direct3D9 = direct3DCreate9(D3D_SDK_VERSION);
 
-		D3DPRESENT_PARAMETERS params{};
+		D3DPRESENT_PARAMETERS params;
 		params.BackBufferWidth = 0;
 		params.BackBufferHeight = 0;
 		params.BackBufferFormat = D3DFORMAT::D3DFMT_UNKNOWN;
@@ -265,7 +264,7 @@ void Renderer::hook() noexcept
 		if (direct3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE::D3DDEVTYPE_NULLREF, window.get(), D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT, &params, device.GetAddressOf()) != D3D_OK)
 			return;
 
-		auto&& hook = m_hooks[Fnv<"Renderer">::value];
+		auto&& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
 		hook.init(device.Get());
 		hook.hookAt(16, &D3D9::Reset);
 		hook.hookAt(17, &D3D9::Present);
@@ -313,26 +312,27 @@ void Renderer::hook() noexcept
 			LI_FN(CreateWindowEx)(NULL, windowClass->lpszClassName, TEXT(" "), WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, windowClass->hInstance, nullptr),
 			[](HWND hWnd) noexcept
 			{
-				if (hWnd)
+				if (hWnd != nullptr)
 					LI_FN(DestroyWindow)(hWnd);
 			});
 
 		if (!window)
 			return;
 
-		String<"D3D11CreateDeviceAndSwapChain"> procName;
-		const auto createDeviceAndSwapChain = LI_FN(GetProcAddress)(m_handle, procName.get());
+		Orion::String<"D3D11CreateDeviceAndSwapChain"> proc;
+		const auto createDeviceAndSwapChain = LI_FN(GetProcAddress)(handle, proc.get());
 
-		D3D_FEATURE_LEVEL featureLevel{};
+		D3D_FEATURE_LEVEL featureLevel;
 		const D3D_FEATURE_LEVEL featureLevels[]{
 			D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_10_1,
-			D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0 };
+			D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0
+		};
 
-		DXGI_RATIONAL refreshRate{};
+		DXGI_RATIONAL refreshRate;
 		refreshRate.Numerator = 60;
 		refreshRate.Denominator = 1;
 
-		DXGI_MODE_DESC bufferDesc{};
+		DXGI_MODE_DESC bufferDesc;
 		bufferDesc.Width = 100;
 		bufferDesc.Height = 100;
 		bufferDesc.RefreshRate = refreshRate;
@@ -340,17 +340,17 @@ void Renderer::hook() noexcept
 		bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 		bufferDesc.Scaling = DXGI_MODE_SCALING::DXGI_MODE_SCALING_UNSPECIFIED;
 
-		DXGI_SAMPLE_DESC sampleDesc{};
+		DXGI_SAMPLE_DESC sampleDesc;
 		sampleDesc.Count = 1;
 		sampleDesc.Quality = 0;
 
-		DXGI_SWAP_CHAIN_DESC swapChainDesc{};
+		DXGI_SWAP_CHAIN_DESC swapChainDesc;
 		swapChainDesc.BufferDesc = bufferDesc;
 		swapChainDesc.SampleDesc = sampleDesc;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.BufferCount = 1;
 		swapChainDesc.OutputWindow = window.get();
-		swapChainDesc.Windowed = 1;
+		swapChainDesc.Windowed = TRUE;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
 		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
@@ -373,18 +373,18 @@ void Renderer::hook() noexcept
 			ID3D11DeviceContext**))(createDeviceAndSwapChain))(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, 2, D3D11_SDK_VERSION, &swapChainDesc, swapChain.GetAddressOf(), device.GetAddressOf(), &featureLevel, context.GetAddressOf()) != S_OK)
 			return;
 
-		std::array<std::uintptr_t, 205> table{};
+		std::array<std::uintptr_t, 205> table;
 
-		for (std::size_t index{ 0 }; index < 18; index++)
-			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(swapChain.Get()))[index];
+		for (std::size_t i = 0; i < 18; i++)
+			table[i] = (*reinterpret_cast<decltype(table)::value_type**>(swapChain.Get()))[i];
 
-		for (std::size_t index{ 18 }; index < 61; index++)
-			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(device.Get()))[index];
+		for (std::size_t i = 18; i < 61; i++)
+			table[i] = (*reinterpret_cast<decltype(table)::value_type**>(device.Get()))[i];
 
-		for (std::size_t index{ 61 }; index < 205; index++)
-			table[index] = (*reinterpret_cast<decltype(table)::value_type**>(context.Get()))[index];
+		for (std::size_t i = 61; i < 205; i++)
+			table[i] = (*reinterpret_cast<decltype(table)::value_type**>(context.Get()))[i];
 
-		auto&& hook = m_hooks[Fnv<"Renderer">::value];
+		auto&& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
 		const void* address = table.data();
 		hook.init(&address);
 		hook.hookAt(8, &D3D11::Present);
@@ -397,12 +397,12 @@ void Renderer::hook() noexcept
 
 void Renderer::unhook() noexcept
 {
-	if (const auto hook = m_hooks.find(Fnv<"Renderer">::value);
+	if (const auto hook = Orion::instance->getHooks().find(Orion::Fnv<"Renderer">::value);
 		hook != nullptr)
 		hook->restore();
 
 	if (ImGui::GetIO().BackendRendererName) {
-		switch (m_type) {
+		switch (type) {
 		case Type::D3D9:
 			ImGui_ImplDX9_Shutdown();
 			break;

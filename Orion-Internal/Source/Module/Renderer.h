@@ -1,42 +1,31 @@
 #pragma once
 
-namespace Orion
+class Renderer
 {
-	class Application;
-
-	namespace Module
+public:
+	enum class Type
 	{
-		class Hooks;
+		NONE,
+		D3D9,
+		D3D11
+	};
 
-		class Renderer
-		{
-			const Application& m_app;
-			Hooks& m_hooks;
+	Renderer(Type type = Type::NONE) noexcept;
+	~Renderer() noexcept;
 
-		public:
-			enum class Type
-			{
-				NONE,
-				D3D9,
-				D3D11
-			};
+	Renderer(Renderer&&) = delete;
+	Renderer(const Renderer&) = delete;
+	Renderer& operator=(Renderer&&) = delete;
+	Renderer& operator=(const Renderer&) = delete;
 
-			Renderer(const Application& app, Type type = Type::NONE) noexcept;
-			~Renderer() noexcept;
+	[[nodiscard]] constexpr auto getType() const noexcept { return type; }
 
-			Renderer(Renderer&&) = delete;
-			Renderer(const Renderer&) = delete;
-			Renderer& operator=(Renderer&&) = delete;
-			Renderer& operator=(const Renderer&) = delete;
+	auto hook() noexcept -> void;
+	auto unhook() noexcept -> void;
 
-			[[nodiscard]] constexpr auto getType() const noexcept { return m_type; }
+private:
+	Type type;
+	HMODULE handle;
+};
 
-			void hook() noexcept;
-			void unhook() noexcept;
-
-		private:
-			Type m_type = {};
-			HMODULE m_handle = {};
-		};
-	}
-}
+inline std::optional<Renderer> renderer;

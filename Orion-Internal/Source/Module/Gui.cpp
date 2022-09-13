@@ -1819,15 +1819,15 @@ Gui::Gui(const Application& app) noexcept :
 	}
 	m_fonts.ariblk_37 = m_io.Fonts->AddFontFromMemoryCompressedTTF(ariblk_compressed_data, ariblk_compressed_size, 37);
 
-	switch (app.getRenderer().getType()) {
+	switch (renderer->getType()) {
 
-	case Orion::Module::Renderer::Type::D3D9:
+	case Renderer::Type::D3D9:
 	{
 		m_postProcess = std::make_unique<BlurD3D9>();
 	}
 	break;
 
-	case Orion::Module::Renderer::Type::D3D11:
+	case Renderer::Type::D3D11:
 	{
 		m_postProcess = std::make_unique<BlurD3D11>();
 	}

@@ -5,7 +5,6 @@ namespace Orion
     namespace Module
     {
         class Hooks;
-        class Renderer;
         class Gui;
         class Config;
         class Input;
@@ -24,7 +23,6 @@ namespace Orion
 
         [[nodiscard]] constexpr auto&& getHandle() const noexcept { return m_handle; }
         [[nodiscard]] constexpr auto&& getHooks() const noexcept { return *m_hooks.get(); }
-        [[nodiscard]] constexpr const auto& getRenderer() const noexcept { return *m_renderer.get(); }
         [[nodiscard]] constexpr auto&& getGui() const noexcept { return *m_gui.get(); }
         [[nodiscard]] constexpr auto&& getConfig() const noexcept { return *m_config.get(); }
         [[nodiscard]] constexpr const auto& getInput() const noexcept { return *m_input.get(); }
@@ -40,7 +38,6 @@ namespace Orion
 
         HMODULE m_handle = {};
         std::unique_ptr<Module::Hooks> m_hooks;
-        std::unique_ptr<Module::Renderer> m_renderer;
         std::unique_ptr<Module::Gui> m_gui;
         std::unique_ptr<Module::Config> m_config;
         std::unique_ptr<Module::Input> m_input;
