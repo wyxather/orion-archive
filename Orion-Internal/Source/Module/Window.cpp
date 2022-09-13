@@ -4,13 +4,11 @@
 #include "Orion.h"
 #include "../Dependencies/ImGui/imgui_impl_win32.h"
 
-using Orion::Module::Window;
 using Orion::Module::Input;
 
 LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
-Window::Window(const Application& app) noexcept :
-	m_app{ app }
+Window::Window() noexcept
 {
 	ImGui::CreateContext();
 	LI_FN(EnumWindows)(reinterpret_cast<WNDENUMPROC>(&Window::enumerate), reinterpret_cast<LPARAM>(this));
@@ -19,52 +17,45 @@ Window::Window(const Application& app) noexcept :
 Window::~Window() noexcept
 {
 	ImGui::DestroyContext();
-	m_handle = {};
-	m_proc = {};
+	handle = {};
+	originalProc = {};
 }
 
-void Window::hook() noexcept
+auto Window::hook() noexcept -> void
 {
-	ImGui_ImplWin32_Init(m_handle);
-	m_proc.asLongPtr = LI_FN(SetWindowLongPtr)(m_handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::proc));
+	ImGui_ImplWin32_Init(handle);
+	originalProc.asLongPtr = LI_FN(SetWindowLongPtr)(handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::proc));
 }
 
-void Window::unhook() noexcept
+auto Window::unhook() noexcept -> void
 {
-	LI_FN(SetWindowLongPtr)(m_handle, GWLP_WNDPROC, m_proc.asLongPtr);
+	LI_FN(SetWindowLongPtr)(handle, GWLP_WNDPROC, originalProc.asLongPtr);
 	ImGui_ImplWin32_Shutdown();
 }
 
-BOOL Window::enumerate(HWND handle, Window* window) noexcept
+auto Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
 {
-	if (DWORD processId{}; !(LI_FN(GetWindowThreadProcessId)(handle, &processId)) || Orion::instance->id != processId)
+	if (DWORD id; !(LI_FN(GetWindowThreadProcessId)(handle, &id)) || id != Orion::instance->id)
 		return 1;
-
-	TCHAR className[MAX_PATH]{}, windowText[MAX_PATH]{};
-	if (!(LI_FN(GetClassName)(handle, className, MAX_PATH)) || !(LI_FN(GetWindowText)(handle, windowText, MAX_PATH)))
+	if (std::array<TCHAR, 260> className, windowText; !(LI_FN(GetClassName)(handle, className.data(), static_cast<int>(className.size()))) || !(LI_FN(GetWindowText)(handle, windowText.data(), static_cast<int>(windowText.size()))) || LI_FN(MessageBox)(nullptr, windowText.data(), className.data(), MB_YESNO | MB_ICONINFORMATION) != IDYES)
 		return 1;
-
-	if (LI_FN(MessageBox)(nullptr, windowText, className, MB_YESNO | MB_ICONINFORMATION) != IDYES)
-		return 1;
-
-	window->m_handle = handle;
-
+	window->handle = handle;
 	return 0;
 }
 
 LRESULT Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 {
-	static const auto once = instance->start();
-	auto&& gui = instance->getGui();
+	static const auto once = Orion::instance->start();
+	auto&& gui = Orion::instance->getGui();
 	if (message == WM_KEYUP) {
 		switch (wParam) {
-		case VK_END: instance->exit(); break;
+		case VK_END:  Orion::instance->exit(); break;
 		case VK_INSERT: gui.toggle(); break;
 		}
 	}
 	if (once) {
 		if (gui.isOpen()) {
-			switch (instance->getInput().getType()) {
+			switch (Orion::instance->getInput().getType()) {
 			case Input::Type::DINPUT8:
 				if (ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam))
 					return FALSE;
@@ -74,5 +65,5 @@ LRESULT Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) no
 			}
 		}
 	}
-	return LI_FN(CallWindowProc).cached()(instance->getWindow().m_proc.asWndProc, handle, message, wParam, lParam);
+	return LI_FN(CallWindowProc).cached()(window->originalProc.asWndProc, handle, message, wParam, lParam);
 }

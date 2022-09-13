@@ -53,8 +53,8 @@ namespace
 				if (key[0] != key[1]) {
 					if (POINT pos{}; LI_FN(GetCursorPos).cached()(&pos)) {
 						key[0]
-							? PostMessage(Orion::instance->getWindow().getHandle(), WM_LBUTTONDOWN, VK_LBUTTON, MAKELPARAM(pos.x, pos.y))
-							: PostMessage(Orion::instance->getWindow().getHandle(), WM_LBUTTONUP, NULL, MAKELPARAM(pos.x, pos.y));
+							? PostMessage(window->getHandle(), WM_LBUTTONDOWN, VK_LBUTTON, MAKELPARAM(pos.x, pos.y))
+							: PostMessage(window->getHandle(), WM_LBUTTONUP, NULL, MAKELPARAM(pos.x, pos.y));
 					}
 					key[1] = key[0];
 				}
@@ -87,7 +87,7 @@ namespace
 						case DIMOFS_BUTTON0:
 						{
 							if (POINT pos{}; LI_FN(GetCursorPos).cached()(&pos)) {
-								PostMessage(Orion::instance->getWindow().getHandle(), WM_LBUTTONDOWN, VK_LBUTTON, MAKELPARAM(pos.x, pos.y));
+								PostMessage(window->getHandle(), WM_LBUTTONDOWN, VK_LBUTTON, MAKELPARAM(pos.x, pos.y));
 								rgdod[i].dwData &= ~0x80;
 							}
 						}
@@ -98,7 +98,7 @@ namespace
 					case DIMOFS_BUTTON0:
 					{
 						if (POINT pos{}; LI_FN(GetCursorPos).cached()(&pos))
-							PostMessage(Orion::instance->getWindow().getHandle(), WM_LBUTTONUP, NULL, MAKELPARAM(pos.x, pos.y));
+							PostMessage(window->getHandle(), WM_LBUTTONUP, NULL, MAKELPARAM(pos.x, pos.y));
 					}
 					break;
 					}

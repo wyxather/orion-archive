@@ -20,7 +20,7 @@ Orion::Application::~Application() noexcept
 	m_config.reset();
 	m_renderer.reset();
 	console.reset();
-	m_window.reset();
+	window.reset();
 	m_hooks.reset();
 
 	id = {};
@@ -30,7 +30,7 @@ Orion::Application::~Application() noexcept
 void Orion::Application::load() noexcept
 {
 	m_hooks = std::make_unique<Module::Hooks>(*this);
-	m_window = std::make_unique<Module::Window>(*this);
+	window.emplace();
 	console.emplace();
 	m_renderer = std::make_unique<Module::Renderer>(*this);
 	m_config = std::make_unique<Module::Config>(*this);
@@ -38,7 +38,7 @@ void Orion::Application::load() noexcept
 	m_input = std::make_unique<Module::Input>(*this);
 	m_game = std::make_unique<Module::Game>(*this);
 
-	m_window->hook();
+	window->hook();
 }
 
 bool Orion::Application::start() const noexcept
@@ -60,7 +60,7 @@ void Orion::Application::exit() const noexcept
 	m_renderer->unhook();
 	Module::Hooks::disable();
 
-	m_window->unhook();
+	window->unhook();
 
 	std::unique_ptr<void, std::function<void(HANDLE)>> thread(
 		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), m_handle, NULL, nullptr),

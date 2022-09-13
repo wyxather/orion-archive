@@ -1,38 +1,30 @@
 #pragma once
 
-namespace Orion
+class Window
 {
-    class Application;
+public:
+    Window() noexcept;
+    ~Window() noexcept;
 
-    namespace Module
-    {
-        class Window
-        {
-            const Application& m_app;
+    Window(Window&&) = delete;
+    Window(const Window&) = delete;
+    Window& operator=(Window&&) = delete;
+    Window& operator=(const Window&) = delete;
 
-        public:
-            Window(const Application& app) noexcept;
-            ~Window() noexcept;
+    [[nodiscard]] constexpr auto getHandle() const noexcept { return handle; }
 
-            Window(Window&&) = delete;
-            Window(const Window&) = delete;
-            Window& operator=(Window&&) = delete;
-            Window& operator=(const Window&) = delete;
+    auto hook() noexcept -> void;
+    auto unhook() noexcept -> void;
 
-            [[nodiscard]] constexpr auto getHandle() const noexcept { return m_handle; }
+private:
+    static auto __stdcall enumerate(HWND handle, Window* window) noexcept -> BOOL;
+    static auto __stdcall proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept -> LRESULT;
 
-            void hook() noexcept;
-            void unhook() noexcept;
+    HWND handle;
+    union {
+        WNDPROC asWndProc;
+        LONG_PTR asLongPtr;
+    } originalProc;
+};
 
-        private:
-            static BOOL CALLBACK enumerate(HWND handle, Window* window) noexcept;
-            static LRESULT CALLBACK proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept;
-
-            HWND m_handle = {};
-            union {
-                WNDPROC asWndProc;
-                LONG_PTR asLongPtr;
-            } m_proc = {};
-        };
-    }
-}
+inline std::optional<Window> window;

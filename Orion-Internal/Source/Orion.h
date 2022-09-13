@@ -26,7 +26,6 @@ namespace Orion
 
         [[nodiscard]] constexpr auto&& getHandle() const noexcept { return m_handle; }
         [[nodiscard]] constexpr auto&& getHooks() const noexcept { return *m_hooks.get(); }
-        [[nodiscard]] constexpr const auto& getWindow() const noexcept { return *m_window.get(); }
         [[nodiscard]] constexpr const auto& getRenderer() const noexcept { return *m_renderer.get(); }
         [[nodiscard]] constexpr auto&& getGui() const noexcept { return *m_gui.get(); }
         [[nodiscard]] constexpr auto&& getConfig() const noexcept { return *m_config.get(); }
@@ -44,7 +43,6 @@ namespace Orion
 
         HMODULE m_handle = {};
         std::unique_ptr<Module::Hooks> m_hooks;
-        std::unique_ptr<Module::Window> m_window;
         std::unique_ptr<Module::Renderer> m_renderer;
         std::unique_ptr<Module::Gui> m_gui;
         std::unique_ptr<Module::Config> m_config;
