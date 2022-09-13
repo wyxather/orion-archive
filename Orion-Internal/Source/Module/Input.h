@@ -1,41 +1,30 @@
 #pragma once
 
-namespace Orion
+class Input
 {
-    class Application;
-
-    namespace Module
+public:
+    enum class Type
     {
-        class Hooks;
+        NONE,
+        DINPUT8
+    };
 
-        class Input
-        {
-            const Application& m_app;
-            Hooks& m_hooks;
+    Input(Type type = Type::NONE) noexcept;
+    ~Input() noexcept;
 
-        public:
-            enum class Type
-            {
-                NONE,
-                DINPUT8
-            };
+    Input(Input&&) = delete;
+    Input(const Input&) = delete;
+    Input& operator=(Input&&) = delete;
+    Input& operator=(const Input&) = delete;
 
-            Input(const Application& app) noexcept;
-            ~Input() noexcept;
+    [[nodiscard]] constexpr auto getType() const noexcept { return type; }
 
-            Input(Input&&) = delete;
-            Input(const Input&) = delete;
-            Input& operator=(Input&&) = delete;
-            Input& operator=(const Input&) = delete;
+    auto hook() noexcept -> void;
+    auto unhook() noexcept -> void;
 
-            [[nodiscard]] constexpr auto getType() const noexcept { return m_type; }
+private:
+    Type type;
+    HMODULE handle;
+};
 
-            void hook() noexcept;
-            void unhook() noexcept;
-
-        private:
-            Type m_type = {};
-            HMODULE m_handle = {};
-        };
-    }
-}
+inline std::optional<Input> input;

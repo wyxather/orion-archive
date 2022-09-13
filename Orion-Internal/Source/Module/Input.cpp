@@ -3,14 +3,12 @@
 #include "Gui.h"
 #include "Window.h"
 #include "Orion.h"
-
 #include <wrl/client.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #pragma comment(lib, "Dinput8.lib")
 #pragma comment(lib, "Dxguid.lib")
 
-using Orion::Module::Input;
 using Orion::Module::Hooks;
 using Microsoft::WRL::ComPtr;
 
@@ -109,15 +107,15 @@ namespace
 	}
 }
 
-Input::Input(const Application& app) noexcept :
-	m_app{ app },
-	m_hooks{ app.getHooks() }
+Input::Input(Type type) noexcept
 {
+	Orion::String<"Input"> caption;
+
 	{
-		String<"dinput8.dll"> moduleName;
-		m_handle = LI_FN(GetModuleHandleA)(moduleName.get());
-		if (m_handle && LI_FN(MessageBoxA)(nullptr, moduleName.get(), moduleName.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
-			m_type = Type::DINPUT8;
+		Orion::String<"dinput8.dll"> name;
+		handle = LI_FN(GetModuleHandleA)(name.get());
+		if (handle && LI_FN(MessageBoxA)(nullptr, name.get(), caption.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
+			this->type = Type::DINPUT8;
 			return;
 		}
 	}
@@ -125,28 +123,28 @@ Input::Input(const Application& app) noexcept :
 
 Input::~Input() noexcept
 {
-	m_type = {};
-	m_handle = {};
+	type = {};
+	handle = {};
 }
 
 void Input::hook() noexcept
 {
-	switch (m_type) {
+	switch (type) {
 
 	case Type::DINPUT8:
 	{
-		String<"DirectInput8Create"> procName;
-		const auto directInput8Create = reinterpret_cast<HRESULT(__stdcall*)(HMODULE, DWORD, const IID&, LPDIRECTINPUT8*, LPUNKNOWN)>(LI_FN(GetProcAddress)(m_handle, procName.get()));
+		Orion::String<"DirectInput8Create"> proc;
+		const auto directInput8Create = reinterpret_cast<HRESULT(__stdcall*)(HMODULE, DWORD, const IID&, LPDIRECTINPUT8*, LPUNKNOWN)>(LI_FN(GetProcAddress)(handle, proc.get()));
 
 		ComPtr<IDirectInput8> directInput8;
-		if (directInput8Create(m_app.getHandle(), DIRECTINPUT_VERSION, IID_IDirectInput8, directInput8.GetAddressOf(), nullptr) != DI_OK)
+		if (directInput8Create(Orion::instance->handle, DIRECTINPUT_VERSION, IID_IDirectInput8, directInput8.GetAddressOf(), nullptr) != DI_OK)
 			return;
 
 		ComPtr<IDirectInputDevice8> directInputDevice8;
 		if (directInput8->CreateDevice(GUID_SysMouse, directInputDevice8.GetAddressOf(), nullptr) != DI_OK)
 			return;
 
-		auto&& hook = m_hooks[Fnv<"Input">::value];
+		auto&& hook = Orion::instance->getHooks()[Orion::Fnv<"Input">::value];
 		hook.init(directInputDevice8.Get());
 		hook.hookAt(9, &DINPUT8::GetDeviceState);
 		hook.hookAt(10, &DINPUT8::GetDeviceData);
@@ -158,7 +156,7 @@ void Input::hook() noexcept
 
 void Input::unhook() noexcept
 {
-	if (const auto hook = m_hooks.find(Fnv<"Input">::value);
+	if (const auto hook = Orion::instance->getHooks().find(Orion::Fnv<"Input">::value);
 		hook != nullptr)
 		hook->restore();
 }

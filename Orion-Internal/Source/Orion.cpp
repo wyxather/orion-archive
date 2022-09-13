@@ -10,12 +10,12 @@
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
-Orion::Application::Application(HMODULE handle) noexcept : id{ LI_FN(GetCurrentProcessId)() }, m_handle{ handle } {}
+Orion::Application::Application(HMODULE handle) noexcept : id{ LI_FN(GetCurrentProcessId)() }, handle{ handle } {}
 
 Orion::Application::~Application() noexcept
 {
 	game.reset();
-	m_input.reset();
+	input.reset();
 	m_gui.reset();
 	m_config.reset();
 	renderer.reset();
@@ -24,7 +24,7 @@ Orion::Application::~Application() noexcept
 	m_hooks.reset();
 
 	id = {};
-	m_handle = {};
+	handle = {};
 }
 
 void Orion::Application::load() noexcept
@@ -35,7 +35,7 @@ void Orion::Application::load() noexcept
 	renderer.emplace();
 	m_config = std::make_unique<Module::Config>(*this);
 	m_gui = std::make_unique<Module::Gui>(*this);
-	m_input = std::make_unique<Module::Input>(*this);
+	input.emplace();
 	game.emplace();
 
 	window->hook();
@@ -46,7 +46,7 @@ bool Orion::Application::start() const noexcept
 	m_config->init();
 
 	renderer->hook();
-	m_input->hook();
+	input->hook();
 	game->hook();
 	Module::Hooks::enable();
 
@@ -56,14 +56,14 @@ bool Orion::Application::start() const noexcept
 void Orion::Application::exit() const noexcept
 {
 	game->unhook();
-	m_input->unhook();
+	input->unhook();
 	renderer->unhook();
 	Module::Hooks::disable();
 
 	window->unhook();
-
+	
 	std::unique_ptr<void, std::function<void(HANDLE)>> thread(
-		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), m_handle, NULL, nullptr),
+		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), handle, NULL, nullptr),
 		[](HANDLE handle) noexcept
 		{
 			if (handle != nullptr)
