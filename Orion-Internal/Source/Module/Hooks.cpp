@@ -1,5 +1,5 @@
 #include "Hooks.h"
-#include "Dependencies/MinHook/include/MinHook.h"
+#include "../Dependencies/MinHook/include/MinHook.h"
 
 using Orion::Module::Hooks;
 

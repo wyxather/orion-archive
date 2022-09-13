@@ -1,5 +1,5 @@
 #include "Config.h"
-#include "Dependencies/json.hpp"
+#include "../Dependencies/json.hpp"
 
 #include <fstream>
 

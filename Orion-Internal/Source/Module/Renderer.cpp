@@ -1,10 +1,10 @@
 #include "Renderer.h"
 #include "Hooks.h"
 #include "Gui.h"
-#include "Source/Orion.h"
-#include "Dependencies/ImGui/imgui_impl_win32.h"
-#include "Dependencies/ImGui/imgui_impl_dx9.h"
-#include "Dependencies/ImGui/imgui_impl_dx11.h"
+#include "Orion.h"
+#include "../Dependencies/ImGui/imgui_impl_win32.h"
+#include "../Dependencies/ImGui/imgui_impl_dx9.h"
+#include "../Dependencies/ImGui/imgui_impl_dx11.h"
 #include <d3d9.h>
 #include <d3d11.h>
 #include <wrl/client.h>

@@ -2,7 +2,7 @@
 #include "Hooks.h"
 #include "Gui.h"
 #include "Window.h"
-#include "Source/Orion.h"
+#include "Orion.h"
 
 #include <wrl/client.h>
 #define DIRECTINPUT_VERSION 0x0800
