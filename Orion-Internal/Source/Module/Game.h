@@ -6,13 +6,11 @@ namespace Orion
 
 	namespace Module
 	{
-		class Console;
 		class Hooks;
 
 		class Game
 		{
 			const Application& m_app;
-			const Console& m_console;
 			Hooks& m_hooks;
 
 		public:

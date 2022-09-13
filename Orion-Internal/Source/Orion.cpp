@@ -10,19 +10,7 @@
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
-Orion::Application::Application(HMODULE handle) noexcept :
-	m_id{ LI_FN(GetCurrentProcessId)() },
-	m_handle{ handle }
-{
-	m_hooks = std::make_unique<Module::Hooks>(*this);
-	m_window = std::make_unique<Module::Window>(*this);
-	m_console = std::make_unique<Module::Console>(*this);
-	m_renderer = std::make_unique<Module::Renderer>(*this);
-	m_config = std::make_unique<Module::Config>(*this);
-	m_gui = std::make_unique<Module::Gui>(*this);
-	m_input = std::make_unique<Module::Input>(*this);
-	m_game = std::make_unique<Module::Game>(*this);
-}
+Orion::Application::Application(HMODULE handle) noexcept : id{ LI_FN(GetCurrentProcessId)() }, m_handle{ handle } {}
 
 Orion::Application::~Application() noexcept
 {
@@ -31,14 +19,25 @@ Orion::Application::~Application() noexcept
 	m_gui.reset();
 	m_config.reset();
 	m_renderer.reset();
-	m_console.reset();
+	console.reset();
 	m_window.reset();
 	m_hooks.reset();
+
+	id = {};
 	m_handle = {};
 }
 
-void Orion::Application::load() const noexcept
+void Orion::Application::load() noexcept
 {
+	m_hooks = std::make_unique<Module::Hooks>(*this);
+	m_window = std::make_unique<Module::Window>(*this);
+	console.emplace();
+	m_renderer = std::make_unique<Module::Renderer>(*this);
+	m_config = std::make_unique<Module::Config>(*this);
+	m_gui = std::make_unique<Module::Gui>(*this);
+	m_input = std::make_unique<Module::Input>(*this);
+	m_game = std::make_unique<Module::Game>(*this);
+
 	m_window->hook();
 }
 

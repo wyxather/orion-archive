@@ -37,7 +37,7 @@ void Window::unhook() noexcept
 
 BOOL Window::enumerate(HWND handle, Window* window) noexcept
 {
-	if (DWORD processId{}; !(LI_FN(GetWindowThreadProcessId)(handle, &processId)) || window->m_app.getId() != processId)
+	if (DWORD processId{}; !(LI_FN(GetWindowThreadProcessId)(handle, &processId)) || Orion::instance->id != processId)
 		return 1;
 
 	TCHAR className[MAX_PATH]{}, windowText[MAX_PATH]{};

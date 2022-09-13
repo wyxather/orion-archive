@@ -1,77 +1,68 @@
 #pragma once
 
-namespace Orion
+class Console
 {
-	class Application;
+public:
+	Console() noexcept;
+	~Console() noexcept;
 
-	namespace Module
+	Console(Console&&) = delete;
+	Console(const Console&) = delete;
+	Console& operator=(Console&&) = delete;
+	Console& operator=(const Console&) = delete;
+
+	enum class Color
 	{
-		class Console
-		{
-			const Application& m_app;
+		BLACK,
+		BLUE,
+		GREEN,
+		CYAN,
+		RED,
+		MAGENTA,
+		BROWN,
+		LIGHTGRAY,
+		DARKGRAY,
+		LIGHTBLUE,
+		LIGHTGREEN,
+		LIGHTCYAN,
+		LIGHTRED,
+		LIGHTMAGENTA,
+		YELLOW,
+		WHITE
+	};
 
-		public:
-			enum class Color
-			{
-				BLACK,
-				BLUE,
-				GREEN,
-				CYAN,
-				RED,
-				MAGENTA,
-				BROWN,
-				LIGHTGRAY,
-				DARKGRAY,
-				LIGHTBLUE,
-				LIGHTGREEN,
-				LIGHTCYAN,
-				LIGHTRED,
-				LIGHTMAGENTA,
-				YELLOW,
-				WHITE
-			};
-
-			Console(const Application& app) noexcept;
-			~Console() noexcept;
-
-			Console(Console&&) = delete;
-			Console(const Console&) = delete;
-			Console& operator=(Console&&) = delete;
-			Console& operator=(const Console&) = delete;
-
-			template <stb::compiletime_string_wrapper printFormat, Color color = Color::LIGHTGREEN, typename ...Args>
-			constexpr void print(Args&& ...args) const noexcept
-			{
+private:
 #if !NDEBUG
-				Console::color(color);
-				String<printFormat> format;
-				std::printf(format.get(), std::forward<Args>(args)...);
-#endif
-			}
+	static auto time(std::array<char, 9>& buffer) noexcept -> void;
+	static auto __stdcall enumerate(HWND handle, Console* console) noexcept -> BOOL;
 
-			template <stb::compiletime_string_wrapper printFormat, Color color = Color::LIGHTGREEN, typename ...Args>
-			constexpr void log(Args&& ...args) const noexcept
-			{
-#if !NDEBUG
-				char timeBuffer[9]{};
-				Console::time(timeBuffer);
-				Console::print<"[%s] ", color>(timeBuffer);
-				Console::print<printFormat, color>(std::forward<Args>(args)...);
-				Console::print<"\n", color>();
-#endif
-			}
+	auto color(Color color) const noexcept -> void;
 
-		private:
-#if !NDEBUG
-			static BOOL CALLBACK enumerate(HWND handle, Console* console) noexcept;
-			static void time(char timeBuffer[9]) noexcept;
-
-			void color(Color color) const noexcept;
-
-			HWND m_handle = {};
-			HANDLE m_output = {};
-			FILE* m_stream = {};
-#endif
-		};
+	template <stb::compiletime_string_wrapper format, Color color = Color::LIGHTGREEN, typename ...Args>
+	constexpr void print(Args&& ...args) const noexcept
+	{
+		Console::color(color);
+		Orion::String<format> fmt;
+		std::printf(fmt.get(), std::forward<Args>(args)...);
 	}
-}
+
+	HWND handle;
+	HANDLE output;
+	FILE* stream;
+#endif
+
+public:
+	template <stb::compiletime_string_wrapper format, Color color = Color::LIGHTGREEN, typename ...Args>
+	constexpr void log(Args&& ...args) const noexcept
+	{
+#if !NDEBUG
+		std::array<char, 9> buffer;
+		Console::time(buffer);
+		Console::print<"[%s] ", color>(buffer.data());
+		Console::print<format, color>(std::forward<Args>(args)...);
+		Console::print<"\n", color>();
+#endif
+	}
+};
+
+inline std::optional<const Console> console;

@@ -1,73 +1,60 @@
 #include "Console.h"
-
 #if !NDEBUG
-#include <chrono>
 #include "Orion.h"
+#include <chrono>
 #endif
 
-using namespace Orion::Module;
-
-Console::Console(const Application& app) noexcept :
-	m_app{ app }
+Console::Console() noexcept
 {
 #if !NDEBUG
 	LI_FN(AllocConsole)();
 	LI_FN(EnumWindows)(reinterpret_cast<WNDENUMPROC>(&Console::enumerate), reinterpret_cast<LPARAM>(this));
-	LI_FN(SetWindowLongPtr)(m_handle, GWL_STYLE, LI_FN(GetWindowLongPtr)(m_handle, GWL_STYLE) & ~WS_SYSMENU);
+	LI_FN(SetWindowLongPtr)(handle, GWL_STYLE, LI_FN(GetWindowLongPtr)(handle, GWL_STYLE) & ~WS_SYSMENU);
 
-	String<"CONOUT$"> fileName;
-	String<"w"> mode;
+	Orion::String<"CONOUT$"> name;
+	Orion::String<"w"> mode;
 
-	freopen_s(&m_stream, fileName.get(), mode.get(), stdout);
-	m_output = LI_FN(GetStdHandle)(STD_OUTPUT_HANDLE);
+	freopen_s(&stream, name.get(), mode.get(), stdout);
+	output = LI_FN(GetStdHandle)(STD_OUTPUT_HANDLE);
 #endif
 }
 
 Console::~Console() noexcept
 {
 #if !NDEBUG
-	fclose(m_stream);
+	std::fclose(stream);
 	LI_FN(FreeConsole)();
 
-	m_handle = {};
-	m_output = {};
-	m_stream = {};
+	handle = {};
+	output = {};
+	stream = {};
 #endif
 }
 
 #if !NDEBUG
-void Console::time(char timeBuffer[9]) noexcept
+auto Console::time(std::array<char, 9>& buffer) noexcept -> void
 {
-	const auto _time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
-	tm _tm;
-	if (localtime_s(&_tm, &_time_t))
-		return;
-
-	String<"%H:%M:%S"> timeFormat;
-	std::strftime(timeBuffer, 9, timeFormat.get(), &_tm);
+	using std::chrono::system_clock;
+	const auto time_t = system_clock::to_time_t(system_clock::now());
+	if (tm tm; !localtime_s(&tm, &time_t)) {
+		Orion::String<"%H:%M:%S"> fmt;
+		std::strftime(buffer.data(), buffer.size(), fmt.get(), &tm);
+	}
+	else buffer = {};
 }
 
-void Console::color(Color color) const noexcept
+auto Console::enumerate(HWND handle, Console* console) noexcept -> BOOL
 {
-	LI_FN(SetConsoleTextAttribute).cached()(m_output, static_cast<WORD>(color));
-}
-
-BOOL Console::enumerate(HWND handle, Console* console) noexcept
-{
-	DWORD windowThreadProcessId{};
-	if (!(LI_FN(GetWindowThreadProcessId)(handle, &windowThreadProcessId)) || console->m_app.getId() != windowThreadProcessId)
+	if (DWORD id; !(LI_FN(GetWindowThreadProcessId)(handle, &id)) || id != Orion::instance->id)
 		return 1;
-
-	CHAR className[MAX_PATH]{};
-	if (!(LI_FN(GetClassNameA)(handle, className, MAX_PATH)))
+	if (std::array<char, 260> name; !(LI_FN(GetClassNameA)(handle, name.data(), static_cast<int>(name.size()))) || !Orion::Fnv<"ConsoleWindowClass">::compare(name.data()))
 		return 1;
-
-	if (!Fnv<"ConsoleWindowClass">::compare(className))
-		return 1;
-
-	console->m_handle = handle;
-
+	console->handle = handle;
 	return 0;
+}
+
+auto Console::color(Color color) const noexcept -> void
+{
+	LI_FN(SetConsoleTextAttribute).cached()(output, static_cast<WORD>(color));
 }
 #endif
