@@ -5,12 +5,10 @@ namespace Orion
     namespace Module
     {
         class Hooks;
-        class Window;
         class Renderer;
         class Gui;
         class Config;
         class Input;
-        class Game;
     }
 
     class Application
@@ -30,7 +28,6 @@ namespace Orion
         [[nodiscard]] constexpr auto&& getGui() const noexcept { return *m_gui.get(); }
         [[nodiscard]] constexpr auto&& getConfig() const noexcept { return *m_config.get(); }
         [[nodiscard]] constexpr const auto& getInput() const noexcept { return *m_input.get(); }
-        [[nodiscard]] constexpr const auto& getGame() const noexcept { return *m_game.get(); }
 
         [[nodiscard]] bool start() const noexcept;
         void load() noexcept;
@@ -47,7 +44,6 @@ namespace Orion
         std::unique_ptr<Module::Gui> m_gui;
         std::unique_ptr<Module::Config> m_config;
         std::unique_ptr<Module::Input> m_input;
-        std::unique_ptr<Module::Game> m_game;
     };
 
     inline std::optional<Orion::Application> instance;

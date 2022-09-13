@@ -1,24 +1,13 @@
 #pragma once
 
-namespace Orion
+class Game
 {
-	class Application;
+public:
+	Game() noexcept;
+	~Game() noexcept;
 
-	namespace Module
-	{
-		class Hooks;
+	void hook() noexcept;
+	void unhook() noexcept;
+};
 
-		class Game
-		{
-			const Application& m_app;
-			Hooks& m_hooks;
-
-		public:
-			Game(const Application& app) noexcept;
-			~Game() noexcept;
-
-			void hook() noexcept;
-			void unhook() noexcept;
-		};
-	}
-}
+inline std::optional<Game> game;
