@@ -1,91 +1,66 @@
 #include "Hooks.h"
 #include "../Dependencies/MinHook/include/MinHook.h"
 
-using Orion::Module::Hooks;
 
-std::size_t Hooks::calculateVmtLength(void* address) noexcept
+Hooks::Hooks() noexcept { MH_Initialize(); }
+
+Hooks::~Hooks() noexcept { MH_Uninitialize(); }
+
+auto Hooks::calculateVmtLength(void* address) noexcept -> std::size_t
 {
-	std::size_t length{};
-	MEMORY_BASIC_INFORMATION mbi{};
-	while (LI_FN(VirtualQuery)(static_cast<void**>(address)[length], &mbi, sizeof mbi) &&
+	std::size_t length = 0;
+	MEMORY_BASIC_INFORMATION mbi;
+	while (LI_FN(VirtualQuery)(static_cast<void**>(address)[length], &mbi, sizeof(mbi)) &&
 		mbi.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY))
 		length++;
 	return length;
 }
 
-Hooks::Hooks(const Application& app) noexcept :
-	m_app{ app }
+auto Hooks::enable() noexcept -> void { MH_EnableHook(MH_ALL_HOOKS); }
+
+auto Hooks::disable() noexcept -> void { MH_DisableHook(MH_ALL_HOOKS); }
+
+MinHook::MinHook() noexcept : base{ nullptr }, size{ 0 } {}
+
+MinHook::~MinHook() noexcept
 {
-	MH_Initialize();
+	base = {};
+	size = {};
+	data.reset();
 }
 
-Hooks::~Hooks() noexcept
+auto MinHook::init(void* address) noexcept -> void
 {
-	MH_Uninitialize();
-}
-
-void Hooks::enable() noexcept
-{
-	MH_EnableHook(MH_ALL_HOOKS);
-}
-
-void Hooks::disable() noexcept
-{
-	MH_DisableHook(MH_ALL_HOOKS);
-}
-
-Hooks::MinHook& Hooks::operator[](const std::uint32_t key) noexcept
-{
-	return m_data[key];
-}
-
-Hooks::MinHook* Hooks::find(const std::uint32_t key) noexcept
-{
-	return m_data.find(key);
-}
-
-Hooks::MinHook::~MinHook() noexcept
-{
-	m_base = {};
-	m_size = {};
-	m_data.reset();
-}
-
-void Hooks::MinHook::init(void* address) noexcept
-{
-	m_base = address;
+	base = address;
 	return init(Hooks::calculateVmtLength(*static_cast<void**>(address)));
 }
 
-void Hooks::MinHook::init(std::size_t size) noexcept
+auto MinHook::init(std::size_t size) noexcept -> void
 {
-	m_size = size;
-	m_data = std::make_unique<decltype(m_data)::element_type[]>(m_size);
+	this->size = size;
+	data = std::make_unique<decltype(data)::element_type[]>(size);
 }
 
-void Hooks::MinHook::hookAt(std::size_t index, void* function, bool enable) noexcept
+auto MinHook::hookAt(std::size_t index, void* function, bool enable) noexcept -> void
 {
-	return hookAt(index, (*static_cast<void***>(m_base))[index], function, enable);
+	return hookAt(index, (*static_cast<void***>(base))[index], function, enable);
 }
 
-void Hooks::MinHook::hookAt(std::size_t index, void* target, void* function, bool enable) noexcept
+auto MinHook::hookAt(std::size_t index, void* target, void* function, bool enable) noexcept -> void
 {
-	auto&& data = m_data[index];
-	data.first = target;
-	MH_CreateHook(data.first, function, &data.second);
-	if (enable)
-		MH_EnableHook(data.first);
+	if (auto&& hook = data[index]; MH_CreateHook(target, function, &hook.second) == MH_OK) {
+		hook.first = target;
+		if (enable)
+			MH_EnableHook(target);
+	}
 }
 
-void Hooks::MinHook::restore() noexcept
+auto MinHook::restore() noexcept -> void
 {
-	for (std::size_t i = 0; i < m_size; i++) {
-
-		auto&& data = m_data[i];
-		if (!data.first)
-			continue;
-
-		MH_DisableHook(data.first);
-		MH_RemoveHook(data.first);
+	for (std::size_t i = 0; i < size; i++) {
+		if (auto&& hook = data[i]; hook.first) {
+			MH_DisableHook(hook.first);
+			MH_RemoveHook(hook.first);
+		}
 	}
 }

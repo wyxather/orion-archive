@@ -1,11 +1,11 @@
 #include "Orion.h"
-#include "Module/Hooks.h"
 #include "Module/Window.h"
 #include "Module/Console.h"
+#include "Module/Hooks.h"
 #include "Module/Renderer.h"
+#include "Module/Input.h"
 #include "Module/Config.h"
 #include "Module/Gui.h"
-#include "Module/Input.h"
 #include "Module/Game.h"
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
@@ -15,13 +15,13 @@ Orion::Application::Application(HMODULE handle) noexcept : id{ LI_FN(GetCurrentP
 Orion::Application::~Application() noexcept
 {
 	game.reset();
-	input.reset();
 	m_gui.reset();
 	m_config.reset();
+	input.reset();
 	renderer.reset();
+	hooks.reset();
 	console.reset();
 	window.reset();
-	m_hooks.reset();
 
 	id = {};
 	handle = {};
@@ -29,13 +29,13 @@ Orion::Application::~Application() noexcept
 
 void Orion::Application::load() noexcept
 {
-	m_hooks = std::make_unique<Module::Hooks>(*this);
 	window.emplace();
 	console.emplace();
+	hooks.emplace();
 	renderer.emplace();
+	input.emplace();
 	m_config = std::make_unique<Module::Config>(*this);
 	m_gui = std::make_unique<Module::Gui>(*this);
-	input.emplace();
 	game.emplace();
 
 	window->hook();
@@ -48,7 +48,7 @@ bool Orion::Application::start() const noexcept
 	renderer->hook();
 	input->hook();
 	game->hook();
-	Module::Hooks::enable();
+	hooks->enable();
 
 	return true;
 }
@@ -58,7 +58,7 @@ void Orion::Application::exit() const noexcept
 	game->unhook();
 	input->unhook();
 	renderer->unhook();
-	Module::Hooks::disable();
+	hooks->disable();
 
 	window->unhook();
 	

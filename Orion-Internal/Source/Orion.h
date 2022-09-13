@@ -4,7 +4,6 @@ namespace Orion
 {
     namespace Module
     {
-        class Hooks;
         class Gui;
         class Config;
     }
@@ -20,7 +19,6 @@ namespace Orion
         Application& operator=(Application&&) = delete;
         Application& operator=(const Application&) = delete;
 
-        [[nodiscard]] constexpr auto&& getHooks() const noexcept { return *m_hooks.get(); }
         [[nodiscard]] constexpr auto&& getGui() const noexcept { return *m_gui.get(); }
         [[nodiscard]] constexpr auto&& getConfig() const noexcept { return *m_config.get(); }
 
@@ -34,7 +32,6 @@ namespace Orion
     private:
         [[noreturn]] static void CALLBACK unload(HMODULE handle) noexcept;
 
-        std::unique_ptr<Module::Hooks> m_hooks;
         std::unique_ptr<Module::Gui> m_gui;
         std::unique_ptr<Module::Config> m_config;
     };

@@ -1,83 +1,75 @@
 #pragma once
 
-namespace Orion
+class Hooks
 {
-	class Application;
+public:
+	Hooks() noexcept;
+	~Hooks() noexcept;
 
-	namespace Module
+	Hooks(Hooks&&) = delete;
+	Hooks(const Hooks&) = delete;
+	Hooks& operator=(Hooks&&) = delete;
+	Hooks& operator=(const Hooks&) = delete;
+
+	enum class Function
 	{
-		class Hooks
-		{
-			const Application& m_app;
+		NONE,
+		STDCALL,
+		THISCALL,
+		FASTCALL,
+		VECTORCALL
+	};
 
-		public:
-			enum class Function {
-				NONE,
-				STDCALL,
-				THISCALL,
-				FASTCALL,
-				VECTORCALL
-			};
+	static auto enable() noexcept -> void;
+	static auto disable() noexcept -> void;
 
-			class MinHook
-			{
-			public:
-				MinHook() noexcept {}
-				~MinHook() noexcept;
+protected:
+	[[nodiscard]] static auto calculateVmtLength(void* address) noexcept -> std::size_t;
+};
 
-				MinHook(MinHook&&) noexcept = default;
-				MinHook& operator=(MinHook&&) noexcept = default;
+class MinHook : public Hooks
+{
+public:
+	MinHook() noexcept;
+	~MinHook() noexcept;
 
-				MinHook(const MinHook&) = delete;
-				MinHook& operator=(const MinHook&) = delete;
+	MinHook(MinHook&&) = delete;
+	MinHook(const MinHook&) = delete;
+	MinHook& operator=(MinHook&&) = delete;
+	MinHook& operator=(const MinHook&) = delete;
 
-				void init(void* address) noexcept;
-				void init(std::size_t size) noexcept;
-				void hookAt(std::size_t index, void* function, bool enable = false) noexcept;
-				void hookAt(std::size_t index, void* target, void* function, bool enable = false) noexcept;
-				void restore() noexcept;
+	void init(void* address) noexcept;
+	void init(std::size_t size) noexcept;
 
-				template <std::size_t index, typename returnType, Function function = Function::NONE, bool callTarget = false, typename ...Args>
-				[[nodiscard]] constexpr auto get(Args ...args) const noexcept
-				{
-					switch (function) {
-					case Function::STDCALL: return static_cast<returnType(__stdcall*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
-					case Function::THISCALL: return static_cast<returnType(__thiscall*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
-					case Function::FASTCALL: return static_cast<returnType(__fastcall*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
-					case Function::VECTORCALL: return static_cast<returnType(__vectorcall*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
-					}
-					return static_cast<returnType(__cdecl*)(Args...)>(callTarget ? m_data[index].first : m_data[index].second)(args...);
-				}
+	void hookAt(std::size_t index, void* function, bool enable = false) noexcept;
+	void hookAt(std::size_t index, void* target, void* function, bool enable = false) noexcept;
 
-				template <std::size_t index, typename returnType, Function function = Function::NONE, bool callTarget = false, typename ...Args>
-				[[nodiscard]] constexpr auto call(Args ...args) const noexcept
-				{
-					return get<index, returnType, function, callTarget>(m_base, args...);
-				}
+	void restore() noexcept;
 
-			private:
-				void* m_base = {};
-				std::size_t m_size = {};
-				std::unique_ptr<std::pair<void*, void*>[]> m_data;
-			};
-
-			[[nodiscard]] static std::size_t calculateVmtLength(void* address) noexcept;
-			static void enable() noexcept;
-			static void disable() noexcept;
-
-			Hooks(const Application& app) noexcept;
-			~Hooks() noexcept;
-
-			Hooks(Hooks&&) = delete;
-			Hooks(const Hooks&) = delete;
-			Hooks& operator=(Hooks&&) = delete;
-			Hooks& operator=(const Hooks&) = delete;
-
-			[[nodiscard]] MinHook& operator[](const std::uint32_t key) noexcept;
-			[[nodiscard]] MinHook* find(const std::uint32_t key) noexcept;
-
-		private:
-			HashTable<MinHook> m_data;
-		};
+	template <std::size_t index, typename ReturnType, Function function = Function::NONE, bool callTarget = false, typename ...Args>
+	[[nodiscard]] constexpr auto get(Args ...args) const noexcept
+	{
+		switch (function) {
+		case Function::STDCALL: return static_cast<ReturnType(__stdcall*)(Args...)>(callTarget ? data[index].first : data[index].second)(args...);
+		case Function::THISCALL: return static_cast<ReturnType(__thiscall*)(Args...)>(callTarget ? data[index].first : data[index].second)(args...);
+		case Function::FASTCALL: return static_cast<ReturnType(__fastcall*)(Args...)>(callTarget ? data[index].first : data[index].second)(args...);
+		case Function::VECTORCALL: return static_cast<ReturnType(__vectorcall*)(Args...)>(callTarget ? data[index].first : data[index].second)(args...);
+		}
+		return static_cast<ReturnType(__cdecl*)(Args...)>(callTarget ? data[index].first : data[index].second)(args...);
 	}
-}
+
+	template <std::size_t index, typename ReturnType, Function function = Function::NONE, bool callTarget = false, typename ...Args>
+	[[nodiscard]] constexpr auto call(Args ...args) const noexcept
+	{
+		return get<index, ReturnType, function, callTarget>(base, args...);
+	}
+
+private:
+	void* base;
+	std::size_t size;
+	std::unique_ptr<std::pair<void*, void*>[]> data;
+};
+
+inline std::optional<const Hooks> hooks;
+
+using HookType = MinHook;

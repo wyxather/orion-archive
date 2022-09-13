@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Hooks.h"
+
 class Renderer
 {
 public:
@@ -18,7 +20,8 @@ public:
 	Renderer& operator=(Renderer&&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 
-	[[nodiscard]] constexpr auto getType() const noexcept { return type; }
+	[[nodiscard]] constexpr auto&& getType() const noexcept { return type; }
+	[[nodiscard]] constexpr auto&& getHook() const noexcept { return renderer; }
 
 	auto hook() noexcept -> void;
 	auto unhook() noexcept -> void;
@@ -26,6 +29,7 @@ public:
 private:
 	Type type;
 	HMODULE handle;
+	HookType renderer;
 };
 
 inline std::optional<Renderer> renderer;

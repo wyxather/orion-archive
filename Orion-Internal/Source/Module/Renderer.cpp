@@ -1,5 +1,4 @@
 #include "Renderer.h"
-#include "Hooks.h"
 #include "Gui.h"
 #include "Orion.h"
 #include "../Dependencies/ImGui/imgui_impl_win32.h"
@@ -9,7 +8,6 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 
-using Orion::Module::Hooks;
 using Microsoft::WRL::ComPtr;
 
 namespace
@@ -23,8 +21,7 @@ namespace
 		{
 			Orion::instance->getGui().invalidate();
 			ImGui_ImplDX9_InvalidateDeviceObjects();
-			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
-			return hook.get<
+			return renderer->getHook().get<
 				16,
 				HRESULT,
 				Hooks::Function::STDCALL>(
@@ -55,8 +52,7 @@ namespace
 					pDevice->EndScene();
 				}
 			}
-			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
-			return hook.get<
+			return renderer->getHook().get<
 				17,
 				HRESULT,
 				Hooks::Function::STDCALL>(
@@ -81,8 +77,7 @@ namespace
 		{
 			Orion::instance->getGui().invalidate();
 			ImGui_ImplDX11_InvalidateDeviceObjects();
-			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
-			const auto result = hook.get<
+			const auto result = renderer->getHook().get<
 				13,
 				HRESULT,
 				Hooks::Function::STDCALL>(
@@ -123,8 +118,7 @@ namespace
 				ImGui::Render();
 				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 			}
-			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
-			return hook.get<
+			return renderer->getHook().get<
 				8,
 				HRESULT,
 				Hooks::Function::STDCALL>(
@@ -188,7 +182,7 @@ Renderer::~Renderer() noexcept
 	handle = {};
 }
 
-void Renderer::hook() noexcept
+auto Renderer::hook() noexcept -> void
 {
 	switch (type) {
 
@@ -264,10 +258,9 @@ void Renderer::hook() noexcept
 		if (direct3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE::D3DDEVTYPE_NULLREF, window.get(), D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT, &params, device.GetAddressOf()) != D3D_OK)
 			return;
 
-		auto&& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
-		hook.init(device.Get());
-		hook.hookAt(16, &D3D9::Reset);
-		hook.hookAt(17, &D3D9::Present);
+		renderer.init(device.Get());
+		renderer.hookAt(16, &D3D9::Reset);
+		renderer.hookAt(17, &D3D9::Present);
 	}
 	break;
 
@@ -384,22 +377,20 @@ void Renderer::hook() noexcept
 		for (std::size_t i = 61; i < 205; i++)
 			table[i] = (*reinterpret_cast<decltype(table)::value_type**>(context.Get()))[i];
 
-		auto&& hook = Orion::instance->getHooks()[Orion::Fnv<"Renderer">::value];
 		const void* address = table.data();
-		hook.init(&address);
-		hook.hookAt(8, &D3D11::Present);
-		hook.hookAt(13, &D3D11::ResizeBuffers);
+
+		renderer.init(&address);
+		renderer.hookAt(8, &D3D11::Present);
+		renderer.hookAt(13, &D3D11::ResizeBuffers);
 	}
 	break;
 
 	}
 }
 
-void Renderer::unhook() noexcept
+auto Renderer::unhook() noexcept -> void
 {
-	if (const auto hook = Orion::instance->getHooks().find(Orion::Fnv<"Renderer">::value);
-		hook != nullptr)
-		hook->restore();
+	renderer.restore();
 
 	if (ImGui::GetIO().BackendRendererName) {
 		switch (type) {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Hooks.h"
+
 class Input
 {
 public:
@@ -17,7 +19,8 @@ public:
     Input& operator=(Input&&) = delete;
     Input& operator=(const Input&) = delete;
 
-    [[nodiscard]] constexpr auto getType() const noexcept { return type; }
+    [[nodiscard]] constexpr auto&& getType() const noexcept { return type; }
+    [[nodiscard]] constexpr auto&& getHook() const noexcept { return input; }
 
     auto hook() noexcept -> void;
     auto unhook() noexcept -> void;
@@ -25,6 +28,7 @@ public:
 private:
     Type type;
     HMODULE handle;
+    HookType input;
 };
 
 inline std::optional<Input> input;

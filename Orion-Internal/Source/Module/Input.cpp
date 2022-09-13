@@ -1,5 +1,4 @@
 #include "Input.h"
-#include "Hooks.h"
 #include "Gui.h"
 #include "Window.h"
 #include "Orion.h"
@@ -9,7 +8,6 @@
 #pragma comment(lib, "Dinput8.lib")
 #pragma comment(lib, "Dxguid.lib")
 
-using Orion::Module::Hooks;
 using Microsoft::WRL::ComPtr;
 
 namespace
@@ -23,8 +21,7 @@ namespace
 		) noexcept
 		{
 			static bool key[2]{};
-			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Input">::value];
-			const auto result = hook.get<
+			const auto result = input->getHook().get<
 				9,
 				HRESULT,
 				Hooks::Function::STDCALL>(
@@ -68,8 +65,7 @@ namespace
 			const DWORD dwFlags
 		) noexcept
 		{
-			static const auto& hook = Orion::instance->getHooks()[Orion::Fnv<"Input">::value];
-			const auto result = hook.get<
+			const auto result = input->getHook().get<
 				10,
 				HRESULT,
 				Hooks::Function::STDCALL>(
@@ -144,10 +140,9 @@ void Input::hook() noexcept
 		if (directInput8->CreateDevice(GUID_SysMouse, directInputDevice8.GetAddressOf(), nullptr) != DI_OK)
 			return;
 
-		auto&& hook = Orion::instance->getHooks()[Orion::Fnv<"Input">::value];
-		hook.init(directInputDevice8.Get());
-		hook.hookAt(9, &DINPUT8::GetDeviceState);
-		hook.hookAt(10, &DINPUT8::GetDeviceData);
+		input.init(directInputDevice8.Get());
+		input.hookAt(9, &DINPUT8::GetDeviceState);
+		input.hookAt(10, &DINPUT8::GetDeviceData);
 	}
 	break;
 
@@ -156,7 +151,5 @@ void Input::hook() noexcept
 
 void Input::unhook() noexcept
 {
-	if (const auto hook = Orion::instance->getHooks().find(Orion::Fnv<"Input">::value);
-		hook != nullptr)
-		hook->restore();
+	input.restore();
 }
