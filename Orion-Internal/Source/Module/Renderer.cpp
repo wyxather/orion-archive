@@ -137,25 +137,49 @@ namespace
 
 }
 
-Renderer::Renderer(const Application& app) noexcept :
+Renderer::Renderer(const Application& app, Type type) noexcept :
 	m_app{ app },
 	m_hooks{ app.getHooks() }
 {
+	switch (type) {
+
+	case Type::NONE:
 	{
-		String<"d3d9.dll"> moduleName;
-		m_handle = LI_FN(GetModuleHandleA)(moduleName.get());
-		if (m_handle && LI_FN(MessageBoxA)(nullptr, moduleName.get(), moduleName.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
-			m_type = Type::D3D9;
-			return;
+		{
+			String<"d3d9.dll"> moduleName;
+			m_handle = LI_FN(GetModuleHandleA)(moduleName.get());
+			if (m_handle && LI_FN(MessageBoxA)(nullptr, moduleName.get(), moduleName.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
+				m_type = Type::D3D9;
+				break;
+			}
+		}
+		{
+			String<"d3d11.dll"> moduleName;
+			m_handle = LI_FN(GetModuleHandleA)(moduleName.get());
+			if (m_handle && LI_FN(MessageBoxA)(nullptr, moduleName.get(), moduleName.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
+				m_type = Type::D3D11;
+				break;
+			}
 		}
 	}
+	break;
+
+	case Type::D3D9:
+	{
+		String<"d3d9.dll"> moduleName;
+		if (m_handle = LI_FN(GetModuleHandleA)(moduleName.get()))
+			m_type = Type::D3D9;
+	}
+	break;
+
+	case Type::D3D11:
 	{
 		String<"d3d11.dll"> moduleName;
-		m_handle = LI_FN(GetModuleHandleA)(moduleName.get());
-		if (m_handle && LI_FN(MessageBoxA)(nullptr, moduleName.get(), moduleName.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
+		if (m_handle = LI_FN(GetModuleHandleA)(moduleName.get()))
 			m_type = Type::D3D11;
-			return;
-		}
+	}
+	break;
+
 	}
 }
 

@@ -21,7 +21,7 @@ namespace Orion
 				D3D11
 			};
 
-			Renderer(const Application& app) noexcept;
+			Renderer(const Application& app, Type type = Type::NONE) noexcept;
 			~Renderer() noexcept;
 
 			Renderer(Renderer&&) = delete;
