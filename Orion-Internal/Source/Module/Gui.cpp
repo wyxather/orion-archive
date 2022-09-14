@@ -465,7 +465,7 @@ namespace
 			Component::EndChild();
 		}
 
-		[[nodiscard]] static void Save(Orion::Module::Config& config) noexcept
+		static void Save() noexcept
 		{
 			Orion::String<"Save"> name;
 			const auto label{ std::string{ FontAwesome::get<FontAwesome::Type::floppy_disk>() } + "    " + name.get() };
@@ -487,12 +487,12 @@ namespace
 			if (!ImGui::Button(label.c_str(), ImVec2{ 100, 29 }))
 				return;
 
-			config.save();
-			config.update();
+			config->save();
+			config->update();
 		}
 
 		template <stb::compiletime_string_wrapper str>
-		[[nodiscard]] static void Combo(Orion::Module::Config& config) noexcept
+		static void Combo() noexcept
 		{
 			static float popupAlpha{};
 
@@ -523,7 +523,7 @@ namespace
 				{ ImGuiCol_::ImGuiCol_FrameBgHovered, ImVec4{ 0.082353f, 0.082353f, 0.086275f, 1.000000f } },
 			};
 
-			const auto result{ ImGui::Combo(name.get(), &config.getSort(), items.get()) };
+			const auto result{ ImGui::Combo(name.get(), &config->getSort(), items.get()) };
 			bool popup_open = ImGui::IsPopupOpen(ImHashStr("##ComboPopup", 0, ImGui::GetCurrentWindow()->GetID(name.get())), ImGuiPopupFlags_::ImGuiPopupFlags_None);
 			if (popup_open)
 				popupAlpha = std::clamp(ImGui::GetIO().DeltaTime * 2 + popupAlpha, 0.f, 1.f);
@@ -533,10 +533,10 @@ namespace
 			if (!result)
 				return;
 
-			config.update();
+			config->update();
 		}
 
-		[[nodiscard]] static void Create(Orion::Module::Config& config) noexcept
+		static void Create() noexcept
 		{
 			Orion::String<"Create"> name;
 
@@ -556,8 +556,8 @@ namespace
 			if (!ImGui::Button(label.c_str(), ImVec2{ 130, 29 }))
 				return;
 
-			config.create();
-			config.update();
+			config->create();
+			config->update();
 		}
 	};
 
@@ -666,25 +666,23 @@ namespace
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_Border, ImVec4{ 0.086275f, 0.086275f, 0.086275f, 1.000000f });
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_BorderShadow, ImVec4{ 0.019608f, 0.019608f, 0.019608f, 1.000000f });
 
-			auto&& config = m_app.getConfig();
-
-			for (auto&& file : config.getFiles()) {
+			for (auto&& file : config->getFiles()) {
 
 				bool resizing = false;
 
-				switch (Config::Draw(file.m_name, file.m_time, file.m_active, config.getInput())) {
-				case Menu::Body::Content::Main::Panel::Config::Event::SAVE: config.save();
-					config.update();
+				switch (Config::Draw(file.m_name, file.m_time, file.m_active, config->getInput())) {
+				case Menu::Body::Content::Main::Panel::Config::Event::SAVE: config->save();
+					config->update();
 					break;
-				case Menu::Body::Content::Main::Panel::Config::Event::LOAD: config.load(file);
-					config.update();
+				case Menu::Body::Content::Main::Panel::Config::Event::LOAD: config->load(file);
+					config->update();
 					break;
-				case Menu::Body::Content::Main::Panel::Config::Event::REMOVE: config.remove(file);
-					config.update();
+				case Menu::Body::Content::Main::Panel::Config::Event::REMOVE: config->remove(file);
+					config->update();
 					resizing = true;
 					break;
-				case Menu::Body::Content::Main::Panel::Config::Event::RENAME: config.rename(file);
-					config.update();
+				case Menu::Body::Content::Main::Panel::Config::Event::RENAME: config->rename(file);
+					config->update();
 					break;
 				}
 
@@ -1778,7 +1776,6 @@ namespace
 
 Gui::Gui(const Application& app) noexcept :
 	m_app{ app },
-	m_config{ app.getConfig() },
 	m_open{ true },
 	m_io{ ImGui::GetIO() }
 {
@@ -1875,10 +1872,10 @@ void Gui::draw() noexcept
 		}
 		if (Menu::Body body{}) {
 			if (Menu::Body::Top top{}) {
-				Menu::Body::Top::Save(m_app.getConfig());
+				Menu::Body::Top::Save();
 				if (Menu::Tab tab{ *this, Orion::Fnv<"Configs">::value }) {
-					Menu::Body::Top::Combo<"Name\0Date Modified\0">(m_app.getConfig());
-					Menu::Body::Top::Create(m_app.getConfig());
+					Menu::Body::Top::Combo<"Name\0Date Modified\0">();
+					Menu::Body::Top::Create();
 				}
 			}
 			if (Menu::Body::Content content{}) {
@@ -1894,18 +1891,18 @@ void Gui::draw() noexcept
 							if (Menu::Body::Content::Main::Panel::Table table{}) {
 								if (Menu::Body::Content::Main::Panel::Table::Group<"General"> group{ *this }) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
-										widget.Toggle<"Unlimited Blade">(m_config.getData().hitbox[0], m_config.getData().color, m_colorReference, &m_popupAlpha);
-										widget.Toggle<"Unlimited Works">(m_config.getData().hitbox[1]);
-										widget.Combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(m_config.getData().target);
-										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(m_config.getData().target);
-										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(m_config.getData().hitbox);
-										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(m_config.getData().hitbox);
+										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
+										widget.Toggle<"Unlimited Works">(config->getData().hitbox[1]);
+										widget.Combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(config->getData().target);
+										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(config->getData().target);
+										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
+										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
 									}
 								}
 								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement"> group{ *this }) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
-										widget.Toggle<"Unlimited Blade">(m_config.getData().hitbox[0], m_config.getData().color, m_colorReference, &m_popupAlpha);
-										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(m_config.getData().color[0]);
+										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
+										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(config->getData().color[0]);
 									}
 								}
 							}

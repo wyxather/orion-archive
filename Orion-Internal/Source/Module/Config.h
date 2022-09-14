@@ -1,105 +1,97 @@
 #pragma once
 
-namespace Orion
+class Config
 {
-	class Application;
+public:
+	class File;
 
-	namespace Module
+	class Data
 	{
-		class Config
-		{
-			const Application& m_app;
+	public:
+		constexpr Data() noexcept = default;
 
-		public:
-			class File;
+		Data(Data&&) = delete;
+		Data(const Data&) = delete;
+		Data& operator=(Data&&) = delete;
+		Data& operator=(const Data&) = delete;
 
-			class Data
-			{
-			public:
-				constexpr Data() noexcept = default;
+		bool hitbox[4] = {};
+		float color[4] = {};
+		int target = {};
+	};
 
-				Data(Data&&) = delete;
-				Data(const Data&) = delete;
-				Data& operator=(Data&&) = delete;
-				Data& operator=(const Data&) = delete;
+	Config() noexcept;
 
-				bool hitbox[4] = {};
-				float color[4] = {};
-				int target = {};
-			};
+	Config(Config&&) = delete;
+	Config(const Config&) = delete;
+	Config& operator=(Config&&) = delete;
+	Config& operator=(const Config&) = delete;
 
-			Config(const Application& app) noexcept;
+	[[nodiscard]] constexpr auto&& getInput() noexcept { return m_input; }
+	[[nodiscard]] constexpr auto&& getSort() noexcept { return m_settings.sort; }
+	[[nodiscard]] constexpr auto&& getFiles() const noexcept { return m_files; }
+	[[nodiscard]] constexpr auto&& getData() noexcept { return orion; }
 
-			Config(Config&&) = delete;
-			Config(const Config&) = delete;
-			Config& operator=(Config&&) = delete;
-			Config& operator=(const Config&) = delete;
+	void init() noexcept;
+	void save() noexcept;
+	void update() noexcept;
+	void create() noexcept;
+	void load(const File& file) noexcept;
+	void rename(const File& file) noexcept;
+	static void remove(const File& file) noexcept;
 
-			[[nodiscard]] constexpr auto&& getInput() noexcept { return m_input; }
-			[[nodiscard]] constexpr auto&& getSort() noexcept { return m_settings.sort; }
-			[[nodiscard]] constexpr auto&& getFiles() const noexcept { return m_files; }
-			[[nodiscard]] constexpr auto&& getData() noexcept { return orion; }
+private:
+	void sort() noexcept;
+	void enumerate() noexcept;
+	void save(const void* json) noexcept;
+	void load(void* json, const File& file) noexcept;
 
-			void init() noexcept;
-			void save() noexcept;
-			void update() noexcept;
-			void create() noexcept;
-			void load(const File& file) noexcept;
-			void rename(const File& file) noexcept;
-			static void remove(const File& file) noexcept;
+	[[nodiscard]] bool exist(std::string_view fileName) const noexcept;
 
-		private:
-			void sort() noexcept;
-			void enumerate() noexcept;
-			void save(const void* json) noexcept;
-			void load(void* json, const File& file) noexcept;
+	enum Sort
+	{
+		NAME,
+		TIME
+	};
+	struct
+	{
+		int sort = {};
+		std::filesystem::path path;
 
-			[[nodiscard]] bool exist(std::string_view fileName) const noexcept;
+	} m_settings;
+	Data orion;
+	std::string m_name;
+	std::vector<File> m_files;
+	std::array<char, 260> m_input = {};
+};
 
-			enum Sort
-			{
-				NAME,
-				TIME
-			};
-			struct
-			{
-				int sort = {};
-				std::filesystem::path path;
+class Config::File
+{
+public:
+	constexpr File(
+		std::string_view name,
+		const std::filesystem::path& path,
+		std::string_view time,
+		time_t time_t,
+		bool active) noexcept :
+		m_name{ name },
+		m_path{ path },
+		m_time{ time },
+		m_time_t{ time_t },
+		m_active{ active }
+	{}
 
-			} m_settings;
-			Data orion;
-			std::string m_name;
-			std::vector<File> m_files;
-			std::array<char, 260> m_input = {};
-		};
+	constexpr File() noexcept = default;
+	constexpr File(File&&) noexcept = default;
+	constexpr File& operator=(File&&) noexcept = default;
 
-		class Config::File
-		{
-		public:
-			constexpr File(
-				std::string_view name,
-				const std::filesystem::path& path,
-				std::string_view time,
-				time_t time_t,
-				bool active) noexcept :
-				m_name{ name },
-				m_path{ path },
-				m_time{ time },
-				m_time_t{ time_t },
-				m_active{ active }
-			{}
+	File(const File&) = delete;
+	File& operator=(const File&) = delete;
 
-			constexpr File() noexcept = default;
-			constexpr File(File&&) noexcept = default;
-			constexpr File& operator=(File&&) noexcept = default;
+	bool m_active = {};
+	std::string m_name, m_time;
+	std::time_t m_time_t = {};
+	std::filesystem::path m_path;
+};
 
-			File(const File&) = delete;
-			File& operator=(const File&) = delete;
-
-			bool m_active = {};
-			std::string m_name, m_time;
-			std::time_t m_time_t = {};
-			std::filesystem::path m_path;
-		};
-	}
-}
+inline std::optional<Config> config;

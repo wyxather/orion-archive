@@ -5,7 +5,6 @@ namespace Orion
     namespace Module
     {
         class Gui;
-        class Config;
     }
 
     class Application
@@ -20,7 +19,6 @@ namespace Orion
         Application& operator=(const Application&) = delete;
 
         [[nodiscard]] constexpr auto&& getGui() const noexcept { return *m_gui.get(); }
-        [[nodiscard]] constexpr auto&& getConfig() const noexcept { return *m_config.get(); }
 
         [[nodiscard]] bool start() const noexcept;
         void load() noexcept;
@@ -33,7 +31,6 @@ namespace Orion
         [[noreturn]] static void CALLBACK unload(HMODULE handle) noexcept;
 
         std::unique_ptr<Module::Gui> m_gui;
-        std::unique_ptr<Module::Config> m_config;
     };
 
     inline std::optional<Orion::Application> instance;

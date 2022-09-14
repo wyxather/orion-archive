@@ -3,9 +3,7 @@
 
 #include <fstream>
 
-using Orion::Module::Config;
-
-Config::Config(const Application& app) noexcept : m_app{ app } {}
+Config::Config() noexcept {}
 
 void Config::init() noexcept
 {
@@ -108,12 +106,12 @@ void Config::create() noexcept
 	save();
 }
 
-void Orion::Module::Config::remove(const File& file) noexcept
+void Config::remove(const File& file) noexcept
 {
 	std::filesystem::remove(file.m_path);
 }
 
-void Orion::Module::Config::rename(const File& file) noexcept
+void Config::rename(const File& file) noexcept
 {
 	if (!strlen(m_input.data())
 		|| file.m_name == m_input.data()

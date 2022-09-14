@@ -16,7 +16,7 @@ Orion::Application::~Application() noexcept
 {
 	game.reset();
 	m_gui.reset();
-	m_config.reset();
+	config.reset();
 	input.reset();
 	renderer.reset();
 	hooks.reset();
@@ -34,7 +34,7 @@ void Orion::Application::load() noexcept
 	hooks.emplace();
 	renderer.emplace();
 	input.emplace();
-	m_config = std::make_unique<Module::Config>(*this);
+	config.emplace();
 	m_gui = std::make_unique<Module::Gui>(*this);
 	game.emplace();
 
@@ -43,7 +43,7 @@ void Orion::Application::load() noexcept
 
 bool Orion::Application::start() const noexcept
 {
-	m_config->init();
+	config->init();
 
 	renderer->hook();
 	input->hook();
@@ -61,7 +61,7 @@ void Orion::Application::exit() const noexcept
 	hooks->disable();
 
 	window->unhook();
-	
+
 	std::unique_ptr<void, std::function<void(HANDLE)>> thread(
 		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), handle, NULL, nullptr),
 		[](HANDLE handle) noexcept
