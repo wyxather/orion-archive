@@ -1,28 +1,26 @@
 #pragma once
 
-namespace Orion
+class Application
 {
-    class Application
-    {
-    public:
-        Application(HMODULE handle) noexcept;
-        ~Application() noexcept;
+public:
+    Application(HMODULE handle) noexcept;
+    ~Application() noexcept;
 
-        Application(Application&&) = delete;
-        Application(const Application&) = delete;
-        Application& operator=(Application&&) = delete;
-        Application& operator=(const Application&) = delete;
+    Application(Application&&) = delete;
+    Application(const Application&) = delete;
+    Application& operator=(Application&&) = delete;
+    Application& operator=(const Application&) = delete;
 
-        [[nodiscard]] bool start() const noexcept;
-        void load() noexcept;
-        void exit() const noexcept;
+    static auto load() noexcept -> void;
+    static auto start() noexcept -> void;
 
-        DWORD id;
-        HMODULE handle;
+    auto exit() const noexcept -> void;
 
-    private:
-        [[noreturn]] static void CALLBACK unload(HMODULE handle) noexcept;
-    };
+    DWORD id;
+    HMODULE handle;
 
-    inline std::optional<Orion::Application> instance;
-}
+private:
+    [[noreturn]] static void __stdcall unload(HMODULE handle) noexcept;
+};
+
+inline std::optional<const Application> app;

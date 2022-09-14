@@ -243,7 +243,6 @@
     <ClInclude Include="Dependencies\MinHook\src\trampoline.h" />
     <ClInclude Include="Dependencies\stb.hh" />
     <ClInclude Include="Dependencies\xorstr.hpp" />
-    <ClInclude Include="Source\framework.h" />
     <ClInclude Include="Source\Module\Config.h" />
     <ClInclude Include="Source\Module\Console.h" />
     <ClInclude Include="Source\Module\Game.h" />
@@ -300,7 +299,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="Source\dllmain.cpp" />
+    <ClCompile Include="Source\Entry.cpp" />
     <ClCompile Include="Source\Module\Config.cpp" />
     <ClCompile Include="Source\Module\Console.cpp" />
     <ClCompile Include="Source\Module\Game.cpp" />

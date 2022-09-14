@@ -33,7 +33,7 @@ auto Window::unhook() noexcept -> void
 
 auto Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
 {
-	if (DWORD id; !(LI_FN(GetWindowThreadProcessId)(handle, &id)) || id != Orion::instance->id)
+	if (DWORD id; !(LI_FN(GetWindowThreadProcessId)(handle, &id)) || id != app->id)
 		return 1;
 	if (std::array<TCHAR, 260> className, windowText; !(LI_FN(GetClassName)(handle, className.data(), static_cast<int>(className.size()))) || !(LI_FN(GetWindowText)(handle, windowText.data(), static_cast<int>(windowText.size()))) || LI_FN(MessageBox)(nullptr, windowText.data(), className.data(), MB_YESNO | MB_ICONINFORMATION) != IDYES)
 		return 1;
@@ -43,23 +43,25 @@ auto Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
 
 LRESULT Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 {
-	static const auto once = Orion::instance->start();
+	static const auto once = []() noexcept {
+		Application::start();
+		return false;
+	}();
+
 	if (message == WM_KEYUP) {
 		switch (wParam) {
-		case VK_END:  Orion::instance->exit(); break;
+		case VK_END: app->exit(); break;
 		case VK_INSERT: gui->toggle(); break;
 		}
 	}
-	if (once) {
-		if (gui->isOpen()) {
-			switch (input->getType()) {
-			case Input::Type::DINPUT8:
-				if (ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam))
-					return FALSE;
-				break;
-			default:
-				return ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam) ? FALSE : TRUE;
-			}
+	if (gui->isOpen()) {
+		switch (input->getType()) {
+		case Input::Type::DINPUT8:
+			if (ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam))
+				return FALSE;
+			break;
+		default:
+			return ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam) ? FALSE : TRUE;
 		}
 	}
 	return LI_FN(CallWindowProc).cached()(window->originalProc.asWndProc, handle, message, wParam, lParam);

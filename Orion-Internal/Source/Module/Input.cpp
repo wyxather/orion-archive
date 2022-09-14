@@ -133,7 +133,7 @@ void Input::hook() noexcept
 		const auto directInput8Create = reinterpret_cast<HRESULT(__stdcall*)(HMODULE, DWORD, const IID&, LPDIRECTINPUT8*, LPUNKNOWN)>(LI_FN(GetProcAddress)(handle, proc.get()));
 
 		ComPtr<IDirectInput8> directInput8;
-		if (directInput8Create(Orion::instance->handle, DIRECTINPUT_VERSION, IID_IDirectInput8, directInput8.GetAddressOf(), nullptr) != DI_OK)
+		if (directInput8Create(app->handle, DIRECTINPUT_VERSION, IID_IDirectInput8, directInput8.GetAddressOf(), nullptr) != DI_OK)
 			return;
 
 		ComPtr<IDirectInputDevice8> directInputDevice8;

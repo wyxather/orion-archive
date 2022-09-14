@@ -48,9 +48,6 @@
     <ClInclude Include="Source\pch.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\framework.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Dependencies\xorstr.hpp">
       <Filter>Dependencies</Filter>
     </ClInclude>
@@ -161,7 +158,7 @@
     <ClCompile Include="Source\pch.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dllmain.cpp">
+    <ClCompile Include="Source\Entry.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Orion.cpp">

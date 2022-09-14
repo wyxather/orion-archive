@@ -45,7 +45,7 @@ auto Console::time(std::array<char, 9>& buffer) noexcept -> void
 
 auto Console::enumerate(HWND handle, Console* console) noexcept -> BOOL
 {
-	if (DWORD id; !(LI_FN(GetWindowThreadProcessId)(handle, &id)) || id != Orion::instance->id)
+	if (DWORD id; !(LI_FN(GetWindowThreadProcessId)(handle, &id)) || id != app->id)
 		return 1;
 	if (std::array<char, 260> name; !(LI_FN(GetClassNameA)(handle, name.data(), static_cast<int>(name.size()))) || !Orion::Fnv<"ConsoleWindowClass">::compare(name.data()))
 		return 1;
