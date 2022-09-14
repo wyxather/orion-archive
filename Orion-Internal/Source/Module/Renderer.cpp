@@ -130,7 +130,7 @@ namespace
 
 }
 
-Renderer::Renderer(Type type) noexcept
+Renderer::Renderer(Type type) noexcept : handle{ nullptr }, type{ Type::NONE }
 {
 	Orion::String<"Renderer"> caption;
 

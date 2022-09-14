@@ -659,7 +659,7 @@ namespace
 				case Menu::Body::Content::Main::Panel::Config::Event::LOAD: config->load(file);
 					config->update();
 					break;
-				case Menu::Body::Content::Main::Panel::Config::Event::REMOVE: config->remove(file);
+				case Menu::Body::Content::Main::Panel::Config::Event::REMOVE: ::Config::remove(file);
 					config->update();
 					resizing = true;
 					break;

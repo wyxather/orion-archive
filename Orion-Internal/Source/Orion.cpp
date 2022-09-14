@@ -48,7 +48,7 @@ bool Orion::Application::start() const noexcept
 	renderer->hook();
 	input->hook();
 	game->hook();
-	hooks->enable();
+	Hooks::enable();
 
 	return true;
 }
@@ -58,7 +58,7 @@ void Orion::Application::exit() const noexcept
 	game->unhook();
 	input->unhook();
 	renderer->unhook();
-	hooks->disable();
+	Hooks::disable();
 
 	window->unhook();
 

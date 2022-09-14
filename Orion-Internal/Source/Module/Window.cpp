@@ -6,7 +6,7 @@
 
 LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
-Window::Window() noexcept
+Window::Window() noexcept : handle{ nullptr }, originalProc{ nullptr }
 {
 	ImGui::CreateContext();
 	LI_FN(EnumWindows)(reinterpret_cast<WNDENUMPROC>(&Window::enumerate), reinterpret_cast<LPARAM>(this));

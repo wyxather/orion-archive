@@ -106,7 +106,6 @@ namespace
 Input::Input(Type type) noexcept
 {
 	Orion::String<"Input"> caption;
-
 	{
 		Orion::String<"dinput8.dll"> name;
 		handle = LI_FN(GetModuleHandleA)(name.get());
@@ -115,6 +114,7 @@ Input::Input(Type type) noexcept
 			return;
 		}
 	}
+	this->type = Type::NONE;
 }
 
 Input::~Input() noexcept
