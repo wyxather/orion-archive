@@ -44,15 +44,14 @@ auto Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
 LRESULT Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept
 {
 	static const auto once = Orion::instance->start();
-	auto&& gui = Orion::instance->getGui();
 	if (message == WM_KEYUP) {
 		switch (wParam) {
 		case VK_END:  Orion::instance->exit(); break;
-		case VK_INSERT: gui.toggle(); break;
+		case VK_INSERT: gui->toggle(); break;
 		}
 	}
 	if (once) {
-		if (gui.isOpen()) {
+		if (gui->isOpen()) {
 			switch (input->getType()) {
 			case Input::Type::DINPUT8:
 				if (ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam))

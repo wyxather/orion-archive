@@ -28,7 +28,7 @@ namespace
 					pDevice,
 					cbData,
 					lpvData);
-			if (Orion::instance->getGui().isOpen() && result == DI_OK) {
+			if (gui->isOpen() && result == DI_OK) {
 				switch (cbData)
 				{
 				case (sizeof(DIMOUSESTATE)):
@@ -74,7 +74,7 @@ namespace
 					rgdod,
 					pdwInOut,
 					dwFlags);
-			if (Orion::instance->getGui().isOpen() && result == DI_OK) {
+			if (gui->isOpen() && result == DI_OK) {
 				for (DWORD i = 0; i < *pdwInOut; i++) {
 					if (rgdod[i].dwData & 0x80) { // Pressed
 						switch (rgdod[i].dwOfs) {

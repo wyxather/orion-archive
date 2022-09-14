@@ -39,7 +39,6 @@
 #include <d3d9.h>
 #include <d3d11.h>
 
-using Orion::Module::Gui;
 using Microsoft::WRL::ComPtr;
 
 namespace
@@ -182,7 +181,7 @@ namespace
 		struct Body;
 		struct Tab;
 
-		Menu(Gui& gui, float alpha, ImFont* defaultFont) noexcept :
+		Menu(float alpha, ImFont* defaultFont) noexcept :
 			m_font{ defaultFont }
 		{
 			Orion::String<"##Menu"> id;
@@ -203,7 +202,7 @@ namespace
 				ImGuiWindowFlags_::ImGuiWindowFlags_NoResize
 			);
 
-			gui.getPostProcess()->draw();
+			gui->getPostProcess()->draw();
 		}
 
 		~Menu() noexcept
@@ -217,12 +216,9 @@ namespace
 
 	struct Menu::Tab : Component
 	{
-		Gui& m_gui;
-
-		Tab(Gui& gui, std::uint32_t hash) noexcept :
-			m_gui{ gui }
+		Tab(std::uint32_t hash) noexcept
 		{
-			if (const auto tab = m_gui.getTabs().find(hash); tab && tab->m_alpha > 0.f) {
+			if (const auto tab = gui->getTabs().find(hash); tab && tab->m_alpha > 0.f) {
 				Component::Continue(true);
 				Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * tab->m_alpha);
 			}
@@ -249,10 +245,7 @@ namespace
 	{
 		struct Items;
 
-		Gui& m_gui;
-
-		Nav(Gui& gui) noexcept :
-			m_gui{ gui }
+		Nav() noexcept
 		{
 			const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos();
 			const auto size = ImGui::GetContentRegionAvail();
@@ -280,7 +273,7 @@ namespace
 
 				Orion::String<"ORION"> label;
 
-				const PushFont font{ m_gui.getFonts().ariblk_37 };
+				const PushFont font{ gui->getFonts().ariblk_37 };
 				const auto contentSize = ImGui::GetContentRegionAvail();
 				const auto textSize = ImGui::CalcTextSize(label.get());
 				const ImVec2 textPos{ (contentSize.x - textSize.x) * .5f, (contentSize.y - textSize.y) * .5f + 5 };
@@ -313,14 +306,14 @@ namespace
 
 				drawList.AddCircleFilled(profilePicturePosition, 19, IM_COL32(8, 8, 8, style.Alpha * 255));
 				{
-					const PushFont font{ m_gui.getFonts().profile_15 };
+					const PushFont font{ gui->getFonts().profile_15 };
 					const auto profileIcon = FontAwesome::get<FontAwesome::Type::user_secret>();
 					drawList.AddText(profilePicturePosition - ImGui::CalcTextSize(profileIcon) * .5f, IM_COL32(240, 240, 240, style.Alpha * 255), profileIcon);
 				}
 				{
 					Orion::String<"Wyxather"> author;
 					Orion::String<"Build:" __DATE__> build;
-					const PushFont font{ m_gui.getFonts().arialbd_15, (14.f / 15.f) };
+					const PushFont font{ gui->getFonts().arialbd_15, (14.f / 15.f) };
 					const ImVec2 textPos{ profilePicturePosition.x + 29, drawPos.y + 31 };
 					drawList.AddText(ImVec2{ profilePicturePosition.x + 29, drawPos.y + 12 }, IM_COL32(240, 240, 240, style.Alpha * 255), author.get());
 					drawList.AddText(textPos, IM_COL32(64, 69, 75, style.Alpha * 255), build.get(), &build.get()[6]);
@@ -333,10 +326,7 @@ namespace
 
 	struct Menu::Header::Nav::Items : Component
 	{
-		Gui& m_gui;
-
-		Items(Gui& gui) noexcept :
-			m_gui{ gui },
+		Items() noexcept :
 			m_space{ false }
 		{
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2{ 5, 5 });
@@ -355,7 +345,7 @@ namespace
 		constexpr void Text() noexcept
 		{
 			Orion::String<str> text;
-			const PushFont font{ m_gui.getFonts().arialbd_15, (13.f / 15.f) };
+			const PushFont font{ gui->getFonts().arialbd_15, (13.f / 15.f) };
 			if (m_space)
 				ImGui::Dummy(ImVec2{ 0, 10 });
 			else
@@ -376,10 +366,10 @@ namespace
 			std::string preview = text.get();
 			preview.insert(0, FontAwesome::get<icon>());
 
-			const PushFont font{ m_gui.getFonts().navbar_15 };
+			const PushFont font{ gui->getFonts().navbar_15 };
 			auto&& style = ImGui::GetStyle();
 
-			auto&& curTab = m_gui.getTabs()[Orion::Fnv<str>::value];
+			auto&& curTab = gui->getTabs()[Orion::Fnv<str>::value];
 			auto curTabAlpha = style.Alpha * (!curTab.m_active ? std::sqrtf(curTab.m_alpha) : std::powf(curTab.m_alpha, 2));
 
 			const StyleVar styleVar[] = {
@@ -393,13 +383,13 @@ namespace
 			};
 
 			if (ImGui::ButtonIcon(preview.c_str(), ImVec2{ 171, 30 }, IM_COL32(0, 149, 235, style.Alpha * 255))) {
-				if (!m_gui.getLastActiveTab()) {
-					m_gui.getLastActiveTab() = &curTab;
+				if (!gui->getLastActiveTab()) {
+					gui->getLastActiveTab() = &curTab;
 					curTab.m_active = true;
 				}
-				else if (m_gui.getLastActiveTab() != &curTab && !m_gui.getLastClickedTab()) {
-					m_gui.getLastActiveTab()->m_active = false;
-					m_gui.getLastClickedTab() = &curTab;
+				else if (gui->getLastActiveTab() != &curTab && !gui->getLastClickedTab()) {
+					gui->getLastActiveTab()->m_active = false;
+					gui->getLastClickedTab() = &curTab;
 				}
 			}
 
@@ -408,10 +398,10 @@ namespace
 			else
 				curTab.m_alpha = std::clamp(curTab.m_alpha - ImGui::GetIO().DeltaTime * 2, 0.f, 1.f);
 
-			if (m_gui.getLastClickedTab() && m_gui.getLastActiveTab()->m_alpha <= 0.f) {
-				m_gui.getLastClickedTab()->m_active = true;
-				m_gui.getLastActiveTab() = m_gui.getLastClickedTab();
-				m_gui.getLastClickedTab() = nullptr;
+			if (gui->getLastClickedTab() && gui->getLastActiveTab()->m_alpha <= 0.f) {
+				gui->getLastClickedTab()->m_active = true;
+				gui->getLastActiveTab() = gui->getLastClickedTab();
+				gui->getLastClickedTab() = nullptr;
 			}
 		}
 
@@ -607,10 +597,7 @@ namespace
 		struct Config;
 		struct Table;
 
-		Gui& m_gui;
-
-		Panel(Gui& gui) noexcept :
-			m_gui{ gui }
+		Panel() noexcept
 		{
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 18, 0 });
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_ScrollbarSize, 9);
@@ -620,10 +607,10 @@ namespace
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_ScrollbarGrabHovered, ImVec4{ .10980392f, .1411764f, .168627f, 1 });
 
 			const auto verticalOffset{ ImGui::GetContentRegionAvail().y * .02f };
-			if (!m_gui.getLastActiveTab()->m_active)
-				ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, verticalOffset - verticalOffset * std::powf(m_gui.getLastActiveTab()->m_alpha, 2) });
+			if (!gui->getLastActiveTab()->m_active)
+				ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, verticalOffset - verticalOffset * std::powf(gui->getLastActiveTab()->m_alpha, 2) });
 			else
-				ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, verticalOffset - verticalOffset * std::sqrtf(m_gui.getLastActiveTab()->m_alpha) });
+				ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, verticalOffset - verticalOffset * std::sqrtf(gui->getLastActiveTab()->m_alpha) });
 
 			Component::BeginChild(Orion::Fnv<"##Menu::Body::Content::Main::Panel">::value, ImVec2{}, true,
 				ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysVerticalScrollbar |
@@ -648,12 +635,7 @@ namespace
 			INPUT
 		};
 
-		const Orion::Application& m_app;
-		const Gui& m_gui;
-
-		Config(const Orion::Application& app, const Gui& gui) noexcept :
-			m_app{ app },
-			m_gui{ gui }
+		Config() noexcept
 		{
 			ImGui::Dummy(ImVec2{ 0, 1 });
 
@@ -848,7 +830,7 @@ namespace
 
 				ImGui::SetCursorPos(pos);
 				{
-					const PushFont font{ m_gui.getFonts().arialbd_15, (17.f / 15.f) };
+					const PushFont font{ gui->getFonts().arialbd_15, (17.f / 15.f) };
 					ImGui::TextColored(ImVec4{ 0.941176f, 0.941176f, 0.941176f, 1.000000f }, name.data());
 				}
 				const auto descPos{ ImGui::GetCursorPos() };
@@ -898,10 +880,7 @@ namespace
 	template <stb::compiletime_string_wrapper str>
 	struct Menu::Body::Content::Main::Panel::Table::Group : Component
 	{
-		Gui& m_gui;
-
-		Group(Gui& gui) noexcept :
-			m_gui{ gui }
+		Group() noexcept
 		{
 			Orion::String<str> name;
 
@@ -913,7 +892,7 @@ namespace
 
 			const auto& style{ ImGui::GetStyle() };
 
-			m_gui.getLastActiveGroup() = &m_gui.getLastActiveTab()->m_groups[hash];
+			gui->getLastActiveGroup() = &gui->getLastActiveTab()->m_groups[hash];
 
 			ImGui::TableNextColumn();
 
@@ -924,7 +903,7 @@ namespace
 
 			Component::BeginChild(hash, ImVec2{ 0,
 				title_height + line_height + seperator_height +
-				style.ItemSpacing.y * 2 + (21 + style.CellPadding.y * 2) * m_gui.getLastActiveGroup()->m_widgetCount + style.WindowPadding.y }, true,
+				style.ItemSpacing.y * 2 + (21 + style.CellPadding.y * 2) * gui->getLastActiveGroup()->m_widgetCount + style.WindowPadding.y }, true,
 				ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar);
 
 			if (!Component::Continue())
@@ -934,7 +913,7 @@ namespace
 			Menu::Background(pos, pos + ImVec2{ ImGui::GetContentRegionAvail().x + line_width_offset * 2, line_height }, IM_COL32(24, 24, 24, style.Alpha * 255), 0,
 				ImDrawFlags_::ImDrawFlags_None);
 
-			const PushFont font{ m_gui.getFonts().arialbd_15, (16.f / 15.f) };
+			const PushFont font{ gui->getFonts().arialbd_15, (16.f / 15.f) };
 			ImGui::TextColored(ImVec4{ .9411764f, .9411764f, .9411764f, 1 }, name.get());
 
 			ImGui::Dummy(ImVec2{ 0, seperator_height });
@@ -948,10 +927,7 @@ namespace
 
 	struct Menu::Body::Content::Main::Panel::Table::Widget : Component
 	{
-		Gui& m_gui;
-
-		Widget(Gui& gui) noexcept :
-			m_gui{ gui },
+		Widget() noexcept :
 			m_count{ 0 }
 		{
 			Orion::String<"##Menu::Body::Content::Panel::Table::Widget"> name;
@@ -962,7 +938,7 @@ namespace
 		{
 			if (Component::Continue()) {
 				ImGui::EndTable();
-				m_gui.getLastActiveGroup()->m_widgetCount = m_count;
+				gui->getLastActiveGroup()->m_widgetCount = m_count;
 			}
 		}
 
@@ -975,7 +951,7 @@ namespace
 			constexpr auto toggleWidthMult = 1.35f;
 			constexpr auto textPositionVerticalOffset = 2.f;
 
-			const PushFont font{ m_gui.getFonts().arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ gui->getFonts().arialbd_15, (fontHeight / 15.f) };
 			float ratio = 0;
 
 			m_count++;
@@ -1057,7 +1033,7 @@ namespace
 			constexpr auto textPositionVerticalOffset{ 2.00f };
 			constexpr auto framePadding{ 4.00f };
 
-			const PushFont font{ m_gui.getFonts().arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ gui->getFonts().arialbd_15, (fontHeight / 15.f) };
 
 			m_count++;
 
@@ -1108,7 +1084,7 @@ namespace
 			static std::string preview;
 			static float popupAlpha;
 
-			const PushFont font{ m_gui.getFonts().arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ gui->getFonts().arialbd_15, (fontHeight / 15.f) };
 
 			Orion::String<str> name;
 			Orion::String<items> item;
@@ -1193,7 +1169,7 @@ namespace
 			constexpr auto inputTextWidth{ 28.00f };
 			constexpr auto textPositionVerticalOffset{ 1.00f };
 
-			const PushFont font{ m_gui.getFonts().arialbd_15, fontHeight / 15.f };
+			const PushFont font{ gui->getFonts().arialbd_15, fontHeight / 15.f };
 			const auto& style = ImGui::GetStyle();
 
 			Orion::String<str> name;
@@ -1222,7 +1198,7 @@ namespace
 				};
 
 				{
-					const PushFont font{ m_gui.getFonts().arialbd_15, (fontHeight - 1) / 15.f };
+					const PushFont font{ gui->getFonts().arialbd_15, (fontHeight - 1) / 15.f };
 					const StyleColor styleColor2[] = {
 						{ ImGuiCol_::ImGuiCol_FrameBg, ImVec4{ .0470588f, .0470588f, .0470588f, 1 } },
 					};
@@ -1774,8 +1750,7 @@ namespace
 	};
 }
 
-Gui::Gui(const Application& app) noexcept :
-	m_app{ app },
+Gui::Gui() noexcept :
 	m_open{ true },
 	m_io{ ImGui::GetIO() }
 {
@@ -1848,10 +1823,10 @@ void Gui::draw() noexcept
 	if (!m_io.MouseDrawCursor)
 		return;
 
-	if (Menu menu{ *this, m_alpha, m_fonts.arialbd_15 }) {
+	if (Menu menu{ m_alpha, m_fonts.arialbd_15 }) {
 		if (Menu::Header header{}) {
-			if (Menu::Header::Nav nav{ *this }) {
-				if (Menu::Header::Nav::Items items{ *this }) {
+			if (Menu::Header::Nav nav{}) {
+				if (Menu::Header::Nav::Items items{}) {
 					items.Text<"Aimbot">();
 					items.Button<"Ragebot", FontAwesome::Type::crosshairs>();
 					items.Button<"Anti Aim", FontAwesome::Type::rotate_left>();
@@ -1873,24 +1848,24 @@ void Gui::draw() noexcept
 		if (Menu::Body body{}) {
 			if (Menu::Body::Top top{}) {
 				Menu::Body::Top::Save();
-				if (Menu::Tab tab{ *this, Orion::Fnv<"Configs">::value }) {
+				if (Menu::Tab tab{ Orion::Fnv<"Configs">::value }) {
 					Menu::Body::Top::Combo<"Name\0Date Modified\0">();
 					Menu::Body::Top::Create();
 				}
 			}
 			if (Menu::Body::Content content{}) {
 				if (Menu::Body::Content::Main main{}) {
-					if (Menu::Tab tab{ *this, Orion::Fnv<"Configs">::value }) {
-						if (Menu::Body::Content::Main::Panel panel{ *this }) {
-							Menu::Body::Content::Main::Panel::Config config{ m_app, *this };
+					if (Menu::Tab tab{ Orion::Fnv<"Configs">::value }) {
+						if (Menu::Body::Content::Main::Panel panel{}) {
+							Menu::Body::Content::Main::Panel::Config config{};
 						}
 					}
 
-					else if (Menu::Tab tab{ *this, Orion::Fnv<"Main">::value }) {
-						if (Menu::Body::Content::Main::Panel panel{ *this }) {
+					else if (Menu::Tab tab{ Orion::Fnv<"Main">::value }) {
+						if (Menu::Body::Content::Main::Panel panel{}) {
 							if (Menu::Body::Content::Main::Panel::Table table{}) {
-								if (Menu::Body::Content::Main::Panel::Table::Group<"General"> group{ *this }) {
-									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
+								if (Menu::Body::Content::Main::Panel::Table::Group<"General"> group{}) {
+									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
 										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
 										widget.Toggle<"Unlimited Works">(config->getData().hitbox[1]);
 										widget.Combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(config->getData().target);
@@ -1899,8 +1874,8 @@ void Gui::draw() noexcept
 										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
 									}
 								}
-								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement"> group{ *this }) {
-									if (Menu::Body::Content::Main::Panel::Table::Widget widget{ *this }) {
+								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement"> group{}) {
+									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
 										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
 										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(config->getData().color[0]);
 									}

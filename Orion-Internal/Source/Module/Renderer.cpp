@@ -19,7 +19,7 @@ namespace
 			const D3DPRESENT_PARAMETERS* pPresentationParameters
 		) noexcept
 		{
-			Orion::instance->getGui().invalidate();
+			gui->invalidate();
 			ImGui_ImplDX9_InvalidateDeviceObjects();
 			return renderer->getHook().get<
 				16,
@@ -43,7 +43,7 @@ namespace
 				ImGui_ImplWin32_NewFrame();
 				ImGui::NewFrame();
 				{
-					Orion::instance->getGui().draw();
+					gui->draw();
 				}
 				ImGui::EndFrame();
 				ImGui::Render();
@@ -75,7 +75,7 @@ namespace
 			const UINT swapChainFlags
 		) noexcept
 		{
-			Orion::instance->getGui().invalidate();
+			gui->invalidate();
 			ImGui_ImplDX11_InvalidateDeviceObjects();
 			const auto result = renderer->getHook().get<
 				13,
@@ -112,7 +112,7 @@ namespace
 				ImGui_ImplWin32_NewFrame();
 				ImGui::NewFrame();
 				{
-					Orion::instance->getGui().draw();
+					gui->draw();
 				}
 				ImGui::EndFrame();
 				ImGui::Render();

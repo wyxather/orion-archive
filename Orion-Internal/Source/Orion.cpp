@@ -15,7 +15,7 @@ Orion::Application::Application(HMODULE handle) noexcept : id{ LI_FN(GetCurrentP
 Orion::Application::~Application() noexcept
 {
 	game.reset();
-	m_gui.reset();
+	gui.reset();
 	config.reset();
 	input.reset();
 	renderer.reset();
@@ -35,7 +35,7 @@ void Orion::Application::load() noexcept
 	renderer.emplace();
 	input.emplace();
 	config.emplace();
-	m_gui = std::make_unique<Module::Gui>(*this);
+	gui.emplace();
 	game.emplace();
 
 	window->hook();
