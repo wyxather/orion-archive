@@ -34,10 +34,10 @@ Application::~Application() noexcept
 
 auto Application::load() noexcept -> void
 {
-	window.emplace();
+	window.emplace(Window::Type::NONE, Orion::Fnv<"">::value, Orion::Fnv<"">::value);
 	console.emplace();
 	hooks.emplace();
-	renderer.emplace();
+	renderer.emplace(Renderer::Type::NONE);
 	input.emplace();
 	config.emplace();
 	gui.emplace();
