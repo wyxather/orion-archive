@@ -103,18 +103,34 @@ namespace
 	}
 }
 
-Input::Input(Type type) noexcept
+Input::Input(Type type) noexcept : handle{ nullptr }, type{ Type::NONE }
 {
 	Orion::String<"Input"> caption;
+
+	switch (type) {
+
+	case Type::NONE:
 	{
-		Orion::String<"dinput8.dll"> name;
-		handle = LI_FN(GetModuleHandleA)(name.get());
-		if (handle && LI_FN(MessageBoxA)(nullptr, name.get(), caption.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
-			this->type = Type::DINPUT8;
-			return;
+		{
+			Orion::String<"dinput8.dll"> name;
+			handle = LI_FN(GetModuleHandleA)(name.get());
+			if (handle && LI_FN(MessageBoxA)(nullptr, name.get(), caption.get(), MB_YESNO | MB_ICONINFORMATION) == IDYES) {
+				this->type = Type::DINPUT8;
+				break;
+			}
 		}
 	}
-	this->type = Type::NONE;
+	break;
+
+	case Type::DINPUT8:
+	{
+		Orion::String<"dinput8.dll"> name;
+		if (handle = LI_FN(GetModuleHandleA)(name.get()))
+			this->type = Type::DINPUT8;
+	}
+	break;
+
+	}
 }
 
 Input::~Input() noexcept

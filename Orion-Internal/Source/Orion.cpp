@@ -38,7 +38,7 @@ auto Application::load() noexcept -> void
 	console.emplace();
 	hooks.emplace();
 	renderer.emplace(Renderer::Type::NONE);
-	input.emplace();
+	input.emplace(Input::Type::NONE);
 	config.emplace();
 	gui.emplace();
 	game.emplace();
