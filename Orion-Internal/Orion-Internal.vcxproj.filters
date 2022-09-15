@@ -153,6 +153,9 @@
     <ClInclude Include="Source\SDK\Vector3.h">
       <Filter>Source\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SDK\Class.h">
+      <Filter>Source\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp">
