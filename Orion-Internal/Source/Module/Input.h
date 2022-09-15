@@ -7,6 +7,7 @@ class Input
 public:
     enum class Type
     {
+        AUTO,
         NONE,
         DINPUT8
     };

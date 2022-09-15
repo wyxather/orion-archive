@@ -109,7 +109,7 @@ Input::Input(Type type) noexcept : handle{ nullptr }, type{ Type::NONE }
 
 	switch (type) {
 
-	case Type::NONE:
+	case Type::AUTO:
 	{
 		{
 			Orion::String<"dinput8.dll"> name;

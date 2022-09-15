@@ -7,6 +7,7 @@ class Renderer
 public:
 	enum class Type
 	{
+		AUTO,
 		NONE,
 		D3D9,
 		D3D11
