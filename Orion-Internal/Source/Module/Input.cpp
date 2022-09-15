@@ -46,10 +46,10 @@ namespace
 				break;
 				}
 				if (key[0] != key[1]) {
-					if (POINT pos{}; LI_FN(GetCursorPos).cached()(&pos)) {
+					if (POINT pos; LI_FN(GetCursorPos).cached()(&pos)) {
 						key[0]
-							? PostMessage(window->getHandle(), WM_LBUTTONDOWN, VK_LBUTTON, MAKELPARAM(pos.x, pos.y))
-							: PostMessage(window->getHandle(), WM_LBUTTONUP, NULL, MAKELPARAM(pos.x, pos.y));
+							? LI_FN(PostMessage).cached()(window->getHandle(), WM_LBUTTONDOWN, VK_LBUTTON, MAKELPARAM(pos.x, pos.y))
+							: LI_FN(PostMessage).cached()(window->getHandle(), WM_LBUTTONUP, NULL, MAKELPARAM(pos.x, pos.y));
 					}
 					key[1] = key[0];
 				}
@@ -80,8 +80,8 @@ namespace
 						switch (rgdod[i].dwOfs) {
 						case DIMOFS_BUTTON0:
 						{
-							if (POINT pos{}; LI_FN(GetCursorPos).cached()(&pos)) {
-								PostMessage(window->getHandle(), WM_LBUTTONDOWN, VK_LBUTTON, MAKELPARAM(pos.x, pos.y));
+							if (POINT pos; LI_FN(GetCursorPos).cached()(&pos)) {
+								LI_FN(PostMessage).cached()(window->getHandle(), WM_LBUTTONDOWN, VK_LBUTTON, MAKELPARAM(pos.x, pos.y));
 								rgdod[i].dwData &= ~0x80;
 							}
 						}
@@ -91,8 +91,8 @@ namespace
 					else switch (rgdod[i].dwOfs) { // Release
 					case DIMOFS_BUTTON0:
 					{
-						if (POINT pos{}; LI_FN(GetCursorPos).cached()(&pos))
-							PostMessage(window->getHandle(), WM_LBUTTONUP, NULL, MAKELPARAM(pos.x, pos.y));
+						if (POINT pos; LI_FN(GetCursorPos).cached()(&pos))
+							LI_FN(PostMessage).cached()(window->getHandle(), WM_LBUTTONUP, NULL, MAKELPARAM(pos.x, pos.y));
 					}
 					break;
 					}
