@@ -7,13 +7,13 @@ class Renderer
 public:
 	enum class Type
 	{
-		AUTO,
 		NONE,
 		D3D9,
-		D3D11
+		D3D11,
+		AUTO
 	};
 
-	Renderer(Type type = Type::NONE) noexcept;
+	Renderer(Type type = Type::AUTO) noexcept;
 	~Renderer() noexcept;
 
 	Renderer(Renderer&&) = delete;

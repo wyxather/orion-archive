@@ -7,12 +7,12 @@ class Input
 public:
     enum class Type
     {
-        AUTO,
         NONE,
-        DINPUT8
+        DINPUT8,
+        AUTO
     };
 
-    Input(Type type = Type::NONE) noexcept;
+    Input(Type type = Type::AUTO) noexcept;
     ~Input() noexcept;
 
     Input(Input&&) = delete;

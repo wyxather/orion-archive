@@ -44,7 +44,7 @@ auto Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
 
 	switch (window->type) {
 
-	case Type::NONE:
+	case Type::AUTO:
 	{
 		if (std::array<TCHAR, 260> className, windowText;
 			!(LI_FN(GetClassName)(handle, className.data(), static_cast<int>(className.size()))) ||

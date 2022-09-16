@@ -5,13 +5,13 @@ class Window
 public:
     enum class Type
     {
-        NONE,
+        AUTO,
         CLASSNAME,
         WINDOWTEXT,
         BOTH
     };
 
-    Window(Type type = Type::NONE, std::uint32_t className = 0, std::uint32_t windowText = 0) noexcept;
+    Window(Type type = Type::AUTO, std::uint32_t className = 0, std::uint32_t windowText = 0) noexcept;
     ~Window() noexcept;
 
     Window(Window&&) = delete;
