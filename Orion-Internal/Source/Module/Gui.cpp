@@ -843,7 +843,7 @@ namespace
 				ImGui::TextColored(ImVec4{ 0.262745f, 0.513726f, 0.658824f, 1.000000f }, time.data());
 				ImGui::SameLine(0, 14);
 
-				ImGui::SetCursorPos(descPos + ImVec2{ 190, 0 });
+				ImGui::SetCursorPos(descPos + ImVec2{ 180, 0 });
 				ImGui::TextColored(ImVec4{ 0.647059f, 0.670588f, 0.698039f, 1.000000f }, author.get());
 				ImGui::SameLine();
 				ImGui::TextColored(ImVec4{ 0.262745f, 0.513726f, 0.658824f, 1.000000f }, authorValue.get());
