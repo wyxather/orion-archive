@@ -156,6 +156,9 @@
     <ClInclude Include="Source\SDK\Class.h">
       <Filter>Source\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Resources\Fonts\museosanscyrl.h">
+      <Filter>Source\Resources\Fonts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp">
