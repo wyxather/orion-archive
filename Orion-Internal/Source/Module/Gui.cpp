@@ -856,7 +856,7 @@ namespace
 
 	struct Menu::Body::Content::Main::Panel::Table : Component
 	{
-		template <stb::compiletime_string_wrapper str>
+		template <stb::compiletime_string_wrapper str, bool nextColumn = false>
 		struct Group;
 
 		struct Widget;
@@ -880,7 +880,7 @@ namespace
 		}
 	};
 
-	template <stb::compiletime_string_wrapper str>
+	template <stb::compiletime_string_wrapper str, bool nextColumn>
 	struct Menu::Body::Content::Main::Panel::Table::Group : Component
 	{
 		Group() noexcept
@@ -888,7 +888,7 @@ namespace
 			Orion::String<str> name;
 
 			constexpr auto hash = Orion::Fnv<str>::value;
-			constexpr auto title_height{ 24.00f };
+			constexpr auto title_height{ 23.00f };
 			constexpr auto line_width_offset{ 4.00f };
 			constexpr auto line_height{ 2.00f };
 			constexpr auto seperator_height{ 18.00f };
@@ -897,10 +897,11 @@ namespace
 
 			gui->getLastActiveGroup() = &gui->getLastActiveTab()->m_groups[hash];
 
-			ImGui::TableNextColumn();
+			if (nextColumn)
+				ImGui::TableNextColumn();
 
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_CellPadding, ImVec2{ 0, 5 });
-			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 10, 7 });
+			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 10, 8 });
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_Border, ImVec4{});
 			Component::PushStyleColor(ImGuiCol_::ImGuiCol_ChildBg, ImVec4{ .039215f, .039215f, .047058f, 1 });
 
@@ -925,6 +926,7 @@ namespace
 		~Group() noexcept
 		{
 			Component::EndChild();
+			ImGui::Dummy(ImVec2{ 0, 5 });
 		}
 	};
 
@@ -1014,7 +1016,7 @@ namespace
 				}
 
 				if (ImGui::TableSetColumnIndex(0)) {
-					ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, (ImGui::GetFrameHeight() - fontHeight) * .5f - textPositionVerticalOffset });
+					ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2{ 0, (ImGui::GetFrameHeight() - fontHeight) * .5f - (color ? textPositionVerticalOffset : 0) });
 					ImGui::TextColored(ImLerp(ImVec4{ .564705f, .615686f, .647058f, 1 }, ImVec4{ .90196f, .90196f, .90196f, 1 }, ratio), name.get());
 				}
 			}
@@ -1867,7 +1869,7 @@ void Gui::draw() noexcept
 					else if (Menu::Tab tab{ Orion::Fnv<"Main">::value }) {
 						if (Menu::Body::Content::Main::Panel panel{}) {
 							if (Menu::Body::Content::Main::Panel::Table table{}) {
-								if (Menu::Body::Content::Main::Panel::Table::Group<"General"> group{}) {
+								if (Menu::Body::Content::Main::Panel::Table::Group<"General", true> group{}) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
 										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
 										widget.Toggle<"Unlimited Works">(config->getData().hitbox[1]);
@@ -1875,19 +1877,19 @@ void Gui::draw() noexcept
 										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(config->getData().target);
 										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
 										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
-									}
 								}
-								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement"> group{}) {
+									}
+								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement", true> group{}) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
 										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
 										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(config->getData().color[0]);
 									}
 								}
+									}
+								}
 							}
 						}
 					}
-				}
-			}
 		}
 	}
 }
