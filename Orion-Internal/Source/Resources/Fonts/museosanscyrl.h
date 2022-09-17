@@ -1,7 +1,7 @@
 #pragma once
 
-constexpr unsigned int museosanscyrl_compressed_size = 56481;
-inline unsigned int museosanscyrl_compressed_data[56484 / 4] =
+constexpr unsigned int museosanscyrl_900_compressed_size = 56481;
+inline unsigned int museosanscyrl_900_compressed_data[56484 / 4] =
 {
     0x0000bc57, 0x00000000, 0xe4ef0100, 0x00000400, 0x00010037, 0x000f0000, 0x00030080, 0x54464670, 0x54f75a4d, 0xef0100c4, 0x2c1582c8, 0x4544471c,
     0x04a40746, 0x0c0100bc, 0x380f8220, 0x4f50472c, 0x1916c853, 0x170100b9, 0xd8000068, 0x55534760, 0xad313642, 0x2b1f82af, 0x0b00004c, 0x2f534f1c,

@@ -129,9 +129,6 @@
     <ClInclude Include="Source\Resources\Fonts\arialbd.h">
       <Filter>Source\Resources\Fonts</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Resources\Fonts\ariblk.h">
-      <Filter>Source\Resources\Fonts</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Resources\Fonts\fontawesome.h">
       <Filter>Source\Resources\Fonts</Filter>
     </ClInclude>

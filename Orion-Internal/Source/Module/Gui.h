@@ -44,7 +44,7 @@ private:
 		ImFont* arialbd_15 = {};
 		ImFont* profile_15 = {};
 		ImFont* navbar_15 = {};
-		ImFont* ariblk_37 = {};
+		ImFont* museosanscyrl_900_32 = {};
 	};
 
 	Fonts m_fonts = {};

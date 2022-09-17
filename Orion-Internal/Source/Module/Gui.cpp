@@ -2,8 +2,8 @@
 #include "Renderer.h"
 #include "Config.h"
 #include "Orion.h"
+#include "Resources/Fonts/museosanscyrl.h"
 #include "Resources/Fonts/arialbd.h"
-#include "Resources/Fonts/ariblk.h"
 #include "Resources/Fonts/fontawesome.h"
 #if _WIN64
 #if NDEBUG
@@ -273,7 +273,7 @@ namespace
 
 				Orion::String<"ORION"> label;
 
-				const PushFont font{ gui->getFonts().ariblk_37 };
+				const PushFont font{ gui->getFonts().museosanscyrl_900_32 };
 				const auto contentSize = ImGui::GetContentRegionAvail();
 				const auto textSize = ImGui::CalcTextSize(label.get());
 				const ImVec2 textPos{ (contentSize.x - textSize.x) * .5f, (contentSize.y - textSize.y) * .5f + 5 };
@@ -1789,7 +1789,7 @@ Gui::Gui() noexcept :
 		cfg.GlyphMinAdvanceX = cfg.GlyphMaxAdvanceX = 0;
 		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 15, &cfg, FontAwesome::range);
 	}
-	m_fonts.ariblk_37 = m_io.Fonts->AddFontFromMemoryCompressedTTF(ariblk_compressed_data, ariblk_compressed_size, 37);
+	m_fonts.museosanscyrl_900_32 = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_900_compressed_data, museosanscyrl_900_compressed_size, 32);
 
 	switch (renderer->getType()) {
 
