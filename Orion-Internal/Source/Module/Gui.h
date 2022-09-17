@@ -41,10 +41,10 @@ private:
 	float m_colorReference[4] = {};
 
 	struct Fonts {
-		ImFont* arialbd_15 = {};
+		ImFont* defaultFont = {};
 		ImFont* profile_15 = {};
-		ImFont* navbar_15 = {};
-		ImFont* museosanscyrl_900_32 = {};
+		ImFont* navbarFont = {};
+		ImFont* watermarkFont = {};
 	};
 
 	Fonts m_fonts = {};

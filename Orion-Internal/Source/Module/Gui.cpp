@@ -3,7 +3,6 @@
 #include "Config.h"
 #include "Orion.h"
 #include "Resources/Fonts/museosanscyrl.h"
-#include "Resources/Fonts/arialbd.h"
 #include "Resources/Fonts/fontawesome.h"
 #if _WIN64
 #if NDEBUG
@@ -273,7 +272,7 @@ namespace
 
 				Orion::String<"ORION"> label;
 
-				const PushFont font{ gui->getFonts().museosanscyrl_900_32 };
+				const PushFont font{ gui->getFonts().watermarkFont };
 				const auto contentSize = ImGui::GetContentRegionAvail();
 				const auto textSize = ImGui::CalcTextSize(label.get());
 				const ImVec2 textPos{ (contentSize.x - textSize.x) * .5f, (contentSize.y - textSize.y) * .5f + 5 };
@@ -313,7 +312,7 @@ namespace
 				{
 					Orion::String<"Wyxather"> author;
 					Orion::String<"Build:" __DATE__> build;
-					const PushFont font{ gui->getFonts().arialbd_15, (14.f / 15.f) };
+					const PushFont font{ gui->getFonts().defaultFont, (14.f / 15.f) };
 					const ImVec2 textPos{ profilePicturePosition.x + 29, drawPos.y + 31 };
 					drawList.AddText(ImVec2{ profilePicturePosition.x + 29, drawPos.y + 12 }, IM_COL32(240, 240, 240, style.Alpha * 255), author.get());
 					drawList.AddText(textPos, IM_COL32(64, 69, 75, style.Alpha * 255), build.get(), &build.get()[6]);
@@ -345,7 +344,7 @@ namespace
 		constexpr void Text() noexcept
 		{
 			Orion::String<str> text;
-			const PushFont font{ gui->getFonts().arialbd_15, (13.f / 15.f) };
+			const PushFont font{ gui->getFonts().defaultFont, (14.f / 15.f) };
 			if (m_space)
 				ImGui::Dummy(ImVec2{ 0, 10 });
 			else
@@ -356,7 +355,6 @@ namespace
 			const StyleVar styleVar[] = {
 				{ ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2{} },
 			};
-			ImGui::Dummy(ImVec2{ 0, 1 });
 		}
 
 		template <stb::compiletime_string_wrapper str, FontAwesome::Type icon>
@@ -366,7 +364,7 @@ namespace
 			std::string preview = text.get();
 			preview.insert(0, FontAwesome::get<icon>());
 
-			const PushFont font{ gui->getFonts().navbar_15 };
+			const PushFont font{ gui->getFonts().navbarFont };
 			auto&& style = ImGui::GetStyle();
 
 			auto&& curTab = gui->getTabs()[Orion::Fnv<str>::value];
@@ -830,7 +828,7 @@ namespace
 
 				ImGui::SetCursorPos(pos);
 				{
-					const PushFont font{ gui->getFonts().arialbd_15, (17.f / 15.f) };
+					const PushFont font{ gui->getFonts().defaultFont, (17.f / 15.f) };
 					ImGui::TextColored(ImVec4{ 0.941176f, 0.941176f, 0.941176f, 1.000000f }, name.data());
 				}
 				const auto descPos{ ImGui::GetCursorPos() };
@@ -913,7 +911,7 @@ namespace
 			Menu::Background(pos, pos + ImVec2{ ImGui::GetContentRegionAvail().x + line_width_offset * 2, line_height }, IM_COL32(24, 24, 24, style.Alpha * 255), 0,
 				ImDrawFlags_::ImDrawFlags_None);
 
-			const PushFont font{ gui->getFonts().arialbd_15, (16.f / 15.f) };
+			const PushFont font{ gui->getFonts().defaultFont, (16.f / 15.f) };
 			ImGui::TextColored(ImVec4{ .9411764f, .9411764f, .9411764f, 1 }, name.get());
 
 			ImGui::Dummy(ImVec2{ 0, seperator_height });
@@ -951,7 +949,7 @@ namespace
 			constexpr auto toggleWidthMult = 1.35f;
 			constexpr auto textPositionVerticalOffset = 2.f;
 
-			const PushFont font{ gui->getFonts().arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
 			float ratio = 0;
 
 			m_count++;
@@ -1033,7 +1031,7 @@ namespace
 			constexpr auto textPositionVerticalOffset{ 2.00f };
 			constexpr auto framePadding{ 4.00f };
 
-			const PushFont font{ gui->getFonts().arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
 
 			m_count++;
 
@@ -1084,7 +1082,7 @@ namespace
 			static std::string preview;
 			static float popupAlpha;
 
-			const PushFont font{ gui->getFonts().arialbd_15, (fontHeight / 15.f) };
+			const PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
 
 			Orion::String<str> name;
 			Orion::String<items> item;
@@ -1169,7 +1167,7 @@ namespace
 			constexpr auto inputTextWidth{ 28.00f };
 			constexpr auto textPositionVerticalOffset{ 1.00f };
 
-			const PushFont font{ gui->getFonts().arialbd_15, fontHeight / 15.f };
+			const PushFont font{ gui->getFonts().defaultFont, fontHeight / 15.f };
 			const auto& style = ImGui::GetStyle();
 
 			Orion::String<str> name;
@@ -1198,7 +1196,7 @@ namespace
 				};
 
 				{
-					const PushFont font{ gui->getFonts().arialbd_15, (fontHeight - 1) / 15.f };
+					const PushFont font{ gui->getFonts().defaultFont, (fontHeight - 1) / 15.f };
 					const StyleColor styleColor2[] = {
 						{ ImGuiCol_::ImGuiCol_FrameBg, ImVec4{ .0470588f, .0470588f, .0470588f, 1 } },
 					};
@@ -1765,13 +1763,13 @@ Gui::Gui() noexcept :
 	auto&& colors{ style.Colors };
 	colors[ImGuiCol_WindowShadow] = ImVec4{ 0, 0, 0, 1 };
 
-	m_fonts.arialbd_15 = m_io.Fonts->AddFontFromMemoryCompressedTTF(arialbd_compressed_data, arialbd_compressed_size, 15);
+	m_fonts.defaultFont = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 15);
 	{
 		ImFontConfig cfg;
 		cfg.MergeMode = true;
 		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 15, &cfg, FontAwesome::range);
 	}
-	m_fonts.profile_15 = m_io.Fonts->AddFontFromMemoryCompressedTTF(arialbd_compressed_data, arialbd_compressed_size, 15);
+	m_fonts.profile_15 = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 15);
 	{
 		ImFontConfig cfg;
 		cfg.MergeMode = true;
@@ -1780,16 +1778,16 @@ Gui::Gui() noexcept :
 		cfg.GlyphMinAdvanceX = cfg.GlyphMaxAdvanceX = 0;
 		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 15, &cfg, FontAwesome::range);
 	}
-	m_fonts.navbar_15 = m_io.Fonts->AddFontFromMemoryCompressedTTF(arialbd_compressed_data, arialbd_compressed_size, 15);
+	m_fonts.navbarFont = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 16);
 	{
 		ImFontConfig cfg;
 		cfg.MergeMode = true;
 		cfg.GlyphOffset = ImVec2{ 16, 0 };
 		cfg.GlyphExtraSpacing = ImVec2{ 36, 0 };
 		cfg.GlyphMinAdvanceX = cfg.GlyphMaxAdvanceX = 0;
-		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 15, &cfg, FontAwesome::range);
+		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 14, &cfg, FontAwesome::range);
 	}
-	m_fonts.museosanscyrl_900_32 = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_900_compressed_data, museosanscyrl_900_compressed_size, 32);
+	m_fonts.watermarkFont = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_900_compressed_data, museosanscyrl_900_compressed_size, 32);
 
 	switch (renderer->getType()) {
 
@@ -1823,7 +1821,7 @@ void Gui::draw() noexcept
 	if (!m_io.MouseDrawCursor)
 		return;
 
-	if (Menu menu{ m_alpha, m_fonts.arialbd_15 }) {
+	if (Menu menu{ m_alpha, m_fonts.defaultFont }) {
 		if (Menu::Header header{}) {
 			if (Menu::Header::Nav nav{}) {
 				if (Menu::Header::Nav::Items items{}) {
