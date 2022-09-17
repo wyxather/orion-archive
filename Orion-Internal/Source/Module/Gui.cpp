@@ -312,8 +312,8 @@ namespace
 				{
 					Orion::String<"Wyxather"> author;
 					Orion::String<"Build:" __DATE__> build;
-					const PushFont font{ gui->getFonts().defaultFont, (14.f / 15.f) };
-					const ImVec2 textPos{ profilePicturePosition.x + 29, drawPos.y + 31 };
+					const PushFont font{ gui->getFonts().defaultFont };
+					const ImVec2 textPos{ profilePicturePosition.x + 29, drawPos.y + 32 };
 					drawList.AddText(ImVec2{ profilePicturePosition.x + 29, drawPos.y + 12 }, IM_COL32(240, 240, 240, style.Alpha * 255), author.get());
 					drawList.AddText(textPos, IM_COL32(64, 69, 75, style.Alpha * 255), build.get(), &build.get()[6]);
 					drawList.AddText(textPos + ImVec2{ ImGui::CalcTextSize(build.get(), &build.get()[6], false, 0).x + 5, 0 }, IM_COL32(0, 149, 235, style.Alpha * 255), &build.get()[6]);
