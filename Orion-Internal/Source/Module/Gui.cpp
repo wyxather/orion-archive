@@ -438,7 +438,12 @@ namespace
 
 	struct Menu::Body::Top : Component
 	{
-		Top() noexcept
+	private:
+		PushFont font;
+
+	public:
+		Top() noexcept :
+			font{ gui->getFonts().defaultFont, (17.f / 15.f) }
 		{
 			Component::BeginChild(Orion::Fnv<"##Menu::Body::Top">::value, ImVec2{ 0, 70 });
 			if (!Component::Continue())
@@ -495,7 +500,7 @@ namespace
 				{ ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3 },
 				{ ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3 },
 				{ ImGuiStyleVar_::ImGuiStyleVar_FrameBorderSize, 1 },
-				{ ImGuiStyleVar_::ImGuiStyleVar_FramePadding, ImVec2{ 7, 7 } },
+				{ ImGuiStyleVar_::ImGuiStyleVar_FramePadding, ImVec2{ 6, 6 } },
 				{ ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2{ 8, 16 } },
 				{ ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 10, 7 } },
 			};
@@ -1767,7 +1772,7 @@ Gui::Gui() noexcept :
 	{
 		ImFontConfig cfg;
 		cfg.MergeMode = true;
-		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 15, &cfg, FontAwesome::range);
+		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 13, &cfg, FontAwesome::range);
 	}
 	m_fonts.profile_15 = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 15);
 	{
