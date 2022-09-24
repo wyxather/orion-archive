@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "Gui.h"
+#include "Game.h"
 #include "Orion.h"
 #include "../Dependencies/ImGui/imgui_impl_win32.h"
 #include "../Dependencies/ImGui/imgui_impl_dx9.h"
@@ -20,6 +21,7 @@ namespace
 		) noexcept
 		{
 			gui->invalidate();
+			game->invalidate();
 			ImGui_ImplDX9_InvalidateDeviceObjects();
 			return renderer->getHook().get<
 				16,
@@ -44,6 +46,7 @@ namespace
 				ImGui::NewFrame();
 				{
 					gui->draw();
+					game->draw();
 				}
 				ImGui::EndFrame();
 				ImGui::Render();
@@ -76,6 +79,7 @@ namespace
 		) noexcept
 		{
 			gui->invalidate();
+			game->invalidate();
 			ImGui_ImplDX11_InvalidateDeviceObjects();
 			const auto result = renderer->getHook().get<
 				13,
@@ -113,6 +117,7 @@ namespace
 				ImGui::NewFrame();
 				{
 					gui->draw();
+					game->draw();
 				}
 				ImGui::EndFrame();
 				ImGui::Render();

@@ -1,12 +1,14 @@
 #include "Game.h"
 #include "Console.h"
 
-Game::Game() noexcept
-{
-}
+Game::Game() noexcept {}
 
 Game::~Game() noexcept {}
 
-void Game::hook() noexcept {}
+auto Game::hook() noexcept -> void {}
 
-void Game::unhook() noexcept {}
+auto Game::unhook() noexcept -> void {}
+
+auto Game::draw() noexcept -> void {}
+
+auto Game::invalidate() noexcept -> void {}
