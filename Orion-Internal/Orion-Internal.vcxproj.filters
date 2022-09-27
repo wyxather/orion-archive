@@ -40,6 +40,12 @@
     <Filter Include="Source\Resources\Shaders">
       <UniqueIdentifier>{6b5899c2-314b-4fd5-9f3c-7b75fb08af5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\SDK\Struct">
+      <UniqueIdentifier>{213f44d8-7e52-429a-a2a3-dd6ea0962ba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SDK\Class">
+      <UniqueIdentifier>{93d75761-1f34-4e53-b304-5e583a8b5f55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\lazy_importer.hpp">
@@ -144,15 +150,17 @@
     <ClInclude Include="Source\Module\Game.h">
       <Filter>Source\Module</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDK\Vector3.h">
-      <Filter>Source\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SDK\Class.h">
-      <Filter>Source\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Resources\Fonts\museosanscyrl.h">
       <Filter>Source\Resources\Fonts</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SDK\Struct\Vector3.h">
+      <Filter>Source\SDK\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Class\Class.h">
+      <Filter>Source\SDK\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Struct\Matrix3x4.h" />
+    <ClInclude Include="Source\SDK\Struct\Matrix4x4.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp">

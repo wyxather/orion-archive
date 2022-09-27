@@ -255,8 +255,10 @@
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Resources\Fonts\fontawesome.h" />
     <ClInclude Include="Source\Resources\Fonts\museosanscyrl.h" />
-    <ClInclude Include="Source\SDK\Class.h" />
-    <ClInclude Include="Source\SDK\Vector3.h" />
+    <ClInclude Include="Source\SDK\Class\Class.h" />
+    <ClInclude Include="Source\SDK\Struct\Matrix3x4.h" />
+    <ClInclude Include="Source\SDK\Struct\Matrix4x4.h" />
+    <ClInclude Include="Source\SDK\Struct\Vector3.h" />
     <ClInclude Include="Source\Utility.h" />
   </ItemGroup>
   <ItemGroup>

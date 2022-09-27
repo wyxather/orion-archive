@@ -1,9 +1,8 @@
 #pragma once
 
-class Vector3
+struct Vector3
 {
-public:
-	constexpr Vector3() noexcept :
+	struct Vector3() noexcept :
 		x{ 0 },
 		y{ 0 },
 		z{ 0 }
