@@ -1,8 +1,10 @@
 #pragma once
 
+#include "SDK/Math.h"
+
 struct Vector3
 {
-	struct Vector3() noexcept :
+	constexpr Vector3() noexcept :
 		x{ 0 },
 		y{ 0 },
 		z{ 0 }
@@ -127,6 +129,26 @@ struct Vector3
 		y /= f;
 		z /= f;
 		return *this;
+	}
+
+	constexpr Vector3 operator+(float f) const noexcept
+	{
+		return Vector3{ x + f, y + f, z + f };
+	}
+
+	constexpr Vector3 operator-(float f) const noexcept
+	{
+		return Vector3{ x - f, y - f, z - f };
+	}
+
+	constexpr Vector3 operator*(float f) const noexcept
+	{
+		return Vector3{ x * f, y * f, z * f };
+	}
+
+	constexpr Vector3 operator/(float f) const noexcept
+	{
+		return Vector3{ x / f, y / f, z / f };
 	}
 
 	constexpr Vector3& normalize() noexcept

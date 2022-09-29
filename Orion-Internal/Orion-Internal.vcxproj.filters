@@ -161,6 +161,7 @@
     </ClInclude>
     <ClInclude Include="Source\SDK\Struct\Matrix3x4.h" />
     <ClInclude Include="Source\SDK\Struct\Matrix4x4.h" />
+    <ClInclude Include="Source\SDK\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp">

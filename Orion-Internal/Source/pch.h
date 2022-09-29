@@ -4,14 +4,22 @@
 #include <Windows.h>
 
 #ifdef __cplusplus
+
+// Utilities
+#include <functional>
 #include <optional>
 #include <memory>
-#include <vector>
-#include <algorithm>
+// Strings
 #include <string>
+// Containers
+#include <vector>
+// Algorithms
+#include <algorithm>
+//Numerics
 #include <cmath>
+#include <numbers>
+// Filesystem
 #include <filesystem>
-#include <functional>
 
 #include <ShlObj.h>
 
@@ -21,8 +29,9 @@
 #include "../Dependencies/ImGui/imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "../Dependencies/ImGui/imgui_internal.h"
+#pragma endregion
 
 #include "Utility.h"
-#endif
 
+#endif
 #endif
