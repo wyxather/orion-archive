@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Math
+namespace math
 {
     template <typename T>
     constexpr auto deg2rad(T degrees) noexcept
