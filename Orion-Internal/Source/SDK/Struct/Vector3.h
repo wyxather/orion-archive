@@ -215,7 +215,7 @@ struct Vector3
 
 #include "SDK/Math.h"
 
-auto Vector3::fromAngle(const Vector3& angle) noexcept -> Vector3
+inline auto Vector3::fromAngle(const Vector3& angle) noexcept -> Vector3
 {
 	return {
 		std::cos(math::deg2rad(angle.x)) * std::cos(math::deg2rad(angle.y)),
