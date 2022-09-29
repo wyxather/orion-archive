@@ -14,5 +14,5 @@ private:
 
 constexpr auto Matrix3x4::origin() const noexcept -> Vector3
 {
-	return { m[0][3], m[1][3], m[2][3] };
+	return Vector3{ m[0][3], m[1][3], m[2][3] };
 }

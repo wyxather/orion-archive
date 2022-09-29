@@ -7,12 +7,12 @@ struct Vector3
 		y{ 0 },
 		z{ 0 } {}
 
-	constexpr Vector3(float x, float y, float z) noexcept :
+	constexpr explicit Vector3(float x, float y, float z) noexcept :
 		x{ x },
 		y{ y },
 		z{ z } {}
 
-	[[nodiscard]] constexpr operator bool() const noexcept
+	[[nodiscard]] constexpr explicit operator bool() const noexcept
 	{
 		return x || y || z;
 	}
@@ -217,7 +217,7 @@ struct Vector3
 
 inline auto Vector3::fromAngle(const Vector3& angle) noexcept -> Vector3
 {
-	return {
+	return Vector3{
 		std::cos(math::deg2rad(angle.x)) * std::cos(math::deg2rad(angle.y)),
 		std::cos(math::deg2rad(angle.x)) * std::sin(math::deg2rad(angle.y)),
 		-std::sin(math::deg2rad(angle.x))

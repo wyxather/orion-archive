@@ -92,7 +92,7 @@ namespace
 			ImGui::PopStyleColor(m_styleColorCount);
 		}
 
-		[[nodiscard]] constexpr operator bool() const noexcept
+		[[nodiscard]] constexpr explicit operator bool() const noexcept
 		{
 			return Continue();
 		}
@@ -1394,10 +1394,10 @@ namespace
 				m_renderTargetView.Reset();
 				m_depthStencilView.Reset();
 			}
-			operator bool() const noexcept { return m_renderTarget.Get() != nullptr; }
-			auto getRenderTarget() const noexcept { return m_renderTarget.Get(); }
-			auto getRenderTargetView() const noexcept { return m_renderTargetView.GetAddressOf(); }
-			auto getDepthStencilView() const noexcept { return m_depthStencilView.GetAddressOf(); }
+			[[nodiscard]] explicit operator bool() const noexcept { return m_renderTarget.Get() != nullptr; }
+			[[nodiscard]] auto getRenderTarget() const noexcept { return m_renderTarget.Get(); }
+			[[nodiscard]] auto getRenderTargetView() const noexcept { return m_renderTargetView.GetAddressOf(); }
+			[[nodiscard]] auto getDepthStencilView() const noexcept { return m_depthStencilView.GetAddressOf(); }
 		private:
 			ComPtr<ID3D11Texture2D> m_renderTarget;
 			ComPtr<ID3D11RenderTargetView> m_renderTargetView;
@@ -1464,10 +1464,10 @@ namespace
 				m_shaderResourceView.Reset();
 			}
 
-			constexpr auto getSize() const noexcept { return m_size; }
-			auto getRenderTarget() const noexcept { return m_renderTarget.Get(); }
-			auto getRenderTargetView() const noexcept { return m_renderTargetView.Get(); }
-			auto getShaderResourceView() const noexcept { return m_shaderResourceView.Get(); }
+			[[nodiscard]] constexpr auto getSize() const noexcept { return m_size; }
+			[[nodiscard]] auto getRenderTarget() const noexcept { return m_renderTarget.Get(); }
+			[[nodiscard]] auto getRenderTargetView() const noexcept { return m_renderTargetView.Get(); }
+			[[nodiscard]] auto getShaderResourceView() const noexcept { return m_shaderResourceView.Get(); }
 
 		private:
 			static constexpr DXGI_FORMAT resolveFormat(DXGI_FORMAT format) noexcept
@@ -1503,7 +1503,7 @@ namespace
 		{
 			constexpr void emplace(ID3D11Device& device, const void* data, SIZE_T size) noexcept { device.CreatePixelShader(data, size, nullptr, m_pixelShader.GetAddressOf()); }
 			void reset() noexcept { m_pixelShader.Reset(); }
-			auto getPixelShader() const noexcept { return m_pixelShader.Get(); }
+			[[nodiscard]] auto getPixelShader() const noexcept { return m_pixelShader.Get(); }
 		private:
 			ComPtr<ID3D11PixelShader> m_pixelShader;
 		};
@@ -1526,8 +1526,8 @@ namespace
 			}
 
 			void reset() noexcept { m_buffer.Reset(); }
-			auto getBuffer() const noexcept { return m_buffer.Get(); }
-			auto getAddressOf() const noexcept { return m_buffer.GetAddressOf(); }
+			[[nodiscard]] auto getBuffer() const noexcept { return m_buffer.Get(); }
+			[[nodiscard]] auto getAddressOf() const noexcept { return m_buffer.GetAddressOf(); }
 
 		private:
 			ComPtr<ID3D11Buffer> m_buffer;
@@ -1585,7 +1585,7 @@ namespace
 
 					struct Vector2
 					{
-						constexpr Vector2(float x, float y) noexcept : x{ x }, y{ y } {}
+						constexpr explicit Vector2(float x, float y) noexcept : x{ x }, y{ y } {}
 						constexpr auto operator*=(float a) noexcept { x *= a; y *= a; }
 						float x, y;
 					};
@@ -1593,7 +1593,7 @@ namespace
 					XMFLOAT4 sampleOffsets[SAMPLE_COUNT];
 					XMFLOAT4 sampleWeights[SAMPLE_COUNT];
 
-					VS_BLUR_PARAMETERS(float dx, float dy, const VS_BLOOM_PARAMETERS& params) noexcept
+					explicit VS_BLUR_PARAMETERS(float dx, float dy, const VS_BLOOM_PARAMETERS& params) noexcept
 					{
 						sampleWeights[0].x = computeGaussian(0, params.blurAmount);
 						sampleOffsets[0].x = sampleOffsets[0].y = 0.f;
@@ -1637,7 +1637,7 @@ namespace
 					}
 
 				private:
-					static float computeGaussian(float n, float theta) noexcept
+					[[nodiscard]] static float computeGaussian(float n, float theta) noexcept
 					{
 						return (1.f / std::sqrtf(2.f * 3.141592654f * theta)) * std::expf(-(n * n) / (2.f * theta * theta));
 					}
