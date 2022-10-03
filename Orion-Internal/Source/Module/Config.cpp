@@ -172,7 +172,7 @@ void Config::load(void* json, const File& file) noexcept
 }
 
 template <stb::compiletime_string_wrapper key, typename T>
-constexpr static auto write(nlohmann::json& j, const T& o) noexcept
+static constexpr auto write(nlohmann::json& j, const T& o) noexcept
 {
 	Orion::String<key> k;
 	j[k.get()] = o;
