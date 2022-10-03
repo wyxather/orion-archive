@@ -10,12 +10,7 @@
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
-Application::Application(HMODULE handle) noexcept :
-	id{ LI_FN(GetCurrentProcessId)() },
-	handle{ handle }
-{
-
-}
+Application::Application(HMODULE handle) noexcept : id{ LI_FN(GetCurrentProcessId)() }, handle{ handle } {}
 
 Application::~Application() noexcept
 {
@@ -34,11 +29,11 @@ Application::~Application() noexcept
 
 auto Application::load() noexcept -> void
 {
-	window.emplace(Window::Type::AUTO, Orion::Fnv<"">::value, Orion::Fnv<"">::value);
+	window.emplace();
 	console.emplace();
 	hooks.emplace();
-	renderer.emplace(Renderer::Type::AUTO);
-	input.emplace(Input::Type::AUTO);
+	renderer.emplace();
+	input.emplace();
 	config.emplace();
 	gui.emplace();
 	game.emplace();
@@ -76,7 +71,7 @@ auto Application::exit() const noexcept -> void
 		});
 }
 
-auto Application::unload(HMODULE handle) noexcept -> void
+auto __stdcall Application::unload(HMODULE handle) noexcept -> void
 {
 	LI_FN(Sleep)(100);
 

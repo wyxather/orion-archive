@@ -12,7 +12,7 @@ public:
         AUTO
     };
 
-    Input(Type type = Type::AUTO) noexcept;
+    explicit Input(Type type = Type::AUTO) noexcept;
     ~Input() noexcept;
 
     Input(Input&&) = delete;
@@ -20,7 +20,7 @@ public:
     Input& operator=(Input&&) = delete;
     Input& operator=(const Input&) = delete;
 
-    [[nodiscard]] constexpr auto&& getType() const noexcept { return type; }
+    [[nodiscard]] constexpr auto getType() const noexcept { return type; }
     [[nodiscard]] constexpr auto&& getHook() const noexcept { return input; }
 
     auto hook() noexcept -> void;

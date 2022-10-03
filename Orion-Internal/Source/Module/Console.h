@@ -3,14 +3,6 @@
 class Console
 {
 public:
-	Console() noexcept;
-	~Console() noexcept;
-
-	Console(Console&&) = delete;
-	Console(const Console&) = delete;
-	Console& operator=(Console&&) = delete;
-	Console& operator=(const Console&) = delete;
-
 	enum class Color
 	{
 		BLACK,
@@ -31,6 +23,14 @@ public:
 		WHITE
 	};
 
+	explicit Console() noexcept;
+	~Console() noexcept;
+
+	Console(Console&&) = delete;
+	Console(const Console&) = delete;
+	Console& operator=(Console&&) = delete;
+	Console& operator=(const Console&) = delete;
+
 private:
 #if !NDEBUG
 	static auto time(std::array<char, 9>& buffer) noexcept -> void;
@@ -39,7 +39,7 @@ private:
 	auto color(Color color) const noexcept -> void;
 
 	template <stb::compiletime_string_wrapper format, Color color = Color::LIGHTGREEN, typename ...Args>
-	constexpr void print(Args&& ...args) const noexcept
+	constexpr auto print(Args&& ...args) const noexcept
 	{
 		Console::color(color);
 		Orion::String<format> fmt;
@@ -53,7 +53,7 @@ private:
 
 public:
 	template <stb::compiletime_string_wrapper format, Color color = Color::LIGHTGREEN, typename ...Args>
-	constexpr void log(Args&& ...args) const noexcept
+	constexpr auto log(Args&& ...args) const noexcept
 	{
 #if !NDEBUG
 		std::array<char, 9> buffer;

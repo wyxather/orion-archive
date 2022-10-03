@@ -15,10 +15,10 @@ namespace
 {
 	namespace D3D9
 	{
-		HRESULT __stdcall Reset(
+		auto __stdcall Reset(
 			const LPDIRECT3DDEVICE9 pDevice,
 			const D3DPRESENT_PARAMETERS* pPresentationParameters
-		) noexcept
+		) noexcept -> HRESULT
 		{
 			gui->invalidate();
 			game->invalidate();
@@ -31,13 +31,13 @@ namespace
 					pPresentationParameters);
 		}
 
-		HRESULT __stdcall Present(
+		auto __stdcall Present(
 			const LPDIRECT3DDEVICE9 pDevice,
 			const LPRECT pSourceRect,
 			const LPRECT pDestRect,
 			const HWND hDestWindowOverride,
 			const LPRGNDATA pDirtyRegion
-		) noexcept
+		) noexcept -> HRESULT
 		{
 			static const auto imgui = ImGui_ImplDX9_Init(pDevice);
 			if (imgui) {
@@ -69,14 +69,14 @@ namespace
 
 	namespace D3D11
 	{
-		HRESULT __stdcall ResizeBuffers(
+		auto __stdcall ResizeBuffers(
 			IDXGISwapChain* const swapChain,
 			const UINT bufferCount,
 			const UINT width,
 			const UINT height,
 			const DXGI_FORMAT newFormat,
 			const UINT swapChainFlags
-		) noexcept
+		) noexcept -> HRESULT
 		{
 			gui->invalidate();
 			game->invalidate();
@@ -94,11 +94,11 @@ namespace
 			return result;
 		}
 
-		HRESULT __stdcall Present(
+		auto __stdcall Present(
 			IDXGISwapChain* const swapChain,
 			const UINT syncInterval,
 			const UINT flags
-		) noexcept
+		) noexcept -> HRESULT
 		{
 			static const auto imgui = [&]() noexcept
 			{

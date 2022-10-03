@@ -3,28 +3,26 @@
 
 class Gui
 {
-	ImGuiIO& m_io;
-
 public:
 	struct PostProcess
 	{
-		constexpr PostProcess() noexcept {}
+		constexpr PostProcess() noexcept = default;
 
 		virtual ~PostProcess() noexcept = default;
 		virtual void draw() noexcept = 0;
 		virtual void reset() noexcept = 0;
 	};
 
-	Gui() noexcept;
+	explicit Gui() noexcept;
 
 	Gui(Gui&&) = delete;
 	Gui(const Gui&) = delete;
 	Gui& operator=(Gui&&) = delete;
 	Gui& operator=(const Gui&) = delete;
 
-	void draw() noexcept;
-	void invalidate() noexcept;
-	void toggle() noexcept;
+	auto draw() noexcept -> void;
+	auto invalidate() noexcept -> void;
+	auto toggle() noexcept -> void;
 
 	[[nodiscard]] constexpr auto isOpen() const noexcept { return m_open; }
 	[[nodiscard]] constexpr auto&& getFonts() const noexcept { return m_fonts; }

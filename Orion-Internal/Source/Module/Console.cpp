@@ -43,7 +43,7 @@ auto Console::time(std::array<char, 9>& buffer) noexcept -> void
 	else buffer = {};
 }
 
-auto Console::enumerate(HWND handle, Console* console) noexcept -> BOOL
+auto __stdcall Console::enumerate(HWND handle, Console* console) noexcept -> BOOL
 {
 	if (DWORD id; !(LI_FN(GetWindowThreadProcessId)(handle, &id)) || id != app->id)
 		return 1;
@@ -53,8 +53,5 @@ auto Console::enumerate(HWND handle, Console* console) noexcept -> BOOL
 	return 0;
 }
 
-auto Console::color(Color color) const noexcept -> void
-{
-	LI_FN(SetConsoleTextAttribute).cached()(output, static_cast<WORD>(color));
-}
+auto Console::color(Color color) const noexcept -> void { LI_FN(SetConsoleTextAttribute).cached()(output, static_cast<WORD>(color)); }
 #endif

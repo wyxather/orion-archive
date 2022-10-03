@@ -44,14 +44,14 @@ namespace
 {
 	struct PushFont
 	{
-		PushFont(ImFont* font) noexcept :
+		explicit PushFont(ImFont* font) noexcept :
 			m_font{ font },
 			m_scale{ font->Scale }
 		{
 			ImGui::PushFont(font);
 		}
 
-		PushFont(ImFont* font, float scale) noexcept :
+		explicit PushFont(ImFont* font, float scale) noexcept :
 			m_font{ font },
 			m_scale{ font->Scale }
 		{
@@ -98,71 +98,71 @@ namespace
 		}
 
 	protected:
-		[[nodiscard]] constexpr bool Continue() const noexcept
+		[[nodiscard]] constexpr auto Continue() const noexcept -> bool
 		{
 			return m_continue;
 		}
 
-		constexpr void Continue(bool value) noexcept
+		constexpr auto Continue(bool value) noexcept
 		{
 			m_continue = value;
 		}
 
-		void Begin(const char* name, bool* p_open = nullptr, ImGuiWindowFlags flags = ImGuiWindowFlags_::ImGuiWindowFlags_None) noexcept
+		auto Begin(const char* name, bool* p_open = nullptr, ImGuiWindowFlags flags = ImGuiWindowFlags_::ImGuiWindowFlags_None) noexcept
 		{
 			m_continue = ImGui::Begin(name, p_open, flags);
 		}
 
-		static void End() noexcept
+		static auto End() noexcept
 		{
 			return ImGui::End();
 		}
 
-		void BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = ImGuiWindowFlags_::ImGuiWindowFlags_None) noexcept
+		auto BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = ImGuiWindowFlags_::ImGuiWindowFlags_None) noexcept
 		{
 			m_continue = ImGui::BeginChild(id, size, border, flags);
 		}
 
-		static void EndChild() noexcept
+		static auto EndChild() noexcept
 		{
 			return ImGui::EndChild();
 		}
 
-		void BeginTable(const char* str_id, int column) noexcept
+		auto BeginTable(const char* str_id, int column) noexcept
 		{
 			m_continue = ImGui::BeginTable(str_id, column);
 		}
 
-		void EndTable() const noexcept
+		auto EndTable() const noexcept
 		{
 			if (m_continue)
 				ImGui::EndTable();
 		}
 
-		void PushStyleVar(ImGuiStyleVar idx, float val) noexcept
+		auto PushStyleVar(ImGuiStyleVar idx, float val) noexcept
 		{
 			ImGui::PushStyleVar(idx, val);
 			m_styleVarCount++;
 		}
 
-		void PushStyleVar(ImGuiStyleVar idx, const ImVec2& val) noexcept
+		auto PushStyleVar(ImGuiStyleVar idx, const ImVec2& val) noexcept
 		{
 			ImGui::PushStyleVar(idx, val);
 			m_styleVarCount++;
 		}
 
-		void PushStyleColor(ImGuiCol idx, const ImVec4& col) noexcept
+		auto PushStyleColor(ImGuiCol idx, const ImVec4& col) noexcept
 		{
 			ImGui::PushStyleColor(idx, col);
 			m_styleColorCount++;
 		}
 
-		static void Background(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0F, ImDrawFlags flags = ImDrawFlags_::ImDrawFlags_None) noexcept
+		static auto Background(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0F, ImDrawFlags flags = ImDrawFlags_::ImDrawFlags_None) noexcept
 		{
 			return ImGui::GetWindowDrawList()->AddRectFilled(p_min, p_max, col, rounding, flags);
 		}
 
-		static void Background(ImU32 col, float rounding = 0.0F, ImDrawFlags flags = ImDrawFlags_::ImDrawFlags_None) noexcept
+		static auto Background(ImU32 col, float rounding = 0.0F, ImDrawFlags flags = ImDrawFlags_::ImDrawFlags_None) noexcept
 		{
 			const auto pos{ ImGui::GetWindowPos() + ImGui::GetCursorPos() };
 			return ImGui::GetWindowDrawList()->AddRectFilled(pos, pos + ImGui::GetContentRegionAvail(), col, rounding, flags);
@@ -180,8 +180,7 @@ namespace
 		struct Body;
 		struct Tab;
 
-		Menu(float alpha, ImFont* defaultFont) noexcept :
-			m_font{ defaultFont }
+		explicit Menu(float alpha, ImFont* defaultFont) noexcept : m_font{ defaultFont }
 		{
 			Orion::String<"##Menu"> id;
 
@@ -215,7 +214,7 @@ namespace
 
 	struct Menu::Tab : Component
 	{
-		Tab(std::uint32_t hash) noexcept
+		explicit Tab(std::uint32_t hash) noexcept
 		{
 			if (const auto tab = gui->getTabs().find(hash); tab && tab->m_alpha > 0.f) {
 				Component::Continue(true);
@@ -266,7 +265,7 @@ namespace
 		}
 
 	private:
-		void Watermark() const noexcept
+		auto Watermark() const noexcept -> void
 		{
 			if (ImGui::BeginChild(Orion::Fnv<"##Menu::Header::Nav::Watermark">::value, ImVec2{ 0, 62 })) {
 
@@ -285,7 +284,7 @@ namespace
 			ImGui::EndChild();
 		}
 
-		void Profile() const noexcept
+		auto Profile() const noexcept -> void
 		{
 			auto&& drawList = *ImGui::GetWindowDrawList();
 			const auto drawPos = ImGui::GetWindowPos() + ImGui::GetCursorPos();
@@ -325,8 +324,7 @@ namespace
 
 	struct Menu::Header::Nav::Items : Component
 	{
-		Items() noexcept :
-			m_space{ false }
+		Items() noexcept : m_space{ false }
 		{
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2{ 5, 5 });
 			Component::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowPadding, ImVec2{ 10, 8 });
@@ -341,7 +339,7 @@ namespace
 		}
 
 		template <stb::compiletime_string_wrapper str>
-		constexpr void Text() noexcept
+		constexpr auto Text() noexcept
 		{
 			Orion::String<str> text;
 			const PushFont font{ gui->getFonts().defaultFont, (14.f / 15.f) };
@@ -358,7 +356,7 @@ namespace
 		}
 
 		template <stb::compiletime_string_wrapper str, FontAwesome::Type icon>
-		constexpr void Button() noexcept
+		constexpr auto Button() const noexcept
 		{
 			Orion::String<str> text;
 			std::string preview = text.get();
@@ -442,8 +440,7 @@ namespace
 		PushFont font;
 
 	public:
-		Top() noexcept :
-			font{ gui->getFonts().defaultFont, (17.f / 15.f) }
+		Top() noexcept : font{ gui->getFonts().defaultFont, (17.f / 15.f) }
 		{
 			Component::BeginChild(Orion::Fnv<"##Menu::Body::Top">::value, ImVec2{ 0, 70 });
 			if (!Component::Continue())
@@ -458,7 +455,7 @@ namespace
 			Component::EndChild();
 		}
 
-		static void Save() noexcept
+		static auto Save() noexcept
 		{
 			Orion::String<"Save"> name;
 			const auto label{ std::string{ FontAwesome::get<FontAwesome::Type::floppy_disk>() } + "    " + name.get() };
@@ -485,7 +482,7 @@ namespace
 		}
 
 		template <stb::compiletime_string_wrapper str>
-		static void Combo() noexcept
+		static auto Combo() noexcept
 		{
 			static float popupAlpha{};
 
@@ -529,7 +526,7 @@ namespace
 			config->update();
 		}
 
-		static void Create() noexcept
+		static auto Create() noexcept
 		{
 			Orion::String<"Create"> name;
 
@@ -676,7 +673,7 @@ namespace
 			}
 		}
 
-		Event Draw(std::string_view name, std::string_view time, bool active, std::array<char, 260>& input) noexcept
+		auto Draw(std::string_view name, std::string_view time, bool active, std::array<char, 260>& input) const noexcept -> Event
 		{
 			Event result = Event::UNDEFINED;
 
@@ -1023,10 +1020,10 @@ namespace
 		}
 
 		template <stb::compiletime_string_wrapper str>
-		constexpr void Toggle(bool& value) noexcept { return Toggle<str>(value, nullptr, nullptr, nullptr); }
+		constexpr auto Toggle(bool& value) noexcept { return Toggle<str>(value, nullptr, nullptr, nullptr); }
 
 		template <stb::compiletime_string_wrapper str, stb::compiletime_string_wrapper items>
-		void Combo(int& value) noexcept
+		auto Combo(int& value) noexcept
 		{
 			static float popupAlpha;
 
@@ -1080,7 +1077,7 @@ namespace
 		}
 
 		template <stb::compiletime_string_wrapper str, stb::compiletime_string_wrapper items>
-		void MultiCombo(bool value[]) noexcept
+		auto MultiCombo(bool value[]) noexcept
 		{
 			constexpr auto fontHeight{ 14.00f };
 			constexpr auto framePadding{ 4.00f };
@@ -1167,7 +1164,7 @@ namespace
 		}
 
 		template <stb::compiletime_string_wrapper str, stb::compiletime_string_wrapper fmt, float min, float max>
-		void Slider(float& value) noexcept
+		auto Slider(float& value) noexcept
 		{
 			constexpr auto fontHeight{ 14.00f };
 			constexpr auto framePadding{ 3.00f };
@@ -1234,6 +1231,11 @@ namespace
 
 	struct BlurD3D9 : Gui::PostProcess
 	{
+		virtual ~BlurD3D9() noexcept override
+		{
+			reset();
+		}
+
 		virtual void draw() noexcept override
 		{
 			const auto& io = ImGui::GetIO();
@@ -1274,18 +1276,24 @@ namespace
 
 		virtual void reset() noexcept override
 		{
-			for (auto i = 0; i < IM_ARRAYSIZE(m_textures); i++)
-				m_textures->Reset();
-			for (auto i = 0; i < IM_ARRAYSIZE(m_surfaces); i++)
-				m_surfaces->Reset();
-			for (auto i = 0; i < IM_ARRAYSIZE(m_shaders); i++)
-				m_shaders->Reset();
+			for (auto&& size : m_size)
+				size = {};
+
+			for (auto&& texture : m_textures)
+				texture.Reset();
+
+			for (auto&& surface : m_surfaces)
+				surface.Reset();
+
+			for (auto&& shader : m_shaders)
+				shader.Reset();
+
 			m_renderTarget.Reset();
 			m_backBuffer.Reset();
 		}
 
 	private:
-		static void begin(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+		static auto begin(const ImDrawList*, const ImDrawCmd* cmd) noexcept -> void
 		{
 			BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
 			const auto& io = ImGui::GetIO();
@@ -1312,7 +1320,7 @@ namespace
 			device->SetVertexShaderConstantF(0, &projection.m[0][0], 4);
 		}
 
-		static void firstPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+		static auto firstPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept -> void
 		{
 			BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
 			const auto& io = ImGui::GetIO();
@@ -1327,7 +1335,7 @@ namespace
 			device->SetRenderTarget(0, data.m_surfaces[1].Get());
 		};
 
-		static void secondPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+		static auto secondPass(const ImDrawList*, const ImDrawCmd* cmd) noexcept -> void
 		{
 			BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
 			const auto& io = ImGui::GetIO();
@@ -1342,7 +1350,7 @@ namespace
 			device->SetRenderTarget(0, data.m_surfaces[0].Get());
 		};
 
-		static void end(const ImDrawList*, const ImDrawCmd* cmd) noexcept
+		static auto end(const ImDrawList*, const ImDrawCmd* cmd) noexcept -> void
 		{
 			BlurD3D9& data = *static_cast<BlurD3D9*>(cmd->UserCallbackData);
 			const auto device = *static_cast<LPDIRECT3DDEVICE9*>(ImGui::GetIO().BackendRendererUserData);
@@ -1383,12 +1391,12 @@ namespace
 
 		struct DeviceResource
 		{
-			constexpr void emplace(ID3D11DeviceContext& ctx) noexcept
+			constexpr auto emplace(ID3D11DeviceContext& ctx) noexcept
 			{
 				ctx.OMGetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.GetAddressOf());
 				m_renderTargetView->GetResource(reinterpret_cast<ID3D11Resource**>(m_renderTarget.GetAddressOf()));
 			}
-			void reset() noexcept
+			auto reset() noexcept
 			{
 				m_renderTarget.Reset();
 				m_renderTargetView.Reset();
@@ -1406,7 +1414,7 @@ namespace
 
 		struct RenderTexture
 		{
-			void emplace(ID3D11Device& device, const DeviceResource& resource) noexcept
+			auto emplace(ID3D11Device& device, const DeviceResource& resource) noexcept
 			{
 				const auto renderTarget = resource.getRenderTarget();
 
@@ -1431,7 +1439,7 @@ namespace
 				createTexture(device, desc);
 			}
 
-			void emplace(ID3D11Device& device, const DeviceResource& resource, const ImVec2& size) noexcept
+			auto emplace(ID3D11Device& device, const DeviceResource& resource, const ImVec2& size) noexcept
 			{
 				const auto renderTarget = resource.getRenderTarget();
 
@@ -1456,7 +1464,7 @@ namespace
 				createTexture(device, desc);
 			}
 
-			void reset() noexcept
+			auto reset() noexcept
 			{
 				m_size = {};
 				m_renderTarget.Reset();
@@ -1470,7 +1478,7 @@ namespace
 			[[nodiscard]] auto getShaderResourceView() const noexcept { return m_shaderResourceView.Get(); }
 
 		private:
-			static constexpr DXGI_FORMAT resolveFormat(DXGI_FORMAT format) noexcept
+			static constexpr auto resolveFormat(DXGI_FORMAT format) noexcept -> DXGI_FORMAT
 			{
 				switch (format) {
 				case DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_TYPELESS:
@@ -1479,7 +1487,7 @@ namespace
 				return format;
 			}
 
-			void createTexture(ID3D11Device& device, const D3D11_TEXTURE2D_DESC& desc) noexcept
+			auto createTexture(ID3D11Device& device, const D3D11_TEXTURE2D_DESC& desc) noexcept -> void
 			{
 				CD3D11_RENDER_TARGET_VIEW_DESC rtvDsc{
 					D3D11_RTV_DIMENSION::D3D11_RTV_DIMENSION_TEXTURE2D,
@@ -1501,8 +1509,8 @@ namespace
 
 		struct PixelShader
 		{
-			constexpr void emplace(ID3D11Device& device, const void* data, SIZE_T size) noexcept { device.CreatePixelShader(data, size, nullptr, m_pixelShader.GetAddressOf()); }
-			void reset() noexcept { m_pixelShader.Reset(); }
+			constexpr auto emplace(ID3D11Device& device, const void* data, SIZE_T size) noexcept { device.CreatePixelShader(data, size, nullptr, m_pixelShader.GetAddressOf()); }
+			auto reset() noexcept { m_pixelShader.Reset(); }
 			[[nodiscard]] auto getPixelShader() const noexcept { return m_pixelShader.Get(); }
 		private:
 			ComPtr<ID3D11PixelShader> m_pixelShader;
@@ -1510,7 +1518,7 @@ namespace
 
 		struct ConstantBuffer
 		{
-			void emplace(ID3D11Device& device, std::size_t size) noexcept
+			auto emplace(ID3D11Device& device, std::size_t size) noexcept
 			{
 				CD3D11_BUFFER_DESC desc{ static_cast<UINT>(size),
 					D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER };
@@ -1518,14 +1526,14 @@ namespace
 				device.CreateBuffer(&desc, nullptr, m_buffer.GetAddressOf());
 			}
 
-			void emplace(ID3D11Device& device, std::size_t size, const D3D11_SUBRESOURCE_DATA& data) noexcept
+			auto emplace(ID3D11Device& device, std::size_t size, const D3D11_SUBRESOURCE_DATA& data) noexcept
 			{
 				CD3D11_BUFFER_DESC desc{ static_cast<UINT>(size),
 					D3D11_BIND_FLAG::D3D11_BIND_CONSTANT_BUFFER };
 				device.CreateBuffer(&desc, &data, m_buffer.GetAddressOf());
 			}
 
-			void reset() noexcept { m_buffer.Reset(); }
+			auto reset() noexcept { m_buffer.Reset(); }
 			[[nodiscard]] auto getBuffer() const noexcept { return m_buffer.Get(); }
 			[[nodiscard]] auto getAddressOf() const noexcept { return m_buffer.GetAddressOf(); }
 
@@ -1539,6 +1547,11 @@ namespace
 		ConstantBuffer m_constantBuffer[DATA_MAX];
 
 	public:
+		virtual ~BlurD3D11() noexcept override
+		{
+			reset();
+		}
+
 		virtual void draw() noexcept override
 		{
 			auto& drawList = *ImGui::GetWindowDrawList();
@@ -1637,7 +1650,7 @@ namespace
 					}
 
 				private:
-					[[nodiscard]] static float computeGaussian(float n, float theta) noexcept
+					[[nodiscard]] static auto computeGaussian(float n, float theta) noexcept -> float
 					{
 						return (1.f / std::sqrtf(2.f * 3.141592654f * theta)) * std::expf(-(n * n) / (2.f * theta * theta));
 					}
@@ -1755,14 +1768,13 @@ namespace
 	};
 }
 
-Gui::Gui() noexcept :
-	m_open{ true },
-	m_io{ ImGui::GetIO() }
+Gui::Gui() noexcept : m_open{ true }
 {
 	ImGui::StyleColorsDark();
 
-	m_io.IniFilename = nullptr;
-	m_io.LogFilename = nullptr;
+	auto&& io = ImGui::GetIO();
+	io.IniFilename = nullptr;
+	io.LogFilename = nullptr;
 
 	auto&& style = ImGui::GetStyle();
 	style.WindowShadowSize = 25;
@@ -1790,31 +1802,31 @@ Gui::Gui() noexcept :
 		return ranges.Data;
 	};
 
-	m_fonts.defaultFont = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 15, {}, getFontGlyphRanges());
+	m_fonts.defaultFont = io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 15, {}, getFontGlyphRanges());
 	{
 		ImFontConfig cfg;
 		cfg.MergeMode = true;
-		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 13, &cfg, FontAwesome::range);
+		io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 13, &cfg, FontAwesome::range);
 	}
-	m_fonts.profile_15 = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 15);
+	m_fonts.profile_15 = io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 15);
 	{
 		ImFontConfig cfg;
 		cfg.MergeMode = true;
 		cfg.GlyphOffset = ImVec2{ 0, 0 };
 		cfg.GlyphExtraSpacing = ImVec2{ 0, 0 };
 		cfg.GlyphMinAdvanceX = cfg.GlyphMaxAdvanceX = 0;
-		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 15, &cfg, FontAwesome::range);
+		io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 15, &cfg, FontAwesome::range);
 	}
-	m_fonts.navbarFont = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 16);
+	m_fonts.navbarFont = io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_700_compressed_data, museosanscyrl_700_compressed_size, 16);
 	{
 		ImFontConfig cfg;
 		cfg.MergeMode = true;
 		cfg.GlyphOffset = ImVec2{ 16, 0 };
 		cfg.GlyphExtraSpacing = ImVec2{ 36, 0 };
 		cfg.GlyphMinAdvanceX = cfg.GlyphMaxAdvanceX = 0;
-		m_io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 14, &cfg, FontAwesome::range);
+		io.Fonts->AddFontFromMemoryCompressedTTF(fa_compressed_data, fa_compressed_size, 14, &cfg, FontAwesome::range);
 	}
-	m_fonts.watermarkFont = m_io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_900_compressed_data, museosanscyrl_900_compressed_size, 32);
+	m_fonts.watermarkFont = io.Fonts->AddFontFromMemoryCompressedTTF(museosanscyrl_900_compressed_data, museosanscyrl_900_compressed_size, 32);
 
 	switch (renderer->getType()) {
 
@@ -1832,20 +1844,20 @@ Gui::Gui() noexcept :
 	}
 }
 
-void Gui::draw() noexcept
+auto Gui::draw() noexcept -> void
 {
+	auto&& io = ImGui::GetIO();
+
 	if (m_open) {
 		if (m_alpha < 1.f)
-			m_alpha = std::clamp(m_alpha + m_io.DeltaTime * 2, 0.f, 1.f);
+			m_alpha = std::clamp(m_alpha + io.DeltaTime * 2, 0.f, 1.f);
 	}
 	else {
 		if (m_alpha > 0.f)
-			m_alpha = std::clamp(m_alpha - m_io.DeltaTime * 2, 0.f, 1.f);
+			m_alpha = std::clamp(m_alpha - io.DeltaTime * 2, 0.f, 1.f);
 	}
 
-	m_io.MouseDrawCursor = m_alpha > 0;
-
-	if (!m_io.MouseDrawCursor)
+	if (!(io.MouseDrawCursor = m_alpha > 0))
 		return;
 
 	if (Menu menu{ m_alpha, m_fonts.defaultFont }) {
@@ -1914,12 +1926,12 @@ void Gui::draw() noexcept
 	}
 }
 
-void Gui::invalidate() noexcept
+auto Gui::invalidate() noexcept -> void
 {
 	m_postProcess->reset();
 }
 
-void Gui::toggle() noexcept
+auto Gui::toggle() noexcept -> void
 {
 	m_open = !m_open;
 }

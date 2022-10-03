@@ -14,7 +14,7 @@ private:
 
 #include "Vector3.h"
 
-constexpr auto Matrix4x4::worldToScreen(const Vector3& worldPosition, ImVec2& screenPosition) const noexcept -> bool
+inline constexpr auto Matrix4x4::worldToScreen(const Vector3& worldPosition, ImVec2& screenPosition) const noexcept -> bool
 {
 	const auto w{
 		m[3][0] * worldPosition.x +
@@ -33,7 +33,7 @@ constexpr auto Matrix4x4::worldToScreen(const Vector3& worldPosition, ImVec2& sc
 	return true;
 }
 
-constexpr auto Matrix4x4::worldToScreenPixelAligned(const Vector3& worldPosition, ImVec2& screenPosition) const noexcept -> bool
+inline constexpr auto Matrix4x4::worldToScreenPixelAligned(const Vector3& worldPosition, ImVec2& screenPosition) const noexcept -> bool
 {
 	if (!worldToScreen(worldPosition, screenPosition))
 		return false;

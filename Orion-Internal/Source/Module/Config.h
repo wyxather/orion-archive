@@ -8,7 +8,7 @@ public:
 	class Data
 	{
 	public:
-		constexpr Data() noexcept = default;
+		constexpr explicit Data() noexcept = default;
 
 		Data(Data&&) = delete;
 		Data(const Data&) = delete;
@@ -20,7 +20,7 @@ public:
 		int target = {};
 	};
 
-	Config() noexcept;
+	constexpr explicit Config() noexcept = default;
 
 	Config(Config&&) = delete;
 	Config(const Config&) = delete;
@@ -32,21 +32,21 @@ public:
 	[[nodiscard]] constexpr auto&& getFiles() const noexcept { return m_files; }
 	[[nodiscard]] constexpr auto&& getData() noexcept { return orion; }
 
-	void init() noexcept;
-	void save() noexcept;
-	void update() noexcept;
-	void create() noexcept;
-	void load(const File& file) noexcept;
-	void rename(const File& file) noexcept;
-	static void remove(const File& file) noexcept;
+	auto init() noexcept -> void;
+	auto save() noexcept -> void;
+	auto update() noexcept -> void;
+	auto create() noexcept -> void;
+	auto load(const File& file) noexcept -> void;
+	auto rename(const File& file) noexcept -> void;
+	static auto remove(const File& file) noexcept -> void;
 
 private:
-	void sort() noexcept;
-	void enumerate() noexcept;
-	void save(const void* json) noexcept;
-	void load(void* json, const File& file) noexcept;
+	auto sort() noexcept -> void;
+	auto enumerate() noexcept -> void;
+	auto save(const void* json) noexcept -> void;
+	auto load(void* json, const File& file) noexcept -> void;
 
-	[[nodiscard]] bool exist(std::string_view fileName) const noexcept;
+	[[nodiscard]] auto exist(std::string_view fileName) const noexcept -> bool;
 
 	enum Sort
 	{
@@ -68,7 +68,7 @@ private:
 class Config::File
 {
 public:
-	constexpr File(
+	constexpr explicit File(
 		std::string_view name,
 		const std::filesystem::path& path,
 		std::string_view time,

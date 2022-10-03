@@ -1,7 +1,6 @@
 #include "Hooks.h"
 #include "../Dependencies/MinHook/include/MinHook.h"
 
-
 Hooks::Hooks() noexcept { MH_Initialize(); }
 
 Hooks::~Hooks() noexcept { MH_Uninitialize(); }
@@ -10,8 +9,7 @@ auto Hooks::calculateVmtLength(void* address) noexcept -> std::size_t
 {
 	std::size_t length = 0;
 	MEMORY_BASIC_INFORMATION mbi;
-	while (LI_FN(VirtualQuery)(static_cast<void**>(address)[length], &mbi, sizeof(mbi)) &&
-		mbi.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY))
+	while (LI_FN(VirtualQuery)(static_cast<void**>(address)[length], &mbi, sizeof(mbi)) && mbi.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY))
 		length++;
 	return length;
 }

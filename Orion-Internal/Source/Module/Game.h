@@ -3,7 +3,7 @@
 class Game
 {
 public:
-	Game() noexcept;
+	explicit Game() noexcept;
 	~Game() noexcept;
 
 	auto hook() noexcept -> void;

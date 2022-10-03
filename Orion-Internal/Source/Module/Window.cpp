@@ -37,7 +37,7 @@ auto Window::unhook() noexcept -> void
 	ImGui_ImplWin32_Shutdown();
 }
 
-auto Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
+auto __stdcall Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
 {
 	if (DWORD id; !(LI_FN(GetWindowThreadProcessId)(handle, &id)) || id != app->id)
 		return 1;
@@ -90,7 +90,7 @@ auto Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
 	return 0;
 }
 
-auto Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept -> LRESULT
+auto __stdcall Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept -> LRESULT
 {
 	static const auto once = []() noexcept {
 		Application::start();

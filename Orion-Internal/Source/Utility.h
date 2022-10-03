@@ -29,7 +29,7 @@ namespace Orion
             Prime& operator=(const Prime&) = delete;
 
         private:
-            [[nodiscard]] static constexpr _Ty get() noexcept
+            [[nodiscard]] static constexpr auto get() noexcept
             {
                 switch (sizeof(_Ty)) {
                 case (sizeof(std::uint32_t)): return static_cast<_Ty>(0x01000193);
@@ -54,7 +54,7 @@ namespace Orion
             OffsetBasis& operator=(const OffsetBasis&) = delete;
 
         private:
-            [[nodiscard]] static constexpr _Ty get() noexcept
+            [[nodiscard]] static constexpr auto get() noexcept
             {
                 switch (sizeof(_Ty)) {
                 case (sizeof(std::uint32_t)): return static_cast<_Ty>(0x811C9DC5);
@@ -67,14 +67,15 @@ namespace Orion
             static constexpr inline auto value = stb::compiletime_value<OffsetBasis::get()>::value;
         };
 
-        [[nodiscard]] static constexpr _Ty get(const char* string, const _Ty offsetBasis = OffsetBasis::value) noexcept
+        [[nodiscard]] static constexpr auto get(const char* string, const _Ty offsetBasis = OffsetBasis::value) noexcept -> _Ty
         {
             return *string ? get(string + 1, (offsetBasis ^ *string) * static_cast<std::uintmax_t>(Prime::value)) : offsetBasis;
         }
+
     public:
         static constexpr inline auto value = stb::compiletime_value<Fnv::get(str().data())>::value;
 
-        [[nodiscard]] static constexpr _Ty compare(const char* string, _Ty offsetBasis = OffsetBasis::value) noexcept
+        [[nodiscard]] static constexpr auto compare(const char* string, _Ty offsetBasis = OffsetBasis::value) noexcept
         {
             while (*string) {
                 offsetBasis ^= *string++;
@@ -83,7 +84,7 @@ namespace Orion
             return offsetBasis == value;
         }
 
-        [[nodiscard]] static constexpr _Ty run(const char* string, _Ty offsetBasis = OffsetBasis::value) noexcept
+        [[nodiscard]] static constexpr auto run(const char* string, _Ty offsetBasis = OffsetBasis::value) noexcept
         {
             while (*string) {
                 offsetBasis ^= *string++;
@@ -99,16 +100,17 @@ namespace Orion
         std::vector<std::pair<_KeyTy, _DataTy>> m_data;
 
     public:
-        HashTable() noexcept {}
-        ~HashTable() noexcept {}
+        constexpr HashTable() noexcept = default;
+        constexpr ~HashTable() noexcept = default;
 
-        HashTable(HashTable&&) = default;
+        constexpr explicit HashTable(HashTable&&) noexcept = default;
+        constexpr HashTable& operator=(HashTable&&) noexcept = default;
+
         HashTable(const HashTable&) = delete;
-        HashTable& operator=(HashTable&&) = default;
         HashTable& operator=(const HashTable&) = delete;
 
     private:
-        constexpr void insert(const _KeyTy key) noexcept
+        constexpr auto insert(const _KeyTy key) noexcept
         {
             m_data.emplace_back(key, _DataTy{});
             m_data.shrink_to_fit();
@@ -116,7 +118,7 @@ namespace Orion
         }
 
     public:
-        [[nodiscard]] constexpr _DataTy* find(const _KeyTy key) noexcept
+        [[nodiscard]] constexpr auto find(const _KeyTy key) noexcept -> _DataTy*
         {
             if (const auto it = std::ranges::lower_bound(m_data, key, {}, &decltype(m_data)::value_type::first);
                 it != m_data.end() && it->first == key)
@@ -124,7 +126,7 @@ namespace Orion
             return nullptr;
         }
 
-        [[nodiscard]] constexpr _DataTy& operator[](const _KeyTy key) noexcept
+        [[nodiscard]] constexpr auto&& operator[](const _KeyTy key) noexcept
         {
             if (const auto value = find(key))
                 return *value;
@@ -147,7 +149,7 @@ namespace Orion
         static inline auto value{ xorarr(stb::compiletime_string_to_byte_array_data::getter<str>::value) };
 
     public:
-        constexpr Pattern() noexcept { value.crypt(); }
+        constexpr explicit Pattern() noexcept { value.crypt(); }
         constexpr ~Pattern() noexcept { value.crypt(); }
 
         Pattern(Pattern&&) = delete;
@@ -165,7 +167,7 @@ namespace Orion
         static inline auto value{ xorarr(stb::compiletime_value<str()>::value) };
 
     public:
-        constexpr String() noexcept { value.crypt(); }
+        constexpr explicit String() noexcept { value.crypt(); }
         constexpr ~String() noexcept { value.crypt(); }
 
         String(String&&) = delete;
@@ -182,7 +184,7 @@ namespace Orion
     {
         struct Generator
         {
-            constexpr Generator() noexcept
+            constexpr explicit Generator() noexcept
             {
                 constexpr auto pattern = stb::compiletime_string_to_byte_array_data::getter<str>::value;
                 constexpr auto patternLength = pattern.size() - 1;
@@ -194,13 +196,21 @@ namespace Orion
                     table[pattern[i]] = patternLength - i;
             }
 
+            Generator(Generator&&) = delete;
+            Generator(const Generator&) = delete;
+            Generator& operator=(Generator&&) = delete;
+            Generator& operator=(const Generator&) = delete;
+
+            [[nodiscard]] constexpr auto&& operator()() const noexcept { return table; }
+
+        private:
             std::array<std::size_t, (std::numeric_limits<std::uint8_t>::max)() + 1> table = {};
         };
 
-        static inline auto value{ xorarr(stb::compiletime_value<Generator().table>::value) };
+        static inline auto value{ xorarr(stb::compiletime_value<Generator()()>::value) };
 
     public:
-        constexpr BadCharTable() noexcept { value.crypt(); }
+        constexpr explicit BadCharTable() noexcept { value.crypt(); }
         constexpr ~BadCharTable() noexcept { value.crypt(); }
 
         BadCharTable(BadCharTable&&) = delete;
@@ -213,13 +223,13 @@ namespace Orion
     };
 
     template <typename returnType>
-    [[nodiscard]] constexpr returnType relativeToAbsolute(std::uintptr_t address) noexcept
+    [[nodiscard]] constexpr auto relativeToAbsolute(std::uintptr_t address) noexcept
     {
         return (returnType)(address + 4 + *reinterpret_cast<std::int32_t*>(address));
     }
 
     template <stb::compiletime_string_wrapper moduleName>
-    [[nodiscard]] constexpr bool getModuleInfo(MODULEINFO& moduleInfo) noexcept
+    [[nodiscard]] constexpr auto getModuleInfo(MODULEINFO& moduleInfo) noexcept
     {
         String<moduleName> name;
         if (const auto handle = LI_FN(GetModuleHandleA)(name.get()))
@@ -233,9 +243,9 @@ namespace Orion
         stb::compiletime_string_wrapper patternName,
         stb::compiletime_string_wrapper pattern,
         bool reportError = false>
-    [[nodiscard]] returnType findPattern() noexcept
+    [[nodiscard]] constexpr auto findPattern() noexcept
     {
-        if (MODULEINFO moduleInfo{}; getModuleInfo<moduleName>(moduleInfo)) {
+        if (MODULEINFO moduleInfo; getModuleInfo<moduleName>(moduleInfo)) {
             if (moduleInfo.lpBaseOfDll && moduleInfo.SizeOfImage) {
                 Pattern<pattern> pat;
                 BadCharTable<pattern> tab;

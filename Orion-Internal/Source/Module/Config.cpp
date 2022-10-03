@@ -3,11 +3,9 @@
 
 #include <fstream>
 
-Config::Config() noexcept {}
-
-void Config::init() noexcept
+auto Config::init() noexcept -> void
 {
-	if (PWSTR relativePath{}; SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Desktop, NULL, nullptr, &relativePath))) {
+	if (PWSTR relativePath; SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Desktop, NULL, nullptr, &relativePath))) {
 
 		Orion::String<"Orion"> name;
 
@@ -22,27 +20,31 @@ void Config::init() noexcept
 	}
 }
 
-void Config::sort() noexcept
+auto Config::sort() noexcept -> void
 {
 	switch (m_settings.sort) {
+
 	case Sort::TIME:
+	{
 		std::sort(m_files.begin(), m_files.end(),
 			[](const File& a, const File& b) {
 				return (a.m_time_t != b.m_time_t)
 					? (a.m_time_t > b.m_time_t)
 					: (b.m_name.compare(a.m_name) < 0);
 			});
-		break;
+	}
+	break;
+
 	}
 }
 
-void Config::update() noexcept
+auto Config::update() noexcept -> void
 {
 	enumerate();
 	sort();
 }
 
-void Config::enumerate() noexcept
+auto Config::enumerate() noexcept -> void
 {
 	std::error_code ec;
 	std::vector<std::filesystem::directory_entry> entry;
@@ -59,31 +61,27 @@ void Config::enumerate() noexcept
 		if (!e.path().has_extension())
 			continue;
 
-		if (Orion::String<".cfg"> extension;
-			extension.get() != e.path().extension().string())
+		if (Orion::String<".cfg"> extension; extension.get() != e.path().extension().string())
 			continue;
 
 		using namespace std::chrono;
+		const auto time_t = system_clock::to_time_t(clock_cast<system_clock>(e.last_write_time()));
 
-		const auto time_t{ system_clock::to_time_t(clock_cast<system_clock>(e.last_write_time())) };
-
-		if (tm tm;
-			!localtime_s(&tm, &time_t)) {
+		if (tm tm; !localtime_s(&tm, &time_t)) {
 
 			Orion::String<"%e %b %Y %H:%M"> format;
 
-			if (char time[64];
-				strftime(time, sizeof(time), format.get(), &tm)) {
-
+			if (char time[64]; strftime(time, sizeof(time), format.get(), &tm)) {
 				const auto& path{ e.path() };
 				const auto& name{ path.stem().string() };
+
 				m_files.emplace_back(name, path, time, time_t, name == m_name);
 			}
 		}
 	}
 }
 
-void Config::create() noexcept
+auto Config::create() noexcept -> void
 {
 	Orion::String<"New Config"> fileName;
 	std::string name;
@@ -106,16 +104,11 @@ void Config::create() noexcept
 	save();
 }
 
-void Config::remove(const File& file) noexcept
-{
-	std::filesystem::remove(file.m_path);
-}
+auto Config::remove(const File& file) noexcept -> void { std::filesystem::remove(file.m_path); }
 
-void Config::rename(const File& file) noexcept
+auto Config::rename(const File& file) noexcept -> void
 {
-	if (!strlen(m_input.data())
-		|| file.m_name == m_input.data()
-		|| exist(m_input.data()))
+	if (!strlen(m_input.data()) || file.m_name == m_input.data() || exist(m_input.data()))
 		return;
 
 	Orion::String<".cfg"> extension;
@@ -128,7 +121,7 @@ void Config::rename(const File& file) noexcept
 		m_settings.path / (std::string{ m_input.data() } + std::string{ extension.get() }));
 }
 
-bool Config::exist(std::string_view fileName) const noexcept
+auto Config::exist(std::string_view fileName) const noexcept -> bool
 {
 	for (auto&& file : m_files)
 		if (file.m_name == fileName)
@@ -136,7 +129,7 @@ bool Config::exist(std::string_view fileName) const noexcept
 	return false;
 }
 
-void Config::save(const void* json) noexcept
+auto Config::save(const void* json) noexcept -> void
 {
 	Orion::String<".cfg"> extension;
 	std::error_code ec;
@@ -171,38 +164,41 @@ void Config::load(void* json, const File& file) noexcept
 	}
 }
 
-template <stb::compiletime_string_wrapper key, typename T>
-static constexpr auto write(nlohmann::json& j, const T& o) noexcept
+namespace
 {
-	Orion::String<key> k;
-	j[k.get()] = o;
+	template <stb::compiletime_string_wrapper key, typename T>
+	constexpr auto write(nlohmann::json& j, const T& o) noexcept
+	{
+		Orion::String<key> k;
+		j[k.get()] = o;
+	}
+
+	template <stb::compiletime_string_wrapper key>
+	constexpr auto read(const nlohmann::json& j, bool& o) noexcept
+	{
+		if (Orion::String<key> k; j.contains(k.get()))
+			if (const auto& v{ j[k.get()] }; v.is_boolean())
+				v.get_to(o);
+	}
+
+	template <stb::compiletime_string_wrapper key>
+	constexpr auto read(const nlohmann::json& j, int& o) noexcept
+	{
+		if (Orion::String<key> k; j.contains(k.get()))
+			if (const auto& v{ j[k.get()] }; v.is_number_integer())
+				v.get_to(o);
+	}
+
+	template <stb::compiletime_string_wrapper key>
+	constexpr auto read(const nlohmann::json& j, float& o) noexcept
+	{
+		if (Orion::String<key> k; j.contains(k.get()))
+			if (const auto& v{ j[k.get()] }; v.is_number_float())
+				v.get_to(o);
+	}
 }
 
-template <stb::compiletime_string_wrapper key>
-static constexpr auto read(const nlohmann::json& j, bool& o) noexcept
-{
-	if (Orion::String<key> k; j.contains(k.get()))
-		if (const auto& v{ j[k.get()] }; v.is_boolean())
-			v.get_to(o);
-}
-
-template <stb::compiletime_string_wrapper key>
-static constexpr auto read(const nlohmann::json& j, int& o) noexcept
-{
-	if (Orion::String<key> k; j.contains(k.get()))
-		if (const auto& v{ j[k.get()] }; v.is_number_integer())
-			v.get_to(o);
-}
-
-template <stb::compiletime_string_wrapper key>
-static constexpr auto read(const nlohmann::json& j, float& o) noexcept
-{
-	if (Orion::String<key> k; j.contains(k.get()))
-		if (const auto& v{ j[k.get()] }; v.is_number_float())
-			v.get_to(o);
-}
-
-void Config::save() noexcept
+auto Config::save() noexcept -> void
 {
 	nlohmann::json o;
 	{
@@ -222,7 +218,7 @@ void Config::save() noexcept
 	save(static_cast<const void*>(&o));
 }
 
-void Config::load(const File& file) noexcept
+auto Config::load(const File& file) noexcept -> void
 {
 	nlohmann::json o;
 	load(static_cast<void*>(&o), file);

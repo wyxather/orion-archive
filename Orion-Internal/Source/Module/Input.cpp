@@ -14,11 +14,11 @@ namespace
 {
 	namespace DINPUT8
 	{
-		HRESULT __stdcall GetDeviceState(
+		auto __stdcall GetDeviceState(
 			const LPDIRECTINPUTDEVICE8 pDevice,
 			const DWORD cbData,
 			const LPVOID lpvData
-		) noexcept
+		) noexcept -> HRESULT
 		{
 			static bool key[2]{};
 			const auto result = input->getHook().get<
@@ -57,13 +57,13 @@ namespace
 			return result;
 		}
 
-		HRESULT __stdcall GetDeviceData(
+		auto __stdcall GetDeviceData(
 			const LPDIRECTINPUTDEVICE8 pDevice,
 			const DWORD cbObjectData,
 			const LPDIDEVICEOBJECTDATA rgdod,
 			const LPDWORD pdwInOut,
 			const DWORD dwFlags
-		) noexcept
+		) noexcept -> HRESULT
 		{
 			const auto result = input->getHook().get<
 				10,
@@ -139,7 +139,7 @@ Input::~Input() noexcept
 	handle = {};
 }
 
-void Input::hook() noexcept
+auto Input::hook() noexcept -> void
 {
 	switch (type) {
 
@@ -165,7 +165,7 @@ void Input::hook() noexcept
 	}
 }
 
-void Input::unhook() noexcept
+auto Input::unhook() noexcept -> void
 {
 	input.restore();
 }

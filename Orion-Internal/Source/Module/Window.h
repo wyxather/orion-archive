@@ -11,7 +11,7 @@ public:
         BOTH
     };
 
-    Window(Type type = Type::AUTO, std::uint32_t className = 0, std::uint32_t windowText = 0) noexcept;
+    explicit Window(Type type = Type::AUTO, std::uint32_t className = Orion::Fnv<"">::value, std::uint32_t windowText = Orion::Fnv<"">::value) noexcept;
     ~Window() noexcept;
 
     Window(Window&&) = delete;

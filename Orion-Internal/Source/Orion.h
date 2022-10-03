@@ -3,7 +3,7 @@
 class Application
 {
 public:
-    Application(HMODULE handle) noexcept;
+    explicit Application(HMODULE handle) noexcept;
     ~Application() noexcept;
 
     Application(Application&&) = delete;
@@ -20,7 +20,7 @@ public:
     HMODULE handle;
 
 private:
-    [[noreturn]] static void __stdcall unload(HMODULE handle) noexcept;
+    [[noreturn]] static auto __stdcall unload(HMODULE handle) noexcept -> void;
 };
 
 inline std::optional<const Application> app;

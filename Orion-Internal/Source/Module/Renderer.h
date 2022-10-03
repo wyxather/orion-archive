@@ -13,7 +13,7 @@ public:
 		AUTO
 	};
 
-	Renderer(Type type = Type::AUTO) noexcept;
+	explicit Renderer(Type type = Type::AUTO) noexcept;
 	~Renderer() noexcept;
 
 	Renderer(Renderer&&) = delete;
@@ -21,7 +21,7 @@ public:
 	Renderer& operator=(Renderer&&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 
-	[[nodiscard]] constexpr auto&& getType() const noexcept { return type; }
+	[[nodiscard]] constexpr auto getType() const noexcept { return type; }
 	[[nodiscard]] constexpr auto&& getHook() const noexcept { return renderer; }
 
 	auto hook() noexcept -> void;
