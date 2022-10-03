@@ -201,13 +201,13 @@ namespace Orion
             Generator& operator=(Generator&&) = delete;
             Generator& operator=(const Generator&) = delete;
 
-            [[nodiscard]] constexpr auto&& operator()() const noexcept { return table; }
+            [[nodiscard]] constexpr auto&& get() const noexcept { return table; }
 
         private:
             std::array<std::size_t, (std::numeric_limits<std::uint8_t>::max)() + 1> table = {};
         };
 
-        static inline auto value{ xorarr(stb::compiletime_value<Generator()()>::value) };
+        static inline auto value{ xorarr(stb::compiletime_value<Generator().get()>::value)};
 
     public:
         constexpr explicit BadCharTable() noexcept { value.crypt(); }
