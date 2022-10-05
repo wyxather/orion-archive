@@ -482,7 +482,7 @@ namespace
 		}
 
 		template <stb::compiletime_string_wrapper str>
-		static auto Combo() noexcept
+		static auto Combo(int& value) noexcept
 		{
 			static float popupAlpha{};
 
@@ -513,17 +513,14 @@ namespace
 				{ ImGuiCol_::ImGuiCol_FrameBgHovered, ImVec4{ 0.082353f, 0.082353f, 0.086275f, 1.000000f } },
 			};
 
-			const auto result{ ImGui::Combo(name.get(), &config->getSort(), items.get()) };
-			bool popup_open = ImGui::IsPopupOpen(ImHashStr("##ComboPopup", 0, ImGui::GetCurrentWindow()->GetID(name.get())), ImGuiPopupFlags_::ImGuiPopupFlags_None);
-			if (popup_open)
+			const auto result{ ImGui::Combo(name.get(), &value, items.get()) };
+			const auto popupOpen = ImGui::IsPopupOpen(ImHashStr("##ComboPopup", 0, ImGui::GetCurrentWindow()->GetID(name.get())), ImGuiPopupFlags_::ImGuiPopupFlags_None);
+			if (popupOpen)
 				popupAlpha = std::clamp(ImGui::GetIO().DeltaTime * 2 + popupAlpha, 0.f, 1.f);
 			else
 				popupAlpha = {};
 
-			if (!result)
-				return;
-
-			config->update();
+			return result;
 		}
 
 		static auto Create() noexcept
@@ -1886,7 +1883,8 @@ auto Gui::draw() noexcept -> void
 			if (Menu::Body::Top top{}) {
 				Menu::Body::Top::Save();
 				if (Menu::Tab tab{ Orion::Fnv<"Configs">::value }) {
-					Menu::Body::Top::Combo<"Name\0Date Modified\0">();
+					if (Menu::Body::Top::Combo<"Name\0Date Modified\0">(config->getSort()))
+						config->update();
 					Menu::Body::Top::Create();
 				}
 			}
