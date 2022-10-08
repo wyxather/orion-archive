@@ -42,34 +42,6 @@ using Microsoft::WRL::ComPtr;
 
 namespace
 {
-	struct PushFont
-	{
-		explicit PushFont(ImFont* font) noexcept :
-			m_font{ font },
-			m_scale{ font->Scale }
-		{
-			ImGui::PushFont(font);
-		}
-
-		explicit PushFont(ImFont* font, float scale) noexcept :
-			m_font{ font },
-			m_scale{ font->Scale }
-		{
-			font->Scale = scale;
-			ImGui::PushFont(font);
-		}
-
-		~PushFont() noexcept
-		{
-			m_font->Scale = m_scale;
-			ImGui::PopFont();
-		}
-
-	private:
-		ImFont* m_font = {};
-		float m_scale = {};
-	};
-
 	struct StyleVar
 	{
 		StyleVar(ImGuiStyleVar idx, float val) noexcept { ImGui::PushStyleVar(idx, val); }
@@ -209,7 +181,7 @@ namespace
 		}
 
 	private:
-		PushFont m_font;
+		Gui::PushFont m_font;
 	};
 
 	struct Menu::Tab : Component
@@ -271,7 +243,7 @@ namespace
 
 				Orion::String<"ORION"> label;
 
-				const PushFont font{ gui->getFonts().watermarkFont };
+				const Gui::PushFont font{ gui->getFonts().watermarkFont };
 				const auto contentSize = ImGui::GetContentRegionAvail();
 				const auto textSize = ImGui::CalcTextSize(label.get());
 				const ImVec2 textPos{ (contentSize.x - textSize.x) * .5f, (contentSize.y - textSize.y) * .5f + 5 };
@@ -304,14 +276,14 @@ namespace
 
 				drawList.AddCircleFilled(profilePicturePosition, 19, IM_COL32(8, 8, 8, style.Alpha * 255));
 				{
-					const PushFont font{ gui->getFonts().profile_15 };
+					const Gui::PushFont font{ gui->getFonts().profile_15 };
 					const auto profileIcon = FontAwesome::get<FontAwesome::Type::user_secret>();
 					drawList.AddText(profilePicturePosition - ImGui::CalcTextSize(profileIcon) * .5f, IM_COL32(240, 240, 240, style.Alpha * 255), profileIcon);
 				}
 				{
 					Orion::String<"Wyxather"> author;
 					Orion::String<"Build:" __DATE__> build;
-					const PushFont font{ gui->getFonts().defaultFont };
+					const Gui::PushFont font{ gui->getFonts().defaultFont };
 					const ImVec2 textPos{ profilePicturePosition.x + 29, drawPos.y + 32 };
 					drawList.AddText(ImVec2{ profilePicturePosition.x + 29, drawPos.y + 12 }, IM_COL32(240, 240, 240, style.Alpha * 255), author.get());
 					drawList.AddText(textPos, IM_COL32(64, 69, 75, style.Alpha * 255), build.get(), &build.get()[6]);
@@ -342,7 +314,7 @@ namespace
 		constexpr auto Text() noexcept
 		{
 			Orion::String<str> text;
-			const PushFont font{ gui->getFonts().defaultFont, (14.f / 15.f) };
+			const Gui::PushFont font{ gui->getFonts().defaultFont, (14.f / 15.f) };
 			if (m_space)
 				ImGui::Dummy(ImVec2{ 0, 10 });
 			else
@@ -362,7 +334,7 @@ namespace
 			std::string preview = text.get();
 			preview.insert(0, FontAwesome::get<icon>());
 
-			const PushFont font{ gui->getFonts().navbarFont };
+			const Gui::PushFont font{ gui->getFonts().navbarFont };
 			auto&& style = ImGui::GetStyle();
 
 			auto&& curTab = gui->getTabs()[Orion::Fnv<str>::value];
@@ -437,7 +409,7 @@ namespace
 	struct Menu::Body::Top : Component
 	{
 	private:
-		PushFont font;
+		Gui::PushFont font;
 
 	public:
 		Top() noexcept : font{ gui->getFonts().defaultFont, (17.f / 15.f) }
@@ -827,7 +799,7 @@ namespace
 
 				ImGui::SetCursorPos(pos);
 				{
-					const PushFont font{ gui->getFonts().defaultFont, (17.f / 15.f) };
+					const Gui::PushFont font{ gui->getFonts().defaultFont, (17.f / 15.f) };
 					ImGui::TextColored(ImVec4{ 0.941176f, 0.941176f, 0.941176f, 1.000000f }, name.data());
 				}
 				const auto descPos{ ImGui::GetCursorPos() };
@@ -911,7 +883,7 @@ namespace
 			Menu::Background(pos, pos + ImVec2{ ImGui::GetContentRegionAvail().x + line_width_offset * 2, line_height }, IM_COL32(24, 24, 24, style.Alpha * 255), 0,
 				ImDrawFlags_::ImDrawFlags_None);
 
-			const PushFont font{ gui->getFonts().defaultFont, (16.f / 15.f) };
+			const Gui::PushFont font{ gui->getFonts().defaultFont, (16.f / 15.f) };
 			ImGui::TextColored(ImVec4{ .9411764f, .9411764f, .9411764f, 1 }, name.get());
 
 			ImGui::Dummy(ImVec2{ 0, seperator_height });
@@ -950,7 +922,7 @@ namespace
 			constexpr auto toggleWidthMult = 1.35f;
 			constexpr auto textPositionVerticalOffset = 2.f;
 
-			const PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
+			const Gui::PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
 			float ratio = 0;
 
 			m_count++;
@@ -1032,7 +1004,7 @@ namespace
 			constexpr auto textPositionVerticalOffset{ 2.00f };
 			constexpr auto framePadding{ 4.00f };
 
-			const PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
+			const Gui::PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
 
 			m_count++;
 
@@ -1083,7 +1055,7 @@ namespace
 			static std::string preview;
 			static float popupAlpha;
 
-			const PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
+			const Gui::PushFont font{ gui->getFonts().defaultFont, (fontHeight / 15.f) };
 
 			Orion::String<str> name;
 			Orion::String<items> item;
@@ -1168,7 +1140,7 @@ namespace
 			constexpr auto inputTextWidth{ 28.00f };
 			constexpr auto textPositionVerticalOffset{ 1.00f };
 
-			const PushFont font{ gui->getFonts().defaultFont, fontHeight / 15.f };
+			const Gui::PushFont font{ gui->getFonts().defaultFont, fontHeight / 15.f };
 			const auto& style = ImGui::GetStyle();
 
 			Orion::String<str> name;
@@ -1197,7 +1169,7 @@ namespace
 				};
 
 				{
-					const PushFont font{ gui->getFonts().defaultFont, (fontHeight - 1) / 15.f };
+					const Gui::PushFont font{ gui->getFonts().defaultFont, (fontHeight - 1) / 15.f };
 					const StyleColor styleColor2[] = {
 						{ ImGuiCol_::ImGuiCol_FrameBg, ImVec4{ .0470588f, .0470588f, .0470588f, 1 } },
 					};

@@ -1,6 +1,5 @@
 #pragma once
 
-
 class Gui
 {
 public:
@@ -11,6 +10,30 @@ public:
 		virtual ~PostProcess() noexcept = default;
 		virtual void draw() noexcept = 0;
 		virtual void reset() noexcept = 0;
+	};
+
+	struct PushFont
+	{
+		explicit PushFont(ImFont* font) noexcept : m_font{ font }, m_scale{ font->Scale }
+		{
+			ImGui::PushFont(font);
+		}
+
+		explicit PushFont(ImFont* font, float scale) noexcept : m_font{ font }, m_scale{ font->Scale }
+		{
+			font->Scale = scale;
+			ImGui::PushFont(font);
+		}
+
+		~PushFont() noexcept
+		{
+			m_font->Scale = m_scale;
+			ImGui::PopFont();
+		}
+
+	private:
+		ImFont* m_font;
+		float m_scale;
 	};
 
 	explicit Gui() noexcept;
