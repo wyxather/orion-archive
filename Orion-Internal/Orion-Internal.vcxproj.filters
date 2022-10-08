@@ -244,7 +244,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Source\Resources\Shaders\default_vs.hlsl">
+    <FxCompile Include="Source\Resources\Shaders\default_vs11.hlsl">
       <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Source\Resources\Shaders\blur_x.hlsl">
@@ -262,5 +262,7 @@
     <FxCompile Include="Source\Resources\Shaders\gaussian_blur.hlsl">
       <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\default_ps.hlsl" />
+    <FxCompile Include="Source\Resources\Shaders\default_vs.hlsl" />
   </ItemGroup>
 </Project>
