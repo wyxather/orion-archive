@@ -1879,19 +1879,19 @@ auto Gui::draw() noexcept -> void
 										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(config->getData().target);
 										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
 										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
-								}
 									}
+								}
 								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement", true> group{}) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
 										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
 										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(config->getData().color[0]);
 									}
 								}
-									}
-								}
 							}
 						}
 					}
+				}
+			}
 		}
 	}
 }
