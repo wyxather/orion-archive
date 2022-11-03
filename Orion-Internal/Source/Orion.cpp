@@ -29,11 +29,13 @@ Application::~Application() noexcept
 
 auto Application::load() noexcept -> void
 {
-	window.emplace();
+	using Orion::Fnv;
+
+	window.emplace(Window::Type::CLASSNAME, Fnv<"UnrealWindow">::value);
 	console.emplace();
 	hooks.emplace();
-	renderer.emplace();
-	input.emplace();
+	renderer.emplace(Renderer::Type::D3D11);
+	input.emplace(Input::Type::NONE);
 	config.emplace();
 	gui.emplace();
 	game.emplace();

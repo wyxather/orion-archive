@@ -168,6 +168,9 @@
     <ClInclude Include="Source\SDK\Math.h">
       <Filter>Source\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SDK.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp">
@@ -247,6 +250,12 @@
     </ClCompile>
     <ClCompile Include="Source\Module\Game.cpp">
       <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDK\BL3_CoreUObject_functions.cpp">
+      <Filter>Source\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDK\BL3_Basic.cpp">
+      <Filter>Source\SDK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,7 @@
 #pragma endregion
 
 #include "Utility.h"
+#include "SDK.h"
 
 #endif
 #endif
