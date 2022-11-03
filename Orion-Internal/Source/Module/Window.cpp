@@ -96,12 +96,16 @@ auto __stdcall Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 		Application::start();
 		return false;
 	}();
-
-	if (message == WM_KEYUP) {
+	switch (message) {
+	case WM_KEYUP:
+	{
 		switch (wParam) {
 		case VK_END: app->exit(); break;
 		case VK_INSERT: gui->toggle(); break;
 		}
+	}
+	break;
+	case WM_DESTROY: app->exit(); break;
 	}
 	if (gui->isOpen()) {
 		switch (input->getType()) {
@@ -110,7 +114,28 @@ auto __stdcall Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 				return FALSE;
 			break;
 		default:
-			return ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam) ? FALSE : TRUE;
+		{
+			ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam);
+			switch (message) {
+			case WM_LBUTTONDOWN: case WM_LBUTTONDBLCLK:
+			case WM_RBUTTONDOWN: case WM_RBUTTONDBLCLK:
+			case WM_MBUTTONDOWN: case WM_MBUTTONDBLCLK:
+			case WM_XBUTTONDOWN: case WM_XBUTTONDBLCLK:
+			case WM_LBUTTONUP:
+			case WM_RBUTTONUP:
+			case WM_MBUTTONUP:
+			case WM_XBUTTONUP:
+			case WM_MOUSEWHEEL:
+			case WM_MOUSEHWHEEL:
+			case WM_KEYDOWN:
+			case WM_KEYUP:
+			case WM_SYSKEYDOWN:
+			case WM_SYSKEYUP:
+			case WM_CHAR:
+				return FALSE;
+			}
+		}
+		break;
 		}
 	}
 	return LI_FN(CallWindowProc).cached()(window->originalProc.asWndProc, handle, message, wParam, lParam);
