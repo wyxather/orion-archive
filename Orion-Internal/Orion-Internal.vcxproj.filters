@@ -159,9 +159,15 @@
     <ClInclude Include="Source\SDK\Class\Class.h">
       <Filter>Source\SDK\Class</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDK\Struct\Matrix3x4.h" />
-    <ClInclude Include="Source\SDK\Struct\Matrix4x4.h" />
-    <ClInclude Include="Source\SDK\Math.h" />
+    <ClInclude Include="Source\SDK\Struct\Matrix4x4.h">
+      <Filter>Source\SDK\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Struct\Matrix3x4.h">
+      <Filter>Source\SDK\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Math.h">
+      <Filter>Source\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp">
@@ -262,7 +268,11 @@
     <FxCompile Include="Source\Resources\Shaders\gaussian_blur.hlsl">
       <Filter>Source\Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Source\Resources\Shaders\default_ps.hlsl" />
-    <FxCompile Include="Source\Resources\Shaders\default_vs.hlsl" />
+    <FxCompile Include="Source\Resources\Shaders\default_vs.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\default_ps.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
