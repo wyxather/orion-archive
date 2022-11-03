@@ -54,21 +54,26 @@ auto Application::start() noexcept -> void
 
 auto Application::exit() const noexcept -> void
 {
-	game->unhook();
-	input->unhook();
-	renderer->unhook();
+	[[maybe_unused]] static const auto once = [&]() noexcept {
 
-	Hooks::disable();
+		game->unhook();
+		input->unhook();
+		renderer->unhook();
 
-	window->unhook();
+		Hooks::disable();
 
-	std::unique_ptr<void, std::function<void(HANDLE)>> thread(
-		LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), handle, 0, nullptr),
-		[](HANDLE handle) noexcept
-		{
-			if (handle != nullptr)
-				LI_FN(CloseHandle)(handle);
-		});
+		window->unhook();
+
+		std::unique_ptr<void, std::function<void(HANDLE)>> thread(
+			LI_FN(CreateThread)(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Application::unload), handle, 0, nullptr),
+			[](HANDLE handle) noexcept
+			{
+				if (handle != nullptr)
+					LI_FN(CloseHandle)(handle);
+			});
+
+		return false;
+	}();
 }
 
 auto __stdcall Application::unload(HMODULE handle) noexcept -> void
