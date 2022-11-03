@@ -92,7 +92,7 @@ auto __stdcall Window::enumerate(HWND handle, Window* window) noexcept -> BOOL
 
 auto __stdcall Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam) noexcept -> LRESULT
 {
-	static const auto once = []() noexcept {
+	[[maybe_unused]] static const auto once = []() noexcept {
 		Application::start();
 		return false;
 	}();
@@ -110,13 +110,34 @@ auto __stdcall Window::proc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 	if (gui->isOpen()) {
 		switch (input->getType()) {
 		case Input::Type::DINPUT8:
-			if (ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam))
+		{
+			ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam);
+			switch (message) {
+			default: break;
+			case WM_LBUTTONDOWN: case WM_LBUTTONDBLCLK:
+			case WM_RBUTTONDOWN: case WM_RBUTTONDBLCLK:
+			case WM_MBUTTONDOWN: case WM_MBUTTONDBLCLK:
+			case WM_XBUTTONDOWN: case WM_XBUTTONDBLCLK:
+			case WM_LBUTTONUP:
+			case WM_RBUTTONUP:
+			case WM_MBUTTONUP:
+			case WM_XBUTTONUP:
+			case WM_MOUSEWHEEL:
+			case WM_MOUSEHWHEEL:
+			case WM_KEYDOWN:
+			case WM_KEYUP:
+			case WM_SYSKEYDOWN:
+			case WM_SYSKEYUP:
+			case WM_CHAR:
 				return FALSE;
-			break;
+			}
+		}
+		break;
 		default:
 		{
 			ImGui_ImplWin32_WndProcHandler(handle, message, wParam, lParam);
 			switch (message) {
+			default: break;
 			case WM_LBUTTONDOWN: case WM_LBUTTONDBLCLK:
 			case WM_RBUTTONDOWN: case WM_RBUTTONDBLCLK:
 			case WM_MBUTTONDOWN: case WM_MBUTTONDBLCLK:
