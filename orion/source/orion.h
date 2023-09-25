@@ -68,11 +68,12 @@ namespace orion {
             return Orion::game.value();
         }
 
-        auto attach() noexcept -> void;
         auto init() noexcept -> void;
         auto exit(bool unload = true) const noexcept -> void;
 
     private:
+        friend EntryPoint;
+
         std::optional<Platform> platform;
         std::optional<Renderer> renderer;
         std::optional<Input> input;

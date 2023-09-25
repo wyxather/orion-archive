@@ -18,21 +18,6 @@ namespace {
 
 }  // namespace
 
-auto orion::Orion::attach() noexcept -> void {
-    core::console.emplace();
-
-    if (!Orion::platform.has_value())
-        Orion::platform.emplace(std::nullopt, std::nullopt);
-
-    if (!Orion::renderer.has_value())
-        Orion::renderer.emplace(Renderer::Enumerate::MANUAL);
-
-    if (!Orion::input.has_value())
-        Orion::input.emplace(Input::Enumerate::MANUAL);
-
-    return Orion::platform->hook();
-}
-
 auto orion::Orion::init() noexcept -> void {
     if (!Orion::config.has_value())
         Orion::config.emplace();
@@ -116,7 +101,12 @@ namespace orion {
             _CRT_INIT(module_handle, reason_for_call, reserved);
         if (crt_init_result == TRUE && reason_for_call == DLL_PROCESS_ATTACH) {
             orion_handle = module_handle;
-            orion.emplace().attach();
+            core::console.emplace();
+            orion.emplace();
+            orion->platform.emplace(std::nullopt, std::nullopt);
+            orion->renderer.emplace(Renderer::Enumerate::MANUAL);
+            orion->input.emplace(Input::Enumerate::MANUAL);
+            orion->platform->hook();
         }
         return crt_init_result;
     }
