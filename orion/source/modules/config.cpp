@@ -1,0 +1,246 @@
+#include "Config.h"
+
+#include <ShlObj.h>
+
+#include <fstream>
+
+#include "Dependencies/json.hpp"
+
+orion::Config::Config() noexcept {
+    if (PWSTR relative_path {}; SUCCEEDED(IMPORT(SHGetKnownFolderPath)(
+            FOLDERID_Desktop,
+            NULL,
+            nullptr,
+            &relative_path
+        ))) {
+        Config::settings.sort = Sort::NAME;
+        Config::settings.path = relative_path;
+        Config::settings.path /= utils::String<"Orion">().c_str();
+        Config::save();
+        Config::update();
+        IMPORT(CoTaskMemFree)(relative_path);
+    }
+}
+
+auto orion::Config::sort() noexcept -> void {
+    if (Sort::TIME == Config::settings.sort) {
+        constexpr auto is_newer = [](const File& a, const File& b) noexcept {
+            if (a.time_t != b.time_t)
+                return (a.time_t > b.time_t);
+            return (b.name.compare(a.name) < 0);
+        };
+        std::ranges::sort(Config::files.begin(), Config::files.end(), is_newer);
+    }
+}
+
+auto orion::Config::update() noexcept -> void {
+    Config::enumerate();
+    Config::sort();
+}
+
+auto orion::Config::enumerate() noexcept -> void {
+    std::error_code ec;
+    std::vector<std::filesystem::directory_entry> entry;
+
+    std::transform(
+        std::filesystem::directory_iterator {Config::settings.path, ec},
+        std::filesystem::directory_iterator {},
+        std::back_inserter(entry),
+        [](const std::filesystem::directory_entry& directory_entry) {
+            return directory_entry;
+        }
+    );
+
+    Config::files.clear();
+
+    for (const auto& e : entry) {
+        const auto& path = e.path();
+
+        if (!path.has_extension())
+            continue;
+
+        if (!utils::Fnv1a<".cfg">::match(path.extension().string().c_str()))
+            return;
+
+        using namespace std::chrono;
+        const auto time_t =
+            system_clock::to_time_t(clock_cast<system_clock>(e.last_write_time()
+            ));
+
+        if (tm tm; localtime_s(&tm, &time_t) == 0) {
+            std::stringstream string_stream;
+            string_stream << std::put_time(
+                &tm,
+                utils::String<"%e %b %Y %H:%M">().c_str()
+            );
+            const auto file_name = path.stem().string();
+            Config::files.emplace_back(
+                file_name,
+                path,
+                string_stream.str(),
+                time_t,
+                file_name == Config::name
+            );
+        }
+    }
+}
+
+auto orion::Config::create() noexcept -> void {
+    std::string file_name;
+    std::size_t index = 0;
+
+    do {
+        file_name = utils::String<"New Config">();
+
+        if (index != 0) {
+            file_name += utils::String<" ">();
+            file_name += std::to_string(index + 1);
+        }
+
+        if (!Config::exist(file_name))
+            break;
+
+        ++index;
+    } while (true);
+
+    Config::name = file_name;
+    Config::save();
+}
+
+auto orion::Config::remove(const File& file) const noexcept -> void {
+    std::filesystem::remove(file.path);
+}
+
+auto orion::Config::rename(const File& file) noexcept -> void {
+    if (std::strlen(Config::input.data()) == 0)
+        return;
+
+    if (file.name == Config::input.data())
+        return;
+
+    if (Config::exist(Config::input.data()))
+        return;
+
+    if (file.active)
+        Config::name = Config::input.data();
+
+    utils::String<".cfg"> extension;
+    std::filesystem::rename(
+        Config::settings.path / (file.name + std::string(extension.c_str())),
+        Config::settings.path
+            / (std::string(Config::input.data())
+               + std::string(extension.c_str()))
+    );
+}
+
+auto orion::Config::exist(const std::string_view filename) const noexcept
+    -> bool {
+    constexpr auto has_same_name = [](const std::string_view name_compared
+                                   ) noexcept {
+        return [&name_compared](const decltype(Config::files)::value_type& file
+               ) noexcept { return name_compared == file.name; };
+    };
+    return std::ranges::any_of(Config::files, has_same_name(filename));
+}
+
+auto orion::Config::save(const void* const json) noexcept -> void {
+    std::error_code ec;
+    std::filesystem::create_directory(Config::settings.path, ec);
+
+    utils::String<".cfg"> extension;
+    if (Config::name.empty()) {
+        utils::String<"Default"> filename;
+        Config::name = filename.c_str();
+        if (std::ofstream out(
+                Config::settings.path
+                / (std::string(filename.c_str())
+                   + std::string(extension.c_str()))
+            );
+            out.good())
+            out << std::setw(2) << *static_cast<const nlohmann::json*>(json);
+    } else {
+        if (std::ofstream out(
+                Config::settings.path
+                / (Config::name + std::string(extension.c_str()))
+            );
+            out.good())
+            out << std::setw(2) << *static_cast<const nlohmann::json*>(json);
+    }
+}
+
+void orion::Config::load(void* const json, const File& file) noexcept {
+    if (std::ifstream in(
+            Config::settings.path
+            / (file.name + std::string(utils::String<".cfg">()))
+        );
+        in.good()) {
+        *static_cast<nlohmann::json*>(json) =
+            nlohmann::json::parse(in, nullptr, false, true);
+        if (!(*static_cast<nlohmann::json*>(json)).is_discarded())
+            Config::name = file.name;
+    }
+}
+
+namespace orion {
+    template<stb::fixed_string _Key, typename _Value>
+    constexpr auto write(nlohmann::json& json, const _Value& object) noexcept {
+        utils::String<_Key> key;
+        json[key.c_str()] = object;
+    }
+
+    template<stb::fixed_string _Key>
+    constexpr auto read(const nlohmann::json& json, bool& object) noexcept {
+        if (utils::String<_Key> key; json.contains(key.c_str()))
+            if (const auto& value = json[key.c_str()]; value.is_boolean())
+                value.get_to(object);
+    }
+
+    template<stb::fixed_string _Key>
+    constexpr auto read(const nlohmann::json& json, int& object) noexcept {
+        if (utils::String<_Key> key; json.contains(key.c_str()))
+            if (const auto& value = json[key.c_str()];
+                value.is_number_integer())
+                value.get_to(object);
+    }
+
+    template<stb::fixed_string _Key>
+    constexpr auto read(const nlohmann::json& json, float& object) noexcept {
+        if (utils::String<_Key> key; json.contains(key.c_str()))
+            if (const auto& value = json[key.c_str()]; value.is_number_float())
+                value.get_to(object);
+    }
+}  // namespace orion
+
+auto orion::Config::save() noexcept -> void {
+    nlohmann::json json;
+#pragma push_macro("CONFIG")
+#define CONFIG(object) write<#object>(json, object)
+    CONFIG(orion.hitbox[0]);
+    CONFIG(orion.hitbox[1]);
+    CONFIG(orion.hitbox[2]);
+    CONFIG(orion.hitbox[3]);
+    CONFIG(orion.color[0]);
+    CONFIG(orion.color[1]);
+    CONFIG(orion.color[2]);
+    CONFIG(orion.color[3]);
+    CONFIG(orion.target);
+#pragma pop_macro("CONFIG")
+    Config::save(static_cast<const void*>(&json));
+}
+
+auto orion::Config::load(const File& file) noexcept -> void {
+    nlohmann::json json;
+    Config::load(static_cast<void*>(&json), file);
+#pragma push_macro("CONFIG")
+#define CONFIG(object) read<#object>(json, object)
+    CONFIG(orion.hitbox[0]);
+    CONFIG(orion.hitbox[1]);
+    CONFIG(orion.hitbox[2]);
+    CONFIG(orion.hitbox[3]);
+    CONFIG(orion.color[0]);
+    CONFIG(orion.color[1]);
+    CONFIG(orion.color[2]);
+    CONFIG(orion.color[3]);
+    CONFIG(orion.target);
+#pragma pop_macro("CONFIG")
+}
