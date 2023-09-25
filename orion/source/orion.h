@@ -31,6 +31,14 @@ namespace orion {
         ) noexcept -> BOOL;
     };
 
+    class Application final {
+        NON_CONSTRUCTIBLE(Application)
+
+        friend class Platform::Window;
+
+        static auto setup() noexcept -> void;
+    };
+
     _NODISCARD auto get_handle() noexcept -> HMODULE;
 
     class Orion final {
@@ -68,11 +76,11 @@ namespace orion {
             return Orion::game.value();
         }
 
-        auto init() noexcept -> void;
         auto exit(bool unload = true) const noexcept -> void;
 
     private:
         friend EntryPoint;
+        friend Setup;
 
         std::optional<Platform> platform;
         std::optional<Renderer> renderer;
@@ -83,4 +91,5 @@ namespace orion {
     };
 
     inline std::optional<Orion> orion;
+
 }  // namespace orion

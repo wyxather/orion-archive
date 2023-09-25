@@ -77,5 +77,18 @@ namespace orion {
         auto unhook() const noexcept -> void;
 
         auto new_frame() const noexcept -> void;
+
+        class Window final {
+            NON_CONSTRUCTIBLE(Window)
+
+            friend Platform;
+
+            static auto CALLBACK procedure(
+                const HWND window_handle,
+                const UINT message,
+                const WPARAM w_param,
+                const LPARAM l_param
+            ) noexcept -> LRESULT;
+        };
     };
 }  // namespace orion

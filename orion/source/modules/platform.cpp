@@ -108,19 +108,29 @@ auto orion::Platform::unhook() const noexcept -> void {
 IMGUI_IMPL_API
 LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
-auto CALLBACK orion::Window::procedure(
-    const HWND handle,
+auto CALLBACK orion::Platform::Window::procedure(
+    const HWND window_handle,
     const UINT message,
     const WPARAM w_param,
     const LPARAM l_param
 ) noexcept -> LRESULT {
     if (ImGui::GetCurrentContext() != nullptr) {
-        ImGui_ImplWin32_WndProcHandler(handle, message, w_param, l_param);
+        ImGui_ImplWin32_WndProcHandler(
+            window_handle,
+            message,
+            w_param,
+            l_param
+        );
     } else {
         ImGui::CreateContext();
-        ImGui_ImplWin32_Init(handle);
-        ImGui_ImplWin32_WndProcHandler(handle, message, w_param, l_param);
-        orion->init();
+        ImGui_ImplWin32_Init(window_handle);
+        ImGui_ImplWin32_WndProcHandler(
+            window_handle,
+            message,
+            w_param,
+            l_param
+        );
+        orion::Application::setup();
     }
 
     const auto original = orion->get_platform().get_original();
@@ -131,19 +141,19 @@ auto CALLBACK orion::Window::procedure(
         case WM_DESTROY:
             orion->exit(false);
             return IMPORT(CallWindowProc)
-                .cached()(original, handle, message, w_param, l_param);
+                .cached()(original, window_handle, message, w_param, l_param);
         case WM_CLOSE:
             orion->exit(false);
             return IMPORT(CallWindowProc)
-                .cached()(original, handle, message, w_param, l_param);
+                .cached()(original, window_handle, message, w_param, l_param);
         case WM_QUIT:
             orion->exit(false);
             return IMPORT(CallWindowProc)
-                .cached()(original, handle, message, w_param, l_param);
+                .cached()(original, window_handle, message, w_param, l_param);
         case WM_NCDESTROY:
             orion->exit(false);
             return IMPORT(CallWindowProc)
-                .cached()(original, handle, message, w_param, l_param);
+                .cached()(original, window_handle, message, w_param, l_param);
         case WM_KEYUP: {
             switch (w_param) {
                 default:
@@ -151,11 +161,23 @@ auto CALLBACK orion::Window::procedure(
                 case VK_END:
                     orion->exit();
                     return IMPORT(CallWindowProc)
-                        .cached()(original, handle, message, w_param, l_param);
+                        .cached()(
+                            original,
+                            window_handle,
+                            message,
+                            w_param,
+                            l_param
+                        );
                 case VK_INSERT:
                     orion->get_gui().toggle();
                     return IMPORT(CallWindowProc)
-                        .cached()(original, handle, message, w_param, l_param);
+                        .cached()(
+                            original,
+                            window_handle,
+                            message,
+                            w_param,
+                            l_param
+                        );
             }
         } break;
     }
@@ -187,5 +209,5 @@ auto CALLBACK orion::Window::procedure(
         }
     }
     return IMPORT(CallWindowProc)
-        .cached()(original, handle, message, w_param, l_param);
+        .cached()(original, window_handle, message, w_param, l_param);
 }

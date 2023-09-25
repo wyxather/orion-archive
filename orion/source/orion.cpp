@@ -18,32 +18,6 @@ namespace {
 
 }  // namespace
 
-auto orion::Orion::init() noexcept -> void {
-    if (!Orion::config.has_value())
-        Orion::config.emplace();
-
-    if (!Orion::gui.has_value())
-        Orion::gui.emplace();
-
-    if (!Orion::game.has_value())
-        Orion::game.emplace();
-
-    if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>)
-        MH_Initialize();
-
-    if (Orion::game.has_value())
-        Orion::game->hook();
-
-    if (Orion::input.has_value())
-        Orion::input->hook();
-
-    if (Orion::renderer.has_value())
-        Orion::renderer->hook();
-
-    if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>)
-        MH_EnableHook(MH_ALL_HOOKS);
-}
-
 auto orion::Orion::exit(const bool unload) const noexcept -> void {
     [[maybe_unused]] static const auto once = [this, unload]() noexcept {
         if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>)
@@ -109,6 +83,24 @@ namespace orion {
             orion->platform->hook();
         }
         return crt_init_result;
+    }
+
+    auto Application::setup() noexcept -> void {
+        orion->config.emplace();
+        orion->gui.emplace();
+        orion->game.emplace();
+
+        if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
+            MH_Initialize();
+        }
+
+        orion->game->hook();
+        orion->input->hook();
+        orion->renderer->hook();
+
+        if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
+            MH_EnableHook(MH_ALL_HOOKS);
+        }
     }
 
 }  // namespace orion
