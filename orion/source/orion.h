@@ -1,31 +1,36 @@
 #pragma once
 
-#include "Modules/Config.h"
-#include "Modules/Game.h"
-#include "Modules/Gui.h"
-#include "Modules/Input.h"
-#include "Modules/Platform.h"
-#include "Modules/Renderer.h"
+#include "modules/config.h"
+#include "modules/game.h"
+#include "modules/gui.h"
+#include "modules/input.h"
+#include "modules/platform.h"
+#include "modules/renderer.h"
+
+auto APIENTRY DllEntryPoint(
+    const HMODULE module_handle,
+    const DWORD reason_for_call,
+    const LPVOID reserved
+) -> BOOL;
 
 namespace orion {
 
-    /// <summary>
-    /// https://learn.microsoft.com/en-us/windows/win32/dlls/dllmain
-    /// </summary>
-    /// <param name="module_handle">=> Base address of the DLL</param>
-    /// <param name="reason_for_call">=> The reason why the DLL entry-point function is being called.</param>
-    /// <param name="reserved"></param>
-    /// <returns>Returns TRUE if it succeeds or FALSE if initialization fails. </returns>
-    _NODISCARD auto entry(
-        const HMODULE module_handle,
-        const DWORD reason_for_call,
-        const LPVOID reserved
-    ) noexcept -> BOOL;
+    class EntryPoint final {
+        NON_CONSTRUCTIBLE(EntryPoint)
 
-    /// <summary>
-    ///
-    /// </summary>
-    /// <returns></returns>
+        friend auto APIENTRY ::DllEntryPoint(
+            const HMODULE module_handle,
+            const DWORD reason_for_call,
+            const LPVOID reserved
+        ) -> BOOL;
+
+        _NODISCARD static auto process(
+            const HMODULE module_handle,
+            const DWORD reason_for_call,
+            const LPVOID reserved
+        ) noexcept -> BOOL;
+    };
+
     _NODISCARD auto get_handle() noexcept -> HMODULE;
 
     class Orion final {

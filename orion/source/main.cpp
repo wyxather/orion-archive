@@ -5,5 +5,5 @@ auto APIENTRY DllEntryPoint(
     const DWORD reason_for_call,
     const LPVOID reserved
 ) -> BOOL {
-    return orion::entry(module_handle, reason_for_call, reserved);
+    return orion::EntryPoint::process(module_handle, reason_for_call, reserved);
 }

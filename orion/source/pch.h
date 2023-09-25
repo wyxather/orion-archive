@@ -19,3 +19,19 @@
     #include "utils/string.hpp"
 
 #endif  // __cplusplus
+
+#define NON_MOVEABLE(c) \
+    c(c&&) = delete; \
+    c& operator=(c&&) = delete;
+
+#define NON_COPYABLE(c) \
+    c(const c&) = delete; \
+    c& operator=(const c&) = delete;
+
+#define NON_CONSTRUCTIBLE(c) \
+    c() = delete; \
+    ~c() = delete; \
+    NON_COPYABLE(c) \
+    NON_MOVEABLE(c)
+
+#define NODISCARD [[nodiscard]]

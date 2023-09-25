@@ -1,29 +1,14 @@
 #include "orion.h"
 
-#include "Core/Console.h"
-#include "Dependencies/MinHook/include/MinHook.h"
+#include "core/console.h"
+#include "dependencies/minhook/include/MinHook.h"
 
-/// <summary>
-/// https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/cpp/libraries/use-c-run-time
-/// </summary>
-/// <param name="module_handle"></param>
-/// <param name="reason_for_call"></param>
-/// <param name="reserved"></param>
-/// <returns></returns>
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
 namespace {
 
-    /// <summary>
-    ///
-    /// </summary>
     HMODULE orion_handle = nullptr;
 
-    /// <summary>
-    ///
-    /// </summary>
-    /// <param name="module_handle"></param>
-    /// <returns></returns>
     [[noreturn]] auto WINAPI unload(const HMODULE module_handle) noexcept
         -> void {
         IMPORT(Sleep)(500);
@@ -118,7 +103,11 @@ orion::Orion::~Orion() noexcept {
 
 namespace orion {
 
-    auto entry(
+    auto get_handle() noexcept -> HMODULE {
+        return orion_handle;
+    }
+
+    auto EntryPoint::process(
         const HMODULE module_handle,
         const DWORD reason_for_call,
         const LPVOID reserved
@@ -130,10 +119,6 @@ namespace orion {
             orion.emplace().attach();
         }
         return crt_init_result;
-    }
-
-    auto get_handle() noexcept -> HMODULE {
-        return orion_handle;
     }
 
 }  // namespace orion
