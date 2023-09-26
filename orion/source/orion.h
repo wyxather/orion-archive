@@ -37,6 +37,7 @@ namespace orion {
         friend class Platform::Window;
 
         static auto setup() noexcept -> void;
+        static auto exit() noexcept -> void;
     };
 
     _NODISCARD auto get_handle() noexcept -> HMODULE;
@@ -76,11 +77,9 @@ namespace orion {
             return Orion::game.value();
         }
 
-        auto exit(bool unload = true) const noexcept -> void;
-
     private:
         friend EntryPoint;
-        friend Setup;
+        friend Application;
 
         std::optional<Platform> platform;
         std::optional<Renderer> renderer;

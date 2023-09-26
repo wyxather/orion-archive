@@ -18,45 +18,9 @@ namespace {
 
 }  // namespace
 
-auto orion::Orion::exit(const bool unload) const noexcept -> void {
-    [[maybe_unused]] static const auto once = [this, unload]() noexcept {
-        if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>)
-            MH_DisableHook(MH_ALL_HOOKS);
-
-        if (Orion::game.has_value())
-            Orion::game->unhook();
-
-        if (Orion::input.has_value())
-            Orion::input->unhook();
-
-        if (Orion::renderer.has_value())
-            Orion::renderer->unhook();
-
-        if (Orion::platform.has_value())
-            Orion::platform->unhook();
-
-        if (unload) {
-            [[maybe_unused]] const std::unique_ptr<void, decltype(&CloseHandle)>
-                thread(
-                    IMPORT(CreateThread)(
-                        nullptr,
-                        0,
-                        LPTHREAD_START_ROUTINE(::unload),
-                        orion_handle,
-                        0,
-                        nullptr
-                    ),
-                    IMPORT(CloseHandle).get()
-                );
-        }
-        return false;
-    }();
-}
-
 orion::Orion::~Orion() noexcept {
     if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>)
         MH_Uninitialize();
-
     core::console.reset();
 }
 
@@ -89,17 +53,35 @@ namespace orion {
         orion->config.emplace();
         orion->gui.emplace();
         orion->game.emplace();
-
         if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
             MH_Initialize();
         }
-
         orion->game->hook();
         orion->input->hook();
         orion->renderer->hook();
-
         if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
             MH_EnableHook(MH_ALL_HOOKS);
+        }
+    }
+
+    auto Application::exit() noexcept -> void {
+        if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
+            MH_DisableHook(MH_ALL_HOOKS);
+        }
+        orion->game->unhook();
+        orion->input->unhook();
+        orion->renderer->unhook();
+        orion->platform->unhook();
+        const auto thread_handle = IMPORT(CreateThread)(
+            nullptr,
+            0,
+            reinterpret_cast<LPTHREAD_START_ROUTINE>(unload),
+            orion_handle,
+            0,
+            nullptr
+        );
+        if (thread_handle) {
+            IMPORT(CloseHandle)(thread_handle);
         }
     }
 

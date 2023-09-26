@@ -132,56 +132,18 @@ auto CALLBACK orion::Platform::Window::procedure(
         );
         orion::Application::setup();
     }
-
-    const auto original = orion->get_platform().get_original();
-
-    switch (message) {
-        default:
-            break;
-        case WM_DESTROY:
-            orion->exit(false);
-            return IMPORT(CallWindowProc)
-                .cached()(original, window_handle, message, w_param, l_param);
-        case WM_CLOSE:
-            orion->exit(false);
-            return IMPORT(CallWindowProc)
-                .cached()(original, window_handle, message, w_param, l_param);
-        case WM_QUIT:
-            orion->exit(false);
-            return IMPORT(CallWindowProc)
-                .cached()(original, window_handle, message, w_param, l_param);
-        case WM_NCDESTROY:
-            orion->exit(false);
-            return IMPORT(CallWindowProc)
-                .cached()(original, window_handle, message, w_param, l_param);
-        case WM_KEYUP: {
-            switch (w_param) {
-                default:
-                    break;
-                case VK_END:
-                    orion->exit();
-                    return IMPORT(CallWindowProc)
-                        .cached()(
-                            original,
-                            window_handle,
-                            message,
-                            w_param,
-                            l_param
-                        );
-                case VK_INSERT:
-                    orion->get_gui().toggle();
-                    return IMPORT(CallWindowProc)
-                        .cached()(
-                            original,
-                            window_handle,
-                            message,
-                            w_param,
-                            l_param
-                        );
-            }
-        } break;
+    if (message == WM_KEYUP) {
+        switch (w_param) {
+            case VK_END:
+                orion::Application::exit();
+                break;
+            case VK_INSERT:
+                orion->get_gui().toggle();
+                break;
+            default:
+                break;
+        }
     }
-
     if (orion->get_gui().is_open()) {
         switch (message) {
             default:
@@ -209,5 +171,11 @@ auto CALLBACK orion::Platform::Window::procedure(
         }
     }
     return IMPORT(CallWindowProc)
-        .cached()(original, window_handle, message, w_param, l_param);
+        .cached()(
+            orion->get_platform().get_original(),
+            window_handle,
+            message,
+            w_param,
+            l_param
+        );
 }
