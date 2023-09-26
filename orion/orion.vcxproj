@@ -42,8 +42,6 @@
     <ClInclude Include="dependencies\stb.hh" />
     <ClInclude Include="dependencies\xorstr.hpp" />
     <ClInclude Include="source\framework.h" />
-    <ClInclude Include="source\hooks\hooks.h" />
-    <ClInclude Include="source\hooks\minhook.h" />
     <ClInclude Include="source\core\config.h" />
     <ClInclude Include="source\core\console.h" />
     <ClInclude Include="source\core\game.h" />
@@ -53,6 +51,8 @@
     <ClInclude Include="source\core\input.h" />
     <ClInclude Include="source\core\platform.h" />
     <ClInclude Include="source\core\renderer.h" />
+    <ClInclude Include="source\hooks\hooks.h" />
+    <ClInclude Include="source\hooks\minhook.h" />
     <ClInclude Include="source\orion.h" />
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\resources\fonts\fontawesome.h" />
@@ -108,9 +108,9 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\hooks\hooks.cpp" />
     <ClCompile Include="source\hooks\minhook.cpp" />
+    <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\core\config.cpp" />
     <ClCompile Include="source\core\console.cpp" />
     <ClCompile Include="source\core\game.cpp" />

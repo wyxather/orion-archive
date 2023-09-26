@@ -81,12 +81,6 @@
     <ClInclude Include="dependencies\minhook\include\MinHook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\hooks\Hooks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\hooks\MinHook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\core\renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -159,6 +153,12 @@
     <ClInclude Include="source\utils\lazy_import.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\hooks\hooks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\hooks\minhook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\imgui\imgui.cpp">
@@ -201,12 +201,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dependencies\minhook\src\trampoline.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\hooks\Hooks.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\hooks\MinHook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\core\config.cpp">
@@ -255,6 +249,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\core\gui\post_process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\hooks\hooks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\hooks\minhook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
