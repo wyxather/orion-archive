@@ -87,31 +87,25 @@
     <ClInclude Include="source\hooks\MinHook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\modules\Renderer.h">
+    <ClInclude Include="source\core\renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\modules\gui\GuiBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\modules\gui\PostProcess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\modules\Config.h">
+    <ClInclude Include="source\core\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\core\Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\modules\Game.h">
+    <ClInclude Include="source\core\game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\modules\Gui.h">
+    <ClInclude Include="source\core\gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\modules\Input.h">
+    <ClInclude Include="source\core\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\modules\Platform.h">
+    <ClInclude Include="source\core\platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resources\fonts\museosanscyrl.h">
@@ -150,13 +144,19 @@
     <ClInclude Include="source\orion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utils\LazyImport.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\utils\ImGui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\gui\gui_builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\gui\post_process.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utils\lazy_import.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -209,31 +209,25 @@
     <ClCompile Include="source\hooks\MinHook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\modules\gui\GuiBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\modules\gui\PostProcess.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\modules\Config.cpp">
+    <ClCompile Include="source\core\config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\core\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\modules\Game.cpp">
+    <ClCompile Include="source\core\game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\modules\Gui.cpp">
+    <ClCompile Include="source\core\gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\modules\Input.cpp">
+    <ClCompile Include="source\core\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\modules\Platform.cpp">
+    <ClCompile Include="source\core\platform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\modules\Renderer.cpp">
+    <ClCompile Include="source\core\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\sdk\struct\Matrix3x4.cpp">
@@ -255,6 +249,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\gui\gui_builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\gui\post_process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -283,5 +283,8 @@
     <FxCompile Include="source\resources\shaders\default_vs11.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

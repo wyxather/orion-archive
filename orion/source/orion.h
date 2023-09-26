@@ -1,11 +1,11 @@
 #pragma once
 
-#include "modules/config.h"
-#include "modules/game.h"
-#include "modules/gui.h"
-#include "modules/input.h"
-#include "modules/platform.h"
-#include "modules/renderer.h"
+#include "core/config.h"
+#include "core/game.h"
+#include "core/gui.h"
+#include "core/input.h"
+#include "core/platform.h"
+#include "core/renderer.h"
 
 auto APIENTRY DllEntryPoint(
     const HMODULE module_handle,
