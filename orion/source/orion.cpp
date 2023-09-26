@@ -19,8 +19,9 @@ namespace {
 }  // namespace
 
 orion::Orion::~Orion() noexcept {
-    if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>)
+    if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
         MH_Uninitialize();
+    }
     core::console.reset();
 }
 
@@ -40,25 +41,24 @@ namespace orion {
         if (crt_init_result == TRUE && reason_for_call == DLL_PROCESS_ATTACH) {
             orion_handle = module_handle;
             core::console.emplace();
-            orion.emplace();
-            orion->platform.emplace(std::nullopt, std::nullopt);
-            orion->renderer.emplace(Renderer::Enumerate::MANUAL);
-            orion->input.emplace(Input::Enumerate::MANUAL);
-            orion->platform->hook();
+            orion.platform.emplace(std::nullopt, std::nullopt);
+            orion.renderer.emplace(Renderer::Enumerate::MANUAL);
+            orion.input.emplace(Input::Enumerate::MANUAL);
+            orion.platform->hook();
         }
         return crt_init_result;
     }
 
     auto Application::setup() noexcept -> void {
-        orion->config.emplace();
-        orion->gui.emplace();
-        orion->game.emplace();
+        orion.config.emplace();
+        orion.gui.emplace();
+        orion.game.emplace();
         if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
             MH_Initialize();
         }
-        orion->game->hook();
-        orion->input->hook();
-        orion->renderer->hook();
+        orion.game->hook();
+        orion.input->hook();
+        orion.renderer->hook();
         if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
             MH_EnableHook(MH_ALL_HOOKS);
         }
@@ -68,10 +68,10 @@ namespace orion {
         if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
             MH_DisableHook(MH_ALL_HOOKS);
         }
-        orion->game->unhook();
-        orion->input->unhook();
-        orion->renderer->unhook();
-        orion->platform->unhook();
+        orion.game->unhook();
+        orion.input->unhook();
+        orion.renderer->unhook();
+        orion.platform->unhook();
         const auto thread_handle = IMPORT(CreateThread)(
             nullptr,
             0,

@@ -43,41 +43,9 @@ namespace orion {
     _NODISCARD auto get_handle() noexcept -> HMODULE;
 
     class Orion final {
-    public:
-        explicit Orion() noexcept = default;
-        ~Orion() noexcept;
+        NON_COPYABLE(Orion)
+        NON_MOVEABLE(Orion)
 
-        Orion(Orion&&) = delete;
-        Orion& operator=(Orion&&) = delete;
-
-        Orion(const Orion&) = delete;
-        Orion& operator=(const Orion&) = delete;
-
-        [[nodiscard]] constexpr auto&& get_platform() const noexcept {
-            return Orion::platform.value();
-        }
-
-        [[nodiscard]] constexpr auto&& get_renderer() const noexcept {
-            return Orion::renderer.value();
-        }
-
-        [[nodiscard]] constexpr auto&& get_input() const noexcept {
-            return Orion::input.value();
-        }
-
-        [[nodiscard]] constexpr auto&& get_config() noexcept {
-            return Orion::config.value();
-        }
-
-        [[nodiscard]] constexpr auto&& get_gui() noexcept {
-            return Orion::gui.value();
-        }
-
-        [[nodiscard]] constexpr auto&& get_game() noexcept {
-            return Orion::game.value();
-        }
-
-    private:
         friend EntryPoint;
         friend Application;
 
@@ -87,8 +55,37 @@ namespace orion {
         std::optional<Config> config;
         std::optional<Gui> gui;
         std::optional<Game> game;
+
+    public:
+        constexpr explicit Orion() noexcept = default;
+
+        ~Orion() noexcept;
+
+        _NODISCARD constexpr auto get_platform() const noexcept -> const auto& {
+            return platform.value();
+        }
+
+        _NODISCARD constexpr auto get_renderer() const noexcept -> const auto& {
+            return renderer.value();
+        }
+
+        _NODISCARD constexpr auto get_input() const noexcept -> const auto& {
+            return input.value();
+        }
+
+        _NODISCARD constexpr auto get_config() noexcept -> auto& {
+            return config.value();
+        }
+
+        _NODISCARD constexpr auto get_gui() noexcept -> auto& {
+            return gui.value();
+        }
+
+        _NODISCARD constexpr auto get_game() noexcept -> auto& {
+            return game.value();
+        }
     };
 
-    inline std::optional<Orion> orion;
+    inline Orion orion;
 
 }  // namespace orion

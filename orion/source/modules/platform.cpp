@@ -138,13 +138,13 @@ auto CALLBACK orion::Platform::Window::procedure(
                 orion::Application::exit();
                 break;
             case VK_INSERT:
-                orion->get_gui().toggle();
+                orion.get_gui().toggle();
                 break;
             default:
                 break;
         }
     }
-    if (orion->get_gui().is_open()) {
+    if (orion.get_gui().is_open()) {
         switch (message) {
             default:
                 break;
@@ -172,7 +172,7 @@ auto CALLBACK orion::Platform::Window::procedure(
     }
     return IMPORT(CallWindowProc)
         .cached()(
-            orion->get_platform().get_original(),
+            orion.get_platform().get_original(),
             window_handle,
             message,
             w_param,

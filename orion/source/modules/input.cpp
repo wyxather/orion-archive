@@ -17,7 +17,7 @@ namespace orion::DINPUT8 {
     ) noexcept -> HRESULT {
         static std::array<bool, 2> key {};
 
-        const auto result = orion->get_input()
+        const auto result = orion.get_input()
                                 .get_hooks()
                                 .get<9, HRESULT, Hooks::CallingConv::STDCALL>(
                                     device,
@@ -25,7 +25,7 @@ namespace orion::DINPUT8 {
                                     data
                                 );
 
-        if (!orion->get_gui().is_open() || result != DI_OK)
+        if (!orion.get_gui().is_open() || result != DI_OK)
             return result;
 
         switch (size) {
@@ -47,14 +47,14 @@ namespace orion::DINPUT8 {
             if (POINT pos; IMPORT(GetCursorPos).cached()(&pos)) {
                 key[0] ? IMPORT(PostMessage)
                              .cached()(
-                                 orion->get_platform().get_handle(),
+                                 orion.get_platform().get_handle(),
                                  WM_LBUTTONDOWN,
                                  VK_LBUTTON,
                                  MAKELPARAM(pos.x, pos.y)
                              )
                        : IMPORT(PostMessage)
                              .cached()(
-                                 orion->get_platform().get_handle(),
+                                 orion.get_platform().get_handle(),
                                  WM_LBUTTONUP,
                                  NULL,
                                  MAKELPARAM(pos.x, pos.y)
@@ -72,7 +72,7 @@ namespace orion::DINPUT8 {
         const LPDWORD count,
         const DWORD flags
     ) noexcept -> HRESULT {
-        const auto result = orion->get_input()
+        const auto result = orion.get_input()
                                 .get_hooks()
                                 .get<10, HRESULT, Hooks::CallingConv::STDCALL>(
                                     device,
@@ -82,7 +82,7 @@ namespace orion::DINPUT8 {
                                     flags
                                 );
 
-        if (!orion->get_gui().is_open() || result != DI_OK)
+        if (!orion.get_gui().is_open() || result != DI_OK)
             return result;
 
         for (DWORD i = 0; i < *count; ++i) {
@@ -91,7 +91,7 @@ namespace orion::DINPUT8 {
                     if (POINT pos {}; IMPORT(GetCursorPos).cached()(&pos)) {
                         IMPORT(PostMessage)
                             .cached()(
-                                orion->get_platform().get_handle(),
+                                orion.get_platform().get_handle(),
                                 WM_LBUTTONDOWN,
                                 VK_LBUTTON,
                                 MAKELPARAM(pos.x, pos.y)
@@ -104,7 +104,7 @@ namespace orion::DINPUT8 {
                     if (POINT pos {}; IMPORT(GetCursorPos).cached()(&pos)) {
                         IMPORT(PostMessage)
                             .cached()(
-                                orion->get_platform().get_handle(),
+                                orion.get_platform().get_handle(),
                                 WM_LBUTTONUP,
                                 NULL,
                                 MAKELPARAM(pos.x, pos.y)
