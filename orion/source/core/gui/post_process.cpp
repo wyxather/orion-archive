@@ -4,31 +4,31 @@
 #include "dependencies/imgui/imgui_impl_dx11.h"
 #if _WIN64
     #if NDEBUG  // WIN64 RELEASE
-        #include "resources/shaders/Build/Release/x64/bloom_combine.h"
-        #include "resources/shaders/Build/Release/x64/bloom_extract.h"
-        #include "resources/shaders/Build/Release/x64/blur_x.h"
-        #include "resources/shaders/Build/Release/x64/blur_y.h"
-        #include "resources/shaders/Build/Release/x64/gaussian_blur.h"
+        #include "resources/shaders/build/Release/x64/bloom_combine.h"
+        #include "resources/shaders/build/Release/x64/bloom_extract.h"
+        #include "resources/shaders/build/Release/x64/blur_x.h"
+        #include "resources/shaders/build/Release/x64/blur_y.h"
+        #include "resources/shaders/build/Release/x64/gaussian_blur.h"
     #else  // WIN64 DEBUG
-        #include "resources/shaders/Build/Debug/x64/bloom_combine.h"
-        #include "resources/shaders/Build/Debug/x64/bloom_extract.h"
-        #include "resources/shaders/Build/Debug/x64/blur_x.h"
-        #include "resources/shaders/Build/Debug/x64/blur_y.h"
-        #include "resources/shaders/Build/Debug/x64/gaussian_blur.h"
+        #include "resources/shaders/build/Debug/x64/bloom_combine.h"
+        #include "resources/shaders/build/Debug/x64/bloom_extract.h"
+        #include "resources/shaders/build/Debug/x64/blur_x.h"
+        #include "resources/shaders/build/Debug/x64/blur_y.h"
+        #include "resources/shaders/build/Debug/x64/gaussian_blur.h"
     #endif
 #else
     #if NDEBUG  // WIN32 RELEASE
-        #include "resources/shaders/Build/Release/Win32/bloom_combine.h"
-        #include "resources/shaders/Build/Release/Win32/bloom_extract.h"
-        #include "resources/shaders/Build/Release/Win32/blur_x.h"
-        #include "resources/shaders/Build/Release/Win32/blur_y.h"
-        #include "resources/shaders/Build/Release/Win32/gaussian_blur.h"
+        #include "resources/shaders/build/Release/Win32/bloom_combine.h"
+        #include "resources/shaders/build/Release/Win32/bloom_extract.h"
+        #include "resources/shaders/build/Release/Win32/blur_x.h"
+        #include "resources/shaders/build/Release/Win32/blur_y.h"
+        #include "resources/shaders/build/Release/Win32/gaussian_blur.h"
     #else  // WIN32 DEBUG
-        #include "resources/shaders/Build/Debug/Win32/bloom_combine.h"
-        #include "resources/shaders/Build/Debug/Win32/bloom_extract.h"
-        #include "resources/shaders/Build/Debug/Win32/blur_x.h"
-        #include "resources/shaders/Build/Debug/Win32/blur_y.h"
-        #include "resources/shaders/Build/Debug/Win32/gaussian_blur.h"
+        #include "resources/shaders/build/Debug/Win32/bloom_combine.h"
+        #include "resources/shaders/build/Debug/Win32/bloom_extract.h"
+        #include "resources/shaders/build/Debug/Win32/blur_x.h"
+        #include "resources/shaders/build/Debug/Win32/blur_y.h"
+        #include "resources/shaders/build/Debug/Win32/gaussian_blur.h"
     #endif
 #endif
 
