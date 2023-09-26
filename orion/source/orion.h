@@ -40,8 +40,6 @@ namespace orion {
         static auto exit() noexcept -> void;
     };
 
-    _NODISCARD auto get_handle() noexcept -> HMODULE;
-
     class Orion final {
         NON_COPYABLE(Orion)
         NON_MOVEABLE(Orion)
@@ -49,6 +47,7 @@ namespace orion {
         friend EntryPoint;
         friend Application;
 
+        HMODULE handle = nullptr;
         std::optional<Platform> platform;
         std::optional<Renderer> renderer;
         std::optional<Input> input;
@@ -60,6 +59,10 @@ namespace orion {
         constexpr explicit Orion() noexcept = default;
 
         ~Orion() noexcept;
+
+        _NODISCARD constexpr auto get_handle() const noexcept {
+            return handle;
+        }
 
         _NODISCARD constexpr auto get_platform() const noexcept -> const auto& {
             return platform.value();

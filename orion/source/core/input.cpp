@@ -172,7 +172,7 @@ auto orion::Input::hook() noexcept -> void {
 
         Microsoft::WRL::ComPtr<IDirectInput8> direct_input_8;
         if (direct_input_8_create(
-                orion::get_handle(),
+                orion.get_handle(),
                 DIRECTINPUT_VERSION,
                 IID_IDirectInput8,
                 direct_input_8.GetAddressOf(),
