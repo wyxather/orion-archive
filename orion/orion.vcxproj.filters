@@ -150,9 +150,6 @@
     <ClInclude Include="source\core\gui\post_process.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utils\lazy_import.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\hooks\hooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -163,6 +160,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\modules\modules.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

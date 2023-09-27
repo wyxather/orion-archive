@@ -13,9 +13,9 @@
     #include "dependencies/stb.hh"
     #pragma warning(pop)
 
+    #include "modules/modules.h"
     #include "utils/fnv1a.hpp"
     #include "utils/imgui.hpp"
-    #include "utils/lazy_import.hpp"
     #include "utils/string.hpp"
 
 #endif  // __cplusplus

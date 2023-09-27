@@ -4,7 +4,7 @@
     #define LAZY_IMPORTER_CASE_INSENSITIVE
 #endif
 
-#include "Dependencies/lazy_importer.hpp"
+#include "dependencies/lazy_importer.hpp"
 
 #ifndef LI_FN__
     #define LI_FN__(name) \

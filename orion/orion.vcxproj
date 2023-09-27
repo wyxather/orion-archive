@@ -56,6 +56,7 @@
     <ClInclude Include="source\hooks\minhook.h" />
     <ClInclude Include="source\entry_point.h" />
     <ClInclude Include="source\context.h" />
+    <ClInclude Include="source\modules\modules.h" />
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\resources\fonts\fontawesome.h" />
     <ClInclude Include="source\resources\fonts\museosanscyrl.h" />
@@ -66,7 +67,6 @@
     <ClInclude Include="source\utils\fnv1a.hpp" />
     <ClInclude Include="source\utils\hashmap.hpp" />
     <ClInclude Include="source\utils\imgui.hpp" />
-    <ClInclude Include="source\utils\lazy_import.hpp" />
     <ClInclude Include="source\utils\math.hpp" />
     <ClInclude Include="source\utils\string.hpp" />
   </ItemGroup>
