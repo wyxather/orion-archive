@@ -52,5 +52,4 @@ orion::Context::~Context() noexcept {
     if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
         MH_Uninitialize();
     }
-    core::console.reset();
 }

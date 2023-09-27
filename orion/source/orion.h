@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/config.h"
+#include "core/console.h"
 #include "core/game.h"
 #include "core/gui.h"
 #include "core/input.h"
@@ -26,6 +27,7 @@ namespace orion {
         friend Application;
 
         HMODULE handle = nullptr;
+        std::optional<core::Console> console;
         std::optional<Platform> platform;
         std::optional<Renderer> renderer;
         std::optional<Input> input;
@@ -40,6 +42,10 @@ namespace orion {
 
         _NODISCARD constexpr auto get_handle() const noexcept {
             return handle;
+        }
+
+        _NODISCARD constexpr auto get_console() const noexcept -> const auto& {
+            return console.value();
         }
 
         _NODISCARD constexpr auto get_platform() const noexcept -> const auto& {

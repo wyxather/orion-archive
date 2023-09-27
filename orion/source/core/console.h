@@ -163,5 +163,4 @@ namespace orion::core {
         }
     };
 
-    inline std::optional<const Console> console;
 }  // namespace orion::core
