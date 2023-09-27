@@ -1,4 +1,4 @@
-#include "orion.h"
+#include "entry_point.h"
 
 auto APIENTRY DllEntryPoint(
     const HMODULE module_handle,

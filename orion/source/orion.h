@@ -7,29 +7,7 @@
 #include "core/platform.h"
 #include "core/renderer.h"
 
-auto APIENTRY DllEntryPoint(
-    const HMODULE module_handle,
-    const DWORD reason_for_call,
-    const LPVOID reserved
-) -> BOOL;
-
 namespace orion {
-
-    class EntryPoint final {
-        NON_CONSTRUCTIBLE(EntryPoint)
-
-        friend auto APIENTRY ::DllEntryPoint(
-            const HMODULE module_handle,
-            const DWORD reason_for_call,
-            const LPVOID reserved
-        ) -> BOOL;
-
-        _NODISCARD static auto process(
-            const HMODULE module_handle,
-            const DWORD reason_for_call,
-            const LPVOID reserved
-        ) noexcept -> BOOL;
-    };
 
     class Application final {
         NON_CONSTRUCTIBLE(Application)
@@ -44,7 +22,7 @@ namespace orion {
         NON_COPYABLE(Context)
         NON_MOVEABLE(Context)
 
-        friend EntryPoint;
+        friend class EntryPoint;
         friend Application;
 
         HMODULE handle = nullptr;
