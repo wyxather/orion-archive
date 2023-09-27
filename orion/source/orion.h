@@ -38,8 +38,6 @@ namespace orion {
     public:
         constexpr explicit Context() noexcept = default;
 
-        ~Context() noexcept;
-
         _NODISCARD constexpr auto get_handle() const noexcept {
             return handle;
         }
