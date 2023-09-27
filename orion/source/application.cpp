@@ -1,7 +1,7 @@
 #include "application.h"
 
 #include "dependencies/minhook/include/MinHook.h"
-#include "orion.h"
+#include "source/context.h"
 
 auto orion::Application::setup() noexcept -> void {
     context.config.emplace();

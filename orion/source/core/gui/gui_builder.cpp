@@ -1,9 +1,9 @@
 #include "gui_builder.h"
 
 #include "dependencies/imgui/imgui_custom.h"
-#include "orion.h"
-#include "resources/fonts/fontawesome.h"
-#include "utils/math.hpp"
+#include "source/context.h"
+#include "source/resources/fonts/fontawesome.h"
+#include "source/utils/math.hpp"
 
 orion::GuiBuilder::Font::Font(ImFont& font) noexcept :
     font(font),

@@ -135,7 +135,7 @@
     <ClInclude Include="source\Framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\orion.h">
+    <ClInclude Include="source\context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\utils\ImGui.hpp">

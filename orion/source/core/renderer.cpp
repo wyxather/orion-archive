@@ -1,8 +1,8 @@
-#include "Renderer.h"
+#include "renderer.h"
 
-#include "Dependencies/ImGui/imgui_impl_dx11.h"
-#include "Dependencies/ImGui/imgui_impl_dx9.h"
-#include "Orion.h"
+#include "dependencies/imgui/imgui_impl_dx11.h"
+#include "dependencies/imgui/imgui_impl_dx9.h"
+#include "source/context.h"
 
 namespace {
     class RegisterClassExWrapper final {

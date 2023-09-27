@@ -1,11 +1,11 @@
 #include "gui.h"
 
 #include "dependencies/imgui/imgui_custom.h"
-#include "gui/gui_builder.h"
-#include "orion.h"
-#include "resources/fonts/fontawesome.h"
-#include "resources/fonts/museosanscyrl.h"
-#include "utils/math.hpp"
+#include "source/context.h"
+#include "source/core/gui/gui_builder.h"
+#include "source/resources/fonts/fontawesome.h"
+#include "source/resources/fonts/museosanscyrl.h"
+#include "source/utils/math.hpp"
 
 orion::Gui::Gui() noexcept {
     Gui::setup_io();

@@ -1,13 +1,12 @@
-#include "Input.h"
+#include "input.h"
 
-#include "Orion.h"
-#ifndef DIRECTINPUT_VERSION
-    #define DIRECTINPUT_VERSION 0x0800
-#endif
+#include "source/context.h"
+
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <wrl/client.h>
-#pragma comment(lib, "Dinput8.lib")
-#pragma comment(lib, "Dxguid.lib")
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dxguid.lib")
 
 namespace orion::DINPUT8 {
     auto CALLBACK get_device_state(
