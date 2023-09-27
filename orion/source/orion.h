@@ -10,21 +10,12 @@
 
 namespace orion {
 
-    class Application final {
-        NON_CONSTRUCTIBLE(Application)
-
-        friend class core::platform::Window;
-
-        static auto setup() noexcept -> void;
-        static auto exit() noexcept -> void;
-    };
-
     class Context final {
         NON_COPYABLE(Context)
         NON_MOVEABLE(Context)
 
         friend class EntryPoint;
-        friend Application;
+        friend class Application;
 
         HMODULE handle = nullptr;
         std::optional<core::Console> console;

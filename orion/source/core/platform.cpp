@@ -1,7 +1,8 @@
 #include "platform.h"
 
 #include "dependencies/imgui/imgui_impl_win32.h"
-#include "orion.h"
+#include "source/application.h"
+#include "source/orion.h"
 
 auto orion::Platform::Enumerator::match(const HWND handle) noexcept -> bool {
     DWORD id {};

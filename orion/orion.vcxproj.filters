@@ -162,6 +162,9 @@
     <ClInclude Include="source\entry_point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\imgui\imgui.cpp">
@@ -236,9 +239,6 @@
     <ClCompile Include="source\sdk\struct\Vector3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\orion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\pch-c.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -261,6 +261,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\entry_point.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

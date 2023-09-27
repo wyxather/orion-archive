@@ -41,6 +41,7 @@
     <ClInclude Include="dependencies\minhook\src\trampoline.h" />
     <ClInclude Include="dependencies\stb.hh" />
     <ClInclude Include="dependencies\xorstr.hpp" />
+    <ClInclude Include="source\application.h" />
     <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\core\config.h" />
     <ClInclude Include="source\core\console.h" />
@@ -109,6 +110,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\entry_point.cpp" />
     <ClCompile Include="source\hooks\hooks.cpp" />
     <ClCompile Include="source\hooks\minhook.cpp" />
@@ -122,7 +124,6 @@
     <ClCompile Include="source\core\input.cpp" />
     <ClCompile Include="source\core\platform.cpp" />
     <ClCompile Include="source\core\renderer.cpp" />
-    <ClCompile Include="source\orion.cpp" />
     <ClCompile Include="source\pch-c.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
