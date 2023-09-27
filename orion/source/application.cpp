@@ -21,13 +21,16 @@ auto orion::Application::setup() noexcept -> void {
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
 [[noreturn]] static auto WINAPI unload(LPCVOID) noexcept -> void {
-    IMPORT(Sleep)(500);
+    const auto& kernel32 = orion::context.get_kernel32();
+    kernel32.sleep(500);
     if constexpr (std::is_same_v<orion::Hooks::Type, orion::Hooks::MinHook>) {
         MH_Uninitialize();
     }
     const auto orion_handle = orion::context.get_handle();
+    const auto free_library_and_exit_thread =
+        kernel32.free_library_and_exit_thread;
     _CRT_INIT(orion_handle, DLL_PROCESS_DETACH, nullptr);
-    IMPORT(FreeLibraryAndExitThread)(orion_handle, EXIT_SUCCESS);
+    free_library_and_exit_thread(orion_handle, EXIT_SUCCESS);
 }
 
 auto orion::Application::exit() noexcept -> void {
