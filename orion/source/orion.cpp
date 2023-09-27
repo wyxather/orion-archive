@@ -13,26 +13,26 @@ auto orion::EntryPoint::process(
     const auto crt_init_result =
         _CRT_INIT(module_handle, reason_for_call, reserved);
     if (crt_init_result == TRUE && reason_for_call == DLL_PROCESS_ATTACH) {
-        orion.handle = module_handle;
+        context.handle = module_handle;
         core::console.emplace();
-        orion.platform.emplace(std::nullopt, std::nullopt);
-        orion.renderer.emplace(Renderer::Enumerate::MANUAL);
-        orion.input.emplace(Input::Enumerate::MANUAL);
-        orion.platform->hook();
+        context.platform.emplace(std::nullopt, std::nullopt);
+        context.renderer.emplace(Renderer::Enumerate::MANUAL);
+        context.input.emplace(Input::Enumerate::MANUAL);
+        context.platform->hook();
     }
     return crt_init_result;
 }
 
 auto orion::Application::setup() noexcept -> void {
-    orion.config.emplace();
-    orion.gui.emplace();
-    orion.game.emplace();
+    context.config.emplace();
+    context.gui.emplace();
+    context.game.emplace();
     if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
         MH_Initialize();
     }
-    orion.game->hook();
-    orion.input->hook();
-    orion.renderer->hook();
+    context.game->hook();
+    context.input->hook();
+    context.renderer->hook();
     if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
         MH_EnableHook(MH_ALL_HOOKS);
     }
@@ -40,7 +40,7 @@ auto orion::Application::setup() noexcept -> void {
 
 [[noreturn]] static auto WINAPI unload(LPCVOID) noexcept -> void {
     IMPORT(Sleep)(500);
-    const auto orion_handle = orion::orion.get_handle();
+    const auto orion_handle = orion::context.get_handle();
     _CRT_INIT(orion_handle, DLL_PROCESS_DETACH, nullptr);
     IMPORT(FreeLibraryAndExitThread)(orion_handle, EXIT_SUCCESS);
 }
@@ -49,10 +49,10 @@ auto orion::Application::exit() noexcept -> void {
     if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
         MH_DisableHook(MH_ALL_HOOKS);
     }
-    orion.game->unhook();
-    orion.input->unhook();
-    orion.renderer->unhook();
-    orion.platform->unhook();
+    context.game->unhook();
+    context.input->unhook();
+    context.renderer->unhook();
+    context.platform->unhook();
     const auto thread_handle = IMPORT(CreateThread)(
         nullptr,
         0,
@@ -66,7 +66,7 @@ auto orion::Application::exit() noexcept -> void {
     }
 }
 
-orion::Orion::~Orion() noexcept {
+orion::Context::~Context() noexcept {
     if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
         MH_Uninitialize();
     }

@@ -190,7 +190,7 @@ auto orion::Gui::on_open() noexcept -> void {
 auto orion::Gui::init() noexcept -> void {
     Gui::position = (ImGui::GetIO().DisplaySize - Gui::size) * 0.5f;
 
-    switch (orion.get_renderer().get_type()) {
+    switch (context.get_renderer().get_type()) {
         case Renderer::Type::D3D11: {
             Gui::post_process = std::make_unique<PostProcess::BlurD3D11>();
             break;
@@ -407,7 +407,7 @@ namespace orion {
 
     struct Menu::Tab: Component {
         explicit Tab(std::uint32_t hash) noexcept {
-            if (const auto tab = orion.get_gui().get_tabs().find(hash);
+            if (const auto tab = context.get_gui().get_tabs().find(hash);
                 tab && tab->active) {
                 Component::Continue(true);
                 const auto& alpha = ImGui::GetStyle().Alpha;
@@ -452,7 +452,7 @@ namespace orion {
         ~Widget() noexcept {
             if (Component::Continue()) {
                 ImGui::EndTable();
-                orion.get_gui().get_last_active_group()->widget_count =
+                context.get_gui().get_last_active_group()->widget_count =
                     m_count;
             }
         }
@@ -471,7 +471,7 @@ namespace orion {
             constexpr auto textPositionVerticalOffset = 2.f;
 
             const Gui::PushFont font {
-                orion.get_gui().get_fonts().factory,
+                context.get_gui().get_fonts().factory,
                 (fontHeight / 15.f)
             };
             float ratio = 0;
@@ -605,7 +605,7 @@ namespace orion {
             constexpr auto framePadding {4.00f};
 
             const Gui::PushFont font {
-                orion.get_gui().get_fonts().factory,
+                context.get_gui().get_fonts().factory,
                 (fontHeight / 15.f)
             };
 
@@ -686,7 +686,7 @@ namespace orion {
             static float popupAlpha;
 
             const Gui::PushFont font {
-                orion.get_gui().get_fonts().factory,
+                context.get_gui().get_fonts().factory,
                 (fontHeight / 15.f)
             };
 
@@ -804,7 +804,7 @@ namespace orion {
             constexpr auto textPositionVerticalOffset {1.00f};
 
             const Gui::PushFont font {
-                orion.get_gui().get_fonts().factory,
+                context.get_gui().get_fonts().factory,
                 fontHeight / 15.f
             };
             const auto& style = ImGui::GetStyle();
@@ -843,7 +843,7 @@ namespace orion {
 
                 {
                     const Gui::PushFont font {
-                        orion.get_gui().get_fonts().factory,
+                        context.get_gui().get_fonts().factory,
                         (fontHeight - 1) / 15.f
                     };
                     const StyleColor styleColor2[] = {
@@ -961,9 +961,9 @@ auto orion::Gui::builder() noexcept -> void {
             head.save();
             if (Menu::Tab tab {utils::Fnv1a<"Configs">::value}) {
                 if (head.combo<"Name\0Date Modified\0">(
-                        orion.get_config().get_sort()
+                        context.get_config().get_sort()
                     ))
-                    orion.get_config().update();
+                    context.get_config().update();
                 head.create();
             }
         }
@@ -983,33 +983,33 @@ auto orion::Gui::builder() noexcept -> void {
                         if (Menu::Body::Content::Main::Panel::Table::Widget
                                 widget {}) {
                             widget.Toggle<"Unlimited Blade">(
-                                orion.get_config().get_data().hitbox[0],
-                                orion.get_config().get_data().color,
+                                context.get_config().get_data().hitbox[0],
+                                context.get_config().get_data().color,
                                 m_colorReference,
                                 &m_popupAlpha
                             );
                             widget.Toggle<"Unlimited Works">(
-                                orion.get_config().get_data().hitbox[1]
+                                context.get_config().get_data().hitbox[1]
                             );
                             widget.Combo<
                                 "Hitbox",
                                 "Head\0Neck\0Body\0Legs\0Arms\0">(
-                                orion.get_config().get_data().target
+                                context.get_config().get_data().target
                             );
                             widget.Combo<
                                 "Hitbox2",
                                 "Head\0Neck\0Body\0Legs\0Arms\0">(
-                                orion.get_config().get_data().target
+                                context.get_config().get_data().target
                             );
                             widget.MultiCombo<
                                 "Hitbox",
                                 "Head\0Neck\0Body\0Legs\0">(
-                                orion.get_config().get_data().hitbox
+                                context.get_config().get_data().hitbox
                             );
                             widget.MultiCombo<
                                 "Hitbox2",
                                 "Head\0Neck\0Body\0Legs\0">(
-                                orion.get_config().get_data().hitbox
+                                context.get_config().get_data().hitbox
                             );
                         }
                     }
@@ -1018,13 +1018,13 @@ auto orion::Gui::builder() noexcept -> void {
                         if (Menu::Body::Content::Main::Panel::Table::Widget
                                 widget {}) {
                             widget.Toggle<"Unlimited Blade">(
-                                orion.get_config().get_data().hitbox[0],
-                                orion.get_config().get_data().color,
+                                context.get_config().get_data().hitbox[0],
+                                context.get_config().get_data().color,
                                 m_colorReference,
                                 &m_popupAlpha
                             );
                             widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(
-                                orion.get_config().get_data().color[0]
+                                context.get_config().get_data().color[0]
                             );
                         }
                     }

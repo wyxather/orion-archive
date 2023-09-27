@@ -40,9 +40,9 @@ namespace orion {
         static auto exit() noexcept -> void;
     };
 
-    class Orion final {
-        NON_COPYABLE(Orion)
-        NON_MOVEABLE(Orion)
+    class Context final {
+        NON_COPYABLE(Context)
+        NON_MOVEABLE(Context)
 
         friend EntryPoint;
         friend Application;
@@ -56,9 +56,9 @@ namespace orion {
         std::optional<Game> game;
 
     public:
-        constexpr explicit Orion() noexcept = default;
+        constexpr explicit Context() noexcept = default;
 
-        ~Orion() noexcept;
+        ~Context() noexcept;
 
         _NODISCARD constexpr auto get_handle() const noexcept {
             return handle;
@@ -89,6 +89,6 @@ namespace orion {
         }
     };
 
-    inline Orion orion;
+    inline Context context;
 
 }  // namespace orion
