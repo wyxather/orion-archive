@@ -17,7 +17,7 @@ namespace orion {
             const LPVOID reserved
         ) -> BOOL;
 
-        _NODISCARD static auto process(
+        NODISCARD static auto process(
             const HMODULE module_handle,
             const DWORD reason_for_call,
             const LPVOID reserved

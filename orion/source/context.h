@@ -29,35 +29,35 @@ namespace orion {
     public:
         constexpr explicit Context() noexcept = default;
 
-        _NODISCARD constexpr auto get_handle() const noexcept {
+        NODISCARD constexpr auto get_handle() const noexcept {
             return handle;
         }
 
-        _NODISCARD constexpr auto get_console() const noexcept -> const auto& {
+        NODISCARD constexpr auto get_console() const noexcept -> const auto& {
             return console.value();
         }
 
-        _NODISCARD constexpr auto get_platform() const noexcept -> const auto& {
+        NODISCARD constexpr auto get_platform() const noexcept -> const auto& {
             return platform.value();
         }
 
-        _NODISCARD constexpr auto get_renderer() const noexcept -> const auto& {
+        NODISCARD constexpr auto get_renderer() const noexcept -> const auto& {
             return renderer.value();
         }
 
-        _NODISCARD constexpr auto get_input() const noexcept -> const auto& {
+        NODISCARD constexpr auto get_input() const noexcept -> const auto& {
             return input.value();
         }
 
-        _NODISCARD constexpr auto get_config() noexcept -> auto& {
+        NODISCARD constexpr auto get_config() noexcept -> auto& {
             return config.value();
         }
 
-        _NODISCARD constexpr auto get_gui() noexcept -> auto& {
+        NODISCARD constexpr auto get_gui() noexcept -> auto& {
             return gui.value();
         }
 
-        _NODISCARD constexpr auto get_game() noexcept -> auto& {
+        NODISCARD constexpr auto get_game() noexcept -> auto& {
             return game.value();
         }
     };
