@@ -75,15 +75,6 @@ auto orion::Platform::new_frame() const noexcept -> void {
     return ImGui_ImplWin32_NewFrame();
 }
 
-namespace orion::Window {
-    auto CALLBACK procedure(
-        HWND handle,
-        UINT message,
-        WPARAM w_param,
-        LPARAM l_param
-    ) noexcept -> LRESULT;
-}
-
 auto orion::Platform::hook() noexcept -> void {
     if (Platform::enumerator.handle == nullptr)
         return;
@@ -95,7 +86,7 @@ auto orion::Platform::hook() noexcept -> void {
         reinterpret_cast<decltype(Platform::original)>(IMPORT(SetWindowLongPtr)(
             Platform::enumerator.handle,
             GWLP_WNDPROC,
-            reinterpret_cast<LPARAM>(&Window::procedure)
+            reinterpret_cast<LPARAM>(&core::platform::Window::procedure)
         ));
 }
 
@@ -108,7 +99,7 @@ auto orion::Platform::unhook() const noexcept -> void {
 IMGUI_IMPL_API
 LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
-auto CALLBACK orion::Platform::Window::procedure(
+auto CALLBACK orion::core::platform::Window::procedure(
     const HWND window_handle,
     const UINT message,
     const WPARAM w_param,

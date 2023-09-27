@@ -1,6 +1,7 @@
 #pragma once
 
 namespace orion {
+
     class Platform final {
         class Enumerator final {
             struct Data final {
@@ -77,6 +78,9 @@ namespace orion {
         auto unhook() const noexcept -> void;
 
         auto new_frame() const noexcept -> void;
+    };
+
+    namespace core::platform {
 
         class Window final {
             NON_CONSTRUCTIBLE(Window)
@@ -90,5 +94,7 @@ namespace orion {
                 const LPARAM l_param
             ) noexcept -> LRESULT;
         };
-    };
+
+    }  // namespace core::platform
+
 }  // namespace orion
