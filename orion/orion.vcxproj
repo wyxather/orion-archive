@@ -56,6 +56,7 @@
     <ClInclude Include="source\hooks\minhook.h" />
     <ClInclude Include="source\entry_point.h" />
     <ClInclude Include="source\context.h" />
+    <ClInclude Include="source\modules\kernel32.h" />
     <ClInclude Include="source\modules\modules.h" />
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\resources\fonts\fontawesome.h" />
@@ -124,6 +125,7 @@
     <ClCompile Include="source\core\input.cpp" />
     <ClCompile Include="source\core\platform.cpp" />
     <ClCompile Include="source\core\renderer.cpp" />
+    <ClCompile Include="source\modules\kernel32.cpp" />
     <ClCompile Include="source\pch-c.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>

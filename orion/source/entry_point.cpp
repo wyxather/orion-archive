@@ -13,6 +13,7 @@ auto orion::EntryPoint::process(
         _CRT_INIT(module_handle, reason_for_call, reserved);
     if (crt_init_result == TRUE && reason_for_call == DLL_PROCESS_ATTACH) {
         context.handle = module_handle;
+        context.kernel32.emplace();
         context.console.emplace();
         context.platform.emplace(std::nullopt, std::nullopt);
         context.renderer.emplace(Renderer::Enumerate::MANUAL);
