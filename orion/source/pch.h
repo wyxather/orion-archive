@@ -37,5 +37,6 @@
     #include "source/utilities/fnv1a.h"
     #include "source/utilities/imgui.hpp"
     #include "source/utilities/string.hpp"
+    #include "source/utilities/virtual_method.h"
 
 #endif  // __cplusplus
