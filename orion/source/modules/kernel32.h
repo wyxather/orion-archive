@@ -7,7 +7,7 @@ namespace orion::modules {
         NON_COPYABLE(Kernel32)
         NON_MOVEABLE(Kernel32)
 
-        explicit Kernel32() noexcept;
+        explicit Kernel32(void* const module_address) noexcept;
 
         ~Kernel32() noexcept;
 

@@ -1,15 +1,15 @@
 #include "kernel32.h"
 
+#include "source/modules/modules.h"
+
 using orion::modules::Kernel32;
 
-Kernel32::Kernel32() noexcept {
-    const auto kernel32 = LI_MOD("kernel32.dll")::get();
-    close_handle = LI_FUNC(CloseHandle)::in(kernel32);
-    create_thread = LI_FUNC(CreateThread)::in(kernel32);
+Kernel32::Kernel32(void* const module_address) noexcept {
+    close_handle = LI_FUNC(CloseHandle)::in(module_address);
+    create_thread = LI_FUNC(CreateThread)::in(module_address);
     free_library_and_exit_thread =
-        LI_FUNC(FreeLibraryAndExitThread)::in(kernel32);
-
-    sleep = LI_FUNC(Sleep)::in(kernel32);
+        LI_FUNC(FreeLibraryAndExitThread)::in(module_address);
+    sleep = LI_FUNC(Sleep)::in(module_address);
 }
 
 Kernel32::~Kernel32() noexcept {

@@ -7,7 +7,7 @@ namespace orion::modules {
         NON_COPYABLE(User32)
         NON_MOVEABLE(User32)
 
-        explicit User32() noexcept;
+        explicit User32(void* const module_address) noexcept;
 
         ~User32() noexcept;
 
