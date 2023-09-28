@@ -1,6 +1,7 @@
 #pragma once
 
 namespace orion::utilities::Math {
+
     namespace Easing {
         [[nodiscard]] constexpr auto in_out_quart(const float ratio) noexcept {
             return ratio < 0.5f
@@ -36,4 +37,5 @@ namespace orion::utilities::Math {
     [[nodiscard]] constexpr auto rad_to_deg(const T radians) noexcept {
         return radians * (static_cast<T>(180) / std::numbers::pi_v<T>);
     }
-}  // namespace orion::utils::Math
+
+}  // namespace orion::utilities::Math

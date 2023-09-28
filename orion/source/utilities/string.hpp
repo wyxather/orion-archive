@@ -1,7 +1,9 @@
 #pragma once
 
 #pragma push_macro("JM_XORSTR_DISABLE_AVX_INTRINSICS")
-#define JM_XORSTR_DISABLE_AVX_INTRINSICS
+#ifndef JM_XORSTR_DISABLE_AVX_INTRINSICS
+    #define JM_XORSTR_DISABLE_AVX_INTRINSICS
+#endif
 #include "dependencies/xorstr.hpp"
 #pragma pop_macro("JM_XORSTR_DISABLE_AVX_INTRINSICS")
 
