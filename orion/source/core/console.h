@@ -7,57 +7,17 @@ namespace orion::core {
         NON_COPYABLE(Console)
         NON_MOVEABLE(Console)
 
-        enum class Color {
-            BLACK,
-            BLUE,
-            GREEN,
-            CYAN,
-            RED,
-            MAGENTA,
-            BROWN,
-            LIGHTGRAY,
-            DARKGRAY,
-            LIGHTBLUE,
-            LIGHTGREEN,
-            LIGHTCYAN,
-            LIGHTRED,
-            LIGHTMAGENTA,
-            YELLOW,
-            WHITE
-        };
-
         explicit Console() noexcept;
 
         ~Console() noexcept;
 
-    private:
-        auto update_time() noexcept -> void;
+        auto set_text_output_color(const WORD color) const noexcept -> void;
 
+    private:
         static auto WINAPI ctrl_handler(const DWORD ctrl_type) noexcept -> BOOL;
 
         FILE* stream = nullptr;
         HANDLE std_output_handle = nullptr;
-        tm time = {};
-
-    public:
-        auto set_text_output_color(const WORD color) const noexcept -> void;
-
-        template<
-            stb::fixed_string _Format,
-            Color _Color = Color::LIGHTGREEN,
-            typename... _Args>
-        constexpr auto log(_Args&&... _Arg) noexcept -> void {
-            set_text_output_color(static_cast<WORD>(_Color));
-            Console::update_time();
-            std::printf(
-                utils::String<"[%2d:%2d:%2d] ">(),
-                Console::time.tm_hour,
-                Console::time.tm_min,
-                Console::time.tm_sec
-            );
-            std::printf(utils::String<_Format>(), std::forward<_Args>(_Arg)...);
-            std::puts(utils::String<"">());
-        }
     };
 
 }  // namespace orion::core

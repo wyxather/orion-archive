@@ -1,5 +1,3 @@
-#include "console.h"
-
 #include "source/orion.h"
 
 using orion::core::Console;
@@ -31,10 +29,8 @@ Console::~Console() noexcept {
     stream = nullptr;
 }
 
-auto Console::update_time() noexcept -> void {
-    using std::chrono::system_clock;
-    const auto time_t = system_clock::to_time_t(system_clock::now());
-    localtime_s(&time, &time_t);
+auto Console::set_text_output_color(const WORD color) const noexcept -> void {
+    orion.get_kernel32().set_console_text_attribute(std_output_handle, color);
 }
 
 auto WINAPI Console::ctrl_handler(const DWORD ctrl_type) noexcept -> BOOL {
@@ -45,8 +41,4 @@ auto WINAPI Console::ctrl_handler(const DWORD ctrl_type) noexcept -> BOOL {
         default:
             return FALSE;
     }
-}
-
-auto Console::set_text_output_color(const WORD color) const noexcept -> void {
-    orion.get_kernel32().set_console_text_attribute(std_output_handle, color);
 }
