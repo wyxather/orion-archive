@@ -63,7 +63,7 @@
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\resources\fonts\fontawesome.h" />
     <ClInclude Include="source\resources\fonts\museosanscyrl.h" />
-    <ClInclude Include="source\sdk\class\class.h" />
+    <ClInclude Include="source\sdk\class\virtual_method.h" />
     <ClInclude Include="source\sdk\struct\matrix3x4.h" />
     <ClInclude Include="source\sdk\struct\matrix4x4.h" />
     <ClInclude Include="source\sdk\struct\vector3.h" />
