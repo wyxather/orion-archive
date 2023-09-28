@@ -8,6 +8,8 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+using orion::core::Input;
+
 namespace orion::DINPUT8 {
     auto CALLBACK get_device_state(
         const LPDIRECTINPUTDEVICE8 device,
@@ -116,37 +118,39 @@ namespace orion::DINPUT8 {
     }
 }  // namespace orion::DINPUT8
 
-orion::Input::Input(const Type type) noexcept {
+Input::Input(const Type type) noexcept {
     if (Type::DINPUT8 == type) {
-        if (Input::handle =
+        if (handle =
                 IMPORT(GetModuleHandleA)(utilities::String<"dinput8.dll">());
-            Input::handle != nullptr)
-            Input::type.emplace(type);
+            handle != nullptr)
+            this->type.emplace(type);
     }
 }
 
-orion::Input::Input(const Enumerate enumerate) noexcept {
+Input::Input(const Enumerate enumerate) noexcept {
     switch (enumerate) {
         case Enumerate::AUTO: {
-            if (Input::handle =
-                    IMPORT(GetModuleHandleA)(utilities::String<"dinput8.dll">());
-                Input::handle != nullptr) {
-                Input::type.emplace(Input::Type::DINPUT8);
+            if (handle =
+                    IMPORT(GetModuleHandleA)(utilities::String<"dinput8.dll">()
+                    );
+                handle != nullptr) {
+                type.emplace(Type::DINPUT8);
                 break;
             }
             break;
         }
         case Enumerate::MANUAL: {
             if (Input::handle =
-                    IMPORT(GetModuleHandleA)(utilities::String<"dinput8.dll">());
-                Input::handle != nullptr
+                    IMPORT(GetModuleHandleA)(utilities::String<"dinput8.dll">()
+                    );
+                handle != nullptr
                 && IMPORT(MessageBoxA)(
                        nullptr,
                        utilities::String<"DINPUT8">(),
                        utilities::String<"Input">(),
                        MB_YESNO | MB_ICONINFORMATION
                    ) == IDYES) {
-                Input::type.emplace(Input::Type::DINPUT8);
+                type.emplace(Type::DINPUT8);
                 break;
             }
             break;
@@ -154,11 +158,11 @@ orion::Input::Input(const Enumerate enumerate) noexcept {
     }
 }
 
-auto orion::Input::hook() noexcept -> void {
-    if (!Input::type.has_value())
+auto Input::hook() noexcept -> void {
+    if (!type.has_value())
         return;
 
-    if (Type::DINPUT8 == Input::type.value()) {
+    if (Type::DINPUT8 == type.value()) {
         const auto direct_input_8_create =
             (HRESULT(WINAPI*)(HMODULE, DWORD, const IID&, LPDIRECTINPUT8*, LPUNKNOWN))(
                 IMPORT(GetProcAddress)(
@@ -189,8 +193,8 @@ auto orion::Input::hook() noexcept -> void {
             != DI_OK)
             return;
 
-        Input::hooks.emplace((void**)(direct_input_8_device.Get()));
-        Input::hooks->hook_at(9, &DINPUT8::get_device_state);
-        Input::hooks->hook_at(10, &DINPUT8::get_device_data);
+        hooks.emplace((void**)(direct_input_8_device.Get()));
+        hooks->hook_at(9, &DINPUT8::get_device_state);
+        hooks->hook_at(10, &DINPUT8::get_device_data);
     }
 }

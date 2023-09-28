@@ -4,6 +4,7 @@
 #include "source/orion.h"
 
 using orion::EntryPoint;
+using orion::core::Input;
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 

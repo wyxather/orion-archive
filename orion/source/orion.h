@@ -25,7 +25,7 @@ namespace orion {
         std::optional<const core::Console> console;
         std::optional<core::Platform> platform;
         std::optional<Renderer> renderer;
-        std::optional<Input> input;
+        std::optional<core::Input> input;
         std::optional<Config> config;
         std::optional<Gui> gui;
         std::optional<Game> game;
