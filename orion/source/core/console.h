@@ -33,6 +33,8 @@ namespace orion::core {
     private:
         auto update_time() noexcept -> void;
 
+        static auto WINAPI ctrl_handler(const DWORD ctrl_type) noexcept -> BOOL;
+
         FILE* stream = nullptr;
         HANDLE std_output_handle = nullptr;
         tm time = {};

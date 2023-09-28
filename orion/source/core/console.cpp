@@ -18,6 +18,7 @@ Console::Console() noexcept {
         utils::String<"w">(),
         stdout
     );
+    kernel32.set_console_ctrl_handler(ctrl_handler, TRUE);
     std_output_handle = kernel32.get_std_handle(STD_OUTPUT_HANDLE);
 }
 
@@ -32,6 +33,16 @@ auto Console::update_time() noexcept -> void {
     using std::chrono::system_clock;
     const auto time_t = system_clock::to_time_t(system_clock::now());
     localtime_s(&time, &time_t);
+}
+
+auto WINAPI Console::ctrl_handler(const DWORD ctrl_type) noexcept -> BOOL {
+    switch (ctrl_type) {
+        case CTRL_C_EVENT:
+        case CTRL_BREAK_EVENT:
+            return TRUE;
+        default:
+            return FALSE;
+    }
 }
 
 auto Console::set_color(Color color) const noexcept -> void {

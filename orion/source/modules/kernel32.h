@@ -19,6 +19,7 @@ namespace orion::modules {
             nullptr;
         decltype(&GetConsoleWindow) get_console_window = nullptr;
         decltype(&GetStdHandle) get_std_handle = nullptr;
+        decltype(&SetConsoleCtrlHandler) set_console_ctrl_handler = nullptr;
         decltype(&SetConsoleTextAttribute) set_console_text_attribute = nullptr;
         decltype(&Sleep) sleep = nullptr;
     };
