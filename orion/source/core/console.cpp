@@ -1,8 +1,10 @@
 #include "console.h"
-#ifndef NDEBUG
-    #include "source/orion.h"
 
-orion::core::Console::Console() noexcept {
+#include "source/orion.h"
+
+using orion::core::Console;
+
+Console::Console() noexcept {
     if (!Console::allocator)
         return;
 
@@ -25,14 +27,13 @@ orion::core::Console::Console() noexcept {
     Console::output.emplace();
 }
 
-auto orion::core::Console::Enumerator::match(const HWND handle) noexcept
-    -> bool {
+auto Console::Enumerator::match(const HWND handle) noexcept -> bool {
     DWORD id {};
     IMPORT(GetWindowThreadProcessId)(handle, &id);
     return id == IMPORT(GetCurrentProcessId)();
 }
 
-auto CALLBACK orion::core::Console::Enumerator::enumerate(
+auto CALLBACK Console::Enumerator::enumerate(
     const HWND handle,
     Enumerator& enumerator
 ) noexcept -> BOOL {
@@ -50,9 +51,8 @@ auto CALLBACK orion::core::Console::Enumerator::enumerate(
     return FALSE;
 }
 
-auto orion::core::Console::update_time() noexcept -> void {
+auto Console::update_time() noexcept -> void {
     using std::chrono::system_clock;
     const auto time_t = system_clock::to_time_t(system_clock::now());
     localtime_s(&time, &time_t);
 }
-#endif

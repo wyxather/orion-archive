@@ -1,8 +1,12 @@
 #pragma once
 
 namespace orion::core {
+
     class Console final {
     public:
+        NON_COPYABLE(Console)
+        NON_MOVEABLE(Console)
+
         enum class Color {
             BLACK,
             BLUE,
@@ -22,36 +26,22 @@ namespace orion::core {
             WHITE
         };
 
-#ifdef NDEBUG
-        constexpr Console() noexcept = default;
-#else
         Console() noexcept;
-#endif
 
-        Console(Console&&) = delete;
-        Console& operator=(Console&&) = delete;
-
-        Console(const Console&) = delete;
-        Console& operator=(const Console&) = delete;
-
-#ifndef NDEBUG
     private:
         class Allocator final {
             const BOOL status = IMPORT(AllocConsole)();
 
         public:
+            NON_COPYABLE(Allocator)
+            NON_MOVEABLE(Allocator)
+
             constexpr Allocator() noexcept = default;
 
             constexpr ~Allocator() noexcept {
                 if (*this)
                     IMPORT(FreeConsole)();
             }
-
-            Allocator(Allocator&&) = delete;
-            Allocator& operator=(Allocator&&) = delete;
-
-            Allocator(const Allocator&) = delete;
-            Allocator& operator=(const Allocator&) = delete;
 
             [[nodiscard]] constexpr explicit operator bool() const noexcept {
                 return Allocator::status != 0;
@@ -64,16 +54,13 @@ namespace orion::core {
             enumerate(HWND handle, Enumerator& enumerator) noexcept -> BOOL;
 
         public:
+            NON_COPYABLE(Enumerator)
+            NON_MOVEABLE(Enumerator)
+
             Enumerator() noexcept {
                 IMPORT(EnumWindows)
                 (WNDENUMPROC(&Console::Enumerator::enumerate), LPARAM(this));
             }
-
-            Enumerator(Enumerator&&) = delete;
-            Enumerator& operator=(Enumerator&&) = delete;
-
-            Enumerator(const Enumerator&) = delete;
-            Enumerator& operator=(const Enumerator&) = delete;
 
             [[nodiscard]] constexpr explicit operator bool() const noexcept {
                 return Enumerator::handle != nullptr;
@@ -83,6 +70,9 @@ namespace orion::core {
         };
 
         struct Stream final {
+            NON_COPYABLE(Stream)
+            NON_MOVEABLE(Stream)
+
             Stream() noexcept {
                 freopen_s(
                     &stream,
@@ -97,12 +87,6 @@ namespace orion::core {
                     std::fclose(Stream::stream);
             }
 
-            Stream(Stream&&) = delete;
-            Stream& operator=(Stream&&) = delete;
-
-            Stream(const Stream&) = delete;
-            Stream& operator=(const Stream&) = delete;
-
             [[nodiscard]] constexpr explicit operator bool() const noexcept {
                 return Stream::stream != nullptr;
             }
@@ -115,13 +99,10 @@ namespace orion::core {
             const HANDLE output = IMPORT(GetStdHandle)(STD_OUTPUT_HANDLE);
 
         public:
+            NON_COPYABLE(Output)
+            NON_MOVEABLE(Output)
+
             constexpr Output() noexcept = default;
-
-            Output(Output&&) = delete;
-            Output& operator=(Output&&) = delete;
-
-            Output(const Output&) = delete;
-            Output& operator=(const Output&) = delete;
 
             constexpr auto set_color(Color color) const noexcept -> void {
                 IMPORT(SetConsoleTextAttribute)
@@ -136,14 +117,13 @@ namespace orion::core {
         std::optional<const Stream> stream;
         std::optional<const Output> output;
         tm time = {};
-#endif
+
     public:
         template<
             stb::fixed_string _Format,
             Color _Color = Color::LIGHTGREEN,
             typename... _Args>
         constexpr auto log(_Args&&... _Arg) const noexcept -> void {
-#ifndef NDEBUG
             if (Console::output.has_value() == true) {
                 Console::output->set_color(_Color);
                 Console::update_time();
@@ -159,7 +139,6 @@ namespace orion::core {
                 );
                 std::puts(utils::String<"">());
             }
-#endif
         }
     };
 
