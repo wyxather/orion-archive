@@ -49,7 +49,6 @@ auto Platform::unhook() noexcept -> void {
         GWLP_WNDPROC,
         reinterpret_cast<LONG_PTR>(original_window_procedure)
     );
-    window_handle = nullptr;
 }
 
 auto Platform::imgui_new_frame() const noexcept -> void {
