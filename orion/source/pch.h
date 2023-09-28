@@ -14,9 +14,9 @@
     #pragma warning(pop)
 
     #include "modules/modules.h"
-    #include "utils/fnv1a.hpp"
-    #include "utils/imgui.hpp"
-    #include "utils/string.hpp"
+    #include "utilities/fnv1a.hpp"
+    #include "utilities/imgui.hpp"
+    #include "utilities/string.hpp"
 
 #endif  // __cplusplus
 

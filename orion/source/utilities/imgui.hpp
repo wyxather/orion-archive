@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef IMGUI_USER_CONFIG
-    #define IMGUI_USER_CONFIG "Utils/ImGui.hpp"
+    #define IMGUI_USER_CONFIG "source/utilities/imgui.hpp"
 #endif
 
 #ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS

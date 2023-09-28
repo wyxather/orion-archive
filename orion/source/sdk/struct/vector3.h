@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils/Math.hpp"
+#include "utilities/math.hpp"
 
 namespace orion {
     struct Matrix3x4;

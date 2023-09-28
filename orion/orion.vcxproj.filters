@@ -120,16 +120,16 @@
     <ClInclude Include="source\sdk\class\Class.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utils\Fnv1a.hpp">
+    <ClInclude Include="source\utilities\fnv1a.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utils\HashMap.hpp">
+    <ClInclude Include="source\utilities\hashmap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utils\Math.hpp">
+    <ClInclude Include="source\utilities\math.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utils\String.hpp">
+    <ClInclude Include="source\utilities\string.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Framework.h">
@@ -138,7 +138,7 @@
     <ClInclude Include="source\orion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utils\ImGui.hpp">
+    <ClInclude Include="source\utilities\imgui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\pch.h">

@@ -67,11 +67,11 @@
     <ClInclude Include="source\sdk\struct\matrix3x4.h" />
     <ClInclude Include="source\sdk\struct\matrix4x4.h" />
     <ClInclude Include="source\sdk\struct\vector3.h" />
-    <ClInclude Include="source\utils\fnv1a.hpp" />
-    <ClInclude Include="source\utils\hashmap.hpp" />
-    <ClInclude Include="source\utils\imgui.hpp" />
-    <ClInclude Include="source\utils\math.hpp" />
-    <ClInclude Include="source\utils\string.hpp" />
+    <ClInclude Include="source\utilities\fnv1a.hpp" />
+    <ClInclude Include="source\utilities\hashmap.hpp" />
+    <ClInclude Include="source\utilities\imgui.hpp" />
+    <ClInclude Include="source\utilities\math.hpp" />
+    <ClInclude Include="source\utilities\string.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\imgui\imgui.cpp" />

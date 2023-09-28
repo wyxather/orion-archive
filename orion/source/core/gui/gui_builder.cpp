@@ -3,7 +3,7 @@
 #include "dependencies/imgui/imgui_custom.h"
 #include "source/orion.h"
 #include "source/resources/fonts/fontawesome.h"
-#include "source/utils/math.hpp"
+#include "source/utilities/math.hpp"
 
 orion::GuiBuilder::Font::Font(ImFont& font) noexcept :
     font(font),

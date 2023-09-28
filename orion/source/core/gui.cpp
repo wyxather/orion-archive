@@ -5,7 +5,7 @@
 #include "source/orion.h"
 #include "source/resources/fonts/fontawesome.h"
 #include "source/resources/fonts/museosanscyrl.h"
-#include "source/utils/math.hpp"
+#include "source/utilities/math.hpp"
 
 orion::Gui::Gui() noexcept {
     Gui::setup_io();
