@@ -12,6 +12,8 @@ namespace orion::modules {
         ~User32() noexcept;
 
         decltype(&EnumWindows) enum_windows = nullptr;
+        decltype(&GetWindowLongPtr) get_window_long_ptr = nullptr;
+        decltype(&SetWindowLongPtr) set_window_long_ptr = nullptr;
     };
 
 }  // namespace orion::modules

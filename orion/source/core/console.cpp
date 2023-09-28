@@ -6,12 +6,14 @@ using orion::core::Console;
 
 Console::Console() noexcept {
     const auto& kernel32 = orion.get_kernel32();
+    const auto& user32 = orion.get_user32();
     kernel32.alloc_console();
     const auto window = kernel32.get_console_window();
-    if (const auto style = IMPORT(GetWindowLongPtr)(window, GWL_STYLE);
-        style != 0)
-        IMPORT(SetWindowLongPtr)
-    (window, GWL_STYLE, style & ~WS_SYSMENU);
+    user32.set_window_long_ptr(
+        window,
+        GWL_STYLE,
+        user32.get_window_long_ptr(window, GWL_STYLE) & ~WS_SYSMENU
+    );
     freopen_s(
         &stream,
         utils::String<"CONOUT$">(),
