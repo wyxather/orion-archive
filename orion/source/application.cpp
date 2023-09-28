@@ -41,7 +41,8 @@ auto orion::Application::exit() noexcept -> void {
     context.input->unhook();
     context.renderer->unhook();
     context.platform->unhook();
-    const auto thread_handle = IMPORT(CreateThread)(
+    const auto& kernel32 = context.get_kernel32();
+    const auto thread_handle = kernel32.create_thread(
         nullptr,
         0,
         reinterpret_cast<LPTHREAD_START_ROUTINE>(unload),
@@ -50,6 +51,6 @@ auto orion::Application::exit() noexcept -> void {
         nullptr
     );
     if (thread_handle) {
-        IMPORT(CloseHandle)(thread_handle);
+        kernel32.close_handle(thread_handle);
     }
 }
