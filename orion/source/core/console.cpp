@@ -5,9 +5,8 @@
 using orion::core::Console;
 
 Console::Console() noexcept {
-    if (!Console::allocator)
-        return;
     const auto& kernel32 = orion.get_kernel32();
+    kernel32.alloc_console();
     const auto window = kernel32.get_console_window();
     if (const auto style = IMPORT(GetWindowLongPtr)(window, GWL_STYLE);
         style != 0)
@@ -24,6 +23,7 @@ Console::Console() noexcept {
 
 Console::~Console() noexcept {
     std::fclose(stream);
+    orion.get_kernel32().free_console();
     std_output_handle = nullptr;
     stream = nullptr;
 }

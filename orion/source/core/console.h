@@ -31,28 +31,8 @@ namespace orion::core {
         ~Console() noexcept;
 
     private:
-        class Allocator final {
-            const BOOL status = IMPORT(AllocConsole)();
-
-        public:
-            NON_COPYABLE(Allocator)
-            NON_MOVEABLE(Allocator)
-
-            constexpr Allocator() noexcept = default;
-
-            constexpr ~Allocator() noexcept {
-                if (*this)
-                    IMPORT(FreeConsole)();
-            }
-
-            [[nodiscard]] constexpr explicit operator bool() const noexcept {
-                return Allocator::status != 0;
-            }
-        };
-
         auto update_time() noexcept -> void;
 
-        const Allocator allocator;
         FILE* stream = nullptr;
         HANDLE std_output_handle = nullptr;
         tm time = {};
