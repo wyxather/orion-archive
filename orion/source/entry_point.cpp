@@ -2,9 +2,11 @@
 
 #include "source/context.h"
 
+using orion::EntryPoint;
+
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
-auto orion::EntryPoint::process(
+auto EntryPoint::process(
     const HMODULE module_handle,
     const DWORD reason_for_call,
     const LPVOID reserved
