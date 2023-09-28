@@ -1,12 +1,5 @@
 #pragma once
 
-#define INCONSTRUCTIBLE(c) \
-    c() = delete; \
-    c(c&&) = delete; \
-    c(const c&) = delete; \
-    c& operator=(c&&) = delete; \
-    c& operator=(const c&) = delete;
-
 #define DEFINE_VIRTUAL_METHOD(index, name, conv, type, params, args) \
     [[nodiscard]] constexpr auto name params const noexcept -> type { \
         return VirtualMethod::call< \
