@@ -26,7 +26,9 @@ namespace orion::core {
             WHITE
         };
 
-        Console() noexcept;
+        explicit Console() noexcept;
+
+        ~Console() noexcept;
 
     private:
         class Allocator final {
@@ -69,37 +71,11 @@ namespace orion::core {
             HWND handle = nullptr;
         };
 
-        struct Stream final {
-            NON_COPYABLE(Stream)
-            NON_MOVEABLE(Stream)
-
-            Stream() noexcept {
-                freopen_s(
-                    &stream,
-                    utils::String<"CONOUT$">(),
-                    utils::String<"w">(),
-                    stdout
-                );
-            }
-
-            constexpr ~Stream() noexcept {
-                if (*this)
-                    std::fclose(Stream::stream);
-            }
-
-            [[nodiscard]] constexpr explicit operator bool() const noexcept {
-                return Stream::stream != nullptr;
-            }
-
-        private:
-            FILE* stream = nullptr;
-        };
-
         auto update_time() noexcept -> void;
 
         const Allocator allocator;
         std::optional<const Enumerator> enumerator;
-        std::optional<const Stream> stream;
+        FILE* stream = nullptr;
         HANDLE std_output_handle = nullptr;
         tm time = {};
 

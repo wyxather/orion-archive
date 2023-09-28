@@ -19,13 +19,20 @@ Console::Console() noexcept {
         IMPORT(SetWindowLongPtr)
     (Console::enumerator->handle, GWL_STYLE, style & ~WS_SYSMENU);
 
-    Console::stream.emplace();
-
-    if (!(*Console::stream))
-        return;
-
+    freopen_s(
+        &stream,
+        utils::String<"CONOUT$">(),
+        utils::String<"w">(),
+        stdout
+    );
     const auto& kernel32 = orion.get_kernel32();
     std_output_handle = kernel32.get_std_handle(STD_OUTPUT_HANDLE);
+}
+
+Console::~Console() noexcept {
+    std::fclose(stream);
+    std_output_handle = nullptr;
+    stream = nullptr;
 }
 
 auto Console::Enumerator::match(const HWND handle) noexcept -> bool {
