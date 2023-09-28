@@ -15,6 +15,7 @@ namespace orion::modules {
         decltype(&CreateThread) create_thread = nullptr;
         decltype(&FreeLibraryAndExitThread) free_library_and_exit_thread =
             nullptr;
+        decltype(&GetStdHandle) get_std_handle = nullptr;
         decltype(&Sleep) sleep = nullptr;
     };
 

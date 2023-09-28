@@ -95,50 +95,35 @@ namespace orion::core {
             FILE* stream = nullptr;
         };
 
-        class Output final {
-            const HANDLE output = IMPORT(GetStdHandle)(STD_OUTPUT_HANDLE);
-
-        public:
-            NON_COPYABLE(Output)
-            NON_MOVEABLE(Output)
-
-            constexpr Output() noexcept = default;
-
-            constexpr auto set_color(Color color) const noexcept -> void {
-                IMPORT(SetConsoleTextAttribute)
-                    .cached()(Output::output, static_cast<WORD>(color));
-            }
-        };
-
         auto update_time() noexcept -> void;
 
         const Allocator allocator;
         std::optional<const Enumerator> enumerator;
         std::optional<const Stream> stream;
-        std::optional<const Output> output;
+        HANDLE std_output_handle = nullptr;
         tm time = {};
 
     public:
+        constexpr auto set_color(Color color) const noexcept -> void {
+            IMPORT(SetConsoleTextAttribute)
+                .cached()(std_output_handle, static_cast<WORD>(color));
+        }
+
         template<
             stb::fixed_string _Format,
             Color _Color = Color::LIGHTGREEN,
             typename... _Args>
         constexpr auto log(_Args&&... _Arg) const noexcept -> void {
-            if (Console::output.has_value() == true) {
-                Console::output->set_color(_Color);
-                Console::update_time();
-                std::printf(
-                    utils::String<"[%2d:%2d:%2d] ">(),
-                    Console::time.tm_hour,
-                    Console::time.tm_min,
-                    Console::time.tm_sec
-                );
-                std::printf(
-                    utils::String<_Format>(),
-                    std::forward<_Args>(_Arg)...
-                );
-                std::puts(utils::String<"">());
-            }
+            set_color(_Color);
+            Console::update_time();
+            std::printf(
+                utils::String<"[%2d:%2d:%2d] ">(),
+                Console::time.tm_hour,
+                Console::time.tm_min,
+                Console::time.tm_sec
+            );
+            std::printf(utils::String<_Format>(), std::forward<_Args>(_Arg)...);
+            std::puts(utils::String<"">());
         }
     };
 

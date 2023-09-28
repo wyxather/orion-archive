@@ -24,7 +24,8 @@ Console::Console() noexcept {
     if (!(*Console::stream))
         return;
 
-    Console::output.emplace();
+    const auto& kernel32 = orion.get_kernel32();
+    std_output_handle = kernel32.get_std_handle(STD_OUTPUT_HANDLE);
 }
 
 auto Console::Enumerator::match(const HWND handle) noexcept -> bool {
