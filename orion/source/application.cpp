@@ -22,7 +22,7 @@ EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
 [[noreturn]] static auto WINAPI unload(LPCVOID) noexcept -> void {
     const auto& kernel32 = orion::context.get_kernel32();
-    kernel32.sleep(500);
+    kernel32.sleep(100);
     if constexpr (std::is_same_v<orion::Hooks::Type, orion::Hooks::MinHook>) {
         MH_Uninitialize();
     }
