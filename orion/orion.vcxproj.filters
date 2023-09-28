@@ -117,19 +117,13 @@
     <ClInclude Include="source\sdk\struct\Matrix4x4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\sdk\class\Class.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\utilities\fnv1a.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\utilities\hashmap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\utilities\math.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utilities\string.hpp">
+    <ClInclude Include="source\utilities\string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Framework.h">
@@ -172,6 +166,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\core\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utilities\virtual_method.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utilities\fnv1a.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

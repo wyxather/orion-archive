@@ -71,7 +71,7 @@
     <ClInclude Include="source\utilities\hashmap.hpp" />
     <ClInclude Include="source\utilities\imgui.hpp" />
     <ClInclude Include="source\utilities\math.hpp" />
-    <ClInclude Include="source\utilities\string.hpp" />
+    <ClInclude Include="source\utilities\string.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\imgui\imgui.cpp" />
