@@ -32,14 +32,10 @@
     #include <numbers>
     #include <span>
 
-    #pragma warning(push)
-    #pragma warning(disable : 28020)
     #include "dependencies/stb.hh"
-    #pragma warning(pop)
-
-    #include "modules/modules.h"
-    #include "utilities/fnv1a.hpp"
-    #include "utilities/imgui.hpp"
-    #include "utilities/string.hpp"
+    #include "source/modules/modules.h"
+    #include "source/utilities/fnv1a.h"
+    #include "source/utilities/imgui.hpp"
+    #include "source/utilities/string.hpp"
 
 #endif  // __cplusplus
