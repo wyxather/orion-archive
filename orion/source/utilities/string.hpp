@@ -19,12 +19,14 @@ namespace orion::utils {
 
     template<stb::fixed_string str>
     class String final {
-        static inline auto data = xorarr(stb::consteval_value<str>::value);
-
     public:
         NON_COPYABLE(String)
         NON_MOVEABLE(String)
 
+    private:
+        static inline auto data = xorarr(stb::consteval_value<str>::value);
+
+    public:
         constexpr explicit String() noexcept {
             data.crypt();
         }
