@@ -82,15 +82,15 @@ namespace orion::GuiBuilder {
         template<stb::fixed_string _Str>
         constexpr auto button(const char* const icon) const noexcept {
             return Items::button(
-                utils::String<_Str>(),
+                utilities::String<_Str>(),
                 icon,
-                utils::Fnv1a<_Str>::value
+                utilities::Fnv1a<_Str>::value
             );
         }
 
         template<stb::fixed_string _Str>
         constexpr auto text() noexcept {
-            return Items::text(utils::String<_Str>());
+            return Items::text(utilities::String<_Str>());
         }
     };
 
@@ -138,7 +138,7 @@ namespace orion::GuiBuilder {
     public:
         template<stb::fixed_string _Str>
         [[nodiscard]] constexpr auto combo(int& value) const noexcept {
-            return Head::combo(utils::String<_Str>(), value);
+            return Head::combo(utilities::String<_Str>(), value);
         }
     };
 
@@ -237,8 +237,8 @@ namespace orion::GuiBuilder {
     struct Body::Content::Panel::Table::Group final {
         constexpr Group() noexcept {
             Table::begin_group(
-                utils::String<_Str>(),
-                utils::Fnv1a<_Str>::value,
+                utilities::String<_Str>(),
+                utilities::Fnv1a<_Str>::value,
                 _NextColumn
             );
         }

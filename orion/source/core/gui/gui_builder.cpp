@@ -29,7 +29,7 @@ orion::GuiBuilder::Header::Header() noexcept {
         ImVec2(0.0f, 2.0f)
     );
     ImGui::BeginChild(
-        utils::Fnv1a<"##Header">::value,
+        utilities::Fnv1a<"##Header">::value,
         ImVec2(191.0f, 0.0f),
         false,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -48,7 +48,7 @@ orion::GuiBuilder::Header::Nav::Nav() noexcept {
     const auto pos = ImGui::GetWindowPos() + ImGui::GetCursorPos();
     const auto size = ImGui::GetContentRegionAvail();
     ImGui::BeginChild(
-        utils::Fnv1a<"##Header::Nav">::value,
+        utilities::Fnv1a<"##Header::Nav">::value,
         size - ImVec2(0.0f, 62.0f),
         false,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -75,7 +75,7 @@ orion::GuiBuilder::Header::Nav::~Nav() noexcept {
 auto orion::GuiBuilder::Header::Nav::watermark() noexcept -> void {
     const auto& style = ImGui::GetStyle();
     ImGui::BeginChild(
-        utils::Fnv1a<"##Header::Nav::watermark">::value,
+        utilities::Fnv1a<"##Header::Nav::watermark">::value,
         ImVec2(0.0f, 62.0f),
         false,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -84,7 +84,7 @@ auto orion::GuiBuilder::Header::Nav::watermark() noexcept -> void {
             | ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollWithMouse
     );
     {
-        utils::String<"ORION"> label;
+        utilities::String<"ORION"> label;
         const Font font(*orion.get_gui().get_fonts().watermark);
         const auto content_region_avail = ImGui::GetContentRegionAvail();
         const auto text_size = ImGui::CalcTextSize(label.c_str());
@@ -129,7 +129,7 @@ auto orion::GuiBuilder::Header::Nav::profile() noexcept -> void {
         IM_COL32(20, 20, 19, static_cast<int>(230.0f * style.Alpha))
     );
     ImGui::BeginChild(
-        utils::Fnv1a<"##Header::Nav::profile">::value,
+        utilities::Fnv1a<"##Header::Nav::profile">::value,
         ImVec2(0.0f, 0.0f),
         false,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -163,8 +163,8 @@ auto orion::GuiBuilder::Header::Nav::profile() noexcept -> void {
         );
     }
     {
-        utils::String<"Wyxather"> author;
-        utils::String<"Build:" __DATE__> build;
+        utilities::String<"Wyxather"> author;
+        utilities::String<"Build:" __DATE__> build;
         const Font font(*orion.get_gui().get_fonts().factory);
         const ImVec2 text_pos(profile_picture_pos.x + 29.0f, pos.y + 32.0f);
         draw_list.AddText(
@@ -201,7 +201,7 @@ orion::GuiBuilder::Header::Nav::Items::Items() noexcept {
         ImVec2(10.0f, 8.0f)
     );
     ImGui::BeginChild(
-        utils::Fnv1a<"##Header::Nav::Items">::value,
+        utilities::Fnv1a<"##Header::Nav::Items">::value,
         ImVec2(0.0f, 0.0f),
         true,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -245,9 +245,9 @@ auto orion::GuiBuilder::Header::Nav::Items::button(
             );
     }
     current_tab.alpha_animated =
-        style.Alpha * utils::Math::Easing::out_expo(current_tab.alpha);
+        style.Alpha * utilities::Math::Easing::out_expo(current_tab.alpha);
     const auto button_alpha =
-        style.Alpha * utils::Math::Easing::in_out_expo(current_tab.alpha);
+        style.Alpha * utilities::Math::Easing::in_out_expo(current_tab.alpha);
     ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 5.0f);
     ImGui::PushStyleVar(
         ImGuiStyleVar_::ImGuiStyleVar_ButtonTextAlign,
@@ -325,7 +325,7 @@ orion::GuiBuilder::Body::Body() noexcept {
         ImVec2(0.0f, 2.0f)
     );
     ImGui::BeginChild(
-        utils::Fnv1a<"##Body">::value,
+        utilities::Fnv1a<"##Body">::value,
         ImVec2(0.0f, 0.0f),
         false,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -352,7 +352,7 @@ orion::GuiBuilder::Body::Head::Head() noexcept :
     font(*orion.get_gui().get_fonts().head) {
     const auto& style = ImGui::GetStyle();
     ImGui::BeginChild(
-        utils::Fnv1a<"##Body::Head">::value,
+        utilities::Fnv1a<"##Body::Head">::value,
         ImVec2(0.0f, 70.0f),
         false,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -377,7 +377,7 @@ orion::GuiBuilder::Body::Head::~Head() noexcept {
 auto orion::GuiBuilder::Body::Head::save() const noexcept -> void {
     const auto label =
         std::string(FontAwesome::get<FontAwesome::Type::FLOPPY_DISK>())
-        + utils::String<"    ">().c_str() + utils::String<"Save">().c_str();
+        + utilities::String<"    ">().c_str() + utilities::String<"Save">().c_str();
     const auto alpha = ImGui::GetStyle().Alpha * 1.0f;
     ImGui::SetCursorPos(ImVec2(18.0f, 21.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3.0f);
@@ -414,7 +414,7 @@ auto orion::GuiBuilder::Body::Head::save() const noexcept -> void {
 auto orion::GuiBuilder::Body::Head::create() const noexcept -> void {
     const auto label =
         std::string(FontAwesome::get<FontAwesome::Type::FILE_PLUS>())
-        + utils::String<"    ">().c_str() + utils::String<"Create">().c_str();
+        + utilities::String<"    ">().c_str() + utilities::String<"Create">().c_str();
     const auto alpha = ImGui::GetStyle().Alpha * 1.0f;
     ImGui::SameLine(0.0f, 20.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3.0f);
@@ -498,7 +498,7 @@ auto orion::GuiBuilder::Body::Head::combo(
         ImVec4(0.08235f, 0.08235f, 0.08627f, 1.0f * style.Alpha)
     );
     const auto result = ImGui::Combo(
-        utils::String<"##Body::Head::combo">().c_str(),
+        utilities::String<"##Body::Head::combo">().c_str(),
         &value,
         items
     );
@@ -510,7 +510,7 @@ auto orion::GuiBuilder::Body::Head::combo(
 orion::GuiBuilder::Body::Content::Content() noexcept {
     const auto& style = ImGui::GetStyle();
     ImGui::BeginChild(
-        utils::Fnv1a<"##Body::Content">::value,
+        utilities::Fnv1a<"##Body::Content">::value,
         ImVec2(),
         false,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -531,7 +531,7 @@ orion::GuiBuilder::Body::Content::Content() noexcept {
         ImVec2(0.0f, 15.0f)
     );
     ImGui::BeginChild(
-        utils::Fnv1a<"##Body::ContentChild">::value,
+        utilities::Fnv1a<"##Body::ContentChild">::value,
         ImGui::GetContentRegionAvail() - ImVec2(18.0f, 0.0f),
         true,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -596,7 +596,7 @@ orion::GuiBuilder::Body::Content::Panel::Panel(const std::uint32_t hash
             )
         );
         ImGui::BeginChild(
-            utils::Fnv1a<"##Body::Content::Main::Panel">::value,
+            utilities::Fnv1a<"##Body::Content::Main::Panel">::value,
             ImVec2(),
             true,
             ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground
@@ -732,8 +732,8 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
                     std::string(
                         FontAwesome::get<FontAwesome::Type::FLOPPY_DISK>()
                     )
-                    + utils::String<"    ">().c_str()
-                    + utils::String<"Save">().c_str()
+                    + utilities::String<"    ">().c_str()
+                    + utilities::String<"Save">().c_str()
                 )
                     .c_str(),
                 ImVec2(90.0f, 27.0f)
@@ -760,8 +760,8 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         if (ImGui::Button(
                 std::string(
                     std::string(FontAwesome::get<FontAwesome::Type::DOWNLOAD>())
-                    + utils::String<"    ">().c_str()
-                    + utils::String<"Load">().c_str()
+                    + utilities::String<"    ">().c_str()
+                    + utilities::String<"Load">().c_str()
                 )
                     .c_str(),
                 ImVec2(90.0f, 27.0f)
@@ -770,7 +770,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         ImGui::PopStyleColor(3);
     }
 
-    if (!utils::Fnv1a<"Default">::match(name.data())) {
+    if (!utilities::Fnv1a<"Default">::match(name.data())) {
         static std::string last_config_name;
         static auto popup_alpha = 0.0f;
         const auto content_region_avail = ImGui::GetContentRegionAvail();
@@ -791,7 +791,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         if (ImGui::Button(FontAwesome::get<FontAwesome::Type::TRASH_CAN>()))
             result = Event::REMOVE;
 
-        utils::String<"##Menu::Body::Content::Main::Panel::Config::Rename">
+        utilities::String<"##Menu::Body::Content::Main::Panel::Config::Rename">
             window_rename;
 
         ImGui::SetCursorPos(
@@ -867,7 +867,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         ImGuiCol_::ImGuiCol_Text,
         ImVec4(0.647059f, 0.670588f, 0.698039f, 1.000000f * style.Alpha)
     );
-    ImGui::TextUnformatted(utils::String<"Modified: ">().c_str());
+    ImGui::TextUnformatted(utilities::String<"Modified: ">().c_str());
     ImGui::PopStyleColor();
     ImGui::SameLine();
 
@@ -884,7 +884,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         ImGuiCol_::ImGuiCol_Text,
         ImVec4(0.647059f, 0.670588f, 0.698039f, 1.000000f * style.Alpha)
     );
-    ImGui::TextUnformatted(utils::String<"Author: ">().c_str());
+    ImGui::TextUnformatted(utilities::String<"Author: ">().c_str());
     ImGui::PopStyleColor();
     ImGui::SameLine();
 
@@ -892,7 +892,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         ImGuiCol_::ImGuiCol_Text,
         ImVec4(0.262745f, 0.513726f, 0.658824f, 1.000000f * style.Alpha)
     );
-    ImGui::TextUnformatted(utils::String<"Wyxather">().c_str());
+    ImGui::TextUnformatted(utilities::String<"Wyxather">().c_str());
     ImGui::PopStyleColor();
 
     ImGui::PopStyleVar();
@@ -1044,7 +1044,7 @@ orion::GuiBuilder::Body::Content::Panel::Table::Table() noexcept {
         ImVec2(7.5f, ImGui::GetStyle().CellPadding.y)
     );
     Table::resume = ImGui::BeginTable(
-        utils::String<"##Body::Content::Panel::Table">().c_str(),
+        utilities::String<"##Body::Content::Panel::Table">().c_str(),
         2
     );
     if (Table::resume)

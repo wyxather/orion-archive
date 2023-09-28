@@ -7,8 +7,8 @@ Console::Console() noexcept {
     kernel32.alloc_console();
     freopen_s(
         &stream,
-        utils::String<"CONOUT$">(),
-        utils::String<"w">(),
+        utilities::String<"CONOUT$">(),
+        utilities::String<"w">(),
         stdout
     );
     std_output_handle = kernel32.get_std_handle(STD_OUTPUT_HANDLE);

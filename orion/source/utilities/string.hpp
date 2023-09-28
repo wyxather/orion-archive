@@ -15,7 +15,7 @@
         )
 #endif
 
-namespace orion::utils {
+namespace orion::utilities {
 
     template<stb::fixed_string str>
     class String final {
@@ -52,4 +52,4 @@ namespace orion::utils {
         }
     };
 
-}  // namespace orion::utils
+}  // namespace orion::utilities

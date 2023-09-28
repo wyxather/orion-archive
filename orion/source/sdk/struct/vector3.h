@@ -25,11 +25,11 @@ namespace orion {
 
         [[nodiscard]] static auto from_angle(const Vector3& angle) noexcept {
             return Vector3(
-                ::std::cos(utils::Math::deg_to_rad(angle.x))
-                    * ::std::cos(utils::Math::deg_to_rad(angle.y)),
-                ::std::cos(utils::Math::deg_to_rad(angle.x))
-                    * ::std::sin(utils::Math::deg_to_rad(angle.y)),
-                -::std::sin(utils::Math::deg_to_rad(angle.x))
+                ::std::cos(utilities::Math::deg_to_rad(angle.x))
+                    * ::std::cos(utilities::Math::deg_to_rad(angle.y)),
+                ::std::cos(utilities::Math::deg_to_rad(angle.x))
+                    * ::std::sin(utilities::Math::deg_to_rad(angle.y)),
+                -::std::sin(utilities::Math::deg_to_rad(angle.x))
             );
         }
 

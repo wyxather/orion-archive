@@ -1,6 +1,6 @@
 #pragma once
 
-namespace orion::utils {
+namespace orion::utilities {
     template<stb::fixed_string _Str = "", typename _SizeTy = std::uint32_t>
     class Fnv1a final {
     public:

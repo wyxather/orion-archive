@@ -1,6 +1,6 @@
 #pragma once
 
-namespace orion::utils {
+namespace orion::utilities {
     template<typename _DataTy, typename _KeyTy = std::uint32_t>
     class HashMap {
         std::vector<std::pair<_KeyTy, _DataTy>> data;

@@ -148,10 +148,10 @@ namespace orion {
             bool active = false;
             float alpha = 0.0f;
             float alpha_animated = alpha;
-            utils::HashMap<GroupData> groups;
+            utilities::HashMap<GroupData> groups;
         };
 
-        utils::HashMap<TabData> tabs;
+        utilities::HashMap<TabData> tabs;
         TabData* last_active_tab = nullptr;
         TabData::GroupData* last_active_group = nullptr;
     };

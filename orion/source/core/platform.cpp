@@ -23,7 +23,7 @@ orion::Platform::Enumerator::enumerate(const HWND handle, Data& data) noexcept
                 name.data(),
                 static_cast<int>(name.size())
             ) == 0
-            || data.window_class.value() != utils::Fnv1a<>::hash(name.data()))
+            || data.window_class.value() != utilities::Fnv1a<>::hash(name.data()))
             return TRUE;
     } else if (data.window_text.has_value()) {
         if (std::array<CHAR, 257> name {};
@@ -32,7 +32,7 @@ orion::Platform::Enumerator::enumerate(const HWND handle, Data& data) noexcept
                 name.data(),
                 static_cast<int>(name.size())
             ) == 0
-            || data.window_text.value() != utils::Fnv1a<>::hash(name.data()))
+            || data.window_text.value() != utilities::Fnv1a<>::hash(name.data()))
             return TRUE;
     } else {
         if (std::array<std::array<CHAR, 257>, 2> name {};
@@ -41,7 +41,7 @@ orion::Platform::Enumerator::enumerate(const HWND handle, Data& data) noexcept
                 name[0].data(),
                 static_cast<int>(name[0].size())
             ) == 0
-            || utils::Fnv1a<"ConsoleWindowClass">::match(name[0].data())
+            || utilities::Fnv1a<"ConsoleWindowClass">::match(name[0].data())
             || IMPORT(GetWindowTextA)(
                    handle,
                    name[1].data(),

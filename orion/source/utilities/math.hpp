@@ -1,6 +1,6 @@
 #pragma once
 
-namespace orion::utils::Math {
+namespace orion::utilities::Math {
     namespace Easing {
         [[nodiscard]] constexpr auto in_out_quart(const float ratio) noexcept {
             return ratio < 0.5f

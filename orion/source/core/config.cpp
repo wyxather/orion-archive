@@ -15,7 +15,7 @@ orion::Config::Config() noexcept {
         ))) {
         Config::settings.sort = Sort::NAME;
         Config::settings.path = relative_path;
-        Config::settings.path /= utils::String<"Orion">().c_str();
+        Config::settings.path /= utilities::String<"Orion">().c_str();
         Config::save();
         Config::update();
         IMPORT(CoTaskMemFree)(relative_path);
@@ -59,7 +59,7 @@ auto orion::Config::enumerate() noexcept -> void {
         if (!path.has_extension())
             continue;
 
-        if (!utils::Fnv1a<".cfg">::match(path.extension().string().c_str()))
+        if (!utilities::Fnv1a<".cfg">::match(path.extension().string().c_str()))
             return;
 
         using namespace std::chrono;
@@ -71,7 +71,7 @@ auto orion::Config::enumerate() noexcept -> void {
             std::stringstream string_stream;
             string_stream << std::put_time(
                 &tm,
-                utils::String<"%e %b %Y %H:%M">().c_str()
+                utilities::String<"%e %b %Y %H:%M">().c_str()
             );
             const auto file_name = path.stem().string();
             Config::files.emplace_back(
@@ -90,10 +90,10 @@ auto orion::Config::create() noexcept -> void {
     std::size_t index = 0;
 
     do {
-        file_name = utils::String<"New Config">();
+        file_name = utilities::String<"New Config">();
 
         if (index != 0) {
-            file_name += utils::String<" ">();
+            file_name += utilities::String<" ">();
             file_name += std::to_string(index + 1);
         }
 
@@ -124,7 +124,7 @@ auto orion::Config::rename(const File& file) noexcept -> void {
     if (file.active)
         Config::name = Config::input.data();
 
-    utils::String<".cfg"> extension;
+    utilities::String<".cfg"> extension;
     std::filesystem::rename(
         Config::settings.path / (file.name + std::string(extension.c_str())),
         Config::settings.path
@@ -147,9 +147,9 @@ auto orion::Config::save(const void* const json) noexcept -> void {
     std::error_code ec;
     std::filesystem::create_directory(Config::settings.path, ec);
 
-    utils::String<".cfg"> extension;
+    utilities::String<".cfg"> extension;
     if (Config::name.empty()) {
-        utils::String<"Default"> filename;
+        utilities::String<"Default"> filename;
         Config::name = filename.c_str();
         if (std::ofstream out(
                 Config::settings.path
@@ -171,7 +171,7 @@ auto orion::Config::save(const void* const json) noexcept -> void {
 void orion::Config::load(void* const json, const File& file) noexcept {
     if (std::ifstream in(
             Config::settings.path
-            / (file.name + std::string(utils::String<".cfg">()))
+            / (file.name + std::string(utilities::String<".cfg">()))
         );
         in.good()) {
         *static_cast<nlohmann::json*>(json) =
@@ -184,20 +184,20 @@ void orion::Config::load(void* const json, const File& file) noexcept {
 namespace orion {
     template<stb::fixed_string _Key, typename _Value>
     constexpr auto write(nlohmann::json& json, const _Value& object) noexcept {
-        utils::String<_Key> key;
+        utilities::String<_Key> key;
         json[key.c_str()] = object;
     }
 
     template<stb::fixed_string _Key>
     constexpr auto read(const nlohmann::json& json, bool& object) noexcept {
-        if (utils::String<_Key> key; json.contains(key.c_str()))
+        if (utilities::String<_Key> key; json.contains(key.c_str()))
             if (const auto& value = json[key.c_str()]; value.is_boolean())
                 value.get_to(object);
     }
 
     template<stb::fixed_string _Key>
     constexpr auto read(const nlohmann::json& json, int& object) noexcept {
-        if (utils::String<_Key> key; json.contains(key.c_str()))
+        if (utilities::String<_Key> key; json.contains(key.c_str()))
             if (const auto& value = json[key.c_str()];
                 value.is_number_integer())
                 value.get_to(object);
@@ -205,7 +205,7 @@ namespace orion {
 
     template<stb::fixed_string _Key>
     constexpr auto read(const nlohmann::json& json, float& object) noexcept {
-        if (utils::String<_Key> key; json.contains(key.c_str()))
+        if (utilities::String<_Key> key; json.contains(key.c_str()))
             if (const auto& value = json[key.c_str()]; value.is_number_float())
                 value.get_to(object);
     }

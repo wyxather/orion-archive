@@ -119,7 +119,7 @@ namespace orion::DINPUT8 {
 orion::Input::Input(const Type type) noexcept {
     if (Type::DINPUT8 == type) {
         if (Input::handle =
-                IMPORT(GetModuleHandleA)(utils::String<"dinput8.dll">());
+                IMPORT(GetModuleHandleA)(utilities::String<"dinput8.dll">());
             Input::handle != nullptr)
             Input::type.emplace(type);
     }
@@ -129,7 +129,7 @@ orion::Input::Input(const Enumerate enumerate) noexcept {
     switch (enumerate) {
         case Enumerate::AUTO: {
             if (Input::handle =
-                    IMPORT(GetModuleHandleA)(utils::String<"dinput8.dll">());
+                    IMPORT(GetModuleHandleA)(utilities::String<"dinput8.dll">());
                 Input::handle != nullptr) {
                 Input::type.emplace(Input::Type::DINPUT8);
                 break;
@@ -138,12 +138,12 @@ orion::Input::Input(const Enumerate enumerate) noexcept {
         }
         case Enumerate::MANUAL: {
             if (Input::handle =
-                    IMPORT(GetModuleHandleA)(utils::String<"dinput8.dll">());
+                    IMPORT(GetModuleHandleA)(utilities::String<"dinput8.dll">());
                 Input::handle != nullptr
                 && IMPORT(MessageBoxA)(
                        nullptr,
-                       utils::String<"DINPUT8">(),
-                       utils::String<"Input">(),
+                       utilities::String<"DINPUT8">(),
+                       utilities::String<"Input">(),
                        MB_YESNO | MB_ICONINFORMATION
                    ) == IDYES) {
                 Input::type.emplace(Input::Type::DINPUT8);
@@ -163,7 +163,7 @@ auto orion::Input::hook() noexcept -> void {
             (HRESULT(WINAPI*)(HMODULE, DWORD, const IID&, LPDIRECTINPUT8*, LPUNKNOWN))(
                 IMPORT(GetProcAddress)(
                     Input::handle,
-                    utils::String<"DirectInput8Create">()
+                    utilities::String<"DirectInput8Create">()
                 )
             );
         if (direct_input_8_create == nullptr)

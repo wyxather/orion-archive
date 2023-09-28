@@ -35,13 +35,13 @@ namespace orion::core {
             );
             const auto& console = orion.get_console();
             console.set_text_output_color(color);
-            std::print("{:<6}", utils::String<log_level>().c_str());
+            std::print("{:<6}", utilities::String<log_level>().c_str());
             console.set_text_output_color(
                 FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE
             );
             std::print(
                 "{}:{}] ",
-                utils::String<parse_file_name()>().c_str(),
+                utilities::String<parse_file_name()>().c_str(),
                 line
             );
         }

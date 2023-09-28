@@ -169,7 +169,7 @@ auto orion::Gui::on_close() const noexcept -> void {
 
 auto orion::Gui::on_animating() noexcept -> void {
     Gui::animating = true;
-    Gui::alpha_animated = utils::Math::Easing::in_out_quart(Gui::alpha);
+    Gui::alpha_animated = utilities::Math::Easing::in_out_quart(Gui::alpha);
     Gui::size_animated = Gui::size * Gui::alpha_animated;
     Gui::position_animated =
         Gui::position + (Gui::size - Gui::size_animated) * 0.5f;
@@ -228,7 +228,7 @@ auto orion::Gui::begin() const noexcept -> void {
 
     ImGui::BeginDisabled(Gui::animating);
     ImGui::Begin(
-        utils::String<"Gui">().c_str(),
+        utilities::String<"Gui">().c_str(),
         nullptr,
         ImGuiWindowFlags_::ImGuiWindowFlags_NoDecoration
             | ImGuiWindowFlags_::ImGuiWindowFlags_NoNav
@@ -445,7 +445,7 @@ namespace orion {
 
     struct Menu::Body::Content::Main::Panel::Table::Widget: Component {
         Widget() noexcept : m_count {0} {
-            utils::String<"##Menu::Body::Content::Panel::Table::Widget"> name;
+            utilities::String<"##Menu::Body::Content::Panel::Table::Widget"> name;
             Component::BeginTable(name, 2);
         }
 
@@ -463,7 +463,7 @@ namespace orion {
             float colorReference[4],
             float* popupAlpha
         ) noexcept {
-            utils::String<str> name;
+            utilities::String<str> name;
 
             constexpr auto fontHeight = 14.f;
             constexpr auto toggleWidthMult = 1.35f;
@@ -595,10 +595,10 @@ namespace orion {
         auto Combo(int& value) noexcept {
             static float popupAlpha;
 
-            utils::String<str> name;
-            utils::String<items> item;
+            utilities::String<str> name;
+            utilities::String<items> item;
 
-            constexpr auto hash = utils::Fnv1a<str>::value;
+            constexpr auto hash = utilities::Fnv1a<str>::value;
             constexpr auto fontHeight {14.00f};
             constexpr auto textPositionVerticalOffset {2.00f};
             constexpr auto framePadding {4.00f};
@@ -689,8 +689,8 @@ namespace orion {
                 (fontHeight / 15.f)
             };
 
-            utils::String<str> name;
-            utils::String<items> item;
+            utilities::String<str> name;
+            utilities::String<items> item;
             std::vector<std::string> list;
             std::vector<std::string> selected;
 
@@ -808,8 +808,8 @@ namespace orion {
             };
             const auto& style = ImGui::GetStyle();
 
-            utils::String<str> name;
-            utils::String<fmt> format;
+            utilities::String<str> name;
+            utilities::String<fmt> format;
 
             m_count++;
 
@@ -958,7 +958,7 @@ auto orion::Gui::builder() noexcept -> void {
     if (GuiBuilder::Body body {}) {
         if (GuiBuilder::Body::Head head {}) {
             head.save();
-            if (Menu::Tab tab {utils::Fnv1a<"Configs">::value}) {
+            if (Menu::Tab tab {utilities::Fnv1a<"Configs">::value}) {
                 if (head.combo<"Name\0Date Modified\0">(
                         orion.get_config().get_sort()
                     ))
@@ -968,13 +968,13 @@ auto orion::Gui::builder() noexcept -> void {
         }
         if (GuiBuilder::Body::Content content {}) {
             if (GuiBuilder::Body::Content::Panel panel {
-                    utils::Fnv1a<"Configs">::value
+                    utilities::Fnv1a<"Configs">::value
                 }) {
                 GuiBuilder::Body::Content::Panel::Config config {};
             }
 
             else if (GuiBuilder::Body::Content::Panel panel {
-                         utils::Fnv1a<"Main">::value
+                         utilities::Fnv1a<"Main">::value
                      }) {
                 if (GuiBuilder::Body::Content::Panel::Table table {}) {
                     if (GuiBuilder::Body::Content::Panel::Table::

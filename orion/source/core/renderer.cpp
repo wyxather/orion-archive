@@ -227,14 +227,14 @@ orion::Renderer::Renderer(const Type type) noexcept {
     switch (type) {
         case Type::D3D11: {
             if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utils::String<"d3d11.dll">());
+                    IMPORT(GetModuleHandleA)(utilities::String<"d3d11.dll">());
                 Renderer::handle != nullptr)
                 Renderer::type.emplace(type);
             break;
         }
         case Type::D3D9: {
             if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utils::String<"d3d9.dll">());
+                    IMPORT(GetModuleHandleA)(utilities::String<"d3d9.dll">());
                 Renderer::handle != nullptr)
                 Renderer::type.emplace(type);
             break;
@@ -246,13 +246,13 @@ orion::Renderer::Renderer(const Enumerate enumerate) noexcept {
     switch (enumerate) {
         case Enumerate::AUTO: {
             if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utils::String<"d3d11.dll">());
+                    IMPORT(GetModuleHandleA)(utilities::String<"d3d11.dll">());
                 Renderer::handle != nullptr) {
                 Renderer::type.emplace(Renderer::Type::D3D11);
                 break;
             }
             if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utils::String<"d3d9.dll">());
+                    IMPORT(GetModuleHandleA)(utilities::String<"d3d9.dll">());
                 Renderer::handle != nullptr) {
                 Renderer::type.emplace(Renderer::Type::D3D9);
                 break;
@@ -261,24 +261,24 @@ orion::Renderer::Renderer(const Enumerate enumerate) noexcept {
         }
         case Enumerate::MANUAL: {
             if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utils::String<"d3d11.dll">());
+                    IMPORT(GetModuleHandleA)(utilities::String<"d3d11.dll">());
                 Renderer::handle != nullptr
                 && IMPORT(MessageBoxA)(
                        nullptr,
-                       utils::String<"D3D11">(),
-                       utils::String<"Renderer">(),
+                       utilities::String<"D3D11">(),
+                       utilities::String<"Renderer">(),
                        MB_YESNO | MB_ICONINFORMATION
                    ) == IDYES) {
                 Renderer::type.emplace(Renderer::Type::D3D11);
                 break;
             }
             if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utils::String<"d3d9.dll">());
+                    IMPORT(GetModuleHandleA)(utilities::String<"d3d9.dll">());
                 Renderer::handle != nullptr
                 && IMPORT(MessageBoxA)(
                        nullptr,
-                       utils::String<"D3D9">(),
-                       utils::String<"Renderer">(),
+                       utilities::String<"D3D9">(),
+                       utilities::String<"Renderer">(),
                        MB_YESNO | MB_ICONINFORMATION
                    ) == IDYES) {
                 Renderer::type.emplace(Renderer::Type::D3D9);
@@ -335,7 +335,7 @@ auto orion::Renderer::hook() noexcept -> void {
                 (HRESULT(WINAPI*)(IDXGIAdapter*, D3D_DRIVER_TYPE, HMODULE, UINT, const D3D_FEATURE_LEVEL*, UINT, UINT, const DXGI_SWAP_CHAIN_DESC*, IDXGISwapChain**, ID3D11Device**, D3D_FEATURE_LEVEL*, ID3D11DeviceContext**))(
                     IMPORT(GetProcAddress)(
                         Renderer::handle,
-                        utils::String<"D3D11CreateDeviceAndSwapChain">()
+                        utilities::String<"D3D11CreateDeviceAndSwapChain">()
                     )
                 );
 
@@ -429,7 +429,7 @@ auto orion::Renderer::hook() noexcept -> void {
             const auto direct3d_create9 =
                 (LPDIRECT3D9(WINAPI*)(std::uint32_t))(IMPORT(GetProcAddress)(
                     Renderer::handle,
-                    utils::String<"Direct3DCreate9">()
+                    utilities::String<"Direct3DCreate9">()
                 ));
             if (direct3d_create9 == nullptr)
                 break;
