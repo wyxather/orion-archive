@@ -46,14 +46,14 @@ namespace orion::DINPUT8 {
             if (POINT pos; IMPORT(GetCursorPos).cached()(&pos)) {
                 key[0] ? IMPORT(PostMessage)
                              .cached()(
-                                 orion.get_platform().get_handle(),
+                                 orion.get_platform().get_window_handle(),
                                  WM_LBUTTONDOWN,
                                  VK_LBUTTON,
                                  MAKELPARAM(pos.x, pos.y)
                              )
                        : IMPORT(PostMessage)
                              .cached()(
-                                 orion.get_platform().get_handle(),
+                                 orion.get_platform().get_window_handle(),
                                  WM_LBUTTONUP,
                                  NULL,
                                  MAKELPARAM(pos.x, pos.y)
@@ -90,7 +90,7 @@ namespace orion::DINPUT8 {
                     if (POINT pos {}; IMPORT(GetCursorPos).cached()(&pos)) {
                         IMPORT(PostMessage)
                             .cached()(
-                                orion.get_platform().get_handle(),
+                                orion.get_platform().get_window_handle(),
                                 WM_LBUTTONDOWN,
                                 VK_LBUTTON,
                                 MAKELPARAM(pos.x, pos.y)
@@ -103,7 +103,7 @@ namespace orion::DINPUT8 {
                     if (POINT pos {}; IMPORT(GetCursorPos).cached()(&pos)) {
                         IMPORT(PostMessage)
                             .cached()(
-                                orion.get_platform().get_handle(),
+                                orion.get_platform().get_window_handle(),
                                 WM_LBUTTONUP,
                                 NULL,
                                 MAKELPARAM(pos.x, pos.y)

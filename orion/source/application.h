@@ -2,16 +2,16 @@
 
 namespace orion {
 
-    namespace core::platform {
+    namespace core {
 
-        class Window;
+        class Platform;
 
     }
 
     class Application final {
         NON_CONSTRUCTIBLE(Application)
 
-        friend class core::platform::Window;
+        friend class core::Platform;
 
         static auto setup() noexcept -> void;
         static auto exit() noexcept -> void;

@@ -112,7 +112,7 @@ namespace orion::D3D9 {
         const HWND window,
         const LPRGNDATA dirty_region
     ) noexcept -> HRESULT {
-        orion.get_platform().new_frame();
+        orion.get_platform().imgui_new_frame();
 
         if (ImGui::GetIO().BackendRendererUserData == nullptr) {
             ImGui_ImplDX9_Init(device);
@@ -188,7 +188,7 @@ namespace orion::D3D11 {
         const UINT sync_interval,
         const UINT flags
     ) noexcept -> HRESULT {
-        orion.get_platform().new_frame();
+        orion.get_platform().imgui_new_frame();
 
         if (ImGui::GetIO().BackendRendererUserData == nullptr) {
             Microsoft::WRL::ComPtr<ID3D11Device> device;

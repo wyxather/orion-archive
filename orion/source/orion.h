@@ -23,7 +23,7 @@ namespace orion {
         std::optional<const modules::Kernel32> kernel32;
         std::optional<const modules::User32> user32;
         std::optional<const core::Console> console;
-        std::optional<Platform> platform;
+        std::optional<core::Platform> platform;
         std::optional<Renderer> renderer;
         std::optional<Input> input;
         std::optional<Config> config;

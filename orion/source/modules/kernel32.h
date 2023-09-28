@@ -18,6 +18,7 @@ namespace orion::modules {
         decltype(&FreeLibraryAndExitThread) free_library_and_exit_thread =
             nullptr;
         decltype(&GetConsoleWindow) get_console_window = nullptr;
+        decltype(&GetCurrentProcessId) get_current_process_id = nullptr;
         decltype(&GetStdHandle) get_std_handle = nullptr;
         decltype(&SetConsoleCtrlHandler) set_console_ctrl_handler = nullptr;
         decltype(&SetConsoleTextAttribute) set_console_text_attribute = nullptr;

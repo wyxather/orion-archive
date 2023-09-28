@@ -1,91 +1,60 @@
 #pragma once
 
-namespace orion {
+namespace orion::core {
 
     class Platform final {
-        class Enumerator final {
-            struct Data final {
-                constexpr explicit Data(
-                    Enumerator& enumerator,
-                    const std::optional<const std::uint32_t>& window_class,
-                    const std::optional<const std::uint32_t>& window_text
-                ) noexcept :
-                    enumerator(enumerator),
-                    window_class(window_class),
-                    window_text(window_text) {}
-
-                Data(Data&&) = delete;
-                Data& operator=(Data&&) = delete;
-
-                Data(const Data&) = delete;
-                Data& operator=(const Data&) = delete;
-
-                Enumerator& enumerator;
-                const std::optional<const std::uint32_t>& window_class;
-                const std::optional<const std::uint32_t>& window_text;
-            };
-
-            [[nodiscard]] static auto match(HWND handle) noexcept -> bool;
-            [[nodiscard]] static auto CALLBACK
-            enumerate(HWND handle, Data& data) noexcept -> BOOL;
-
-        public:
-            explicit Enumerator(
-                const std::optional<const std::uint32_t>& window_class,
-                const std::optional<const std::uint32_t>& window_text
-            ) noexcept {
-                Data data(*this, window_class, window_text);
-                IMPORT(EnumWindows)
-                (WNDENUMPROC(&Enumerator::enumerate), LPARAM(&data));
-            }
-
-            Enumerator(Enumerator&&) = delete;
-            Enumerator& operator=(Enumerator&&) = delete;
-
-            Enumerator(const Enumerator&) = delete;
-            Enumerator& operator=(const Enumerator&) = delete;
-
-            HWND handle = nullptr;
-        };
-
-        const Enumerator enumerator;
-        WNDPROC original = nullptr;
-
     public:
+        NON_COPYABLE(Platform)
+        NON_MOVEABLE(Platform)
+
         explicit Platform(
-            const std::optional<const std::uint32_t>& window_class,
-            const std::optional<const std::uint32_t>& window_text
-        ) noexcept :
-            enumerator {window_class, window_text} {}
+            const std::optional<const std::uint32_t> window_class,
+            const std::optional<const std::uint32_t> window_text
+        ) noexcept;
 
         ~Platform() noexcept;
 
-        Platform(Platform&&) = delete;
-        Platform& operator=(Platform&&) = delete;
-
-        Platform(const Platform&) = delete;
-        Platform& operator=(const Platform&) = delete;
-
-        [[nodiscard]] constexpr auto&& get_handle() const noexcept {
-            return Platform::enumerator.handle;
-        }
-
-        [[nodiscard]] constexpr auto&& get_original() const noexcept {
-            return Platform::original;
-        }
-
         auto hook() noexcept -> void;
-        auto unhook() const noexcept -> void;
+        auto unhook() noexcept -> void;
 
-        auto new_frame() const noexcept -> void;
-    };
+        auto imgui_new_frame() const noexcept -> void;
 
-    namespace core::platform {
-
+    private:
         class Window final {
-            NON_CONSTRUCTIBLE(Window)
+        public:
+            NON_COPYABLE(Window)
+            NON_MOVEABLE(Window)
 
-            friend Platform;
+            Platform& platform;
+            const DWORD process_id;
+            const std::optional<const std::uint32_t> class_name;
+            const std::optional<const std::uint32_t> text;
+
+            constexpr explicit Window(
+                Platform& platform,
+                const DWORD process_id,
+                const std::optional<const std::uint32_t> window_class,
+                const std::optional<const std::uint32_t> window_text
+            ) noexcept :
+                platform {platform},
+                process_id {process_id},
+                class_name {window_class},
+                text {window_text}
+
+            {}
+
+            static auto CALLBACK
+            enumerate(const HWND window_handle, Window& window) noexcept
+                -> BOOL;
+
+            NODISCARD auto has_same_process_id(const HWND window_handle
+            ) const noexcept -> bool;
+
+            NODISCARD static auto get_class_name(const HWND window_handle
+            ) noexcept -> std::array<CHAR, 257>;
+
+            NODISCARD static auto get_window_text(const HWND window_handle
+            ) noexcept -> std::vector<CHAR>;
 
             static auto CALLBACK procedure(
                 const HWND window_handle,
@@ -95,6 +64,14 @@ namespace orion {
             ) noexcept -> LRESULT;
         };
 
-    }  // namespace core::platform
+        HWND window_handle = nullptr;
+        WNDPROC original_window_procedure = nullptr;
 
-}  // namespace orion
+    public:
+        NODISCARD constexpr auto get_window_handle() const noexcept {
+            static_assert(sizeof(window_handle) <= sizeof(void*));
+            return window_handle;
+        }
+    };
+
+}  // namespace orion::core

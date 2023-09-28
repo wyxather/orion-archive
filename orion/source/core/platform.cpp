@@ -1,106 +1,146 @@
-#include "platform.h"
-
 #include "dependencies/imgui/imgui_impl_win32.h"
 #include "source/application.h"
 #include "source/orion.h"
 
-auto orion::Platform::Enumerator::match(const HWND handle) noexcept -> bool {
-    DWORD id {};
-    IMPORT(GetWindowThreadProcessId)(handle, &id);
-    return id == IMPORT(GetCurrentProcessId)();
+using orion::core::Platform;
+using orion::utilities::Fnv1a;
+
+Platform::Platform(
+    const std::optional<const std::uint32_t> window_class,
+    const std::optional<const std::uint32_t> window_text
+) noexcept {
+    const Window window {
+        *this,
+        orion.get_kernel32().get_current_process_id(),
+        window_class,
+        window_text
+    };
+    orion.get_user32().enum_windows(
+        reinterpret_cast<WNDENUMPROC>(Window::enumerate),
+        reinterpret_cast<LPARAM>(&window)
+    );
 }
 
-auto CALLBACK
-orion::Platform::Enumerator::enumerate(const HWND handle, Data& data) noexcept
-    -> BOOL {
-    if (!Enumerator::match(handle))
-        return TRUE;
-
-    if (data.window_class.has_value()) {
-        if (std::array<CHAR, 257> name {};
-            IMPORT(GetClassNameA)(
-                handle,
-                name.data(),
-                static_cast<int>(name.size())
-            ) == 0
-            || data.window_class.value() != utilities::Fnv1a<>::hash(name.data()))
-            return TRUE;
-    } else if (data.window_text.has_value()) {
-        if (std::array<CHAR, 257> name {};
-            IMPORT(GetWindowTextA)(
-                handle,
-                name.data(),
-                static_cast<int>(name.size())
-            ) == 0
-            || data.window_text.value() != utilities::Fnv1a<>::hash(name.data()))
-            return TRUE;
-    } else {
-        if (std::array<std::array<CHAR, 257>, 2> name {};
-            IMPORT(GetClassNameA)(
-                handle,
-                name[0].data(),
-                static_cast<int>(name[0].size())
-            ) == 0
-            || utilities::Fnv1a<"ConsoleWindowClass">::eq(name[0].data())
-            || IMPORT(GetWindowTextA)(
-                   handle,
-                   name[1].data(),
-                   static_cast<int>(name[1].size())
-               ) == 0
-            || IMPORT(MessageBoxA)(
-                   nullptr,
-                   name[1].data(),
-                   name[0].data(),
-                   MB_YESNO | MB_ICONINFORMATION
-               ) != IDYES) {
-            return TRUE;
+Platform::~Platform() noexcept {
+    if (ImGui::GetCurrentContext() != nullptr) {
+        if (ImGui::GetIO().BackendPlatformUserData != nullptr) {
+            ImGui_ImplWin32_Shutdown();
         }
+        ImGui::DestroyContext();
     }
+    window_handle = nullptr;
+    original_window_procedure = nullptr;
+}
 
-    data.enumerator.handle = handle;
+auto Platform::hook() noexcept -> void {
+    original_window_procedure =
+        reinterpret_cast<decltype(original_window_procedure)>(
+            orion.get_user32().set_window_long_ptr(
+                window_handle,
+                GWLP_WNDPROC,
+                reinterpret_cast<LONG_PTR>(&Window::procedure)
+            )
+        );
+}
 
+auto Platform::unhook() noexcept -> void {
+    orion.get_user32().set_window_long_ptr(
+        window_handle,
+        GWLP_WNDPROC,
+        reinterpret_cast<LONG_PTR>(original_window_procedure)
+    );
+    window_handle = nullptr;
+}
+
+auto Platform::imgui_new_frame() const noexcept -> void {
+    ImGui_ImplWin32_NewFrame();
+}
+
+auto Platform::Window::enumerate(
+    const HWND window_handle,
+    Window& window
+) noexcept -> BOOL {
+    if (!window.has_same_process_id(window_handle)) {
+        return TRUE;
+    }
+    const auto& user32 = orion.get_user32();
+    if (!user32.is_window_visible(window_handle)) {
+        return TRUE;
+    }
+    const auto class_name = get_class_name(window_handle);
+    if (Fnv1a<"ConsoleWindowClass">::eq(class_name.data())) {
+        return TRUE;
+    }
+    if (window.class_name.has_value()
+        && window.class_name.value() != Fnv1a<>::hash(class_name.data())) {
+        return TRUE;
+    }
+    const auto window_text = get_window_text(window_handle);
+    if (window_text.empty()) {
+        return TRUE;
+    }
+    if (window.text.has_value()
+        && window.text.value() != Fnv1a<>::hash(window_text.data())) {
+        return TRUE;
+    }
+    switch (const auto input = user32.message_box_a(
+                window_handle,
+                window_text.data(),
+                class_name.data(),
+                MB_YESNOCANCEL | MB_ICONQUESTION
+            );
+            input) {
+        case IDYES:
+            window.platform.window_handle = window_handle;
+            [[fallthrough]];
+        case IDCANCEL:
+            break;
+        default:
+            return TRUE;
+    }
     return FALSE;
 }
 
-orion::Platform::~Platform() noexcept {
-    if (ImGui::GetCurrentContext() == nullptr)
-        return;
-
-    if (ImGui::GetIO().BackendPlatformUserData != nullptr)
-        ImGui_ImplWin32_Shutdown();
-
-    ImGui::DestroyContext();
+auto Platform::Window::has_same_process_id(const HWND window_handle
+) const noexcept -> bool {
+    DWORD window_thread_process_id = 0;
+    orion.get_user32().get_window_thread_process_id(
+        window_handle,
+        &window_thread_process_id
+    );
+    return window_thread_process_id == process_id;
 }
 
-auto orion::Platform::new_frame() const noexcept -> void {
-    return ImGui_ImplWin32_NewFrame();
+auto Platform::Window::get_class_name(const HWND window_handle) noexcept
+    -> std::array<CHAR, 257> {
+    std::array<CHAR, 257> class_name;
+    orion.get_user32().get_class_name_a(
+        window_handle,
+        class_name.data(),
+        static_cast<int>(class_name.size())
+    );
+    return class_name;
 }
 
-auto orion::Platform::hook() noexcept -> void {
-    if (Platform::enumerator.handle == nullptr)
-        return;
+auto Platform::Window::get_window_text(const HWND window_handle) noexcept
+    -> std::vector<CHAR> {
+    const auto& user32 = orion.get_user32();
+    const auto window_text_length =
+        user32.get_window_text_length_a(window_handle);
 
-    if (Platform::original != nullptr)
-        return;
-
-    Platform::original =
-        reinterpret_cast<decltype(Platform::original)>(IMPORT(SetWindowLongPtr)(
-            Platform::enumerator.handle,
-            GWLP_WNDPROC,
-            reinterpret_cast<LPARAM>(&core::platform::Window::procedure)
-        ));
-}
-
-auto orion::Platform::unhook() const noexcept -> void {
-    if (Platform::original != nullptr)
-        IMPORT(SetWindowLongPtr)
-    (Platform::enumerator.handle, GWLP_WNDPROC, LPARAM(Platform::original));
+    std::vector<CHAR> window_text(window_text_length);
+    user32.get_window_text_a(
+        window_handle,
+        window_text.data(),
+        window_text_length
+    );
+    return window_text;
 }
 
 IMGUI_IMPL_API
 LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
-auto CALLBACK orion::core::platform::Window::procedure(
+auto CALLBACK Platform::Window::procedure(
     const HWND window_handle,
     const UINT message,
     const WPARAM w_param,
@@ -122,21 +162,22 @@ auto CALLBACK orion::core::platform::Window::procedure(
             w_param,
             l_param
         );
-        orion::Application::setup();
+        Application::setup();
     }
+    auto& gui = orion.get_gui();
     if (message == WM_KEYUP) {
         switch (w_param) {
             case VK_END:
-                orion::Application::exit();
+                Application::exit();
                 break;
             case VK_INSERT:
-                orion.get_gui().toggle();
+                gui.toggle();
                 break;
             default:
                 break;
         }
     }
-    if (orion.get_gui().is_open()) {
+    if (gui.is_open()) {
         switch (message) {
             default:
                 break;
@@ -162,12 +203,11 @@ auto CALLBACK orion::core::platform::Window::procedure(
                 return FALSE;
         }
     }
-    return IMPORT(CallWindowProc)
-        .cached()(
-            orion.get_platform().get_original(),
-            window_handle,
-            message,
-            w_param,
-            l_param
-        );
+    return orion.get_user32().call_window_proc(
+        orion.get_platform().original_window_procedure,
+        window_handle,
+        message,
+        w_param,
+        l_param
+    );
 }
