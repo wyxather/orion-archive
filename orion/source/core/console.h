@@ -80,16 +80,13 @@ namespace orion::core {
         tm time = {};
 
     public:
-        constexpr auto set_color(Color color) const noexcept -> void {
-            IMPORT(SetConsoleTextAttribute)
-                .cached()(std_output_handle, static_cast<WORD>(color));
-        }
+        auto set_color(Color color) const noexcept -> void;
 
         template<
             stb::fixed_string _Format,
             Color _Color = Color::LIGHTGREEN,
             typename... _Args>
-        constexpr auto log(_Args&&... _Arg) const noexcept -> void {
+        constexpr auto log(_Args&&... _Arg) noexcept -> void {
             set_color(_Color);
             Console::update_time();
             std::printf(

@@ -64,3 +64,10 @@ auto Console::update_time() noexcept -> void {
     const auto time_t = system_clock::to_time_t(system_clock::now());
     localtime_s(&time, &time_t);
 }
+
+auto Console::set_color(Color color) const noexcept -> void {
+    orion.get_kernel32().set_console_text_attribute(
+        std_output_handle,
+        static_cast<WORD>(color)
+    );
+}

@@ -16,6 +16,7 @@ namespace orion::modules {
         decltype(&FreeLibraryAndExitThread) free_library_and_exit_thread =
             nullptr;
         decltype(&GetStdHandle) get_std_handle = nullptr;
+        decltype(&SetConsoleTextAttribute) set_console_text_attribute = nullptr;
         decltype(&Sleep) sleep = nullptr;
     };
 
