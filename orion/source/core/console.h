@@ -40,14 +40,14 @@ namespace orion::core {
         tm time = {};
 
     public:
-        auto set_color(Color color) const noexcept -> void;
+        auto set_text_output_color(const WORD color) const noexcept -> void;
 
         template<
             stb::fixed_string _Format,
             Color _Color = Color::LIGHTGREEN,
             typename... _Args>
         constexpr auto log(_Args&&... _Arg) noexcept -> void {
-            set_color(_Color);
+            set_text_output_color(static_cast<WORD>(_Color));
             Console::update_time();
             std::printf(
                 utils::String<"[%2d:%2d:%2d] ">(),

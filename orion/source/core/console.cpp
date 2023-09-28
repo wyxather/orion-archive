@@ -47,9 +47,6 @@ auto WINAPI Console::ctrl_handler(const DWORD ctrl_type) noexcept -> BOOL {
     }
 }
 
-auto Console::set_color(Color color) const noexcept -> void {
-    orion.get_kernel32().set_console_text_attribute(
-        std_output_handle,
-        static_cast<WORD>(color)
-    );
+auto Console::set_text_output_color(const WORD color) const noexcept -> void {
+    orion.get_kernel32().set_console_text_attribute(std_output_handle, color);
 }
