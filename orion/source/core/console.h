@@ -50,31 +50,9 @@ namespace orion::core {
             }
         };
 
-        class Enumerator final {
-            [[nodiscard]] static auto match(HWND handle) noexcept -> bool;
-            [[nodiscard]] static auto CALLBACK
-            enumerate(HWND handle, Enumerator& enumerator) noexcept -> BOOL;
-
-        public:
-            NON_COPYABLE(Enumerator)
-            NON_MOVEABLE(Enumerator)
-
-            Enumerator() noexcept {
-                IMPORT(EnumWindows)
-                (WNDENUMPROC(&Console::Enumerator::enumerate), LPARAM(this));
-            }
-
-            [[nodiscard]] constexpr explicit operator bool() const noexcept {
-                return Enumerator::handle != nullptr;
-            }
-
-            HWND handle = nullptr;
-        };
-
         auto update_time() noexcept -> void;
 
         const Allocator allocator;
-        std::optional<const Enumerator> enumerator;
         FILE* stream = nullptr;
         HANDLE std_output_handle = nullptr;
         tm time = {};

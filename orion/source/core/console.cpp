@@ -7,25 +7,18 @@ using orion::core::Console;
 Console::Console() noexcept {
     if (!Console::allocator)
         return;
-
-    Console::enumerator.emplace();
-
-    if (!(*Console::enumerator))
-        return;
-
-    if (const auto style =
-            IMPORT(GetWindowLongPtr)(Console::enumerator->handle, GWL_STYLE);
+    const auto& kernel32 = orion.get_kernel32();
+    const auto window = kernel32.get_console_window();
+    if (const auto style = IMPORT(GetWindowLongPtr)(window, GWL_STYLE);
         style != 0)
         IMPORT(SetWindowLongPtr)
-    (Console::enumerator->handle, GWL_STYLE, style & ~WS_SYSMENU);
-
+    (window, GWL_STYLE, style & ~WS_SYSMENU);
     freopen_s(
         &stream,
         utils::String<"CONOUT$">(),
         utils::String<"w">(),
         stdout
     );
-    const auto& kernel32 = orion.get_kernel32();
     std_output_handle = kernel32.get_std_handle(STD_OUTPUT_HANDLE);
 }
 
@@ -33,30 +26,6 @@ Console::~Console() noexcept {
     std::fclose(stream);
     std_output_handle = nullptr;
     stream = nullptr;
-}
-
-auto Console::Enumerator::match(const HWND handle) noexcept -> bool {
-    DWORD id {};
-    IMPORT(GetWindowThreadProcessId)(handle, &id);
-    return id == IMPORT(GetCurrentProcessId)();
-}
-
-auto CALLBACK Console::Enumerator::enumerate(
-    const HWND handle,
-    Enumerator& enumerator
-) noexcept -> BOOL {
-    if (!Console::Enumerator::match(handle))
-        return TRUE;
-    if (std::array<CHAR, 257> name {};
-        IMPORT(GetClassNameA)(
-            handle,
-            name.data(),
-            static_cast<int>(name.size())
-        ) == FALSE
-        || !utils::Fnv1a<"ConsoleWindowClass">::match(name.data()))
-        return TRUE;
-    enumerator.handle = handle;
-    return FALSE;
 }
 
 auto Console::update_time() noexcept -> void {
