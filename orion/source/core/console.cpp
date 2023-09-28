@@ -6,22 +6,22 @@ using orion::core::Console;
 
 Console::Console() noexcept {
     const auto& kernel32 = orion.get_kernel32();
-    const auto& user32 = orion.get_user32();
     kernel32.alloc_console();
-    const auto window = kernel32.get_console_window();
-    user32.set_window_long_ptr(
-        window,
-        GWL_STYLE,
-        user32.get_window_long_ptr(window, GWL_STYLE) & ~WS_SYSMENU
-    );
     freopen_s(
         &stream,
         utils::String<"CONOUT$">(),
         utils::String<"w">(),
         stdout
     );
-    kernel32.set_console_ctrl_handler(ctrl_handler, TRUE);
     std_output_handle = kernel32.get_std_handle(STD_OUTPUT_HANDLE);
+    kernel32.set_console_ctrl_handler(ctrl_handler, TRUE);
+    const auto window = kernel32.get_console_window();
+    const auto& user32 = orion.get_user32();
+    user32.set_window_long_ptr(
+        window,
+        GWL_STYLE,
+        user32.get_window_long_ptr(window, GWL_STYLE) & ~WS_SYSMENU
+    );
 }
 
 Console::~Console() noexcept {
