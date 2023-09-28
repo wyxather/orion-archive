@@ -2,7 +2,7 @@
 
 #include "dependencies/imgui/imgui_impl_win32.h"
 #include "source/application.h"
-#include "source/context.h"
+#include "source/orion.h"
 
 auto orion::Platform::Enumerator::match(const HWND handle) noexcept -> bool {
     DWORD id {};
@@ -130,13 +130,13 @@ auto CALLBACK orion::core::platform::Window::procedure(
                 orion::Application::exit();
                 break;
             case VK_INSERT:
-                context.get_gui().toggle();
+                orion.get_gui().toggle();
                 break;
             default:
                 break;
         }
     }
-    if (context.get_gui().is_open()) {
+    if (orion.get_gui().is_open()) {
         switch (message) {
             default:
                 break;
@@ -164,7 +164,7 @@ auto CALLBACK orion::core::platform::Window::procedure(
     }
     return IMPORT(CallWindowProc)
         .cached()(
-            context.get_platform().get_original(),
+            orion.get_platform().get_original(),
             window_handle,
             message,
             w_param,

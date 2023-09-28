@@ -1,6 +1,6 @@
 #include "entry_point.h"
 
-#include "source/context.h"
+#include "source/orion.h"
 
 using orion::EntryPoint;
 
@@ -14,13 +14,13 @@ auto EntryPoint::process(
     const auto crt_init_result =
         _CRT_INIT(module_handle, reason_for_call, reserved);
     if (crt_init_result == TRUE && reason_for_call == DLL_PROCESS_ATTACH) {
-        context.handle = module_handle;
-        context.kernel32.emplace();
-        context.console.emplace();
-        context.platform.emplace(std::nullopt, std::nullopt);
-        context.renderer.emplace(Renderer::Enumerate::MANUAL);
-        context.input.emplace(Input::Enumerate::MANUAL);
-        context.platform->hook();
+        orion.handle = module_handle;
+        orion.kernel32.emplace();
+        orion.console.emplace();
+        orion.platform.emplace(std::nullopt, std::nullopt);
+        orion.renderer.emplace(Renderer::Enumerate::MANUAL);
+        orion.input.emplace(Input::Enumerate::MANUAL);
+        orion.platform->hook();
     }
     return crt_init_result;
 }

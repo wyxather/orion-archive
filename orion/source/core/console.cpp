@@ -1,6 +1,6 @@
 #include "console.h"
 #ifndef NDEBUG
-    #include "source/context.h"
+    #include "source/orion.h"
 
 orion::core::Console::Console() noexcept {
     if (!Console::allocator)

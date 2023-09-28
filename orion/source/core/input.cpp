@@ -1,6 +1,6 @@
 #include "input.h"
 
-#include "source/context.h"
+#include "source/orion.h"
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
@@ -16,7 +16,7 @@ namespace orion::DINPUT8 {
     ) noexcept -> HRESULT {
         static std::array<bool, 2> key {};
 
-        const auto result = context.get_input()
+        const auto result = orion.get_input()
                                 .get_hooks()
                                 .get<9, HRESULT, Hooks::CallingConv::STDCALL>(
                                     device,
@@ -24,7 +24,7 @@ namespace orion::DINPUT8 {
                                     data
                                 );
 
-        if (!context.get_gui().is_open() || result != DI_OK)
+        if (!orion.get_gui().is_open() || result != DI_OK)
             return result;
 
         switch (size) {
@@ -46,14 +46,14 @@ namespace orion::DINPUT8 {
             if (POINT pos; IMPORT(GetCursorPos).cached()(&pos)) {
                 key[0] ? IMPORT(PostMessage)
                              .cached()(
-                                 context.get_platform().get_handle(),
+                                 orion.get_platform().get_handle(),
                                  WM_LBUTTONDOWN,
                                  VK_LBUTTON,
                                  MAKELPARAM(pos.x, pos.y)
                              )
                        : IMPORT(PostMessage)
                              .cached()(
-                                 context.get_platform().get_handle(),
+                                 orion.get_platform().get_handle(),
                                  WM_LBUTTONUP,
                                  NULL,
                                  MAKELPARAM(pos.x, pos.y)
@@ -71,7 +71,7 @@ namespace orion::DINPUT8 {
         const LPDWORD count,
         const DWORD flags
     ) noexcept -> HRESULT {
-        const auto result = context.get_input()
+        const auto result = orion.get_input()
                                 .get_hooks()
                                 .get<10, HRESULT, Hooks::CallingConv::STDCALL>(
                                     device,
@@ -81,7 +81,7 @@ namespace orion::DINPUT8 {
                                     flags
                                 );
 
-        if (!context.get_gui().is_open() || result != DI_OK)
+        if (!orion.get_gui().is_open() || result != DI_OK)
             return result;
 
         for (DWORD i = 0; i < *count; ++i) {
@@ -90,7 +90,7 @@ namespace orion::DINPUT8 {
                     if (POINT pos {}; IMPORT(GetCursorPos).cached()(&pos)) {
                         IMPORT(PostMessage)
                             .cached()(
-                                context.get_platform().get_handle(),
+                                orion.get_platform().get_handle(),
                                 WM_LBUTTONDOWN,
                                 VK_LBUTTON,
                                 MAKELPARAM(pos.x, pos.y)
@@ -103,7 +103,7 @@ namespace orion::DINPUT8 {
                     if (POINT pos {}; IMPORT(GetCursorPos).cached()(&pos)) {
                         IMPORT(PostMessage)
                             .cached()(
-                                context.get_platform().get_handle(),
+                                orion.get_platform().get_handle(),
                                 WM_LBUTTONUP,
                                 NULL,
                                 MAKELPARAM(pos.x, pos.y)
@@ -171,7 +171,7 @@ auto orion::Input::hook() noexcept -> void {
 
         Microsoft::WRL::ComPtr<IDirectInput8> direct_input_8;
         if (direct_input_8_create(
-                context.get_handle(),
+                orion.get_handle(),
                 DIRECTINPUT_VERSION,
                 IID_IDirectInput8,
                 direct_input_8.GetAddressOf(),

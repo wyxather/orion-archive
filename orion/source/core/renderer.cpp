@@ -2,7 +2,7 @@
 
 #include "dependencies/imgui/imgui_impl_dx11.h"
 #include "dependencies/imgui/imgui_impl_dx9.h"
-#include "source/context.h"
+#include "source/orion.h"
 
 namespace {
     class RegisterClassExWrapper final {
@@ -85,22 +85,22 @@ namespace orion::D3D9 {
         const D3DPRESENT_PARAMETERS* const params
     ) noexcept -> HRESULT {
         if (ImGui::GetIO().BackendRendererUserData != nullptr) {
-            context.get_game().invalidate();
-            context.get_gui().invalidate();
+            orion.get_game().invalidate();
+            orion.get_gui().invalidate();
             ImGui_ImplDX9_InvalidateDeviceObjects();
             const auto result =
-                context.get_renderer()
+                orion.get_renderer()
                     .get_hooks()
                     .get<16, HRESULT, Hooks::CallingConv::STDCALL>(
                         device,
                         params
                     );
             ImGui_ImplDX9_CreateDeviceObjects();
-            context.get_gui().validate();
-            context.get_game().validate();
+            orion.get_gui().validate();
+            orion.get_game().validate();
             return result;
         }
-        return context.get_renderer()
+        return orion.get_renderer()
             .get_hooks()
             .get<16, HRESULT, Hooks::CallingConv::STDCALL>(device, params);
     }
@@ -112,17 +112,17 @@ namespace orion::D3D9 {
         const HWND window,
         const LPRGNDATA dirty_region
     ) noexcept -> HRESULT {
-        context.get_platform().new_frame();
+        orion.get_platform().new_frame();
 
         if (ImGui::GetIO().BackendRendererUserData == nullptr) {
             ImGui_ImplDX9_Init(device);
-            context.get_gui().init();
-            context.get_game().init();
+            orion.get_gui().init();
+            orion.get_game().init();
         } else {
             ImGui_ImplDX9_NewFrame();
             ImGui::NewFrame();
-            context.get_gui().draw();
-            context.get_game().draw();
+            orion.get_gui().draw();
+            orion.get_game().draw();
             ImGui::EndFrame();
             if (device->BeginScene() == D3D_OK) {
                 ImGui::Render();
@@ -130,7 +130,7 @@ namespace orion::D3D9 {
                 device->EndScene();
             }
         }
-        return context.get_renderer()
+        return orion.get_renderer()
             .get_hooks()
             .get<17, HRESULT, Hooks::CallingConv::STDCALL>(
                 device,
@@ -152,11 +152,11 @@ namespace orion::D3D11 {
         const UINT flags
     ) noexcept -> HRESULT {
         if (ImGui::GetIO().BackendRendererUserData != nullptr) {
-            context.get_game().invalidate();
-            context.get_gui().invalidate();
+            orion.get_game().invalidate();
+            orion.get_gui().invalidate();
             ImGui_ImplDX11_InvalidateDeviceObjects();
             const auto result =
-                context.get_renderer()
+                orion.get_renderer()
                     .get_hooks()
                     .get<13, HRESULT, Hooks::CallingConv::STDCALL>(
                         swapchain,
@@ -167,11 +167,11 @@ namespace orion::D3D11 {
                         flags
                     );
             ImGui_ImplDX11_CreateDeviceObjects();
-            context.get_gui().validate();
-            context.get_game().validate();
+            orion.get_gui().validate();
+            orion.get_game().validate();
             return result;
         }
-        return context.get_renderer()
+        return orion.get_renderer()
             .get_hooks()
             .get<13, HRESULT, Hooks::CallingConv::STDCALL>(
                 swapchain,
@@ -188,7 +188,7 @@ namespace orion::D3D11 {
         const UINT sync_interval,
         const UINT flags
     ) noexcept -> HRESULT {
-        context.get_platform().new_frame();
+        orion.get_platform().new_frame();
 
         if (ImGui::GetIO().BackendRendererUserData == nullptr) {
             Microsoft::WRL::ComPtr<ID3D11Device> device;
@@ -201,19 +201,19 @@ namespace orion::D3D11 {
                     device.Get(),
                     device_context.Get()
                 );
-                context.get_gui().init();
-                context.get_game().init();
+                orion.get_gui().init();
+                orion.get_game().init();
             }
         } else {
             ImGui_ImplDX11_NewFrame();
             ImGui::NewFrame();
-            context.get_gui().draw();
-            context.get_game().draw();
+            orion.get_gui().draw();
+            orion.get_game().draw();
             ImGui::EndFrame();
             ImGui::Render();
             ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
         }
-        return context.get_renderer()
+        return orion.get_renderer()
             .get_hooks()
             .get<8, HRESULT, Hooks::CallingConv::STDCALL>(
                 swapchain,
@@ -365,7 +365,7 @@ auto orion::Renderer::hook() noexcept -> void {
 
             Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain;
             Microsoft::WRL::ComPtr<ID3D11Device> device;
-            Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
+            Microsoft::WRL::ComPtr<ID3D11DeviceContext> orion;
 
             if (create_device_and_swapchain(
                     nullptr,
@@ -383,7 +383,7 @@ auto orion::Renderer::hook() noexcept -> void {
                     swapchain.GetAddressOf(),
                     device.GetAddressOf(),
                     &feature_level,
-                    context.GetAddressOf()
+                    orion.GetAddressOf()
                 )
                 != S_OK)
                 break;
@@ -395,7 +395,7 @@ auto orion::Renderer::hook() noexcept -> void {
             for (std::size_t i = 18; i < 61; i++)
                 table[i] = (*(decltype(table)::value_type**)(device.Get()))[i];
             for (std::size_t i = 61; i < 205; i++)
-                table[i] = (*(decltype(table)::value_type**)(context.Get()))[i];
+                table[i] = (*(decltype(table)::value_type**)(orion.Get()))[i];
 
             Renderer::hooks.emplace(table.data());
             Renderer::hooks->hook_at(8, &D3D11::present);

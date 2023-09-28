@@ -1,7 +1,7 @@
 #include "gui_builder.h"
 
 #include "dependencies/imgui/imgui_custom.h"
-#include "source/context.h"
+#include "source/orion.h"
 #include "source/resources/fonts/fontawesome.h"
 #include "source/utils/math.hpp"
 
@@ -85,7 +85,7 @@ auto orion::GuiBuilder::Header::Nav::watermark() noexcept -> void {
     );
     {
         utils::String<"ORION"> label;
-        const Font font(*context.get_gui().get_fonts().watermark);
+        const Font font(*orion.get_gui().get_fonts().watermark);
         const auto content_region_avail = ImGui::GetContentRegionAvail();
         const auto text_size = ImGui::CalcTextSize(label.c_str());
         const ImVec2 text_pos(
@@ -153,7 +153,7 @@ auto orion::GuiBuilder::Header::Nav::profile() noexcept -> void {
         IM_COL32(8, 8, 8, static_cast<int>(255.0f * style.Alpha))
     );
     {
-        const Font font(*context.get_gui().get_fonts().profile);
+        const Font font(*orion.get_gui().get_fonts().profile);
         const auto profile_icon =
             FontAwesome::get<FontAwesome::Type::USER_SECRET>();
         draw_list.AddText(
@@ -165,7 +165,7 @@ auto orion::GuiBuilder::Header::Nav::profile() noexcept -> void {
     {
         utils::String<"Wyxather"> author;
         utils::String<"Build:" __DATE__> build;
-        const Font font(*context.get_gui().get_fonts().factory);
+        const Font font(*orion.get_gui().get_fonts().factory);
         const ImVec2 text_pos(profile_picture_pos.x + 29.0f, pos.y + 32.0f);
         draw_list.AddText(
             ImVec2(profile_picture_pos.x + 29.0f, pos.y + 12.0f),
@@ -223,7 +223,7 @@ auto orion::GuiBuilder::Header::Nav::Items::button(
 ) noexcept -> void {
     std::string preview = icon;
     preview += str;
-    auto&& gui = context.get_gui();
+    auto&& gui = orion.get_gui();
     const Font font(*gui.get_fonts().navbar);
     auto&& current_tab = gui.get_tabs()[hash];
     const auto& style = ImGui::GetStyle();
@@ -290,7 +290,7 @@ auto orion::GuiBuilder::Header::Nav::Items::button(
 auto orion::GuiBuilder::Header::Nav::Items::text(const char* const str) noexcept
     -> void {
     const auto& style = ImGui::GetStyle();
-    const Font font(*context.get_gui().get_fonts().factory, (14.0f / 15.0f));
+    const Font font(*orion.get_gui().get_fonts().factory, (14.0f / 15.0f));
     if (Items::first_text_call)
         ImGui::Dummy(ImVec2(0.0f, 10.0f));
     else
@@ -349,7 +349,7 @@ orion::GuiBuilder::Body::~Body() noexcept {
 }
 
 orion::GuiBuilder::Body::Head::Head() noexcept :
-    font(*context.get_gui().get_fonts().head) {
+    font(*orion.get_gui().get_fonts().head) {
     const auto& style = ImGui::GetStyle();
     ImGui::BeginChild(
         utils::Fnv1a<"##Body::Head">::value,
@@ -403,7 +403,7 @@ auto orion::GuiBuilder::Body::Head::save() const noexcept -> void {
         ImVec4(0.08235f, 0.08235f, 0.08627f, alpha)
     );
     if (ImGui::Button(label.c_str(), ImVec2(100.0f, 29.0f))) {
-        auto&& config = context.get_config();
+        auto&& config = orion.get_config();
         config.save();
         config.update();
     }
@@ -431,7 +431,7 @@ auto orion::GuiBuilder::Body::Head::create() const noexcept -> void {
         ImVec4(0.00000f, 0.52549f, 0.84314f, alpha)
     );
     if (ImGui::Button(label.c_str(), ImVec2(130.0f, 29.0f))) {
-        auto&& config = context.get_config();
+        auto&& config = orion.get_config();
         config.create();
         config.update();
     }
@@ -549,7 +549,7 @@ orion::GuiBuilder::Body::Content::~Content() noexcept {
 
 orion::GuiBuilder::Body::Content::Panel::Panel(const std::uint32_t hash
 ) noexcept {
-    const auto& gui = context.get_gui();
+    const auto& gui = orion.get_gui();
     if (const auto tab = gui.get_tabs().find(hash);
         tab == nullptr || !tab->active) {
         Panel::resume = false;
@@ -645,7 +645,7 @@ orion::GuiBuilder::Body::Content::Panel::Config::Config() noexcept {
         ImVec4(0.019608f, 0.019608f, 0.019608f, alpha)
     );
 
-    auto&& config = context.get_config();
+    auto&& config = orion.get_config();
     const auto& files = config.get_files();
     for (auto&& file : files) {
         auto resizing = false;
@@ -850,7 +850,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
     ImGui::SetCursorPos(pos);
     {
         const Gui::PushFont font(
-            context.get_gui().get_fonts().factory,
+            orion.get_gui().get_fonts().factory,
             (17.0f / 15.0f)
         );
         ImGui::PushStyleColor(
@@ -1068,7 +1068,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Table::begin_group(
     constexpr auto seperator_height = 18.00f;
 
     const auto& style = ImGui::GetStyle();
-    auto&& gui = context.get_gui();
+    auto&& gui = orion.get_gui();
     auto&& last_active_group = gui.get_last_active_group();
     last_active_group = &gui.get_last_active_tab()->groups[hash];
 
@@ -1119,7 +1119,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Table::begin_group(
         IM_COL32(24, 24, 24, static_cast<int>(255.0f * style.Alpha))
     );
 
-    const Font font(*context.get_gui().get_fonts().factory, (16.f / 15.f));
+    const Font font(*orion.get_gui().get_fonts().factory, (16.f / 15.f));
     ImGui::PushStyleColor(
         ImGuiCol_::ImGuiCol_Text,
         ImVec4(0.9411764f, 0.9411764f, 0.9411764f, 1.0f * style.Alpha)
