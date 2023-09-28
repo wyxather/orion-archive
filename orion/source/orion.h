@@ -8,6 +8,7 @@
 #include "core/platform.h"
 #include "core/renderer.h"
 #include "modules/kernel32.h"
+#include "modules/user32.h"
 
 namespace orion {
 
@@ -20,6 +21,7 @@ namespace orion {
 
         HMODULE handle = nullptr;
         std::optional<const modules::Kernel32> kernel32;
+        std::optional<const modules::User32> user32;
         std::optional<core::Console> console;
         std::optional<Platform> platform;
         std::optional<Renderer> renderer;
@@ -37,6 +39,10 @@ namespace orion {
 
         NODISCARD constexpr auto get_kernel32() const noexcept -> const auto& {
             return kernel32.value();
+        }
+
+        NODISCARD constexpr auto get_user32() const noexcept -> const auto& {
+            return user32.value();
         }
 
         NODISCARD constexpr auto get_console() const noexcept -> const auto& {
