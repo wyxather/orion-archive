@@ -41,7 +41,7 @@ orion::Platform::Enumerator::enumerate(const HWND handle, Data& data) noexcept
                 name[0].data(),
                 static_cast<int>(name[0].size())
             ) == 0
-            || utilities::Fnv1a<"ConsoleWindowClass">::match(name[0].data())
+            || utilities::Fnv1a<"ConsoleWindowClass">::eq(name[0].data())
             || IMPORT(GetWindowTextA)(
                    handle,
                    name[1].data(),

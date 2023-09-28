@@ -770,7 +770,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         ImGui::PopStyleColor(3);
     }
 
-    if (!utilities::Fnv1a<"Default">::match(name.data())) {
+    if (!utilities::Fnv1a<"Default">::eq(name.data())) {
         static std::string last_config_name;
         static auto popup_alpha = 0.0f;
         const auto content_region_avail = ImGui::GetContentRegionAvail();

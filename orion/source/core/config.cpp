@@ -59,7 +59,7 @@ auto orion::Config::enumerate() noexcept -> void {
         if (!path.has_extension())
             continue;
 
-        if (!utilities::Fnv1a<".cfg">::match(path.extension().string().c_str()))
+        if (!utilities::Fnv1a<".cfg">::eq(path.extension().string().c_str()))
             return;
 
         using namespace std::chrono;

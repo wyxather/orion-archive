@@ -1,58 +1,54 @@
 #pragma once
 
 namespace orion::utilities {
-    template<stb::fixed_string _Str = "", typename _SizeTy = std::uint32_t>
+
+    template<stb::fixed_string str = "", typename size_type = std::uint32_t>
     class Fnv1a final {
     public:
-        Fnv1a() = delete;
-
-        Fnv1a(Fnv1a&&) = delete;
-        Fnv1a& operator=(Fnv1a&&) = delete;
-
-        Fnv1a(const Fnv1a&) = delete;
-        Fnv1a& operator=(const Fnv1a&) = delete;
+        NON_CONSTRUCTIBLE(Fnv1a)
 
     private:
-        [[nodiscard]] static consteval auto getOffset() noexcept -> _SizeTy {
-            switch (sizeof(_SizeTy)) {
+        NODISCARD static consteval auto get_prime() noexcept -> size_type {
+            switch (sizeof(size_type)) {
+                case sizeof(std::uint32_t):
+                    return static_cast<size_type>(0x1000193);
+                case sizeof(std::uint64_t):
+                    return static_cast<size_type>(0x00000100000001B3);
                 default:
-                    return _SizeTy {};
-                case (sizeof(std::uint32_t)):
-                    return static_cast<_SizeTy>(0x811C9DC5);
-                case (sizeof(std::uint64_t)):
-                    return static_cast<_SizeTy>(0xCBF29CE484222325);
+                    return size_type {};
             }
         }
 
-        [[nodiscard]] static consteval auto getPrime() noexcept -> _SizeTy {
-            switch (sizeof(_SizeTy)) {
+        NODISCARD static consteval auto get_offset() noexcept -> size_type {
+            switch (sizeof(size_type)) {
+                case sizeof(std::uint32_t):
+                    return static_cast<size_type>(0x811C9DC5);
+                case sizeof(std::uint64_t):
+                    return static_cast<size_type>(0xCBF29CE484222325);
                 default:
-                    return _SizeTy {};
-                case (sizeof(std::uint32_t)):
-                    return static_cast<_SizeTy>(0x1000193);
-                case (sizeof(std::uint64_t)):
-                    return static_cast<_SizeTy>(0x00000100000001B3);
+                    return size_type {};
             }
         }
 
     public:
-        [[nodiscard]] static constexpr auto hash(const char* str) noexcept
-            -> _SizeTy {
-            constexpr auto prime = getPrime();
-            auto offset = getOffset();
+        NODISCARD static constexpr auto hash(const char* str) noexcept
+            -> size_type {
+            constexpr auto PRIME = get_prime();
+            constexpr auto OFFSET = get_offset();
+            auto offset = OFFSET;
             while (*str) {
                 offset ^= *str++;
-                offset *= prime;
+                offset *= PRIME;
             }
             return offset;
         }
 
-        [[nodiscard]] static constexpr auto match(const char* const str)
-            -> bool {
+        static constexpr auto value =
+            stb::consteval_value<hash(str.data())>::value;
+
+        NODISCARD static constexpr auto eq(const char* const str) -> bool {
             return value == hash(str);
         }
-
-        static constexpr auto value =
-            stb::consteval_value<Fnv1a::hash(_Str.data())>::value;
     };
-}  // namespace orion::utils
+
+}  // namespace orion::utilities
