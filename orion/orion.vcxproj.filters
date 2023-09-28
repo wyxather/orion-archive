@@ -171,6 +171,9 @@
     <ClInclude Include="source\modules\user32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\imgui\imgui.cpp">

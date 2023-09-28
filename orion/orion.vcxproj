@@ -42,6 +42,7 @@
     <ClInclude Include="dependencies\stb.hh" />
     <ClInclude Include="dependencies\xorstr.hpp" />
     <ClInclude Include="source\application.h" />
+    <ClInclude Include="source\core\log.h" />
     <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\core\config.h" />
     <ClInclude Include="source\core\console.h" />
