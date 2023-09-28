@@ -1,10 +1,9 @@
 #pragma once
 
-#ifndef JM_XORSTR_DISABLE_AVX_INTRINSICS
-    #define JM_XORSTR_DISABLE_AVX_INTRINSICS
-#endif
-
-#include "Dependencies/xorstr.hpp"
+#pragma push_macro("JM_XORSTR_DISABLE_AVX_INTRINSICS")
+#define JM_XORSTR_DISABLE_AVX_INTRINSICS
+#include "dependencies/xorstr.hpp"
+#pragma pop_macro("JM_XORSTR_DISABLE_AVX_INTRINSICS")
 
 #ifndef xorarr
     #define xorarr(arr) \
@@ -17,42 +16,38 @@
 #endif
 
 namespace orion::utils {
-    template<stb::fixed_string _Str>
+
+    template<stb::fixed_string str>
     class String final {
+        static inline auto data = xorarr(stb::consteval_value<str>::value);
+
     public:
-        constexpr String() noexcept {
-            String::data.crypt();
+        NON_COPYABLE(String)
+        NON_MOVEABLE(String)
+
+        constexpr explicit String() noexcept {
+            data.crypt();
         }
 
         constexpr ~String() noexcept {
-            String::data.crypt();
+            data.crypt();
         }
 
-        String(String&&) = delete;
-        String& operator=(String&&) = delete;
-
-        String(const String&) = delete;
-        String& operator=(const String&) = delete;
-
-        [[nodiscard]] static constexpr auto size() noexcept {
-            return static_cast<decltype(String::data)::size_type>(
-                String::data.size()
-            );
+        NODISCARD static consteval auto size() noexcept {
+            using size_type = decltype(data)::size_type;
+            return static_cast<size_type>(data.size());
         }
 
-        [[nodiscard]] static constexpr auto c_str() noexcept {
-            return static_cast<decltype(String::data)::const_pointer>(
-                String::data.get()
-            );
+        NODISCARD constexpr auto c_str() const noexcept {
+            using const_pointer = decltype(data)::const_pointer;
+            return static_cast<const_pointer>(data.get());
         }
 
-        [[nodiscard]] constexpr operator const char*() const noexcept {
-            return static_cast<decltype(String::data)::const_pointer>(
-                String::data.get()
-            );
+        NODISCARD constexpr explicit(false) operator const
+            char*() const noexcept {
+            using const_pointer = decltype(data)::const_pointer;
+            return static_cast<const_pointer>(data.get());
         }
-
-    private:
-        static inline auto data = xorarr(stb::consteval_value<_Str>::value);
     };
+
 }  // namespace orion::utils
