@@ -2,21 +2,29 @@
 
 #include "framework.h"
 
-#define NON_MOVEABLE(c) \
-    c(c&&) = delete; \
-    c& operator=(c&&) = delete;
+#ifndef NON_MOVEABLE
+    #define NON_MOVEABLE(c) \
+        c(c&&) = delete; \
+        c& operator=(c&&) = delete;
+#endif
 
-#define NON_COPYABLE(c) \
-    c(const c&) = delete; \
-    c& operator=(const c&) = delete;
+#ifndef NON_COPYABLE
+    #define NON_COPYABLE(c) \
+        c(const c&) = delete; \
+        c& operator=(const c&) = delete;
+#endif
 
-#define NON_CONSTRUCTIBLE(c) \
-    c() = delete; \
-    ~c() = delete; \
-    NON_COPYABLE(c) \
-    NON_MOVEABLE(c)
+#ifndef NON_CONSTRUCTIBLE
+    #define NON_CONSTRUCTIBLE(c) \
+        c() = delete; \
+        ~c() = delete; \
+        NON_COPYABLE(c) \
+        NON_MOVEABLE(c)
+#endif
 
-#define NODISCARD [[nodiscard]]
+#ifndef NODISCARD
+    #define NODISCARD _NODISCARD
+#endif
 
 #ifdef __cplusplus
 
