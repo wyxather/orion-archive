@@ -108,13 +108,13 @@
     <ClInclude Include="source\resources\fonts\fontawesome.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine\struct\vector3.h">
+    <ClInclude Include="source\engine\vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine\struct\matrix3x4.h">
+    <ClInclude Include="source\engine\matrix3x4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine\struct\matrix4x4.h">
+    <ClInclude Include="source\engine\matrix4x4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\utilities\hashmap.h">
@@ -239,13 +239,13 @@
     <ClCompile Include="source\core\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine\struct\matrix3x4.cpp">
+    <ClCompile Include="source\engine\matrix3x4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine\struct\matrix4x4.cpp">
+    <ClCompile Include="source\engine\matrix4x4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine\struct\vector3.cpp">
+    <ClCompile Include="source\engine\vector3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\pch-c.c">
