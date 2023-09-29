@@ -1,29 +1,32 @@
-#include "Config.h"
 
 #include <ShlObj.h>
 
 #include <fstream>
 
-#include "Dependencies/json.hpp"
+#include "dependencies/json.hpp"
+#include "source/orion.h"
 
-orion::Config::Config() noexcept {
-    if (PWSTR relative_path {}; SUCCEEDED(IMPORT(SHGetKnownFolderPath)(
+using orion::core::Config;
+using orion::utilities::String;
+
+Config::Config() noexcept {
+    if (PWSTR relative_path; SUCCEEDED(IMPORT(SHGetKnownFolderPath)(
             FOLDERID_Desktop,
             NULL,
             nullptr,
             &relative_path
         ))) {
-        Config::settings.sort = Sort::NAME;
-        Config::settings.path = relative_path;
-        Config::settings.path /= utilities::String<"Orion">().c_str();
-        Config::save();
-        Config::update();
+        settings.sort = Sort::Name;
+        settings.path = relative_path;
+        settings.path /= String<"Orion">().c_str();
+        save();
+        update();
         IMPORT(CoTaskMemFree)(relative_path);
     }
 }
 
-auto orion::Config::sort() noexcept -> void {
-    if (Sort::TIME == Config::settings.sort) {
+auto Config::sort() noexcept -> void {
+    if (Sort::Time == Config::settings.sort) {
         constexpr auto is_newer = [](const File& a, const File& b) noexcept {
             if (a.time_t != b.time_t)
                 return (a.time_t > b.time_t);
@@ -33,12 +36,12 @@ auto orion::Config::sort() noexcept -> void {
     }
 }
 
-auto orion::Config::update() noexcept -> void {
+auto Config::update() noexcept -> void {
     Config::enumerate();
     Config::sort();
 }
 
-auto orion::Config::enumerate() noexcept -> void {
+auto Config::enumerate() noexcept -> void {
     std::error_code ec;
     std::vector<std::filesystem::directory_entry> entry;
 
@@ -85,7 +88,7 @@ auto orion::Config::enumerate() noexcept -> void {
     }
 }
 
-auto orion::Config::create() noexcept -> void {
+auto Config::create() noexcept -> void {
     std::string file_name;
     std::size_t index = 0;
 
@@ -107,11 +110,11 @@ auto orion::Config::create() noexcept -> void {
     Config::save();
 }
 
-auto orion::Config::remove(const File& file) const noexcept -> void {
+auto Config::remove(const File& file) const noexcept -> void {
     std::filesystem::remove(file.path);
 }
 
-auto orion::Config::rename(const File& file) noexcept -> void {
+auto Config::rename(const File& file) noexcept -> void {
     if (std::strlen(Config::input.data()) == 0)
         return;
 
@@ -133,8 +136,7 @@ auto orion::Config::rename(const File& file) noexcept -> void {
     );
 }
 
-auto orion::Config::exist(const std::string_view filename) const noexcept
-    -> bool {
+auto Config::exist(const std::string_view filename) const noexcept -> bool {
     constexpr auto has_same_name = [](const std::string_view name_compared
                                    ) noexcept {
         return [&name_compared](const decltype(Config::files)::value_type& file
@@ -143,7 +145,7 @@ auto orion::Config::exist(const std::string_view filename) const noexcept
     return std::ranges::any_of(Config::files, has_same_name(filename));
 }
 
-auto orion::Config::save(const void* const json) noexcept -> void {
+auto Config::save(const void* const json) noexcept -> void {
     std::error_code ec;
     std::filesystem::create_directory(Config::settings.path, ec);
 
@@ -168,7 +170,7 @@ auto orion::Config::save(const void* const json) noexcept -> void {
     }
 }
 
-void orion::Config::load(void* const json, const File& file) noexcept {
+void Config::load(void* const json, const File& file) noexcept {
     if (std::ifstream in(
             Config::settings.path
             / (file.name + std::string(utilities::String<".cfg">()))
@@ -211,36 +213,36 @@ namespace orion {
     }
 }  // namespace orion
 
-auto orion::Config::save() noexcept -> void {
+auto Config::save() noexcept -> void {
     nlohmann::json json;
 #pragma push_macro("CONFIG")
 #define CONFIG(object) write<#object>(json, object)
-    CONFIG(orion.hitbox[0]);
-    CONFIG(orion.hitbox[1]);
-    CONFIG(orion.hitbox[2]);
-    CONFIG(orion.hitbox[3]);
-    CONFIG(orion.color[0]);
-    CONFIG(orion.color[1]);
-    CONFIG(orion.color[2]);
-    CONFIG(orion.color[3]);
-    CONFIG(orion.target);
+    CONFIG(data.hitbox[0]);
+    CONFIG(data.hitbox[1]);
+    CONFIG(data.hitbox[2]);
+    CONFIG(data.hitbox[3]);
+    CONFIG(data.color[0]);
+    CONFIG(data.color[1]);
+    CONFIG(data.color[2]);
+    CONFIG(data.color[3]);
+    CONFIG(data.target);
 #pragma pop_macro("CONFIG")
     Config::save(static_cast<const void*>(&json));
 }
 
-auto orion::Config::load(const File& file) noexcept -> void {
+auto Config::load(const File& file) noexcept -> void {
     nlohmann::json json;
     Config::load(static_cast<void*>(&json), file);
 #pragma push_macro("CONFIG")
 #define CONFIG(object) read<#object>(json, object)
-    CONFIG(orion.hitbox[0]);
-    CONFIG(orion.hitbox[1]);
-    CONFIG(orion.hitbox[2]);
-    CONFIG(orion.hitbox[3]);
-    CONFIG(orion.color[0]);
-    CONFIG(orion.color[1]);
-    CONFIG(orion.color[2]);
-    CONFIG(orion.color[3]);
-    CONFIG(orion.target);
+    CONFIG(data.hitbox[0]);
+    CONFIG(data.hitbox[1]);
+    CONFIG(data.hitbox[2]);
+    CONFIG(data.hitbox[3]);
+    CONFIG(data.color[0]);
+    CONFIG(data.color[1]);
+    CONFIG(data.color[2]);
+    CONFIG(data.color[3]);
+    CONFIG(data.target);
 #pragma pop_macro("CONFIG")
 }

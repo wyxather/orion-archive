@@ -1,48 +1,27 @@
 #pragma once
 
-namespace orion {
+namespace orion::core {
+
     class Config final {
     public:
+        NON_COPYABLE(Config)
+        NON_MOVEABLE(Config)
+
+        explicit Config() noexcept;
+
         class File;
 
         class Data final {
         public:
-            constexpr Data() noexcept = default;
+            NON_COPYABLE(Data)
+            NON_MOVEABLE(Data)
 
-            Data(Data&&) = delete;
-            Data& operator=(Data&&) = delete;
-
-            Data(const Data&) = delete;
-            Data& operator=(const Data&) = delete;
+            constexpr explicit Data() noexcept = default;
 
             bool hitbox[4] = {};
             float color[4] = {};
             int target = {};
         };
-
-        Config() noexcept;
-
-        Config(Config&&) = delete;
-        Config& operator=(Config&&) = delete;
-
-        Config(const Config&) = delete;
-        Config& operator=(const Config&) = delete;
-
-        [[nodiscard]] constexpr auto&& get_input() noexcept {
-            return Config::input;
-        }
-
-        [[nodiscard]] constexpr auto&& get_sort() noexcept {
-            return Config::settings.sort;
-        }
-
-        [[nodiscard]] constexpr auto&& get_files() const noexcept {
-            return Config::files;
-        }
-
-        [[nodiscard]] constexpr auto&& get_data() noexcept {
-            return Config::orion;
-        }
 
         auto save() noexcept -> void;
         auto update() noexcept -> void;
@@ -57,24 +36,43 @@ namespace orion {
         auto save(const void* json) noexcept -> void;
         auto load(void* json, const File& file) noexcept -> void;
 
-        [[nodiscard]] auto exist(std::string_view fileName) const noexcept
+        NODISCARD auto exist(const std::string_view fileName) const noexcept
             -> bool;
 
-        enum Sort { NAME, TIME };
+        enum Sort { Name, Time };
 
         struct {
             int sort = {};
             std::filesystem::path path;
         } settings;
 
-        Data orion;
+        Data data;
         std::string name;
         std::vector<File> files;
         std::array<CHAR, 260> input = {};
+
+    public:
+        NODISCARD constexpr auto get_sort() noexcept -> auto& {
+            return settings.sort;
+        }
+
+        NODISCARD constexpr auto get_data() noexcept -> auto& {
+            return data;
+        }
+
+        NODISCARD constexpr auto get_files() const noexcept -> const auto& {
+            return files;
+        }
+
+        NODISCARD constexpr auto get_input() noexcept -> auto& {
+            return input;
+        }
     };
 
     class Config::File {
     public:
+        NON_COPYABLE(File)
+
         constexpr explicit File(
             const std::string_view name,
             const std::filesystem::path& path,
@@ -88,13 +86,10 @@ namespace orion {
             time_t(time_t),
             path(path) {}
 
-        constexpr File() noexcept = default;
+        constexpr explicit File() noexcept = default;
 
         constexpr File(File&&) noexcept = default;
         constexpr File& operator=(File&&) noexcept = default;
-
-        File(const File&) = delete;
-        File& operator=(const File&) = delete;
 
         bool active = {};
         std::string name;
@@ -102,4 +97,5 @@ namespace orion {
         std::time_t time_t = {};
         std::filesystem::path path;
     };
-}  // namespace orion
+
+}  // namespace orion::core
