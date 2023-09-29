@@ -4,6 +4,8 @@
 #include "source/orion.h"
 #include "source/resources/fonts/fontawesome.h"
 
+using orion::resources::fonts::FontAwesome;
+
 orion::GuiBuilder::Font::Font(ImFont& font) noexcept :
     font(font),
     scale(font.Scale) {

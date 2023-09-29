@@ -1,6 +1,7 @@
 #pragma once
 
-namespace orion::Resources::Fonts {
+namespace orion::resources::fonts {
+
     constexpr inline auto museosanscyrl_700_compressed_size = 58134;
     constexpr inline std::array<unsigned int, 58136 / 4>
         museosanscyrl_700_compressed_data = {
@@ -5742,4 +5743,5 @@ namespace orion::Resources::Fonts {
             0xc22b0783, 0x00b01973, 0xcc000000, 0x05449846, 0xefacc8fa,
             0x000000fb,
     };
-}  // namespace orion::Resources::Fonts
+
+}  // namespace orion::resources::fonts

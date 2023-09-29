@@ -6,6 +6,8 @@
 #include "source/resources/fonts/fontawesome.h"
 #include "source/resources/fonts/museosanscyrl.h"
 
+using orion::resources::fonts::FontAwesome;
+
 orion::Gui::Gui() noexcept {
     Gui::setup_io();
     Gui::setup_style();
@@ -60,8 +62,8 @@ auto orion::Gui::setup_fonts() noexcept -> void {
     auto&& imgui_fonts = *ImGui::GetIO().Fonts;
 
     Gui::fonts.factory = imgui_fonts.AddFontFromMemoryCompressedTTF(
-        Resources::Fonts::museosanscyrl_700_compressed_data.data(),
-        Resources::Fonts::museosanscyrl_700_compressed_size,
+        resources::fonts::museosanscyrl_700_compressed_data.data(),
+        resources::fonts::museosanscyrl_700_compressed_size,
         15.0f,
         nullptr,
         get_font_glyph_ranges()
@@ -70,8 +72,8 @@ auto orion::Gui::setup_fonts() noexcept -> void {
         ImFontConfig cfg;
         cfg.MergeMode = true;
         imgui_fonts.AddFontFromMemoryCompressedTTF(
-            Resources::Fonts::fa_compressed_data.data(),
-            Resources::Fonts::fa_compressed_size,
+            resources::fonts::fa_compressed_data.data(),
+            resources::fonts::fa_compressed_size,
             13.0f,
             &cfg,
             FontAwesome::range
@@ -79,8 +81,8 @@ auto orion::Gui::setup_fonts() noexcept -> void {
     }
 
     Gui::fonts.navbar = imgui_fonts.AddFontFromMemoryCompressedTTF(
-        Resources::Fonts::museosanscyrl_700_compressed_data.data(),
-        Resources::Fonts::museosanscyrl_700_compressed_size,
+        resources::fonts::museosanscyrl_700_compressed_data.data(),
+        resources::fonts::museosanscyrl_700_compressed_size,
         16.0f
     );
     {
@@ -90,8 +92,8 @@ auto orion::Gui::setup_fonts() noexcept -> void {
         cfg.GlyphExtraSpacing = ImVec2(36.0f, 0.0f);
         cfg.GlyphMinAdvanceX = cfg.GlyphMaxAdvanceX = 0.0f;
         imgui_fonts.AddFontFromMemoryCompressedTTF(
-            Resources::Fonts::fa_compressed_data.data(),
-            Resources::Fonts::fa_compressed_size,
+            resources::fonts::fa_compressed_data.data(),
+            resources::fonts::fa_compressed_size,
             14.0f,
             &cfg,
             FontAwesome::range
@@ -99,8 +101,8 @@ auto orion::Gui::setup_fonts() noexcept -> void {
     }
 
     Gui::fonts.profile = imgui_fonts.AddFontFromMemoryCompressedTTF(
-        Resources::Fonts::museosanscyrl_700_compressed_data.data(),
-        Resources::Fonts::museosanscyrl_700_compressed_size,
+        resources::fonts::museosanscyrl_700_compressed_data.data(),
+        resources::fonts::museosanscyrl_700_compressed_size,
         15.0f
     );
     {
@@ -110,8 +112,8 @@ auto orion::Gui::setup_fonts() noexcept -> void {
         cfg.GlyphExtraSpacing = ImVec2(0.0f, 0.0f);
         cfg.GlyphMinAdvanceX = cfg.GlyphMaxAdvanceX = 0.0f;
         imgui_fonts.AddFontFromMemoryCompressedTTF(
-            Resources::Fonts::fa_compressed_data.data(),
-            Resources::Fonts::fa_compressed_size,
+            resources::fonts::fa_compressed_data.data(),
+            resources::fonts::fa_compressed_size,
             15.0f,
             &cfg,
             FontAwesome::range
@@ -119,14 +121,14 @@ auto orion::Gui::setup_fonts() noexcept -> void {
     }
 
     Gui::fonts.watermark = imgui_fonts.AddFontFromMemoryCompressedTTF(
-        Resources::Fonts::museosanscyrl_900_compressed_data.data(),
-        Resources::Fonts::museosanscyrl_900_compressed_size,
+        resources::fonts::museosanscyrl_900_compressed_data.data(),
+        resources::fonts::museosanscyrl_900_compressed_size,
         32.0f
     );
 
     Gui::fonts.head = imgui_fonts.AddFontFromMemoryCompressedTTF(
-        Resources::Fonts::museosanscyrl_700_compressed_data.data(),
-        Resources::Fonts::museosanscyrl_700_compressed_size,
+        resources::fonts::museosanscyrl_700_compressed_data.data(),
+        resources::fonts::museosanscyrl_700_compressed_size,
         17.0f,
         nullptr,
         get_font_glyph_ranges()
@@ -135,8 +137,8 @@ auto orion::Gui::setup_fonts() noexcept -> void {
         ImFontConfig cfg;
         cfg.MergeMode = true;
         imgui_fonts.AddFontFromMemoryCompressedTTF(
-            Resources::Fonts::fa_compressed_data.data(),
-            Resources::Fonts::fa_compressed_size,
+            resources::fonts::fa_compressed_data.data(),
+            resources::fonts::fa_compressed_size,
             15.0f,
             &cfg,
             FontAwesome::range

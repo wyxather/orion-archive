@@ -1,15 +1,10 @@
 #pragma once
 
-namespace orion {
+namespace orion::resources::fonts {
+
     class FontAwesome final {
     public:
-        FontAwesome() = delete;
-
-        FontAwesome(FontAwesome&&) = delete;
-        FontAwesome& operator=(FontAwesome&&) = delete;
-
-        FontAwesome(const FontAwesome&) = delete;
-        FontAwesome& operator=(const FontAwesome&) = delete;
+        NON_CONSTRUCTIBLE(FontAwesome);
 
         enum class Type {
             NONE,
@@ -37,11 +32,9 @@ namespace orion {
         };
 
     private:
-        template<const Type _Type>
-        [[nodiscard]] static constexpr auto c_str() noexcept {
-            switch (_Type) {
-                default:
-                    return u8"\u0000";
+        template<Type type>
+        NODISCARD static constexpr auto c_str() noexcept {
+            switch (type) {
                 case Type::GUN:
                     return u8"\uE19B";
                 case Type::USER:
@@ -82,23 +75,24 @@ namespace orion {
                     return u8"\uF7D9";
                 case Type::COMPUTER_MOUSE:
                     return u8"\uF8CC";
+                default:
+                    return u8"\u0000";
             }
         }
 
     public:
         static constexpr unsigned short range[] {
-            static_cast<unsigned short>(FontAwesome::Type::GUN),
-            static_cast<unsigned short>(FontAwesome::Type::MAX),
-            static_cast<unsigned short>(FontAwesome::Type::NONE)};
+            static_cast<unsigned short>(Type::GUN),
+            static_cast<unsigned short>(Type::MAX),
+            static_cast<unsigned short>(Type::NONE)
+        };
 
-        template<const Type _Type>
-        [[nodiscard]] static constexpr auto get() noexcept {
-            return reinterpret_cast<const char*>(FontAwesome::c_str<_Type>());
+        template<Type type>
+        NODISCARD static constexpr auto get() noexcept {
+            return reinterpret_cast<const char*>(c_str<type>());
         }
     };
-}  // namespace orion
 
-namespace orion::Resources::Fonts {
     constexpr inline auto fa_compressed_size = 396565;
     constexpr inline std::array<unsigned int, 396568 / 4> fa_compressed_data = {
         0x0000bc57, 0x00000000, 0xa4e40900, 0x00000400, 0x00010037, 0x000a0000,
@@ -16626,4 +16620,5 @@ namespace orion::Resources::Fonts {
         0x250b8605, 0x73696172, 0xb9436465, 0x65732307, 0xf9827563, 0x63077929,
         0x76617261, 0x05006e61, 0x3857d7fa, 0x000000f3,
     };
-}  // namespace orion::Resources::Fonts
+
+}  // namespace orion::resources::fonts
