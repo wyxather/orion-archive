@@ -120,7 +120,7 @@
     <ClInclude Include="source\utilities\hashmap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utilities\math.hpp">
+    <ClInclude Include="source\utilities\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\utilities\string.h">

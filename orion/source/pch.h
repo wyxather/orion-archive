@@ -36,6 +36,7 @@
     #include "source/modules/modules.h"
     #include "source/utilities/fnv1a.h"
     #include "source/utilities/imgui.hpp"
+    #include "source/utilities/math.h"
     #include "source/utilities/string.h"
     #include "source/utilities/virtual_method.h"
 

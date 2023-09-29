@@ -70,7 +70,7 @@
     <ClInclude Include="source\utilities\fnv1a.h" />
     <ClInclude Include="source\utilities\hashmap.hpp" />
     <ClInclude Include="source\utilities\imgui.hpp" />
-    <ClInclude Include="source\utilities\math.hpp" />
+    <ClInclude Include="source\utilities\math.h" />
     <ClInclude Include="source\utilities\string.h" />
   </ItemGroup>
   <ItemGroup>

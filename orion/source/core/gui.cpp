@@ -5,7 +5,6 @@
 #include "source/orion.h"
 #include "source/resources/fonts/fontawesome.h"
 #include "source/resources/fonts/museosanscyrl.h"
-#include "source/utilities/math.hpp"
 
 orion::Gui::Gui() noexcept {
     Gui::setup_io();
@@ -169,7 +168,7 @@ auto orion::Gui::on_close() const noexcept -> void {
 
 auto orion::Gui::on_animating() noexcept -> void {
     Gui::animating = true;
-    Gui::alpha_animated = utilities::Math::Easing::in_out_quart(Gui::alpha);
+    Gui::alpha_animated = utilities::math::easing::in_out_quart(Gui::alpha);
     Gui::size_animated = Gui::size * Gui::alpha_animated;
     Gui::position_animated =
         Gui::position + (Gui::size - Gui::size_animated) * 0.5f;
@@ -445,7 +444,8 @@ namespace orion {
 
     struct Menu::Body::Content::Main::Panel::Table::Widget: Component {
         Widget() noexcept : m_count {0} {
-            utilities::String<"##Menu::Body::Content::Panel::Table::Widget"> name;
+            utilities::String<"##Menu::Body::Content::Panel::Table::Widget">
+                name;
             Component::BeginTable(name, 2);
         }
 

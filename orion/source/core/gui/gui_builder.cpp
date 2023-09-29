@@ -3,7 +3,6 @@
 #include "dependencies/imgui/imgui_custom.h"
 #include "source/orion.h"
 #include "source/resources/fonts/fontawesome.h"
-#include "source/utilities/math.hpp"
 
 orion::GuiBuilder::Font::Font(ImFont& font) noexcept :
     font(font),
@@ -245,9 +244,9 @@ auto orion::GuiBuilder::Header::Nav::Items::button(
             );
     }
     current_tab.alpha_animated =
-        style.Alpha * utilities::Math::Easing::out_expo(current_tab.alpha);
+        style.Alpha * utilities::math::easing::out_expo(current_tab.alpha);
     const auto button_alpha =
-        style.Alpha * utilities::Math::Easing::in_out_expo(current_tab.alpha);
+        style.Alpha * utilities::math::easing::in_out_expo(current_tab.alpha);
     ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 5.0f);
     ImGui::PushStyleVar(
         ImGuiStyleVar_::ImGuiStyleVar_ButtonTextAlign,
@@ -377,7 +376,8 @@ orion::GuiBuilder::Body::Head::~Head() noexcept {
 auto orion::GuiBuilder::Body::Head::save() const noexcept -> void {
     const auto label =
         std::string(FontAwesome::get<FontAwesome::Type::FLOPPY_DISK>())
-        + utilities::String<"    ">().c_str() + utilities::String<"Save">().c_str();
+        + utilities::String<"    ">().c_str()
+        + utilities::String<"Save">().c_str();
     const auto alpha = ImGui::GetStyle().Alpha * 1.0f;
     ImGui::SetCursorPos(ImVec2(18.0f, 21.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3.0f);
@@ -414,7 +414,8 @@ auto orion::GuiBuilder::Body::Head::save() const noexcept -> void {
 auto orion::GuiBuilder::Body::Head::create() const noexcept -> void {
     const auto label =
         std::string(FontAwesome::get<FontAwesome::Type::FILE_PLUS>())
-        + utilities::String<"    ">().c_str() + utilities::String<"Create">().c_str();
+        + utilities::String<"    ">().c_str()
+        + utilities::String<"Create">().c_str();
     const auto alpha = ImGui::GetStyle().Alpha * 1.0f;
     ImGui::SameLine(0.0f, 20.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3.0f);
