@@ -1,17 +1,19 @@
-#include "Game.h"
+#include "game.h"
 
-orion::Game::Game() noexcept {}
+using orion::core::Game;
 
-orion::Game::~Game() noexcept {}
+Game::Game() noexcept {}
 
-auto orion::Game::hook() noexcept -> void {}
+Game::~Game() noexcept {}
 
-auto orion::Game::unhook() const noexcept -> void {}
+auto Game::hook() noexcept -> void {}
 
-auto orion::Game::init() noexcept -> void {}
+auto Game::unhook() noexcept -> void {}
 
-auto orion::Game::draw() noexcept -> void {}
+auto Game::init() noexcept -> void {}
 
-auto orion::Game::validate() noexcept -> void {}
+auto Game::draw() noexcept -> void {}
 
-auto orion::Game::invalidate() noexcept -> void {}
+auto Game::validate() noexcept -> void {}
+
+auto Game::invalidate() noexcept -> void {}

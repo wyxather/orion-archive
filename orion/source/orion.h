@@ -28,7 +28,7 @@ namespace orion {
         std::optional<core::Input> input;
         std::optional<Config> config;
         std::optional<Gui> gui;
-        std::optional<Game> game;
+        std::optional<core::Game> game;
 
     public:
         constexpr explicit Orion() noexcept = default;
