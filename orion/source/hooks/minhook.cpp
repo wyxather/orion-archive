@@ -31,7 +31,7 @@ auto MinHook::enable() noexcept -> void {
     MH_EnableHook(MH_ALL_HOOKS);
 }
 
-auto MinHook::uninitialize() noexcept -> void {
+auto MinHook::disable() noexcept -> void {
     MH_DisableHook(MH_ALL_HOOKS);
 }
 

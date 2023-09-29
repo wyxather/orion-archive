@@ -156,7 +156,7 @@ auto orion::GuiBuilder::Header::Nav::profile() noexcept -> void {
     {
         const Font font(*orion.get_gui().get_fonts().profile);
         const auto profile_icon =
-            FontAwesome::get<FontAwesome::Type::USER_SECRET>();
+            FontAwesome::get<FontAwesome::Type::UserSecret>();
         draw_list.AddText(
             profile_picture_pos - ImGui::CalcTextSize(profile_icon) * 0.5f,
             IM_COL32(240, 240, 240, static_cast<int>(255.0f * style.Alpha)),
@@ -377,7 +377,7 @@ orion::GuiBuilder::Body::Head::~Head() noexcept {
 
 auto orion::GuiBuilder::Body::Head::save() const noexcept -> void {
     const auto label =
-        std::string(FontAwesome::get<FontAwesome::Type::FLOPPY_DISK>())
+        std::string(FontAwesome::get<FontAwesome::Type::FloppyDisk>())
         + utilities::String<"    ">().c_str()
         + utilities::String<"Save">().c_str();
     const auto alpha = ImGui::GetStyle().Alpha * 1.0f;
@@ -415,7 +415,7 @@ auto orion::GuiBuilder::Body::Head::save() const noexcept -> void {
 
 auto orion::GuiBuilder::Body::Head::create() const noexcept -> void {
     const auto label =
-        std::string(FontAwesome::get<FontAwesome::Type::FILE_PLUS>())
+        std::string(FontAwesome::get<FontAwesome::Type::FilePlus>())
         + utilities::String<"    ">().c_str()
         + utilities::String<"Create">().c_str();
     const auto alpha = ImGui::GetStyle().Alpha * 1.0f;
@@ -733,7 +733,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         if (ImGui::Button(
                 std::string(
                     std::string(
-                        FontAwesome::get<FontAwesome::Type::FLOPPY_DISK>()
+                        FontAwesome::get<FontAwesome::Type::FloppyDisk>()
                     )
                     + utilities::String<"    ">().c_str()
                     + utilities::String<"Save">().c_str()
@@ -762,7 +762,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         );
         if (ImGui::Button(
                 std::string(
-                    std::string(FontAwesome::get<FontAwesome::Type::DOWNLOAD>())
+                    std::string(FontAwesome::get<FontAwesome::Type::Download>())
                     + utilities::String<"    ">().c_str()
                     + utilities::String<"Load">().c_str()
                 )
@@ -791,7 +791,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         ImGui::SetCursorPos(
             pos + ImVec2(content_region_avail.x - 119.0f, 10.0f)
         );
-        if (ImGui::Button(FontAwesome::get<FontAwesome::Type::TRASH_CAN>()))
+        if (ImGui::Button(FontAwesome::get<FontAwesome::Type::TrashCan>()))
             result = Event::REMOVE;
 
         utilities::String<"##Menu::Body::Content::Main::Panel::Config::Rename">
@@ -800,7 +800,7 @@ auto orion::GuiBuilder::Body::Content::Panel::Config::draw(
         ImGui::SetCursorPos(
             pos + ImVec2(content_region_avail.x - 148.0f, 10.0f)
         );
-        if (ImGui::Button(FontAwesome::get<FontAwesome::Type::FILE_SIGNATURE>()
+        if (ImGui::Button(FontAwesome::get<FontAwesome::Type::FileSignature>()
             )) {
             ImGui::OpenPopup(window_rename.c_str());
             strcpy_s(input.data(), input.size(), name.data());

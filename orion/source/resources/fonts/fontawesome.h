@@ -7,73 +7,73 @@ namespace orion::resources::fonts {
         NON_CONSTRUCTIBLE(FontAwesome);
 
         enum class Type {
-            NONE,
-            GUN = 0xE19B,
-            USER = 0xF007,
-            GEAR = 0xF013,
-            DOWNLOAD = 0xF019,
-            CROSSHAIRS = 0xF05B,
-            FLOPPY_DISK = 0xF0C7,
-            CODE = 0xF121,
-            BOMB = 0xF1E2,
-            BINOCULARS = 0xF1E5,
-            USER_SECRET = 0xF21B,
-            ROTATE_LEFT = 0xF2EA,
-            TRASH_CAN = 0xF2ED,
-            FILE_PLUS = 0xF319,
-            PALETTE = 0xF53F,
-            FILE_SIGNATURE = 0xF573,
-            GLOBE_ASIA = 0xF57E,
-            BACKPACK = 0xF5D4,
-            SCALPEL = 0xF61D,
-            SCREWDRIVER_WRENCH = 0xF7D9,
-            COMPUTER_MOUSE = 0xF8CC,
-            MAX
+            None,
+            Gun = 0xE19B,
+            User = 0xF007,
+            Gear = 0xF013,
+            Download = 0xF019,
+            Crosshairs = 0xF05B,
+            FloppyDisk = 0xF0C7,
+            Code = 0xF121,
+            Bomb = 0xF1E2,
+            Binoculars = 0xF1E5,
+            UserSecret = 0xF21B,
+            RotateLeft = 0xF2EA,
+            TrashCan = 0xF2ED,
+            FilePlus = 0xF319,
+            Palette = 0xF53F,
+            FileSignature = 0xF573,
+            GlobeAsia = 0xF57E,
+            Backpack = 0xF5D4,
+            Scalpel = 0xF61D,
+            ScrewdriverWrench = 0xF7D9,
+            ComputerMouse = 0xF8CC,
+            Max
         };
 
     private:
         template<Type type>
         NODISCARD static constexpr auto c_str() noexcept {
             switch (type) {
-                case Type::GUN:
+                case Type::Gun:
                     return u8"\uE19B";
-                case Type::USER:
+                case Type::User:
                     return u8"\uF007";
-                case Type::GEAR:
+                case Type::Gear:
                     return u8"\uF013";
-                case Type::DOWNLOAD:
+                case Type::Download:
                     return u8"\uF019";
-                case Type::CROSSHAIRS:
+                case Type::Crosshairs:
                     return u8"\uF05B";
-                case Type::FLOPPY_DISK:
+                case Type::FloppyDisk:
                     return u8"\uF0C7";
-                case Type::CODE:
+                case Type::Code:
                     return u8"\uF121";
-                case Type::BOMB:
+                case Type::Bomb:
                     return u8"\uF1E2";
-                case Type::BINOCULARS:
+                case Type::Binoculars:
                     return u8"\uF1E5";
-                case Type::USER_SECRET:
+                case Type::UserSecret:
                     return u8"\uF21B";
-                case Type::ROTATE_LEFT:
+                case Type::RotateLeft:
                     return u8"\uF2EA";
-                case Type::TRASH_CAN:
+                case Type::TrashCan:
                     return u8"\uF2ED";
-                case Type::FILE_PLUS:
+                case Type::FilePlus:
                     return u8"\uF319";
-                case Type::PALETTE:
+                case Type::Palette:
                     return u8"\uF53F";
-                case Type::FILE_SIGNATURE:
+                case Type::FileSignature:
                     return u8"\uF573";
-                case Type::GLOBE_ASIA:
+                case Type::GlobeAsia:
                     return u8"\uF57E";
-                case Type::BACKPACK:
+                case Type::Backpack:
                     return u8"\uF5D4";
-                case Type::SCALPEL:
+                case Type::Scalpel:
                     return u8"\uF61D";
-                case Type::SCREWDRIVER_WRENCH:
+                case Type::ScrewdriverWrench:
                     return u8"\uF7D9";
-                case Type::COMPUTER_MOUSE:
+                case Type::ComputerMouse:
                     return u8"\uF8CC";
                 default:
                     return u8"\u0000";
@@ -82,9 +82,9 @@ namespace orion::resources::fonts {
 
     public:
         static constexpr unsigned short range[] {
-            static_cast<unsigned short>(Type::GUN),
-            static_cast<unsigned short>(Type::MAX),
-            static_cast<unsigned short>(Type::NONE)
+            static_cast<unsigned short>(Type::Gun),
+            static_cast<unsigned short>(Type::Max),
+            static_cast<unsigned short>(Type::None)
         };
 
         template<Type type>

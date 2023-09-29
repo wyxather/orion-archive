@@ -498,7 +498,7 @@ namespace orion {
                     constexpr auto colorVerticalOffset {3.00f};
 
                     const auto colorIcon {
-                        FontAwesome::get<FontAwesome::Type::PALETTE>()
+                        FontAwesome::get<FontAwesome::Type::Palette>()
                     };
                     const auto colorLabel {
                         std::string {colorIcon} + name.c_str()
@@ -917,42 +917,42 @@ auto orion::Gui::builder() noexcept -> void {
             if (GuiBuilder::Header::Nav::Items items {}) {
                 items.text<"Aimbot">();
                 items.button<"Ragebot">(
-                    FontAwesome::get<FontAwesome::Type::CROSSHAIRS>()
+                    FontAwesome::get<FontAwesome::Type::Crosshairs>()
                 );
                 items.button<"Anti Aim">(
-                    FontAwesome::get<FontAwesome::Type::ROTATE_LEFT>()
+                    FontAwesome::get<FontAwesome::Type::RotateLeft>()
                 );
                 items.button<"Legitbot">(
-                    FontAwesome::get<FontAwesome::Type::COMPUTER_MOUSE>()
+                    FontAwesome::get<FontAwesome::Type::ComputerMouse>()
                 );
                 items.text<"Visuals">();
                 items.button<"Players">(
-                    FontAwesome::get<FontAwesome::Type::USER>()
+                    FontAwesome::get<FontAwesome::Type::User>()
                 );
                 items.button<"Weapons">(
-                    FontAwesome::get<FontAwesome::Type::GUN>()
+                    FontAwesome::get<FontAwesome::Type::Gun>()
                 );
                 items.button<"Grenades">(
-                    FontAwesome::get<FontAwesome::Type::BOMB>()
+                    FontAwesome::get<FontAwesome::Type::Bomb>()
                 );
                 items.button<"World">(
-                    FontAwesome::get<FontAwesome::Type::GLOBE_ASIA>()
+                    FontAwesome::get<FontAwesome::Type::GlobeAsia>()
                 );
                 items.button<"View">(
-                    FontAwesome::get<FontAwesome::Type::BINOCULARS>()
+                    FontAwesome::get<FontAwesome::Type::Binoculars>()
                 );
                 items.text<"Miscellaneous">();
                 items.button<"Main">(
-                    FontAwesome::get<FontAwesome::Type::SCREWDRIVER_WRENCH>()
+                    FontAwesome::get<FontAwesome::Type::ScrewdriverWrench>()
                 );
                 items.button<"Inventory">(
-                    FontAwesome::get<FontAwesome::Type::BACKPACK>()
+                    FontAwesome::get<FontAwesome::Type::Backpack>()
                 );
                 items.button<"Scripts">(
-                    FontAwesome::get<FontAwesome::Type::CODE>()
+                    FontAwesome::get<FontAwesome::Type::Code>()
                 );
                 items.button<"Configs">(
-                    FontAwesome::get<FontAwesome::Type::GEAR>()
+                    FontAwesome::get<FontAwesome::Type::Gear>()
                 );
             }
         }
