@@ -1,44 +1,49 @@
-#include "MinHook.h"
+#include "minhook.h"
 
-#include "Dependencies/MinHook/include/MinHook.h"
+#include "dependencies/minhook/include/MinHook.h"
 
-orion::hooks::MinHook::MinHook(const std::size_t size) noexcept :
+using orion::hooks::MinHook;
+
+MinHook::MinHook(const std::size_t size) noexcept :
     base {nullptr},
     count {size},
-    originals {
-        std::make_unique<decltype(MinHook::originals)::element_type[]>(size)} {}
+    originals {std::make_unique<decltype(originals)::element_type[]>(size)} {}
 
-orion::hooks::MinHook::MinHook(void* const vmt_address) noexcept :
-    base {vmt_address},
-    count {hooks::calc_vmt_length(vmt_address)},
-    originals {
-        std::make_unique<decltype(MinHook::originals)::element_type[]>(count)} {
+MinHook::MinHook(void* const vmt_ptr) noexcept :
+    base {vmt_ptr},
+    count {hooks::calc_vmt_length(vmt_ptr)},
+    originals {std::make_unique<decltype(originals)::element_type[]>(count)} {}
+
+MinHook::MinHook(void** const class_ptr) noexcept :
+    base {*class_ptr},
+    count {hooks::calc_vmt_length(class_ptr)},
+    originals {std::make_unique<decltype(originals)::element_type[]>(count)} {}
+
+auto MinHook::initialize() noexcept -> void {
+    MH_Initialize();
 }
 
-orion::hooks::MinHook::MinHook(void** const class_address) noexcept :
-    base {*class_address},
-    count {hooks::calc_vmt_length(class_address)},
-    originals {
-        std::make_unique<decltype(MinHook::originals)::element_type[]>(count)} {
+auto MinHook::uninitialize() noexcept -> void {
+    MH_Uninitialize();
 }
 
-auto orion::hooks::MinHook::hook_at(
-    const std::size_t index,
-    void* const function
-) const noexcept -> void {
-    return MinHook::hook_at(
-        index,
-        reinterpret_cast<void**>(MinHook::base)[index],
-        function
-    );
+auto MinHook::enable() noexcept -> void {
+    MH_EnableHook(MH_ALL_HOOKS);
 }
 
-auto orion::hooks::MinHook::hook_at(
+auto MinHook::uninitialize() noexcept -> void {
+    MH_DisableHook(MH_ALL_HOOKS);
+}
+
+auto MinHook::hook_at(
     const std::size_t index,
     void* const target,
     void* const function
 ) const noexcept -> void {
-    if (MinHook::base != nullptr && index < MinHook::count) {
-        MH_CreateHook(target, function, &(MinHook::originals[index]));
-    }
+    MH_CreateHook(target, function, &(originals[index]));
+}
+
+auto MinHook::hook_at(const std::size_t index, void* const function)
+    const noexcept -> void {
+    return hook_at(index, reinterpret_cast<void**>(base)[index], function);
 }

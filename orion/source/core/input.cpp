@@ -8,6 +8,7 @@
 
 using Microsoft::WRL::ComPtr;
 using orion::core::Input;
+using orion::hooks::CallConv;
 using orion::utilities::String;
 
 Input::Input(const Type type) noexcept {
@@ -110,11 +111,8 @@ auto STDMETHODCALLTYPE Input::DirectInput8::get_device_state(
 ) noexcept -> HRESULT {
     static std::array<bool, 2> key {};
     const auto result =
-        orion.get_input().hooks->get<9, HRESULT, hooks::CallConv::StdCall>(
-            device,
-            size,
-            data
-        );
+        orion.get_input()
+            .hooks->call<9, HRESULT, CallConv::StdCall>(device, size, data);
     if (!orion.get_gui().is_open() || result != DI_OK) {
         return result;
     }
@@ -164,7 +162,7 @@ auto STDMETHODCALLTYPE Input::DirectInput8::get_device_data(
     const DWORD flags
 ) noexcept -> HRESULT {
     const auto result =
-        orion.get_input().hooks->get<10, HRESULT, hooks::CallConv::StdCall>(
+        orion.get_input().hooks->call<10, HRESULT, CallConv::StdCall>(
             device,
             size,
             data,

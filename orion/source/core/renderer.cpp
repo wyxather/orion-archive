@@ -91,7 +91,7 @@ namespace orion::D3D9 {
             const auto result =
                 orion.get_renderer()
                     .get_hooks()
-                    .get<16, HRESULT, hooks::CallConv::StdCall>(
+                    .call<16, HRESULT, hooks::CallConv::StdCall>(
                         device,
                         params
                     );
@@ -102,7 +102,7 @@ namespace orion::D3D9 {
         }
         return orion.get_renderer()
             .get_hooks()
-            .get<16, HRESULT, hooks::CallConv::StdCall>(device, params);
+            .call<16, HRESULT, hooks::CallConv::StdCall>(device, params);
     }
 
     auto CALLBACK present(
@@ -132,7 +132,7 @@ namespace orion::D3D9 {
         }
         return orion.get_renderer()
             .get_hooks()
-            .get<17, HRESULT, hooks::CallConv::StdCall>(
+            .call<17, HRESULT, hooks::CallConv::StdCall>(
                 device,
                 src,
                 dst,
@@ -158,7 +158,7 @@ namespace orion::D3D11 {
             const auto result =
                 orion.get_renderer()
                     .get_hooks()
-                    .get<13, HRESULT, hooks::CallConv::StdCall>(
+                    .call<13, HRESULT, hooks::CallConv::StdCall>(
                         swapchain,
                         count,
                         width,
@@ -173,7 +173,7 @@ namespace orion::D3D11 {
         }
         return orion.get_renderer()
             .get_hooks()
-            .get<13, HRESULT, hooks::CallConv::StdCall>(
+            .call<13, HRESULT, hooks::CallConv::StdCall>(
                 swapchain,
                 count,
                 width,
@@ -215,7 +215,7 @@ namespace orion::D3D11 {
         }
         return orion.get_renderer()
             .get_hooks()
-            .get<8, HRESULT, hooks::CallConv::StdCall>(
+            .call<8, HRESULT, hooks::CallConv::StdCall>(
                 swapchain,
                 sync_interval,
                 flags
