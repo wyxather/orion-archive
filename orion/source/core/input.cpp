@@ -110,7 +110,7 @@ auto STDMETHODCALLTYPE Input::DirectInput8::get_device_state(
 ) noexcept -> HRESULT {
     static std::array<bool, 2> key {};
     const auto result =
-        orion.get_input().hooks->get<9, HRESULT, Hooks::CallingConv::STDCALL>(
+        orion.get_input().hooks->get<9, HRESULT, hooks::CallingConv::STDCALL>(
             device,
             size,
             data
@@ -164,7 +164,7 @@ auto STDMETHODCALLTYPE Input::DirectInput8::get_device_data(
     const DWORD flags
 ) noexcept -> HRESULT {
     const auto result =
-        orion.get_input().hooks->get<10, HRESULT, Hooks::CallingConv::STDCALL>(
+        orion.get_input().hooks->get<10, HRESULT, hooks::CallingConv::STDCALL>(
             device,
             size,
             data,

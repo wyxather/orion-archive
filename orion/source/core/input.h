@@ -21,7 +21,7 @@ namespace orion::core {
     private:
         HMODULE handle = nullptr;
         std::optional<const Type> type;
-        std::optional<Hooks::Type> hooks;
+        std::optional<hooks::Type> hooks;
 
         class DirectInput8 final {
         public:

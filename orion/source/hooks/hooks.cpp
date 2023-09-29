@@ -1,6 +1,6 @@
 #include "Hooks.h"
 
-auto orion::Hooks::calc_vmt_length(void* const vmt_address) noexcept
+auto orion::hooks::calc_vmt_length(void* const vmt_address) noexcept
     -> std::size_t {
     std::size_t length = 0;
     if (vmt_address == nullptr) {
@@ -22,7 +22,7 @@ auto orion::Hooks::calc_vmt_length(void* const vmt_address) noexcept
     return length;
 }
 
-auto orion::Hooks::calc_vmt_length(void** const class_address) noexcept
+auto orion::hooks::calc_vmt_length(void** const class_address) noexcept
     -> std::size_t {
     if (class_address == nullptr) {
         return 0;

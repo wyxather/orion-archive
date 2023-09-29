@@ -4,7 +4,7 @@
 
 #include "Hooks.h"
 
-namespace orion::Hooks {
+namespace orion::hooks {
     class MinHook final {
     public:
         explicit MinHook(std::size_t size) noexcept;

@@ -9,13 +9,13 @@ auto Application::setup() noexcept -> void {
     orion.config.emplace();
     orion.gui.emplace();
     orion.game.emplace();
-    if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
+    if constexpr (std::is_same_v<hooks::Type, hooks::MinHook>) {
         MH_Initialize();
     }
     orion.game->hook();
     orion.input->hook();
     orion.renderer->hook();
-    if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
+    if constexpr (std::is_same_v<hooks::Type, hooks::MinHook>) {
         MH_EnableHook(MH_ALL_HOOKS);
     }
 }
@@ -25,7 +25,7 @@ EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 [[noreturn]] static auto WINAPI unload(LPCVOID) noexcept -> void {
     const auto& kernel32 = orion::orion.get_kernel32();
     kernel32.sleep(100);
-    if constexpr (std::is_same_v<orion::Hooks::Type, orion::Hooks::MinHook>) {
+    if constexpr (std::is_same_v<orion::hooks::Type, orion::hooks::MinHook>) {
         MH_Uninitialize();
     }
     const auto free_library_and_exit_thread =
@@ -36,7 +36,7 @@ EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 }
 
 auto Application::exit() noexcept -> void {
-    if constexpr (std::is_same_v<Hooks::Type, Hooks::MinHook>) {
+    if constexpr (std::is_same_v<hooks::Type, hooks::MinHook>) {
         MH_DisableHook(MH_ALL_HOOKS);
     }
     orion.game->unhook();
