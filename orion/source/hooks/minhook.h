@@ -29,20 +29,20 @@ namespace orion::hooks {
         template<
             const std::size_t _Index,
             typename _ReturnType,
-            const CallingConv _CallingConv = CallingConv::THISCALL,
+            const CallConv _CallingConv = CallConv::ThisCall,
             typename... _Args>
         [[nodiscard]] constexpr auto get(_Args... _Arg) const noexcept {
             switch (_CallingConv) {
                 default:
                     return static_cast<_ReturnType(__thiscall*)(_Args...
                     )>(MinHook::originals[_Index])(_Arg...);
-                case CallingConv::STDCALL:
+                case CallConv::StdCall:
                     return static_cast<_ReturnType(__stdcall*)(_Args...
                     )>(MinHook::originals[_Index])(_Arg...);
-                case CallingConv::FASTCALL:
+                case CallConv::FastCall:
                     return static_cast<_ReturnType(__fastcall*)(_Args...
                     )>(MinHook::originals[_Index])(_Arg...);
-                case CallingConv::VECTORCALL:
+                case CallConv::VectorCall:
                     return static_cast<_ReturnType(__vectorcall*)(_Args...
                     )>(MinHook::originals[_Index])(_Arg...);
             }
@@ -51,7 +51,7 @@ namespace orion::hooks {
         template<
             const std::size_t _Index,
             typename _ReturnType,
-            const CallingConv _CallingConv = CallingConv::THISCALL,
+            const CallConv _CallingConv = CallConv::ThisCall,
             typename... _Args>
         [[nodiscard]] constexpr auto call(_Args... Arg) const noexcept {
             return MinHook::get<_Index, _ReturnType, _CallingConv>(
