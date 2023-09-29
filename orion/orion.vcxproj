@@ -64,9 +64,9 @@
     <ClInclude Include="source\resources\fonts\fontawesome.h" />
     <ClInclude Include="source\resources\fonts\museosanscyrl.h" />
     <ClInclude Include="source\utilities\virtual_method.h" />
-    <ClInclude Include="source\sdk\struct\matrix3x4.h" />
-    <ClInclude Include="source\sdk\struct\matrix4x4.h" />
-    <ClInclude Include="source\sdk\struct\vector3.h" />
+    <ClInclude Include="source\engine\struct\matrix3x4.h" />
+    <ClInclude Include="source\engine\struct\matrix4x4.h" />
+    <ClInclude Include="source\engine\struct\vector3.h" />
     <ClInclude Include="source\utilities\fnv1a.h" />
     <ClInclude Include="source\utilities\hashmap.h" />
     <ClInclude Include="source\utilities\imgui.h" />
@@ -145,9 +145,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="source\sdk\struct\matrix3x4.cpp" />
-    <ClCompile Include="source\sdk\struct\matrix4x4.cpp" />
-    <ClCompile Include="source\sdk\struct\vector3.cpp" />
+    <ClCompile Include="source\engine\struct\matrix3x4.cpp" />
+    <ClCompile Include="source\engine\struct\matrix4x4.cpp" />
+    <ClCompile Include="source\engine\struct\vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="source\resources\shaders\bloom_combine.hlsl">
