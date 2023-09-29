@@ -1,86 +1,88 @@
-#include "renderer.h"
-
 #include "dependencies/imgui/imgui_impl_dx11.h"
 #include "dependencies/imgui/imgui_impl_dx9.h"
 #include "source/orion.h"
 
+using Microsoft::WRL::ComPtr;
+using orion::core::Renderer;
+using orion::hooks::CallConv;
+using orion::utilities::String;
+
 namespace {
-    class RegisterClassExWrapper final {
-        const ATOM atom = 0;
+
+    class RegClassEx final {
+        const WNDCLASSEX& window_class_ex;
+        const ATOM atom =
+            orion::orion.get_user32().register_class_ex(&window_class_ex);
 
     public:
-        const WNDCLASSEX& window;
+        NON_COPYABLE(RegClassEx)
+        NON_MOVEABLE(RegClassEx)
 
-        explicit RegisterClassExWrapper(const WNDCLASSEX& window) noexcept :
-            atom(IMPORT(RegisterClassEx)(&window)),
-            window(window) {}
+        constexpr explicit RegClassEx(const WNDCLASSEX& window_class_ex
+        ) noexcept :
+            window_class_ex(window_class_ex) {}
 
-        constexpr ~RegisterClassExWrapper() noexcept {
-            if (RegisterClassExWrapper::atom != 0)
-                IMPORT(UnregisterClass)
-            (RegisterClassExWrapper::window.lpszClassName,
-             RegisterClassExWrapper::window.hInstance);
-        }
-
-        RegisterClassExWrapper(RegisterClassExWrapper&&) = delete;
-        RegisterClassExWrapper& operator=(RegisterClassExWrapper&&) = delete;
-
-        RegisterClassExWrapper(const RegisterClassExWrapper&) = delete;
-        RegisterClassExWrapper&
-        operator=(const RegisterClassExWrapper&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
-            return RegisterClassExWrapper::atom != 0;
-        }
-    };
-
-    class CreateWindowExWrapper final {
-        HWND handle = nullptr;
-
-    public:
-        constexpr explicit CreateWindowExWrapper(
-            const RegisterClassExWrapper& window_class
-        ) noexcept {
-            if (window_class)
-                CreateWindowExWrapper::handle = IMPORT(CreateWindowEx)(
-                    0,
-                    window_class.window.lpszClassName,
-                    TEXT(" "),
-                    WS_OVERLAPPEDWINDOW,
-                    0,
-                    0,
-                    100,
-                    100,
-                    nullptr,
-                    nullptr,
-                    window_class.window.hInstance,
-                    nullptr
+        constexpr ~RegClassEx() noexcept {
+            if (atom != 0) {
+                orion::orion.get_user32().unregister_class(
+                    window_class_ex.lpszClassName,
+                    window_class_ex.hInstance
                 );
+            }
         }
 
-        constexpr ~CreateWindowExWrapper() noexcept {
-            if (CreateWindowExWrapper::handle != nullptr)
-                IMPORT(DestroyWindow)(CreateWindowExWrapper::handle);
-        }
-
-        CreateWindowExWrapper(CreateWindowExWrapper&&) = delete;
-        CreateWindowExWrapper& operator=(CreateWindowExWrapper&&) = delete;
-
-        CreateWindowExWrapper(const CreateWindowExWrapper&) = delete;
-        CreateWindowExWrapper& operator=(const CreateWindowExWrapper&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
-            return CreateWindowExWrapper::handle != nullptr;
-        }
-
-        [[nodiscard]] constexpr explicit(false) operator HWND() const noexcept {
-            return CreateWindowExWrapper::handle;
+        NODISCARD constexpr explicit operator bool() const noexcept {
+            return atom != 0;
         }
     };
+
+    class WindowEx final {
+        const HWND handle;
+
+    public:
+        NON_COPYABLE(WindowEx)
+        NON_MOVEABLE(WindowEx)
+
+        constexpr explicit WindowEx(const WNDCLASSEX& window_class_ex) noexcept
+            :
+            handle {orion::orion.get_user32().create_window_ex(
+                0,
+                window_class_ex.lpszClassName,
+                TEXT(" "),
+                WS_OVERLAPPEDWINDOW,
+                0,
+                0,
+                100,
+                100,
+                nullptr,
+                nullptr,
+                window_class_ex.hInstance,
+                nullptr
+            )} {}
+
+        constexpr ~WindowEx() noexcept {
+            if (handle != nullptr) {
+                orion::orion.get_user32().destroy_window(handle);
+            }
+        }
+
+        NODISCARD constexpr explicit operator bool() const noexcept {
+            return handle != nullptr;
+        }
+
+        NODISCARD constexpr explicit(false) operator HWND() const noexcept {
+            return handle;
+        }
+    };
+
 }  // namespace
 
-namespace orion::D3D9 {
-    auto CALLBACK reset(
+class Renderer::DirectX9 final {
+    NON_CONSTRUCTIBLE(DirectX9)
+
+    friend Renderer;
+
+    static auto STDMETHODCALLTYPE reset(
         const LPDIRECT3DDEVICE9 device,
         const D3DPRESENT_PARAMETERS* const params
     ) noexcept -> HRESULT {
@@ -91,10 +93,7 @@ namespace orion::D3D9 {
             const auto result =
                 orion.get_renderer()
                     .get_hooks()
-                    .call<16, HRESULT, hooks::CallConv::StdCall>(
-                        device,
-                        params
-                    );
+                    .call<16, HRESULT, CallConv::StdCall>(device, params);
             ImGui_ImplDX9_CreateDeviceObjects();
             orion.get_gui().validate();
             orion.get_game().validate();
@@ -102,10 +101,10 @@ namespace orion::D3D9 {
         }
         return orion.get_renderer()
             .get_hooks()
-            .call<16, HRESULT, hooks::CallConv::StdCall>(device, params);
+            .call<16, HRESULT, CallConv::StdCall>(device, params);
     }
 
-    auto CALLBACK present(
+    static auto STDMETHODCALLTYPE present(
         const LPDIRECT3DDEVICE9 device,
         const LPRECT src,
         const LPRECT dst,
@@ -113,7 +112,6 @@ namespace orion::D3D9 {
         const LPRGNDATA dirty_region
     ) noexcept -> HRESULT {
         orion.get_platform().imgui_new_frame();
-
         if (ImGui::GetIO().BackendRendererUserData == nullptr) {
             ImGui_ImplDX9_Init(device);
             orion.get_gui().init();
@@ -132,7 +130,7 @@ namespace orion::D3D9 {
         }
         return orion.get_renderer()
             .get_hooks()
-            .call<17, HRESULT, hooks::CallConv::StdCall>(
+            .call<17, HRESULT, CallConv::StdCall>(
                 device,
                 src,
                 dst,
@@ -140,10 +138,14 @@ namespace orion::D3D9 {
                 dirty_region
             );
     }
-}  // namespace orion::D3D9
+};
 
-namespace orion::D3D11 {
-    auto CALLBACK resize_buffers(
+class Renderer::DirectX11 final {
+    NON_CONSTRUCTIBLE(DirectX11)
+
+    friend Renderer;
+
+    static auto STDMETHODCALLTYPE resize_buffers(
         IDXGISwapChain* const swapchain,
         const UINT count,
         const UINT width,
@@ -155,17 +157,16 @@ namespace orion::D3D11 {
             orion.get_game().invalidate();
             orion.get_gui().invalidate();
             ImGui_ImplDX11_InvalidateDeviceObjects();
-            const auto result =
-                orion.get_renderer()
-                    .get_hooks()
-                    .call<13, HRESULT, hooks::CallConv::StdCall>(
-                        swapchain,
-                        count,
-                        width,
-                        height,
-                        format,
-                        flags
-                    );
+            const auto result = orion.get_renderer()
+                                    .get_hooks()
+                                    .call<13, HRESULT, CallConv::StdCall>(
+                                        swapchain,
+                                        count,
+                                        width,
+                                        height,
+                                        format,
+                                        flags
+                                    );
             ImGui_ImplDX11_CreateDeviceObjects();
             orion.get_gui().validate();
             orion.get_game().validate();
@@ -173,7 +174,7 @@ namespace orion::D3D11 {
         }
         return orion.get_renderer()
             .get_hooks()
-            .call<13, HRESULT, hooks::CallConv::StdCall>(
+            .call<13, HRESULT, CallConv::StdCall>(
                 swapchain,
                 count,
                 width,
@@ -183,18 +184,17 @@ namespace orion::D3D11 {
             );
     }
 
-    auto CALLBACK present(
+    static auto STDMETHODCALLTYPE present(
         IDXGISwapChain* const swapchain,
         const UINT sync_interval,
         const UINT flags
     ) noexcept -> HRESULT {
         orion.get_platform().imgui_new_frame();
-
         if (ImGui::GetIO().BackendRendererUserData == nullptr) {
-            Microsoft::WRL::ComPtr<ID3D11Device> device;
+            ComPtr<ID3D11Device> device;
             if (swapchain->GetDevice(IID_PPV_ARGS(device.GetAddressOf()))
                 == S_OK) {
-                Microsoft::WRL::ComPtr<ID3D11DeviceContext> device_context;
+                ComPtr<ID3D11DeviceContext> device_context;
                 device->GetImmediateContext(device_context.GetAddressOf());
                 ImGui_ImplDX11_Init(
                     swapchain,
@@ -215,158 +215,175 @@ namespace orion::D3D11 {
         }
         return orion.get_renderer()
             .get_hooks()
-            .call<8, HRESULT, hooks::CallConv::StdCall>(
+            .call<8, HRESULT, CallConv::StdCall>(
                 swapchain,
                 sync_interval,
                 flags
             );
     }
-}  // namespace orion::D3D11
+};
 
-orion::Renderer::Renderer(const Type type) noexcept {
+Renderer::Renderer(const Type type) noexcept {
+    const auto& kernel32 = orion.get_kernel32();
     switch (type) {
-        case Type::D3D11: {
-            if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utilities::String<"d3d11.dll">());
-                Renderer::handle != nullptr)
-                Renderer::type.emplace(type);
+        case Type::DirectX11: {
+            if (handle = kernel32.get_module_handle_a(String<"d3d11.dll">());
+                handle != nullptr) {
+                this->type.emplace(type);
+            }
             break;
         }
-        case Type::D3D9: {
-            if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utilities::String<"d3d9.dll">());
-                Renderer::handle != nullptr)
-                Renderer::type.emplace(type);
+        case Type::DirectX9: {
+            if (handle = kernel32.get_module_handle_a(String<"d3d9.dll">());
+                handle != nullptr) {
+                this->type.emplace(type);
+            }
             break;
         }
     }
 }
 
-orion::Renderer::Renderer(const Enumerate enumerate) noexcept {
+Renderer::Renderer(const Enumerate enumerate) noexcept {
+    const auto& kernel32 = orion.get_kernel32();
     switch (enumerate) {
-        case Enumerate::AUTO: {
-            if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utilities::String<"d3d11.dll">());
-                Renderer::handle != nullptr) {
-                Renderer::type.emplace(Renderer::Type::D3D11);
+        case Enumerate::Auto: {
+            if (handle = kernel32.get_module_handle_a(String<"d3d11.dll">());
+                handle != nullptr) {
+                type.emplace(Type::DirectX11);
                 break;
             }
-            if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utilities::String<"d3d9.dll">());
-                Renderer::handle != nullptr) {
-                Renderer::type.emplace(Renderer::Type::D3D9);
+            if (handle = kernel32.get_module_handle_a(String<"d3d9.dll">());
+                handle != nullptr) {
+                type.emplace(Type::DirectX9);
                 break;
             }
             break;
         }
-        case Enumerate::MANUAL: {
-            if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utilities::String<"d3d11.dll">());
-                Renderer::handle != nullptr
-                && IMPORT(MessageBoxA)(
-                       nullptr,
-                       utilities::String<"D3D11">(),
-                       utilities::String<"Renderer">(),
-                       MB_YESNO | MB_ICONINFORMATION
-                   ) == IDYES) {
-                Renderer::type.emplace(Renderer::Type::D3D11);
-                break;
+        case Enumerate::Manual: {
+            if (handle = kernel32.get_module_handle_a(String<"d3d11.dll">());
+                handle != nullptr) {
+                const auto& user32 = orion.get_user32();
+                const auto input = user32.message_box_a(
+                    orion.get_platform().get_window_handle(),
+                    String<"DirectX11">(),
+                    String<"Renderer">(),
+                    MB_YESNOCANCEL | MB_ICONQUESTION
+                );
+                switch (input) {
+                    case IDYES:
+                        type.emplace(Type::DirectX11);
+                        [[fallthrough]];
+                    case IDCANCEL:
+                        return;
+                    default:
+                        break;
+                }
             }
-            if (Renderer::handle =
-                    IMPORT(GetModuleHandleA)(utilities::String<"d3d9.dll">());
-                Renderer::handle != nullptr
-                && IMPORT(MessageBoxA)(
-                       nullptr,
-                       utilities::String<"D3D9">(),
-                       utilities::String<"Renderer">(),
-                       MB_YESNO | MB_ICONINFORMATION
-                   ) == IDYES) {
-                Renderer::type.emplace(Renderer::Type::D3D9);
-                break;
+            if (handle = kernel32.get_module_handle_a(String<"d3d9.dll">());
+                handle != nullptr) {
+                const auto& user32 = orion.get_user32();
+                const auto input = user32.message_box_a(
+                    orion.get_platform().get_window_handle(),
+                    String<"DirectX9">(),
+                    String<"Renderer">(),
+                    MB_YESNOCANCEL | MB_ICONQUESTION
+                );
+                switch (input) {
+                    case IDYES:
+                        type.emplace(Type::DirectX9);
+                        [[fallthrough]];
+                    case IDCANCEL:
+                        return;
+                    default:
+                        break;
+                }
             }
             break;
         }
     }
 }
 
-orion::Renderer::~Renderer() noexcept {
-    if (ImGui::GetCurrentContext() == nullptr)
+Renderer::~Renderer() noexcept {
+    if (ImGui::GetCurrentContext() == nullptr) {
         return;
-
-    if (ImGui::GetIO().BackendRendererUserData != nullptr) {
-        switch (Renderer::type.value()) {
-            case Type::D3D11:
-                ImGui_ImplDX11_Shutdown();
-                break;
-            case Type::D3D9:
-                ImGui_ImplDX9_Shutdown();
-                break;
-        }
+    }
+    if (ImGui::GetIO().BackendRendererUserData == nullptr) {
+        return;
+    }
+    if (!type.has_value()) {
+        return;
+    }
+    switch (type.value()) {
+        case Type::DirectX11:
+            ImGui_ImplDX11_Shutdown();
+            break;
+        case Type::DirectX9:
+            ImGui_ImplDX9_Shutdown();
+            break;
     }
 }
 
-auto orion::Renderer::hook() noexcept -> void {
-    switch (Renderer::type.value()) {
-        case Type::D3D11: {
-            const WNDCLASSEX window_class(
+auto Renderer::hook() noexcept -> void {
+    if (!type.has_value()) {
+        return;
+    }
+    const auto& kernel32 = orion.get_kernel32();
+    switch (type.value()) {
+        case Type::DirectX11: {
+            const WNDCLASSEX window_class_ex {
                 sizeof(WNDCLASSEX),
                 CS_HREDRAW | CS_VREDRAW,
                 DefWindowProc,
                 0,
                 0,
-                IMPORT(GetModuleHandle)(nullptr),
+                kernel32.get_module_handle_a(nullptr),
                 nullptr,
                 nullptr,
                 nullptr,
                 nullptr,
                 TEXT(" "),
                 nullptr
+            };
+            const RegClassEx reg_class_ex {window_class_ex};
+            if (!reg_class_ex) {
+                break;
+            }
+            const WindowEx window_ex {window_class_ex};
+            if (!window_ex) {
+                break;
+            }
+            const auto create_device_and_swapchain = reinterpret_cast<
+                HRESULT(WINAPI*)(IDXGIAdapter*, D3D_DRIVER_TYPE, HMODULE, UINT, const D3D_FEATURE_LEVEL*, UINT, UINT, const DXGI_SWAP_CHAIN_DESC*, IDXGISwapChain**, ID3D11Device**, D3D_FEATURE_LEVEL*, ID3D11DeviceContext**)>(
+                kernel32.get_proc_address(
+                    handle,
+                    String<"D3D11CreateDeviceAndSwapChain">()
+                )
             );
-
-            const RegisterClassExWrapper register_class(window_class);
-            if (!register_class)
+            if (create_device_and_swapchain == nullptr) {
                 break;
-
-            const CreateWindowExWrapper window(register_class);
-            if (!window)
-                break;
-
-            const auto create_device_and_swapchain =
-                (HRESULT(WINAPI*)(IDXGIAdapter*, D3D_DRIVER_TYPE, HMODULE, UINT, const D3D_FEATURE_LEVEL*, UINT, UINT, const DXGI_SWAP_CHAIN_DESC*, IDXGISwapChain**, ID3D11Device**, D3D_FEATURE_LEVEL*, ID3D11DeviceContext**))(
-                    IMPORT(GetProcAddress)(
-                        Renderer::handle,
-                        utilities::String<"D3D11CreateDeviceAndSwapChain">()
-                    )
-                );
-
-            if (create_device_and_swapchain == nullptr)
-                break;
-
+            }
             D3D_FEATURE_LEVEL feature_level;
-
-            const DXGI_SWAP_CHAIN_DESC swapchain_desc(
-                DXGI_MODE_DESC(
+            const DXGI_SWAP_CHAIN_DESC swapchain_desc {
+                DXGI_MODE_DESC {
                     100,
                     100,
-                    DXGI_RATIONAL(60, 1),
+                    DXGI_RATIONAL {60, 1},
                     DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM,
                     DXGI_MODE_SCANLINE_ORDER::
                         DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,
                     DXGI_MODE_SCALING::DXGI_MODE_SCALING_UNSPECIFIED
-                ),
-                DXGI_SAMPLE_DESC(1, 0),
+                },
+                DXGI_SAMPLE_DESC {1, 0},
                 DXGI_USAGE_RENDER_TARGET_OUTPUT,
                 1,
-                window,
+                window_ex,
                 TRUE,
                 DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD,
                 DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
-            );
-
-            Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain;
-            Microsoft::WRL::ComPtr<ID3D11Device> device;
-            Microsoft::WRL::ComPtr<ID3D11DeviceContext> orion;
-
+            };
+            ComPtr<IDXGISwapChain> swapchain;
+            ComPtr<ID3D11Device> device;
+            ComPtr<ID3D11DeviceContext> device_context;
             if (create_device_and_swapchain(
                     nullptr,
                     D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -383,63 +400,66 @@ auto orion::Renderer::hook() noexcept -> void {
                     swapchain.GetAddressOf(),
                     device.GetAddressOf(),
                     &feature_level,
-                    orion.GetAddressOf()
+                    device_context.GetAddressOf()
                 )
-                != S_OK)
+                != S_OK) {
                 break;
-
+            }
             std::array<std::uintptr_t, 205> table {};
             for (std::size_t i = 0; i < 18; i++)
-                table[i] =
-                    (*(decltype(table)::value_type**)(swapchain.Get()))[i];
+                table[i] = (*reinterpret_cast<decltype(table)::value_type**>(
+                    swapchain.Get()
+                ))[i];
             for (std::size_t i = 18; i < 61; i++)
-                table[i] = (*(decltype(table)::value_type**)(device.Get()))[i];
+                table[i] = (*reinterpret_cast<decltype(table)::value_type**>(
+                    device.Get()
+                ))[i];
             for (std::size_t i = 61; i < 205; i++)
-                table[i] = (*(decltype(table)::value_type**)(orion.Get()))[i];
-
-            Renderer::hooks.emplace(table.data());
-            Renderer::hooks->hook_at(8, &D3D11::present);
-            Renderer::hooks->hook_at(13, &D3D11::resize_buffers);
+                table[i] = (*reinterpret_cast<decltype(table)::value_type**>(
+                    device_context.Get()
+                ))[i];
+            hooks.emplace(table.data());
+            hooks->hook_at(8, &DirectX11::present);
+            hooks->hook_at(13, &DirectX11::resize_buffers);
             break;
         }
-        case Type::D3D9: {
-            const WNDCLASSEX window_class(
+        case Type::DirectX9: {
+            const WNDCLASSEX window_class_ex {
                 sizeof(WNDCLASSEX),
                 CS_HREDRAW | CS_VREDRAW,
                 DefWindowProc,
                 0,
                 0,
-                IMPORT(GetModuleHandle)(nullptr),
+                kernel32.get_module_handle_a(nullptr),
                 nullptr,
                 nullptr,
                 nullptr,
                 nullptr,
                 TEXT(" "),
                 nullptr
-            );
-
-            const RegisterClassExWrapper register_class(window_class);
-            if (!register_class)
+            };
+            const RegClassEx reg_class_ex {window_class_ex};
+            if (!reg_class_ex) {
                 break;
-
-            const CreateWindowExWrapper window(register_class);
-            if (!window)
+            }
+            const WindowEx window_ex {window_class_ex};
+            if (!window_ex) {
                 break;
-
+            }
             const auto direct3d_create9 =
-                (LPDIRECT3D9(WINAPI*)(std::uint32_t))(IMPORT(GetProcAddress)(
-                    Renderer::handle,
-                    utilities::String<"Direct3DCreate9">()
-                ));
-            if (direct3d_create9 == nullptr)
+                reinterpret_cast<LPDIRECT3D9(WINAPI*)(std::uint32_t)>(
+                    kernel32
+                        .get_proc_address(handle, String<"Direct3DCreate9">())
+                );
+            if (direct3d_create9 == nullptr) {
                 break;
-
-            const Microsoft::WRL::ComPtr<IDirect3D9> direct3d9 =
+            }
+            const ComPtr<IDirect3D9> direct3d9 =
                 direct3d_create9(D3D_SDK_VERSION);
-            if (direct3d9.Get() == nullptr)
+            if (direct3d9.Get() == nullptr) {
                 break;
-
-            D3DPRESENT_PARAMETERS params(
+            }
+            D3DPRESENT_PARAMETERS params {
                 0,
                 0,
                 D3DFORMAT::D3DFMT_UNKNOWN,
@@ -447,38 +467,37 @@ auto orion::Renderer::hook() noexcept -> void {
                 D3DMULTISAMPLE_TYPE::D3DMULTISAMPLE_NONE,
                 0,
                 D3DSWAPEFFECT::D3DSWAPEFFECT_DISCARD,
-                window,
+                window_ex,
                 TRUE,
                 FALSE,
                 D3DFORMAT::D3DFMT_UNKNOWN,
                 0,
                 0,
                 D3DPRESENT_INTERVAL_ONE
-            );
-
-            Microsoft::WRL::ComPtr<IDirect3DDevice9> device;
+            };
+            ComPtr<IDirect3DDevice9> device;
             if (direct3d9->CreateDevice(
                     D3DADAPTER_DEFAULT,
                     D3DDEVTYPE::D3DDEVTYPE_NULLREF,
-                    window,
+                    window_ex,
                     D3DCREATE_SOFTWARE_VERTEXPROCESSING
                         | D3DCREATE_DISABLE_DRIVER_MANAGEMENT,
                     &params,
                     device.GetAddressOf()
                 )
-                != D3D_OK)
+                != D3D_OK) {
                 break;
-
-            Renderer::hooks.emplace((void**)(device.Get()));
-            Renderer::hooks->hook_at(16, &D3D9::reset);
-            Renderer::hooks->hook_at(17, &D3D9::present);
+            }
+            hooks.emplace(reinterpret_cast<void**>(device.Get()));
+            hooks->hook_at(16, &DirectX9::reset);
+            hooks->hook_at(17, &DirectX9::present);
             break;
         }
     }
 }
 
-auto orion::Renderer::unhook() const noexcept -> void {
-    if (!Renderer::hooks.has_value())
-        return;
-    Renderer::hooks->restore();
+auto Renderer::unhook() noexcept -> void {
+    if (hooks.has_value()) {
+        hooks->restore();
+    }
 }

@@ -10,8 +10,8 @@ namespace orion::core {
         enum class Type { DirectInput8 };
         enum class Enumerate { Auto, Manual };
 
-        explicit Input(Type type) noexcept;
-        explicit Input(Enumerate enumerate) noexcept;
+        explicit Input(const Type type) noexcept;
+        explicit Input(const Enumerate enumerate) noexcept;
 
         auto hook() noexcept -> void;
         auto unhook() noexcept -> void;

@@ -5,6 +5,7 @@
 
 using orion::EntryPoint;
 using orion::core::Input;
+using orion::core::Renderer;
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
@@ -21,7 +22,7 @@ auto EntryPoint::process(
         orion.user32.emplace(LI_MOD("user32.dll")::get());
         orion.console.emplace();
         orion.platform.emplace(std::nullopt, std::nullopt);
-        orion.renderer.emplace(Renderer::Enumerate::MANUAL);
+        orion.renderer.emplace(Renderer::Enumerate::Manual);
         orion.input.emplace(Input::Enumerate::Manual);
         orion.platform->hook();
     }

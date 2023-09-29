@@ -192,11 +192,11 @@ auto orion::Gui::init() noexcept -> void {
     Gui::position = (ImGui::GetIO().DisplaySize - Gui::size) * 0.5f;
 
     switch (orion.get_renderer().get_type()) {
-        case Renderer::Type::D3D11: {
+        case core::Renderer::Type::DirectX11: {
             Gui::post_process = std::make_unique<PostProcess::BlurD3D11>();
             break;
         }
-        case Renderer::Type::D3D9: {
+        case core::Renderer::Type::DirectX9: {
             Gui::post_process = std::make_unique<PostProcess::BlurD3D9>();
             break;
         }

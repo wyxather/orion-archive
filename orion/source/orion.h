@@ -24,7 +24,7 @@ namespace orion {
         std::optional<const modules::User32> user32;
         std::optional<const core::Console> console;
         std::optional<core::Platform> platform;
-        std::optional<Renderer> renderer;
+        std::optional<core::Renderer> renderer;
         std::optional<core::Input> input;
         std::optional<Config> config;
         std::optional<Gui> gui;
@@ -33,7 +33,7 @@ namespace orion {
     public:
         constexpr explicit Orion() noexcept = default;
 
-        NODISCARD constexpr auto get_handle() const noexcept {
+        NODISCARD constexpr auto get_handle() const noexcept -> auto {
             return handle;
         }
 
