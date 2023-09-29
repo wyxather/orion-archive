@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Hooks/MinHook.h"
-
 namespace orion {
     class Renderer final {
     public:

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "hooks/minhook.h"
-
 namespace orion::core {
 
     class Input final {

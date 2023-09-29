@@ -33,6 +33,7 @@
     #include <span>
 
     #include "dependencies/stb.hh"
+    #include "source/hooks/minhook.h"
     #include "source/modules/modules.h"
     #include "source/utilities/fnv1a.h"
     #include "source/utilities/hashmap.h"
