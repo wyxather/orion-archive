@@ -132,7 +132,7 @@
     <ClInclude Include="source\orion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utilities\imgui.hpp">
+    <ClInclude Include="source\utilities\imgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\pch.h">

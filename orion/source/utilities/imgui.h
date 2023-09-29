@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef IMGUI_USER_CONFIG
-    #define IMGUI_USER_CONFIG "source/utilities/imgui.hpp"
+    #define IMGUI_USER_CONFIG "source/utilities/imgui.h"
 #endif
 
 #ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS
@@ -38,5 +38,5 @@
     #define IMGUI_DEFINE_MATH_OPERATORS
 #endif
 
-#include "Dependencies/ImGui/imgui.h"
-#include "Dependencies/ImGui/imgui_internal.h"
+#include "dependencies/imgui/imgui.h"
+#include "dependencies/imgui/imgui_internal.h"
