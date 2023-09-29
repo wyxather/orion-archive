@@ -14,6 +14,7 @@ namespace orion::modules {
         decltype(&CallWindowProc) call_window_proc = nullptr;
         decltype(&EnumWindows) enum_windows = nullptr;
         decltype(&GetClassNameA) get_class_name_a = nullptr;
+        decltype(&GetCursorPos) get_cursor_pos = nullptr;
         decltype(&GetWindowLongPtr) get_window_long_ptr = nullptr;
         decltype(&GetWindowTextA) get_window_text_a = nullptr;
         decltype(&GetWindowTextLengthA) get_window_text_length_a = nullptr;
@@ -21,6 +22,7 @@ namespace orion::modules {
             nullptr;
         decltype(&IsWindowVisible) is_window_visible = nullptr;
         decltype(&MessageBoxA) message_box_a = nullptr;
+        decltype(&PostMessage) post_message = nullptr;
         decltype(&SetWindowLongPtr) set_window_long_ptr = nullptr;
     };
 

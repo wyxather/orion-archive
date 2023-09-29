@@ -22,7 +22,7 @@ auto EntryPoint::process(
         orion.console.emplace();
         orion.platform.emplace(std::nullopt, std::nullopt);
         orion.renderer.emplace(Renderer::Enumerate::MANUAL);
-        orion.input.emplace(Input::Enumerate::MANUAL);
+        orion.input.emplace(Input::Enumerate::Manual);
         orion.platform->hook();
     }
     return crt_init_result;
