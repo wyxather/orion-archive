@@ -21,6 +21,7 @@ Kernel32::Kernel32(void* const module_address) noexcept {
     set_console_text_attribute =
         LI_FUNC(SetConsoleTextAttribute)::in(module_address);
     sleep = LI_FUNC(Sleep)::in(module_address);
+    virtual_query = LI_FUNC(VirtualQuery)::in(module_address);
 }
 
 Kernel32::~Kernel32() noexcept {
@@ -37,4 +38,5 @@ Kernel32::~Kernel32() noexcept {
     set_console_ctrl_handler = nullptr;
     set_console_text_attribute = nullptr;
     sleep = nullptr;
+    virtual_query = nullptr;
 }

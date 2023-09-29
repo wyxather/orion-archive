@@ -25,6 +25,7 @@ namespace orion::modules {
         decltype(&SetConsoleCtrlHandler) set_console_ctrl_handler = nullptr;
         decltype(&SetConsoleTextAttribute) set_console_text_attribute = nullptr;
         decltype(&Sleep) sleep = nullptr;
+        decltype(&VirtualQuery) virtual_query = nullptr;
     };
 
 }  // namespace orion::modules
