@@ -35,6 +35,7 @@
     #include "dependencies/stb.hh"
     #include "source/modules/modules.h"
     #include "source/utilities/fnv1a.h"
+    #include "source/utilities/hashmap.h"
     #include "source/utilities/imgui.h"
     #include "source/utilities/math.h"
     #include "source/utilities/string.h"

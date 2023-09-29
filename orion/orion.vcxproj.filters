@@ -117,7 +117,7 @@
     <ClInclude Include="source\sdk\struct\Matrix4x4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\utilities\hashmap.hpp">
+    <ClInclude Include="source\utilities\hashmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\utilities\math.h">

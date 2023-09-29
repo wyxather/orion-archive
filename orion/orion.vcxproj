@@ -68,7 +68,7 @@
     <ClInclude Include="source\sdk\struct\matrix4x4.h" />
     <ClInclude Include="source\sdk\struct\vector3.h" />
     <ClInclude Include="source\utilities\fnv1a.h" />
-    <ClInclude Include="source\utilities\hashmap.hpp" />
+    <ClInclude Include="source\utilities\hashmap.h" />
     <ClInclude Include="source\utilities\imgui.h" />
     <ClInclude Include="source\utilities\math.h" />
     <ClInclude Include="source\utilities\string.h" />

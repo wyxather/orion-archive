@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gui/post_process.h"
-#include "utilities/hashmap.hpp"
 
 namespace orion {
     class Gui final {
