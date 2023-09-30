@@ -180,6 +180,12 @@
     <ClInclude Include="source\modules\combase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\hooks\ret_spoof.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\hooks\ret_spoof_64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\imgui\imgui.cpp">
@@ -322,5 +328,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="source\hooks\ret_spoof_64.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

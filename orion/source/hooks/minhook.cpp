@@ -4,20 +4,24 @@
 
 using orion::hooks::MinHook;
 
-MinHook::MinHook(const std::size_t size) noexcept :
+MinHook::MinHook(const std::size_t size, void* const gadget) noexcept :
+    gadget {gadget},
     base {nullptr},
-    count {size},
     originals {std::make_unique<decltype(originals)::element_type[]>(size)} {}
 
-MinHook::MinHook(void* const vmt_ptr) noexcept :
+MinHook::MinHook(void* const vmt_ptr, void* const gadget) noexcept :
+    gadget {gadget},
     base {vmt_ptr},
-    count {hooks::calc_vmt_length(vmt_ptr)},
-    originals {std::make_unique<decltype(originals)::element_type[]>(count)} {}
+    originals {std::make_unique<decltype(originals)::element_type[]>(
+        hooks::calc_vmt_length(vmt_ptr)
+    )} {}
 
-MinHook::MinHook(void** const class_ptr) noexcept :
+MinHook::MinHook(void** const class_ptr, void* const gadget) noexcept :
+    gadget {gadget},
     base {*class_ptr},
-    count {hooks::calc_vmt_length(class_ptr)},
-    originals {std::make_unique<decltype(originals)::element_type[]>(count)} {}
+    originals {std::make_unique<decltype(originals)::element_type[]>(
+        hooks::calc_vmt_length(class_ptr)
+    )} {}
 
 auto MinHook::initialize() noexcept -> void {
     MH_Initialize();

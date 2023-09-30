@@ -1,5 +1,8 @@
 #pragma once
 
+#include "source/hooks/ret_spoof.h"
+#include "source/hooks/ret_spoof_64.h"
+
 namespace orion::hooks {
 
     enum class CallConv { StdCall, ThisCall, FastCall, VectorCall };
