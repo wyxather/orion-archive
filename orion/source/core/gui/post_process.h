@@ -1,9 +1,5 @@
 #pragma once
 
-#include <d3d11.h>
-#include <d3d9.h>
-#include <wrl/client.h>
-
 namespace orion::core::gui {
 
     class PostProcess {

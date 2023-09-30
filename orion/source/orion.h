@@ -31,7 +31,7 @@ namespace orion {
         std::optional<core::Renderer> renderer;
         std::optional<core::Input> input;
         std::optional<core::Config> config;
-        std::optional<Gui> gui;
+        std::optional<core::Gui> gui;
         std::optional<core::Game> game;
 
     public:

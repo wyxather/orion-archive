@@ -1,52 +1,70 @@
 #pragma once
 
-namespace orion::GuiBuilder {
+#include "dependencies/imgui/imgui_custom.h"
+#include "source/orion.h"
+#include "source/resources/fonts/fontawesome.h"
+
+using orion::resources::fonts::FontAwesome;
+using orion::utilities::Fnv1a;
+using orion::utilities::String;
+
+namespace orion::core::gui {
+
+    struct StyleVar final {
+        NON_COPYABLE(StyleVar)
+        NON_MOVEABLE(StyleVar)
+
+        StyleVar(const ImGuiStyleVar idx, const float val) noexcept;
+        StyleVar(const ImGuiStyleVar idx, const ImVec2& val) noexcept;
+        ~StyleVar() noexcept;
+    };
+
+    struct StyleColor final {
+        NON_COPYABLE(StyleColor)
+        NON_MOVEABLE(StyleColor)
+
+        StyleColor(const ImGuiCol idx, const ImU32 col) noexcept;
+        StyleColor(const ImGuiCol idx, const ImVec4& col) noexcept;
+        ~StyleColor() noexcept;
+    };
+
     struct Font final {
+        NON_COPYABLE(Font)
+        NON_MOVEABLE(Font)
+
         explicit Font(ImFont& font) noexcept;
         explicit Font(ImFont& font, float scale) noexcept;
         ~Font() noexcept;
 
-        Font(Font&&) = delete;
-        Font& operator=(Font&&) = delete;
-
-        Font(const Font&) = delete;
-        Font& operator=(const Font&) = delete;
-
     private:
         ImFont& font;
-        float scale = 1.0f;
+        const float scale = 1.0f;
     };
 
     struct Header final {
+        NON_COPYABLE(Header)
+        NON_MOVEABLE(Header)
+
         struct Nav;
 
-        Header() noexcept;
+        explicit Header() noexcept;
         ~Header() noexcept;
 
-        Header(Header&&) = delete;
-        Header& operator=(Header&&) = delete;
-
-        Header(const Header&) = delete;
-        Header& operator=(const Header&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
+        NODISCARD constexpr explicit operator bool() const noexcept {
             return true;
         }
     };
 
     struct Header::Nav final {
+        NON_COPYABLE(Nav)
+        NON_MOVEABLE(Nav)
+
         struct Items;
 
-        Nav() noexcept;
+        explicit Nav() noexcept;
         ~Nav() noexcept;
 
-        Nav(Nav&&) = delete;
-        Nav& operator=(Nav&&) = delete;
-
-        Nav(const Nav&) = delete;
-        Nav& operator=(const Nav&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
+        NODISCARD constexpr explicit operator bool() const noexcept {
             return true;
         }
 
@@ -56,220 +74,676 @@ namespace orion::GuiBuilder {
     };
 
     struct Header::Nav::Items final {
-        Items() noexcept;
+        NON_COPYABLE(Items)
+        NON_MOVEABLE(Items)
+
+        explicit Items() noexcept;
         ~Items() noexcept;
 
-        Items(Items&&) = delete;
-        Items& operator=(Items&&) = delete;
-
-        Items(const Items&) = delete;
-        Items& operator=(const Items&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
+        NODISCARD constexpr explicit operator bool() const noexcept {
             return true;
         }
 
     private:
-        static auto
-        button(const char* str, const char* icon, std::uint32_t hash) noexcept
-            -> void;
+        static auto button(
+            const char* const str,
+            const char* const icon,
+            const std::uint32_t hash
+        ) noexcept -> void;
 
-        auto text(const char* str) noexcept -> void;
-
-        bool first_text_call = false;
+        auto text(const char* const str) noexcept -> void;
 
     public:
         template<stb::fixed_string _Str>
         constexpr auto button(const char* const icon) const noexcept {
-            return Items::button(
-                utilities::String<_Str>(),
-                icon,
-                utilities::Fnv1a<_Str>::value
-            );
+            return Items::button(String<_Str>(), icon, Fnv1a<_Str>::value);
         }
 
         template<stb::fixed_string _Str>
         constexpr auto text() noexcept {
-            return Items::text(utilities::String<_Str>());
+            return Items::text(String<_Str>());
         }
+
+    private:
+        bool first_text_call = false;
     };
 
     struct Body final {
+        NON_COPYABLE(Body)
+        NON_MOVEABLE(Body)
+
         struct Head;
         struct Content;
 
-        Body() noexcept;
+        explicit Body() noexcept;
         ~Body() noexcept;
 
-        Body(Body&&) = delete;
-        Body& operator=(Body&&) = delete;
-
-        Body(const Body&) = delete;
-        Body& operator=(const Body&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
+        NODISCARD constexpr explicit operator bool() const noexcept {
             return true;
         }
     };
 
     struct Body::Head final {
-        Head() noexcept;
+        NON_COPYABLE(Head)
+        NON_MOVEABLE(Head)
+
+        struct Content;
+
+        explicit Head() noexcept;
         ~Head() noexcept;
-
-        Head(Head&&) = delete;
-        Head& operator=(Head&&) = delete;
-
-        Head(const Head&) = delete;
-        Head& operator=(const Head&) = delete;
 
         auto save() const noexcept -> void;
         auto create() const noexcept -> void;
 
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
+        NODISCARD constexpr explicit operator bool() const noexcept {
             return true;
         }
 
     private:
-        [[nodiscard]] static auto combo(const char* items, int& value) noexcept
-            -> bool;
-
-        Font font;
+        NODISCARD static auto
+        combo(const char* const items, int& value) noexcept -> bool;
 
     public:
         template<stb::fixed_string _Str>
-        [[nodiscard]] constexpr auto combo(int& value) const noexcept {
-            return Head::combo(utilities::String<_Str>(), value);
+        NODISCARD constexpr auto combo(int& value) const noexcept {
+            return Head::combo(String<_Str>(), value);
+        }
+
+    private:
+        Font font;
+    };
+
+    struct Body::Head::Content final {
+        NON_COPYABLE(Content)
+        NON_MOVEABLE(Content)
+
+        explicit Content(const std::uint32_t hash) noexcept;
+        ~Content() noexcept;
+
+    private:
+        bool resume = false;
+
+    public:
+        NODISCARD constexpr explicit operator bool() const noexcept {
+            return resume;
         }
     };
 
     struct Body::Content final {
+        NON_COPYABLE(Content)
+        NON_MOVEABLE(Content)
+
         struct Panel;
 
-        Content() noexcept;
+        explicit Content() noexcept;
         ~Content() noexcept;
 
-        Content(Content&&) = delete;
-        Content& operator=(Content&&) = delete;
-
-        Content(const Content&) = delete;
-        Content& operator=(const Content&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
+        NODISCARD constexpr explicit operator bool() const noexcept {
             return true;
         }
     };
 
     struct Body::Content::Panel final {
+        NON_COPYABLE(Panel)
+        NON_MOVEABLE(Panel)
+
         struct Config;
         struct Table;
 
-        explicit Panel(std::uint32_t hash) noexcept;
+        explicit Panel(const std::uint32_t hash) noexcept;
         ~Panel() noexcept;
-
-        Panel(Panel&&) = delete;
-        Panel& operator=(Panel&&) = delete;
-
-        Panel(const Panel&) = delete;
-        Panel& operator=(const Panel&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
-            return Panel::resume;
-        }
 
     private:
         bool resume = false;
+
+    public:
+        NODISCARD constexpr explicit operator bool() const noexcept {
+            return Panel::resume;
+        }
     };
 
     struct Body::Content::Panel::Config final {
-        Config() noexcept;
+        NON_COPYABLE(Config)
+        NON_MOVEABLE(Config)
+
+        explicit Config() noexcept;
         ~Config() noexcept;
 
-        Config(Config&&) = delete;
-        Config& operator=(Config&&) = delete;
-
-        Config(const Config&) = delete;
-        Config& operator=(const Config&) = delete;
-
     private:
-        enum class Event { UNDEFINED, SAVE, LOAD, REMOVE, RENAME, INPUT };
-
-        static auto filter_config_name(ImGuiInputTextCallbackData* data
+        static auto filter_config_name(ImGuiInputTextCallbackData* const data
         ) noexcept -> int;
 
+        enum class Event { UNDEFINED, SAVE, LOAD, REMOVE, RENAME, INPUT };
+
         auto draw(
-            std::string_view name,
-            std::string_view time,
-            bool active,
+            const std::string_view name,
+            const std::string_view time,
+            const bool active,
             std::array<char, 260>& input
         ) const noexcept -> Event;
     };
 
     struct Body::Content::Panel::Table final {
+        NON_COPYABLE(Table)
+        NON_MOVEABLE(Table)
+
         template<stb::fixed_string _Str, bool _NextColumn>
         struct Group;
         struct Widget;
 
-        Table() noexcept;
+        explicit Table() noexcept;
         ~Table() noexcept;
 
-        Table(Table&&) = delete;
-        Table& operator=(Table&&) = delete;
-
-        Table(const Table&) = delete;
-        Table& operator=(const Table&) = delete;
-
         static auto begin_group(
-            const char* name,
-            std::uint32_t hash,
-            bool next_column
+            const char* const name,
+            const std::uint32_t hash,
+            const bool next_column
         ) noexcept -> void;
-        static auto end_group() noexcept -> void;
 
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
-            return Table::resume;
-        }
+        static auto end_group() noexcept -> void;
 
     private:
         bool resume = false;
+
+    public:
+        NODISCARD constexpr explicit operator bool() const noexcept {
+            return Table::resume;
+        }
     };
 
     template<stb::fixed_string _Str, bool _NextColumn>
     struct Body::Content::Panel::Table::Group final {
-        constexpr Group() noexcept {
-            Table::begin_group(
-                utilities::String<_Str>(),
-                utilities::Fnv1a<_Str>::value,
-                _NextColumn
-            );
+        NON_COPYABLE(Group)
+        NON_MOVEABLE(Group)
+
+        constexpr explicit Group() noexcept {
+            Table::begin_group(String<_Str>(), Fnv1a<_Str>::value, _NextColumn);
         }
 
         constexpr ~Group() noexcept {
             Table::end_group();
         }
 
-        Group(Group&&) = delete;
-        Group& operator=(Group&&) = delete;
-
-        Group(const Group&) = delete;
-        Group& operator=(const Group&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
+        NODISCARD constexpr explicit operator bool() const noexcept {
             return true;
         }
     };
 
     struct Body::Content::Panel::Table::Widget final {
-        Widget() noexcept;
-        ~Widget() noexcept;
+        NON_COPYABLE(Widget)
+        NON_MOVEABLE(Widget)
 
-        Widget(Widget&&) = delete;
-        Widget& operator=(Widget&&) = delete;
+        explicit Widget() noexcept : m_count {0} {
+            String<"##Body::Content::Panel::Table::Widget"> name;
+            ImGui::BeginTable(name.c_str(), 2);
+        }
 
-        Widget(const Widget&) = delete;
-        Widget& operator=(const Widget&) = delete;
-
-        [[nodiscard]] constexpr explicit operator bool() const noexcept {
+        NODISCARD constexpr explicit operator bool() const noexcept {
             return true;
         }
+
+    private:
+        int m_count = {};
+
+    public:
+        ~Widget() noexcept {
+            ImGui::EndTable();
+            orion.get_gui().get_last_active_group()->widget_count = m_count;
+        }
+
+        template<stb::fixed_string str>
+        constexpr void toggle(
+            bool& value,
+            float color[4],
+            float colorReference[4],
+            float* popupAlpha
+        ) noexcept {
+            String<str> name;
+
+            constexpr auto fontHeight = 14.f;
+            constexpr auto toggleWidthMult = 1.35f;
+            constexpr auto textPositionVerticalOffset = 2.f;
+
+            const Gui::PushFont font {
+                orion.get_gui().get_fonts().factory,
+                (fontHeight / 15.f)
+            };
+            float ratio = 0;
+
+            m_count++;
+
+            ImGui::TableNextRow();
+
+            if (ImGui::TableSetColumnIndex(1)) {
+                const auto pos = ImGui::GetCursorPos()
+                    + ImVec2 {
+                        ImGui::GetContentRegionAvail().x
+                            - ImGui::GetFrameHeight() * toggleWidthMult,
+                        (ImGui::GetFrameHeight() - ImGui::GetFrameHeight() * .8f
+                        ) * .5f
+                    };
+                ImGui::SetCursorPos(pos);
+                ratio =
+                    ImGui::ButtonToggle(name.c_str(), value, toggleWidthMult);
+
+                if (color) {
+                    constexpr auto itemSpaceWidth {8.00f};
+                    constexpr auto colorVerticalOffset {3.00f};
+
+                    const auto colorIcon {
+                        FontAwesome::get<FontAwesome::Type::Palette>()
+                    };
+                    const auto colorLabel {
+                        std::string {colorIcon} + name.c_str()
+                    };
+                    const auto& style = ImGui::GetStyle();
+
+                    const StyleVar styleVar[] {
+                        {ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3},
+                        {ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3}
+                    };
+                    const StyleColor styleColor[] {
+                        {ImGuiCol_::ImGuiCol_Text,
+                         ImVec4 {.564705f, .615686f, .647058f, 1}},
+                        {ImGuiCol_::ImGuiCol_Button, ImVec4 {}},
+                        {ImGuiCol_::ImGuiCol_ButtonHovered, ImVec4 {}},
+                        {ImGuiCol_::ImGuiCol_ButtonActive, ImVec4 {}},
+                        {ImGuiCol_::ImGuiCol_FrameBg,
+                         ImVec4 {.0470588f, .0470588f, .0470588f, 1}},
+                        {ImGuiCol_::ImGuiCol_FrameBgActive,
+                         ImVec4 {.0941176f, .0941176f, .0941176f, 1}},
+                        {ImGuiCol_::ImGuiCol_FrameBgHovered,
+                         ImVec4 {.070588f, .070588f, .070588f, 1}},
+                        {ImGuiCol_::ImGuiCol_TextSelectedBg,
+                         ImVec4 {.250980f, .250980f, .250980f, .768627f}}
+                    };
+
+                    ImGui::SetCursorPos(
+                        pos
+                        - ImVec2 {ImGui::GetFrameHeight() * toggleWidthMult, 0}
+                    );
+                    if (ImGui::Button(std::string {
+                            std::string {colorIcon} + "##" + name.c_str()
+                        }
+                                          .c_str())) {
+                        colorReference[0] = color[0];
+                        colorReference[1] = color[1];
+                        colorReference[2] = color[2];
+                        colorReference[3] = color[3];
+                        ImGui::OpenPopup(colorLabel.c_str());
+                        *popupAlpha = {};
+                    }
+                    const StyleVar styleVar2[] {
+                        {ImGuiStyleVar_::ImGuiStyleVar_Alpha,
+                         std::sqrtf(*popupAlpha) * style.Alpha}
+                    };
+                    ImGui::SetNextWindowSize(
+                        ImVec2 {308, 256} * style.Alpha,
+                        ImGuiCond_::ImGuiCond_Always
+                    );
+                    if (ImGui::BeginPopup(
+                            colorLabel.c_str(),
+                            ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar
+                        )) {
+                        ImGui::ColorPicker4(
+                            colorLabel.c_str(),
+                            color,
+                            ImGuiColorEditFlags_::ImGuiColorEditFlags_NoLabel
+                                | ImGuiColorEditFlags_::
+                                    ImGuiColorEditFlags_AlphaBar
+                                | ImGuiColorEditFlags_::
+                                    ImGuiColorEditFlags_AlphaPreview,
+                            colorReference
+                        );
+                        ImGui::EndPopup();
+                        *popupAlpha = std::clamp(
+                            *popupAlpha + ImGui::GetIO().DeltaTime * 4,
+                            0.f,
+                            1.f
+                        );
+                    }
+                }
+
+                if (ImGui::TableSetColumnIndex(0)) {
+                    ImGui::SetCursorPos(
+                        ImGui::GetCursorPos()
+                        + ImVec2 {0, (ImGui::GetFrameHeight() - fontHeight) * .5f - (color ? textPositionVerticalOffset : 0)}
+                    );
+                    ImGui::TextColored(
+                        ImLerp(
+                            ImVec4 {.564705f, .615686f, .647058f, 1},
+                            ImVec4 {.90196f, .90196f, .90196f, 1},
+                            ratio
+                        ),
+                        name
+                    );
+                }
+            }
+        }
+
+        template<stb::fixed_string str>
+        constexpr auto toggle(bool& value) noexcept {
+            return toggle<str>(value, nullptr, nullptr, nullptr);
+        }
+
+        template<stb::fixed_string str, stb::fixed_string items>
+        auto combo(int& value) noexcept {
+            static float popupAlpha;
+
+            String<str> name;
+            String<items> item;
+
+            constexpr auto hash = Fnv1a<str>::value;
+            constexpr auto fontHeight {14.00f};
+            constexpr auto textPositionVerticalOffset {2.00f};
+            constexpr auto framePadding {4.00f};
+
+            const Gui::PushFont font {
+                orion.get_gui().get_fonts().factory,
+                (fontHeight / 15.f)
+            };
+
+            m_count++;
+
+            ImGui::TableNextRow();
+
+            if (ImGui::TableSetColumnIndex(1)) {
+                ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+                const StyleVar styleVar[] {
+                    {ImGuiStyleVar_::ImGuiStyleVar_DisabledAlpha,
+                     std::powf(popupAlpha, 2) * ImGui::GetStyle().Alpha},
+                    {ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3},
+                    {ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3},
+                    {ImGuiStyleVar_::ImGuiStyleVar_FramePadding,
+                     ImVec2 {framePadding, framePadding}},
+                    {ImGuiStyleVar_::ImGuiStyleVar_FrameBorderSize, 1},
+                    {ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2 {8, 8}},
+                };
+                const StyleColor styleColor[] {
+                    {ImGuiCol_::ImGuiCol_Border,
+                     ImVec4 {.0980392f, .0980392f, .0980392f, 1}},
+                    {ImGuiCol_::ImGuiCol_Text,
+                     ImVec4 {.564705f, .615686f, .647058f, 1}},
+                    {ImGuiCol_::ImGuiCol_Header,
+                     ImVec4 {.0470588f, .0470588f, .0470588f, .7843137f}},
+                    {ImGuiCol_::ImGuiCol_HeaderActive,
+                     ImVec4 {.0313725f, .0313725f, .0313725f, .7843137f}},
+                    {ImGuiCol_::ImGuiCol_HeaderHovered,
+                     ImVec4 {.0627450f, .0627450f, .0627450f, .7843137f}},
+                    {ImGuiCol_::ImGuiCol_Button,
+                     ImVec4 {.0470588f, .0470588f, .0470588f, 1}},
+                    {ImGuiCol_::ImGuiCol_ButtonHovered,
+                     ImVec4 {.0823529f, .0823529f, .086274f, 1}},
+                    {ImGuiCol_::ImGuiCol_FrameBg,
+                     ImVec4 {.0470588f, .0470588f, .0470588f, 1}},
+                    {ImGuiCol_::ImGuiCol_FrameBgHovered,
+                     ImVec4 {.0823529f, .0823529f, .0823529f, 1}},
+                };
+                ImGui::Combo(name.c_str(), &value, item);
+                bool popup_open = ImGui::IsPopupOpen(
+                    ImHashStr(
+                        "##ComboPopup",
+                        0,
+                        ImGui::GetCurrentWindow()->GetID(name)
+                    ),
+                    ImGuiPopupFlags_::ImGuiPopupFlags_None
+                );
+                if (popup_open) {
+                    popupAlpha = std::clamp(
+                        ImGui::GetIO().DeltaTime * 2 + popupAlpha,
+                        0.f,
+                        1.f
+                    );
+                } else {
+                    popupAlpha = {};
+                }
+            }
+
+            if (ImGui::TableSetColumnIndex(0)) {
+                ImGui::SetCursorPos(
+                    ImGui::GetCursorPos()
+                    + ImVec2 {0, (ImGui::GetFrameHeight() - fontHeight - framePadding * .5f) * .5f - textPositionVerticalOffset}
+                );
+                ImGui::TextColored(
+                    ImVec4 {.564705f, .615686f, .647058f, 1},
+                    name
+                );
+            }
+        }
+
+        template<stb::fixed_string str, stb::fixed_string items>
+        auto multi_combo(bool value[]) noexcept {
+            constexpr auto fontHeight {14.00f};
+            constexpr auto framePadding {4.00f};
+            constexpr auto textPositionVerticalOffset {2.00f};
+
+            static std::string preview;
+            static float popupAlpha;
+
+            const Gui::PushFont font {
+                orion.get_gui().get_fonts().factory,
+                (fontHeight / 15.f)
+            };
+
+            String<str> name;
+            String<items> item;
+            std::vector<std::string> list;
+            std::vector<std::string> selected;
+
+            m_count++;
+
+            ImGui::TableNextRow();
+
+            if (ImGui::TableSetColumnIndex(1)) {
+                ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+                const StyleVar styleVar[] {
+                    {ImGuiStyleVar_::ImGuiStyleVar_DisabledAlpha,
+                     std::powf(popupAlpha, 2) * ImGui::GetStyle().Alpha},
+                    {ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3},
+                    {ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3},
+                    {ImGuiStyleVar_::ImGuiStyleVar_FramePadding,
+                     ImVec2 {framePadding, framePadding}},
+                    {ImGuiStyleVar_::ImGuiStyleVar_FrameBorderSize, 1},
+                    {ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2 {8, 8}},
+                };
+                const StyleColor styleColor[] {
+                    {ImGuiCol_::ImGuiCol_Border,
+                     ImVec4 {.0980392f, .0980392f, .0980392f, 1}},
+                    {ImGuiCol_::ImGuiCol_Text,
+                     ImVec4 {.564705f, .615686f, .647058f, 1}},
+                    {ImGuiCol_::ImGuiCol_Header,
+                     ImVec4 {.0470588f, .0470588f, .0470588f, .7843137f}},
+                    {ImGuiCol_::ImGuiCol_HeaderActive,
+                     ImVec4 {.0313725f, .0313725f, .0313725f, .7843137f}},
+                    {ImGuiCol_::ImGuiCol_HeaderHovered,
+                     ImVec4 {.0627450f, .0627450f, .0627450f, .7843137f}},
+                    {ImGuiCol_::ImGuiCol_Button,
+                     ImVec4 {.0470588f, .0470588f, .0470588f, 1}},
+                    {ImGuiCol_::ImGuiCol_ButtonHovered,
+                     ImVec4 {.0823529f, .0823529f, .086274f, 1}},
+                    {ImGuiCol_::ImGuiCol_FrameBg,
+                     ImVec4 {.0470588f, .0470588f, .0470588f, 1}},
+                    {ImGuiCol_::ImGuiCol_FrameBgHovered,
+                     ImVec4 {.0823529f, .0823529f, .0823529f, 1}},
+                };
+
+                if (ImGui::BeginCombo(
+                        std::string {std::string {"##"} + name.c_str()}.c_str(),
+                        preview.c_str()
+                    )) {
+                    auto p {item.c_str()};
+                    while (*p) {
+                        list.emplace_back(p);
+                        p += list.back().length() + 1;
+                    }
+
+                    for (std::size_t i {}; i < list.size(); ++i) {
+                        ImGui::Selectable(
+                            list[i].c_str(),
+                            &value[i],
+                            ImGuiSelectableFlags_::
+                                ImGuiSelectableFlags_DontClosePopups
+                        );
+                        if (value[i]) {
+                            selected.emplace_back(list[i]);
+                        }
+                    }
+
+                    ImGui::EndCombo();
+
+                    popupAlpha = std::clamp(
+                        ImGui::GetIO().DeltaTime * 2 + popupAlpha,
+                        0.f,
+                        1.f
+                    );
+                } else {
+                    popupAlpha = {};
+
+                    auto p {item.c_str()};
+                    while (*p) {
+                        list.emplace_back(p);
+                        p += list.back().length() + 1;
+                    }
+
+                    for (std::size_t i {}; i < list.size(); ++i) {
+                        if (value[i]) {
+                            selected.emplace_back(list[i]);
+                        }
+                    }
+                }
+                preview = {};
+                for (std::size_t i {}; i < selected.size(); ++i) {
+                    i == selected.size() - 1 ? preview += selected[i]
+                                             : preview += selected[i] + ", ";
+                }
+            }
+
+            if (ImGui::TableSetColumnIndex(0)) {
+                ImGui::SetCursorPos(
+                    ImGui::GetCursorPos()
+                    + ImVec2 {0, (ImGui::GetFrameHeight() - fontHeight - framePadding * .5f) * .5f - textPositionVerticalOffset}
+                );
+                ImGui::TextColored(
+                    ImVec4 {.564705f, .615686f, .647058f, 1},
+                    name
+                );
+            }
+        }
+
+        template<
+            stb::fixed_string str,
+            stb::fixed_string fmt,
+            float min,
+            float max>
+        auto slider(float& value) noexcept {
+            constexpr auto fontHeight {14.00f};
+            constexpr auto framePadding {3.00f};
+            constexpr auto inputTextWidth {28.00f};
+            constexpr auto textPositionVerticalOffset {1.00f};
+
+            const Gui::PushFont font {
+                orion.get_gui().get_fonts().factory,
+                fontHeight / 15.f
+            };
+            const auto& style = ImGui::GetStyle();
+
+            String<str> name;
+            String<fmt> format;
+
+            m_count++;
+
+            ImGui::TableNextRow();
+
+            if (ImGui::TableSetColumnIndex(1)) {
+                const auto frameHeight = ImGui::GetFrameHeight();
+                const auto pos {
+                    ImGui::GetCursorPos()
+                    + ImVec2 {0, (frameHeight - frameHeight * .8f) * .5f}
+                };
+
+                const StyleVar styleVar[] {
+                    {ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3},
+                    {ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3},
+                    {ImGuiStyleVar_::ImGuiStyleVar_FrameBorderSize, 1},
+                };
+                const StyleColor styleColor[] {
+                    {ImGuiCol_::ImGuiCol_FrameBgActive,
+                     ImVec4 {.0823529f, .2666666f, .3764705f, 1}},
+                    {ImGuiCol_::ImGuiCol_FrameBgHovered,
+                     ImVec4 {.0745098f, .2313725f, .3254901f, 1}},
+                    {ImGuiCol_::ImGuiCol_Border,
+                     ImVec4 {.0980392f, .0980392f, .0980392f, 1}},
+                    {ImGuiCol_::ImGuiCol_Text,
+                     ImVec4 {.564705f, .615686f, .647058f, 1}},
+                    {ImGuiCol_::ImGuiCol_TextSelectedBg,
+                     ImVec4 {.2509803f, .2509803f, .2509803f, .7686274f}},
+                };
+
+                {
+                    const Gui::PushFont font {
+                        orion.get_gui().get_fonts().factory,
+                        (fontHeight - 1) / 15.f
+                    };
+                    const StyleColor styleColor2[] {
+                        {ImGuiCol_::ImGuiCol_FrameBg,
+                         ImVec4 {.0470588f, .0470588f, .0470588f, 1}},
+                    };
+                    ImGui::SetCursorPos(
+                        pos
+                        + ImVec2 {
+                            ImGui::GetContentRegionAvail().x - inputTextWidth
+                                - style.CellPadding.x,
+                            0});
+                    ImGui::SetNextItemWidth(inputTextWidth);
+                    if (ImGui::InputFloat(
+                            std::string {std::string {"##"} + name.c_str()}
+                                .c_str(),
+                            &value,
+                            0.f,
+                            0.f,
+                            format,
+                            ImGuiInputTextFlags_::
+                                ImGuiInputTextFlags_AutoSelectAll
+                        )) {
+                        value = std::clamp(value, min, max);
+                    }
+                }
+
+                const StyleColor styleColor2[] {
+                    {ImGuiCol_::ImGuiCol_FrameBg,
+                     ImVec4 {.0666666f, .2117647f, .301960f, 1}},
+                    {ImGuiCol_::ImGuiCol_BorderShadow,
+                     ImVec4 {.0117647f, .0549019f, .06666f, 1}},
+                };
+                ImGui::SetCursorPos(pos);
+                ImGui::SetNextItemWidth(
+                    ImGui::GetContentRegionAvail().x - inputTextWidth
+                    - style.CellPadding.x - 8
+                );
+                ImGui::SliderFloat5(
+                    std::string {std::string {"###"} + name.c_str()}.c_str(),
+                    value,
+                    min,
+                    max,
+                    ImGui::GetFrameHeight() * .35f,
+                    IM_COL32(32, 32, 32, static_cast<int>(style.Alpha * 255)),
+                    format,
+                    ImGuiSliderFlags_::ImGuiSliderFlags_NoInput
+                );
+            }
+
+            if (ImGui::TableSetColumnIndex(0)) {
+                ImGui::SetCursorPos(
+                    ImGui::GetCursorPos()
+                    + ImVec2 {0, (ImGui::GetFrameHeight() - fontHeight - framePadding * .5f) * .5f - textPositionVerticalOffset}
+                );
+                ImGui::TextColored(
+                    ImVec4 {.564705f, .615686f, .647058f, 1},
+                    name
+                );
+            }
+        }
     };
-}  // namespace orion::GuiBuilder
+
+}  // namespace orion::core::gui

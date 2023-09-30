@@ -28,6 +28,10 @@
 
 #ifdef __cplusplus
 
+    #include <d3d11.h>
+    #include <d3d9.h>
+    #include <wrl/client.h>
+
     #include <filesystem>
     #include <numbers>
 
