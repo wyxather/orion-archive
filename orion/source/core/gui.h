@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/post_process.h"
+#include "source/core/gui/post_process.h"
 
 namespace orion {
     class Gui final {
@@ -134,7 +134,7 @@ namespace orion {
             ImFont* head = nullptr;
         } fonts;
 
-        std::unique_ptr<post_process::PostProcess> post_process;
+        std::unique_ptr<core::gui::PostProcess> post_process;
 
         float m_popupAlpha = {};
         float m_colorReference[4] = {};
