@@ -193,11 +193,11 @@ auto orion::Gui::init() noexcept -> void {
 
     switch (orion.get_renderer().get_type()) {
         case core::Renderer::Type::DirectX11: {
-            Gui::post_process = std::make_unique<PostProcess::BlurD3D11>();
+            Gui::post_process = std::make_unique<post_process::BlurD3D11>();
             break;
         }
         case core::Renderer::Type::DirectX9: {
-            Gui::post_process = std::make_unique<PostProcess::BlurD3D9>();
+            Gui::post_process = std::make_unique<post_process::BlurD3D9>();
             break;
         }
     }

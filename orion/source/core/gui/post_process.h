@@ -4,7 +4,7 @@
 #include <d3d9.h>
 #include <wrl/client.h>
 
-namespace orion::PostProcess {
+namespace orion::post_process {
     struct PostProcess {
         constexpr PostProcess() noexcept = default;
         virtual ~PostProcess() noexcept = default;
@@ -254,4 +254,4 @@ namespace orion::PostProcess {
         void validate() noexcept override;
         void invalidate() noexcept override;
     };
-}  // namespace orion::PostProcess
+}  // namespace orion::post_process

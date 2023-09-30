@@ -134,7 +134,7 @@ namespace orion {
             ImFont* head = nullptr;
         } fonts;
 
-        std::unique_ptr<PostProcess::PostProcess> post_process;
+        std::unique_ptr<post_process::PostProcess> post_process;
 
         float m_popupAlpha = {};
         float m_colorReference[4] = {};

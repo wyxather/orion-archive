@@ -32,7 +32,7 @@
     #endif
 #endif
 
-auto orion::PostProcess::BlurD3D9::begin(
+auto orion::post_process::BlurD3D9::begin(
     const ImDrawList*,
     const ImDrawCmd* const cmd
 ) noexcept -> void {
@@ -94,7 +94,7 @@ auto orion::PostProcess::BlurD3D9::begin(
     blur.device->SetVertexShaderConstantF(0, &projection.m[0][0], 4);
 }
 
-auto orion::PostProcess::BlurD3D9::first_pass(
+auto orion::post_process::BlurD3D9::first_pass(
     const ImDrawList*,
     const ImDrawCmd* const cmd
 ) noexcept -> void {
@@ -109,7 +109,7 @@ auto orion::PostProcess::BlurD3D9::first_pass(
     blur.device->SetRenderTarget(0, surface.Get());
 }
 
-auto orion::PostProcess::BlurD3D9::second_pass(
+auto orion::post_process::BlurD3D9::second_pass(
     const ImDrawList*,
     const ImDrawCmd* const cmd
 ) noexcept -> void {
@@ -124,7 +124,7 @@ auto orion::PostProcess::BlurD3D9::second_pass(
     blur.device->SetRenderTarget(0, surface.Get());
 }
 
-auto orion::PostProcess::BlurD3D9::end(
+auto orion::post_process::BlurD3D9::end(
     const ImDrawList*,
     const ImDrawCmd* const cmd
 ) noexcept -> void {
@@ -140,7 +140,7 @@ auto orion::PostProcess::BlurD3D9::end(
     );
 }
 
-auto orion::PostProcess::BlurD3D9::on_resize() noexcept -> void {
+auto orion::post_process::BlurD3D9::on_resize() noexcept -> void {
     if (const auto& display_size = ImGui::GetIO().DisplaySize;
         display_size.x != BlurD3D9::size.x
         || display_size.y != BlurD3D9::size.y) {
@@ -150,17 +150,17 @@ auto orion::PostProcess::BlurD3D9::on_resize() noexcept -> void {
     }
 }
 
-orion::PostProcess::BlurD3D9::BlurD3D9() noexcept {
+orion::post_process::BlurD3D9::BlurD3D9() noexcept {
     BlurD3D9::validate();
 }
 
-orion::PostProcess::BlurD3D9::~BlurD3D9() noexcept {
+orion::post_process::BlurD3D9::~BlurD3D9() noexcept {
     BlurD3D9::device.Reset();
     BlurD3D9::render_target_backup.Reset();
     BlurD3D9::invalidate();
 }
 
-void orion::PostProcess::BlurD3D9::draw(
+void orion::post_process::BlurD3D9::draw(
     const ImVec2& min,
     const ImVec2& max,
     const float rounding
@@ -198,7 +198,7 @@ void orion::PostProcess::BlurD3D9::draw(
     );
 }
 
-void orion::PostProcess::BlurD3D9::validate() noexcept {
+void orion::post_process::BlurD3D9::validate() noexcept {
     for (auto&& texture : BlurD3D9::textures)
         BlurD3D9::device->CreateTexture(
             static_cast<UINT>(BlurD3D9::size.x * BlurD3D9::down_sample),
@@ -220,14 +220,14 @@ void orion::PostProcess::BlurD3D9::validate() noexcept {
     );
 }
 
-void orion::PostProcess::BlurD3D9::invalidate() noexcept {
+void orion::post_process::BlurD3D9::invalidate() noexcept {
     for (auto&& texture : BlurD3D9::textures)
         texture.Reset();
     for (auto&& shader : BlurD3D9::shaders)
         shader.Reset();
 }
 
-auto orion::PostProcess::BlurD3D11::DeviceResource::validate(
+auto orion::post_process::BlurD3D11::DeviceResource::validate(
     ID3D11DeviceContext& device_context
 ) noexcept -> void {
     device_context.OMGetRenderTargets(
@@ -240,14 +240,14 @@ auto orion::PostProcess::BlurD3D11::DeviceResource::validate(
     );
 }
 
-auto orion::PostProcess::BlurD3D11::DeviceResource::invalidate() noexcept
+auto orion::post_process::BlurD3D11::DeviceResource::invalidate() noexcept
     -> void {
     DeviceResource::render_target.Reset();
     DeviceResource::render_target_view.Reset();
     DeviceResource::depth_stencil_view.Reset();
 }
 
-auto orion::PostProcess::BlurD3D11::RenderTexture::validate(
+auto orion::post_process::BlurD3D11::RenderTexture::validate(
     ID3D11Device& device,
     const DeviceResource& resource
 ) noexcept -> void {
@@ -274,7 +274,7 @@ auto orion::PostProcess::BlurD3D11::RenderTexture::validate(
     return RenderTexture::create_texture(device, desc);
 }
 
-auto orion::PostProcess::BlurD3D11::RenderTexture::validate(
+auto orion::post_process::BlurD3D11::RenderTexture::validate(
     ID3D11Device& device,
     const DeviceResource& resource,
     const ImVec2& texture_size
@@ -302,7 +302,7 @@ auto orion::PostProcess::BlurD3D11::RenderTexture::validate(
     return RenderTexture::create_texture(device, desc);
 }
 
-auto orion::PostProcess::BlurD3D11::RenderTexture::invalidate() noexcept
+auto orion::post_process::BlurD3D11::RenderTexture::invalidate() noexcept
     -> void {
     RenderTexture::size = {};
     RenderTexture::render_target.Reset();
@@ -310,7 +310,7 @@ auto orion::PostProcess::BlurD3D11::RenderTexture::invalidate() noexcept
     RenderTexture::shader_resource_view.Reset();
 }
 
-auto orion::PostProcess::BlurD3D11::RenderTexture::resolve_format(
+auto orion::post_process::BlurD3D11::RenderTexture::resolve_format(
     const DXGI_FORMAT format
 ) noexcept -> DXGI_FORMAT {
     switch (format) {
@@ -321,7 +321,7 @@ auto orion::PostProcess::BlurD3D11::RenderTexture::resolve_format(
     }
 }
 
-auto orion::PostProcess::BlurD3D11::RenderTexture::create_texture(
+auto orion::post_process::BlurD3D11::RenderTexture::create_texture(
     ID3D11Device& device,
     const D3D11_TEXTURE2D_DESC& desc
 ) noexcept -> void {
@@ -354,7 +354,7 @@ auto orion::PostProcess::BlurD3D11::RenderTexture::create_texture(
     );
 }
 
-auto orion::PostProcess::BlurD3D11::PixelShader::validate(
+auto orion::post_process::BlurD3D11::PixelShader::validate(
     ID3D11Device& device,
     const void* const bytes,
     const SIZE_T size
@@ -367,11 +367,11 @@ auto orion::PostProcess::BlurD3D11::PixelShader::validate(
     );
 }
 
-auto orion::PostProcess::BlurD3D11::PixelShader::invalidate() noexcept -> void {
+auto orion::post_process::BlurD3D11::PixelShader::invalidate() noexcept -> void {
     PixelShader::data.Reset();
 }
 
-auto orion::PostProcess::BlurD3D11::ConstantBuffer::validate(
+auto orion::post_process::BlurD3D11::ConstantBuffer::validate(
     ID3D11Device& device,
     const std::size_t size
 ) noexcept -> void {
@@ -383,7 +383,7 @@ auto orion::PostProcess::BlurD3D11::ConstantBuffer::validate(
     device.CreateBuffer(&desc, nullptr, ConstantBuffer::data.GetAddressOf());
 }
 
-auto orion::PostProcess::BlurD3D11::ConstantBuffer::validate(
+auto orion::post_process::BlurD3D11::ConstantBuffer::validate(
     ID3D11Device& device,
     const std::size_t size,
     const D3D11_SUBRESOURCE_DATA& resource
@@ -396,12 +396,12 @@ auto orion::PostProcess::BlurD3D11::ConstantBuffer::validate(
     device.CreateBuffer(&desc, &resource, ConstantBuffer::data.GetAddressOf());
 }
 
-auto orion::PostProcess::BlurD3D11::ConstantBuffer::invalidate() noexcept
+auto orion::post_process::BlurD3D11::ConstantBuffer::invalidate() noexcept
     -> void {
     ConstantBuffer::data.Reset();
 }
 
-auto orion::PostProcess::BlurD3D11::on_resize() noexcept -> void {
+auto orion::post_process::BlurD3D11::on_resize() noexcept -> void {
     const auto& size =
         BlurD3D11::render_target[DataType::RT_FIRST_PASS].get_size();
     if (const auto& display_size = ImGui::GetIO().DisplaySize;
@@ -411,15 +411,15 @@ auto orion::PostProcess::BlurD3D11::on_resize() noexcept -> void {
     }
 }
 
-orion::PostProcess::BlurD3D11::BlurD3D11() noexcept {
+orion::post_process::BlurD3D11::BlurD3D11() noexcept {
     BlurD3D11::validate();
 }
 
-orion::PostProcess::BlurD3D11::~BlurD3D11() noexcept {
+orion::post_process::BlurD3D11::~BlurD3D11() noexcept {
     BlurD3D11::invalidate();
 }
 
-auto orion::PostProcess::BlurD3D11::draw(
+auto orion::post_process::BlurD3D11::draw(
     const ImVec2& min,
     const ImVec2& max,
     const float rounding
@@ -474,7 +474,7 @@ auto orion::PostProcess::BlurD3D11::draw(
     draw_list.AddCallback(ImDrawCallback_ResetRenderState, nullptr);
 }
 
-auto orion::PostProcess::BlurD3D11::validate() noexcept -> void {
+auto orion::post_process::BlurD3D11::validate() noexcept -> void {
     constexpr size_t SAMPLE_COUNT = 15;
 
     enum class BloomPresets {
@@ -730,7 +730,7 @@ auto orion::PostProcess::BlurD3D11::validate() noexcept -> void {
     );
 }
 
-auto orion::PostProcess::BlurD3D11::invalidate() noexcept -> void {
+auto orion::post_process::BlurD3D11::invalidate() noexcept -> void {
     BlurD3D11::device_resource.invalidate();
     for (auto i = 0; i < DataType::DATA_MAX; i++) {
         BlurD3D11::render_target[i].invalidate();
@@ -739,7 +739,7 @@ auto orion::PostProcess::BlurD3D11::invalidate() noexcept -> void {
     }
 }
 
-auto orion::PostProcess::BlurD3D11::begin(
+auto orion::post_process::BlurD3D11::begin(
     const ImDrawList*,
     const ImDrawCmd* const cmd
 ) noexcept -> void {
@@ -768,7 +768,7 @@ auto orion::PostProcess::BlurD3D11::begin(
     );
 }
 
-auto orion::PostProcess::BlurD3D11::first_pass(
+auto orion::post_process::BlurD3D11::first_pass(
     const ImDrawList*,
     const ImDrawCmd* const cmd
 ) noexcept -> void {
@@ -794,7 +794,7 @@ auto orion::PostProcess::BlurD3D11::first_pass(
     );
 }
 
-auto orion::PostProcess::BlurD3D11::second_pass(
+auto orion::post_process::BlurD3D11::second_pass(
     const ImDrawList*,
     const ImDrawCmd* const cmd
 ) noexcept -> void {
@@ -820,7 +820,7 @@ auto orion::PostProcess::BlurD3D11::second_pass(
     );
 }
 
-auto orion::PostProcess::BlurD3D11::end(
+auto orion::post_process::BlurD3D11::end(
     const ImDrawList*,
     const ImDrawCmd* const cmd
 ) noexcept -> void {
