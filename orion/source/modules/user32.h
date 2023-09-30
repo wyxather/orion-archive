@@ -7,7 +7,7 @@ namespace orion::modules {
         NON_COPYABLE(User32)
         NON_MOVEABLE(User32)
 
-        explicit User32(void* const module_address) noexcept;
+        explicit User32() noexcept;
 
         ~User32() noexcept;
 
@@ -28,6 +28,9 @@ namespace orion::modules {
         decltype(&RegisterClassEx) register_class_ex = nullptr;
         decltype(&SetWindowLongPtr) set_window_long_ptr = nullptr;
         decltype(&UnregisterClass) unregister_class = nullptr;
+
+    private:
+        HMODULE handle;
     };
 
 }  // namespace orion::modules

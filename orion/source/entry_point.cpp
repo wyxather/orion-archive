@@ -18,8 +18,8 @@ auto EntryPoint::process(
         _CRT_INIT(module_handle, reason_for_call, reserved);
     if (crt_init_result == TRUE && reason_for_call == DLL_PROCESS_ATTACH) {
         orion.handle = module_handle;
-        orion.kernel32.emplace(LI_MOD("kernel32.dll")::get());
-        orion.user32.emplace(LI_MOD("user32.dll")::get());
+        orion.kernel32.emplace();
+        orion.user32.emplace();
         orion.console.emplace();
         orion.platform.emplace(std::nullopt, std::nullopt);
         orion.renderer.emplace(Renderer::Enumerate::Manual);
