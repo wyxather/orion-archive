@@ -30,7 +30,9 @@ namespace orion::modules {
         decltype(&UnregisterClass) unregister_class = nullptr;
 
     private:
-        HMODULE handle;
+        auto initialize(const HMODULE handle) noexcept -> void;
+
+        HMODULE handle = nullptr;
     };
 
 }  // namespace orion::modules
