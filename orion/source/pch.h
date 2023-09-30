@@ -29,9 +29,7 @@
 #ifdef __cplusplus
 
     #include <filesystem>
-    #include <memory>
     #include <numbers>
-    #include <span>
 
     #include "dependencies/stb.hh"
 
