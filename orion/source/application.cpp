@@ -1,6 +1,5 @@
 #include "source/application.h"
 
-#include "source/hooks/hooks.h"
 #include "source/orion.h"
 
 using orion::Application;
