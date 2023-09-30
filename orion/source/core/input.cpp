@@ -1,10 +1,11 @@
 #define DIRECTINPUT_VERSION 0x0800
+
 #include <dinput.h>
 #include <wrl/client.h>
-#pragma comment(lib, "dinput8.lib")
-#pragma comment(lib, "dxguid.lib")
 
 #include "source/orion.h"
+
+#pragma comment(lib, "dxguid.lib")
 
 using Microsoft::WRL::ComPtr;
 using orion::core::Input;
