@@ -1,5 +1,7 @@
 #include "source/modules/kernel32.h"
 
+#include "source/modules/modules.h"
+
 using orion::modules::Kernel32;
 
 Kernel32::Kernel32() noexcept {

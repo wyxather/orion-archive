@@ -1,3 +1,4 @@
+#include "source/modules/modules.h"
 #include "source/orion.h"
 
 using orion::modules::Combase;
