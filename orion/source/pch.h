@@ -34,6 +34,23 @@
     #include <span>
 
     #include "dependencies/stb.hh"
+
+    #pragma push_macro("JM_XORSTR_DISABLE_AVX_INTRINSICS")
+    #ifndef JM_XORSTR_DISABLE_AVX_INTRINSICS
+        #define JM_XORSTR_DISABLE_AVX_INTRINSICS
+    #endif
+    #include "dependencies/xorstr.hpp"
+    #pragma pop_macro("JM_XORSTR_DISABLE_AVX_INTRINSICS")
+    #ifndef xorarr
+        #define xorarr(arr) \
+            ::jm::xor_string( \
+                []() { return arr.data(); }, \
+                std::integral_constant<std::size_t, arr.size()> {}, \
+                std::make_index_sequence< \
+                    ::jm::detail::_buffer_size<sizeof(arr)>()> {} \
+            )
+    #endif
+
     #include "source/hooks/hooks.h"
     #include "source/utilities/fnv1a.h"
     #include "source/utilities/hashmap.h"
