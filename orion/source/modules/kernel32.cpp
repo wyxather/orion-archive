@@ -1,6 +1,4 @@
-#include "kernel32.h"
-
-#include "source/modules/modules.h"
+#include "source/modules/kernel32.h"
 
 using orion::modules::Kernel32;
 

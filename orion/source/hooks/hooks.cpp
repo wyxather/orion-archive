@@ -1,5 +1,3 @@
-#include "hooks.h"
-
 #include "source/orion.h"
 
 auto orion::hooks::calc_vmt_length(void* const vmt_ptr) noexcept

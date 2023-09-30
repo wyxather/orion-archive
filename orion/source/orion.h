@@ -1,16 +1,16 @@
 #pragma once
 
-#include "core/config.h"
-#include "core/console.h"
-#include "core/game.h"
-#include "core/gui.h"
-#include "core/input.h"
-#include "core/platform.h"
-#include "core/renderer.h"
-#include "modules/combase.h"
-#include "modules/kernel32.h"
-#include "modules/shell32.h"
-#include "modules/user32.h"
+#include "source/core/config.h"
+#include "source/core/console.h"
+#include "source/core/game.h"
+#include "source/core/gui.h"
+#include "source/core/input.h"
+#include "source/core/platform.h"
+#include "source/core/renderer.h"
+#include "source/modules/combase.h"
+#include "source/modules/kernel32.h"
+#include "source/modules/shell32.h"
+#include "source/modules/user32.h"
 
 namespace orion {
 

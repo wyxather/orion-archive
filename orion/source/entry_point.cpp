@@ -1,6 +1,5 @@
-#include "entry_point.h"
+#include "source/entry_point.h"
 
-#include "source/modules/modules.h"
 #include "source/orion.h"
 
 using orion::EntryPoint;

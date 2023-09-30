@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework.h"
+#include "source/framework.h"
 
 #ifndef NON_MOVEABLE
     #define NON_MOVEABLE(c) \
@@ -29,11 +29,12 @@
 #ifdef __cplusplus
 
     #include <filesystem>
+    #include <memory>
     #include <numbers>
     #include <span>
 
     #include "dependencies/stb.hh"
-    #include "source/hooks/minhook.h"
+    #include "source/hooks/hooks.h"
     #include "source/modules/modules.h"
     #include "source/utilities/fnv1a.h"
     #include "source/utilities/hashmap.h"

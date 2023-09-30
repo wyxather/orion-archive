@@ -1,8 +1,6 @@
 #pragma once
 
-#include <memory>
-
-#include "hooks.h"
+#include "source/hooks/hooks.h"
 
 namespace orion {
 

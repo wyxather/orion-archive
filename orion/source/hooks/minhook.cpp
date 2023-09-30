@@ -1,4 +1,4 @@
-#include "minhook.h"
+#include "source/hooks/minhook.h"
 
 #include "dependencies/minhook/include/MinHook.h"
 
