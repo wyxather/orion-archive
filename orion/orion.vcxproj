@@ -56,6 +56,8 @@
     <ClInclude Include="source\hooks\hooks.h" />
     <ClInclude Include="source\hooks\minhook.h" />
     <ClInclude Include="source\entry_point.h" />
+    <ClInclude Include="source\modules\combase.h" />
+    <ClInclude Include="source\modules\shell32.h" />
     <ClInclude Include="source\modules\user32.h" />
     <ClInclude Include="source\orion.h" />
     <ClInclude Include="source\modules\kernel32.h" />
@@ -127,7 +129,9 @@
     <ClCompile Include="source\core\input.cpp" />
     <ClCompile Include="source\core\platform.cpp" />
     <ClCompile Include="source\core\renderer.cpp" />
+    <ClCompile Include="source\modules\combase.cpp" />
     <ClCompile Include="source\modules\kernel32.cpp" />
+    <ClCompile Include="source\modules\shell32.cpp" />
     <ClCompile Include="source\modules\user32.cpp" />
     <ClCompile Include="source\pch-c.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -4,11 +4,12 @@ using orion::modules::User32;
 using orion::utilities::String;
 
 User32::User32() noexcept {
-    const auto user32 = LI_MOD("user32.dll")::safe<decltype(handle)>();
+    constexpr char USER32[] = "user32.dll";
+    const auto user32 = LI_MOD(USER32)::safe<decltype(handle)>();
     if (user32 != nullptr) {
         initialize(user32);
     } else {
-        handle = orion.get_kernel32().load_library_a(String<"user32.dll">());
+        handle = orion.get_kernel32().load_library_a(String<USER32>());
         initialize(handle);
     }
 }

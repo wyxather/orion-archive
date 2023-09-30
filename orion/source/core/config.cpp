@@ -1,6 +1,3 @@
-
-#include <ShlObj.h>
-
 #include <fstream>
 
 #include "dependencies/json.hpp"
@@ -10,7 +7,8 @@ using orion::core::Config;
 using orion::utilities::String;
 
 Config::Config() noexcept {
-    if (PWSTR relative_path; SUCCEEDED(IMPORT(SHGetKnownFolderPath)(
+    if (PWSTR relative_path;
+        SUCCEEDED(orion.get_shell32().sh_get_known_folder_path(
             FOLDERID_Desktop,
             NULL,
             nullptr,
@@ -21,7 +19,7 @@ Config::Config() noexcept {
         settings.path /= String<"Orion">().c_str();
         save();
         update();
-        IMPORT(CoTaskMemFree)(relative_path);
+        orion.get_combase().co_task_mem_free(relative_path);
     }
 }
 

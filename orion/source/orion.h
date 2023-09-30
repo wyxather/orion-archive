@@ -7,7 +7,9 @@
 #include "core/input.h"
 #include "core/platform.h"
 #include "core/renderer.h"
+#include "modules/combase.h"
 #include "modules/kernel32.h"
+#include "modules/shell32.h"
 #include "modules/user32.h"
 
 namespace orion {
@@ -22,6 +24,8 @@ namespace orion {
         HMODULE handle = nullptr;
         std::optional<const modules::Kernel32> kernel32;
         std::optional<const modules::User32> user32;
+        std::optional<const modules::Shell32> shell32;
+        std::optional<const modules::Combase> combase;
         std::optional<const core::Console> console;
         std::optional<core::Platform> platform;
         std::optional<core::Renderer> renderer;
@@ -43,6 +47,14 @@ namespace orion {
 
         NODISCARD constexpr auto get_user32() const noexcept -> const auto& {
             return user32.value();
+        }
+
+        NODISCARD constexpr auto get_shell32() const noexcept -> const auto& {
+            return shell32.value();
+        }
+
+        NODISCARD constexpr auto get_combase() const noexcept -> const auto& {
+            return combase.value();
         }
 
         NODISCARD constexpr auto get_console() const noexcept -> const auto& {

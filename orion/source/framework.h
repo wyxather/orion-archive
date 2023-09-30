@@ -11,6 +11,7 @@
     #define WIN32_LEAN_AND_MEAN
 #endif
 
+#include <ShlObj.h>
 #include <Windows.h>
 
 #pragma pop_macro("NOMINMAX")

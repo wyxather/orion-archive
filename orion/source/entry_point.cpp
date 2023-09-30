@@ -20,6 +20,8 @@ auto EntryPoint::process(
         orion.handle = module_handle;
         orion.kernel32.emplace();
         orion.user32.emplace();
+        orion.shell32.emplace();
+        orion.combase.emplace();
         orion.console.emplace();
         orion.platform.emplace(std::nullopt, std::nullopt);
         orion.renderer.emplace(Renderer::Enumerate::Manual);
