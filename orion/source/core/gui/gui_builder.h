@@ -275,20 +275,23 @@ namespace orion::core::gui {
 
         explicit Widget() noexcept : m_count {0} {
             String<"##Body::Content::Panel::Table::Widget"> name;
-            ImGui::BeginTable(name.c_str(), 2);
+            resume = ImGui::BeginTable(name.c_str(), 2);
         }
 
         NODISCARD constexpr explicit operator bool() const noexcept {
-            return true;
+            return Widget::resume;
         }
 
     private:
-        int m_count = {};
+        int m_count = 0;
+        bool resume = false;
 
     public:
         ~Widget() noexcept {
-            ImGui::EndTable();
-            orion.get_gui().get_last_active_group()->widget_count = m_count;
+            if (resume) {
+                ImGui::EndTable();
+                orion.get_gui().get_last_active_group()->widget_count = m_count;
+            }
         }
 
         template<stb::fixed_string str>
