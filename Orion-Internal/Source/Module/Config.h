@@ -15,9 +15,81 @@ public:
 		Data& operator=(Data&&) = delete;
 		Data& operator=(const Data&) = delete;
 
-		bool hitbox[4] = {};
-		float color[4] = {};
-		int target = {};
+		struct
+		{
+			bool enable = false;
+			bool hitbox[11] = {};
+			bool aimkey[2] = { false, true };
+			float fov = 90.f;
+
+		} legitbot;
+
+		struct
+		{
+			int player = 0;
+
+			struct
+			{
+				struct
+				{
+					bool enable = false;
+					int type = 0;
+					float color[4] = { 1.f, 1.f, 0.f, 1.f };
+					float scale[3] = { .25f, .25f, .25f };
+
+				} box;
+
+				bool name = false;
+				bool weapon = false;
+				bool snapline = false;
+				bool healthbar = false;
+				bool shieldbar = false;
+
+			} enemy;
+
+		} players;
+
+		struct
+		{
+			struct
+			{
+				bool god_mode = false;
+				bool no_recoil = false;
+				bool no_sway = false;
+				bool no_ammo_cost = false;
+				bool no_heat = false;
+
+			} exploits;
+
+			struct
+			{
+				bool enable = false;
+				float value = 20.f;
+
+			} fire_rate;
+
+			struct
+			{
+				bool enable = false;
+				float value = 0.f;
+
+			} spread;
+
+			struct
+			{
+				bool enable = false;
+				float value = 100.f;
+
+			} accuracy;
+
+			struct
+			{
+				bool enable = false;
+				float value = 100.f;
+
+			} damage;
+
+		} main;
 	};
 
 	constexpr explicit Config() noexcept = default;

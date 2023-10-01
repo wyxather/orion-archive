@@ -141,6 +141,9 @@
     <ClInclude Include="Dependencies\MinHook\src\trampoline.h" />
     <ClInclude Include="Dependencies\stb.hh" />
     <ClInclude Include="Dependencies\xorstr.hpp" />
+    <ClInclude Include="Source\Hacks\Aimbot.h" />
+    <ClInclude Include="Source\Hacks\Misc.h" />
+    <ClInclude Include="Source\Hacks\Visuals.h" />
     <ClInclude Include="Source\Module\Config.h" />
     <ClInclude Include="Source\Module\Console.h" />
     <ClInclude Include="Source\Module\Game.h" />
@@ -155,6 +158,7 @@
     <ClInclude Include="Source\Resources\Fonts\museosanscyrl.h" />
     <ClInclude Include="Source\SDK.h" />
     <ClInclude Include="Source\SDK\Class\Class.h" />
+    <ClInclude Include="Source\SDK\Class\LocalPlayer.h" />
     <ClInclude Include="Source\SDK\Math.h" />
     <ClInclude Include="Source\SDK\Struct\Matrix3x4.h" />
     <ClInclude Include="Source\SDK\Struct\Matrix4x4.h" />
@@ -192,6 +196,9 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="Source\Entry.cpp" />
+    <ClCompile Include="Source\Hacks\Aimbot.cpp" />
+    <ClCompile Include="Source\Hacks\Misc.cpp" />
+    <ClCompile Include="Source\Hacks\Visuals.cpp" />
     <ClCompile Include="Source\Module\Config.cpp" />
     <ClCompile Include="Source\Module\Console.cpp" />
     <ClCompile Include="Source\Module\Game.cpp" />
@@ -213,6 +220,10 @@
     </ClCompile>
     <ClCompile Include="Source\SDK\BL3_Basic.cpp" />
     <ClCompile Include="Source\SDK\BL3_CoreUObject_functions.cpp" />
+    <ClCompile Include="Source\SDK\BL3_Engine_functions.cpp" />
+    <ClCompile Include="Source\SDK\BL3_GbxGameSystemCore_functions.cpp" />
+    <ClCompile Include="Source\SDK\BL3_GbxWeapon_functions.cpp" />
+    <ClCompile Include="Source\SDK\BL3_OakGame_functions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Source\Resources\Shaders\bloom_combine.hlsl">

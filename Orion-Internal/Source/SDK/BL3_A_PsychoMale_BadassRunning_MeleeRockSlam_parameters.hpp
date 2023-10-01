@@ -1,0 +1,45 @@
+#pragma once
+
+// Borderlands 3 SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "BL3_A_PsychoMale_BadassRunning_MeleeRockSlam_classes.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Parameters
+//---------------------------------------------------------------------------
+
+// Function A_PsychoMale_BadassRunning_MeleeRockSlam.A_PsychoMale_BadassRunning_MeleeRockSlam_C.GbxAsyncRequest_Spawned_D412A4A94D04A1FEDB5F4898E40F5D93
+struct UA_PsychoMale_BadassRunning_MeleeRockSlam_C_GbxAsyncRequest_Spawned_D412A4A94D04A1FEDB5F4898E40F5D93_Params
+{
+	class AActor*                                      Actor;                                                    // (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData)
+	int                                                InstanceIndex;                                            // (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData)
+};
+
+// Function A_PsychoMale_BadassRunning_MeleeRockSlam.A_PsychoMale_BadassRunning_MeleeRockSlam_C.OnBegin
+struct UA_PsychoMale_BadassRunning_MeleeRockSlam_C_OnBegin_Params
+{
+	class AActor**                                     Actor;                                                    // (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData)
+};
+
+// Function A_PsychoMale_BadassRunning_MeleeRockSlam.A_PsychoMale_BadassRunning_MeleeRockSlam_C.MeleeStrike
+struct UA_PsychoMale_BadassRunning_MeleeRockSlam_C_MeleeStrike_Params
+{
+};
+
+// Function A_PsychoMale_BadassRunning_MeleeRockSlam.A_PsychoMale_BadassRunning_MeleeRockSlam_C.ExecuteUbergraph_A_PsychoMale_BadassRunning_MeleeRockSlam
+struct UA_PsychoMale_BadassRunning_MeleeRockSlam_C_ExecuteUbergraph_A_PsychoMale_BadassRunning_MeleeRockSlam_Params
+{
+	int                                                EntryPoint;                                               // (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData)
+};
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif

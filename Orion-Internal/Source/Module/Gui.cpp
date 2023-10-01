@@ -783,7 +783,7 @@ namespace
 						result = Event::INPUT;
 						popupAlpha = std::clamp(popupAlpha + ImGui::GetIO().DeltaTime * 4, 0.f, 1.f);
 					}
-					else if (lastConfigName == name && input != name) {
+					else if (lastConfigName == name && input.data() != name) {
 						lastConfigName.clear();
 						result = Event::RENAME;
 					}
@@ -1859,6 +1859,9 @@ auto Gui::draw() noexcept -> void
 						config->update();
 					Menu::Body::Top::Create();
 				}
+				else if (Menu::Tab tab{ Orion::Fnv<"Players">::value }) {
+					Menu::Body::Top::Combo<"Enemy\0">(config->getData().players.player);
+				}
 			}
 			if (Menu::Body::Content content{}) {
 				if (Menu::Body::Content::Main main{}) {
@@ -1871,20 +1874,90 @@ auto Gui::draw() noexcept -> void
 					else if (Menu::Tab tab{ Orion::Fnv<"Main">::value }) {
 						if (Menu::Body::Content::Main::Panel panel{}) {
 							if (Menu::Body::Content::Main::Panel::Table table{}) {
-								if (Menu::Body::Content::Main::Panel::Table::Group<"General", true> group{}) {
+								if (Menu::Body::Content::Main::Panel::Table::Group<"Exploits", true> group{}) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
-										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
-										widget.Toggle<"Unlimited Works">(config->getData().hitbox[1]);
-										widget.Combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(config->getData().target);
-										widget.Combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(config->getData().target);
-										widget.MultiCombo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
-										widget.MultiCombo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(config->getData().hitbox);
+										auto& cfg = config->getData().main.exploits;
+										widget.Toggle<"Invulnerable">(cfg.god_mode);
+										widget.Toggle<"Remove Recoil">(cfg.no_recoil);
+										widget.Toggle<"Remove Sway">(cfg.no_sway);
+										widget.Toggle<"Remove Ammo Cost">(cfg.no_ammo_cost);
+										widget.Toggle<"Remove Heat">(cfg.no_heat);
 									}
 								}
-								if (Menu::Body::Content::Main::Panel::Table::Group<"Movement", true> group{}) {
+								if (Menu::Body::Content::Main::Panel::Table::Group<"Spread", false> group{}) {
 									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
-										widget.Toggle<"Unlimited Blade">(config->getData().hitbox[0], config->getData().color, m_colorReference, &m_popupAlpha);
-										widget.Slider<"Unlimited Works", "%.1f", 0.f, 1.f>(config->getData().color[0]);
+										auto& cfg = config->getData().main.spread;
+										widget.Toggle<"Override">(cfg.enable);
+										widget.Slider<"Value", "%.0f", 0.f, 100.f>(cfg.value);
+									}
+								}
+								if (Menu::Body::Content::Main::Panel::Table::Group<"Damage", false> group{}) {
+									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
+										auto& cfg = config->getData().main.damage;
+										widget.Toggle<"Override">(cfg.enable);
+										widget.Slider<"Value", "%.0f", 0.f, std::numeric_limits<float>::max()>(cfg.value);
+									}
+								}
+								if (Menu::Body::Content::Main::Panel::Table::Group<"Fire Rate", true> group{}) {
+									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
+										auto& cfg = config->getData().main.fire_rate;
+										widget.Toggle<"Override">(cfg.enable);
+										widget.Slider<"Value", "%.0f", 0.f, 100.f>(cfg.value);
+									}
+								}
+								if (Menu::Body::Content::Main::Panel::Table::Group<"Accuracy", false> group{}) {
+									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
+										auto& cfg = config->getData().main.accuracy;
+										widget.Toggle<"Override">(cfg.enable);
+										widget.Slider<"Value", "%.0f", 0.f, 100.f>(cfg.value);
+									}
+								}
+							}
+						}
+					}
+
+					else if (Menu::Tab tab{ Orion::Fnv<"Players">::value }) {
+						if (Menu::Body::Content::Main::Panel panel{}) {
+							if (Menu::Body::Content::Main::Panel::Table table{}) {
+								auto& cfg = config->getData().players;
+								switch (cfg.player) {
+								case 0:
+								{
+									if (Menu::Body::Content::Main::Panel::Table::Group<"General", true> group{}) {
+										if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
+											widget.Toggle<"Name">(cfg.enemy.name);
+											widget.Toggle<"Weapon">(cfg.enemy.weapon);
+											widget.Toggle<"Snapline">(cfg.enemy.snapline);
+											widget.Toggle<"Health Bar">(cfg.enemy.healthbar);
+											widget.Toggle<"Shield Bar">(cfg.enemy.shieldbar);
+										}
+									}
+									if (Menu::Body::Content::Main::Panel::Table::Group<"Box", true> group{}) {
+										if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
+											widget.Toggle<"Enable">(cfg.enemy.box.enable, cfg.enemy.box.color, m_colorReference, &m_popupAlpha);
+											widget.Combo<"Type", "2D\0" "3D\0">(cfg.enemy.box.type);
+											widget.Slider<"Scale X", "%.2f", 0.f, .5f>(cfg.enemy.box.scale[0]);
+											widget.Slider<"Scale Y", "%.2f", 0.f, .5f>(cfg.enemy.box.scale[1]);
+											widget.Slider<"Scale Z", "%.2f", 0.f, .5f>(cfg.enemy.box.scale[2]);
+										}
+									}
+								}
+								break;
+								}
+							}
+						}
+					}
+
+					else if (Menu::Tab tab{ Orion::Fnv<"Legitbot">::value }) {
+						if (Menu::Body::Content::Main::Panel panel{}) {
+							if (Menu::Body::Content::Main::Panel::Table table{}) {
+								if (Menu::Body::Content::Main::Panel::Table::Group<"General", true> group{}) {
+									if (Menu::Body::Content::Main::Panel::Table::Widget widget{}) {
+										auto& cfg = config->getData().legitbot;
+										widget.Toggle<"Enable">(cfg.enable);
+										widget.MultiCombo<"Key", "Left Mouse\0" "Right Mouse\0">(cfg.aimkey);
+										widget.MultiCombo<"Hitbox", "Head\0" "Neck\0" "Upperarm\0" "Forearm\0" "Hand\0" "Spine\0" "Hip\0" "Thigh\0" "Shin\0" "Foot\0" "Toe\0">(cfg.hitbox);
+										widget.Slider<"FOV", "%.0f", 0.f, 180.f>(cfg.fov);
 									}
 								}
 							}

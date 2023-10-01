@@ -14,6 +14,9 @@ public:
 	auto draw() noexcept -> void;
 	auto invalidate() noexcept -> void;
 
+	auto getKismetMathLibrary() noexcept -> SDK::UKismetMathLibrary*;
+	auto getKismetSystemLibrary() noexcept -> SDK::UKismetSystemLibrary*;
+
 	struct
 	{
 		std::uintptr_t names;

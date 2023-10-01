@@ -1,0 +1,32 @@
+#pragma once
+
+// Borderlands 3 SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "BL3_PassiveSkill_Operative_TrickOfTheLight_classes.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Parameters
+//---------------------------------------------------------------------------
+
+// Function PassiveSkill_Operative_TrickOfTheLight.PassiveSkill_Operative_TrickOfTheLight_C.OnActivated
+struct UPassiveSkill_Operative_TrickOfTheLight_C_OnActivated_Params
+{
+};
+
+// Function PassiveSkill_Operative_TrickOfTheLight.PassiveSkill_Operative_TrickOfTheLight_C.ExecuteUbergraph_PassiveSkill_Operative_TrickOfTheLight
+struct UPassiveSkill_Operative_TrickOfTheLight_C_ExecuteUbergraph_PassiveSkill_Operative_TrickOfTheLight_Params
+{
+	int                                                EntryPoint;                                               // (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData)
+};
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif

@@ -171,6 +171,18 @@
     <ClInclude Include="Source\SDK.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Hacks\Visuals.h">
+      <Filter>Source\Hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Class\LocalPlayer.h">
+      <Filter>Source\SDK\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Hacks\Aimbot.h">
+      <Filter>Source\Hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Hacks\Misc.h">
+      <Filter>Source\Hacks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp">
@@ -255,6 +267,27 @@
       <Filter>Source\SDK</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDK\BL3_Basic.cpp">
+      <Filter>Source\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Hacks\Visuals.cpp">
+      <Filter>Source\Hacks</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDK\BL3_Engine_functions.cpp">
+      <Filter>Source\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Hacks\Aimbot.cpp">
+      <Filter>Source\Hacks</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Hacks\Misc.cpp">
+      <Filter>Source\Hacks</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDK\BL3_GbxGameSystemCore_functions.cpp">
+      <Filter>Source\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDK\BL3_OakGame_functions.cpp">
+      <Filter>Source\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDK\BL3_GbxWeapon_functions.cpp">
       <Filter>Source\SDK</Filter>
     </ClCompile>
   </ItemGroup>

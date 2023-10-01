@@ -1,0 +1,36 @@
+#pragma once
+
+// Borderlands 3 SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "BL3_Challenge_VehicleKill_HorseRamming_structs.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Classes
+//---------------------------------------------------------------------------
+
+// BlueprintGeneratedClass Challenge_VehicleKill_HorseRamming.Challenge_VehicleKill_HorseRamming_C
+// 0x0000 (0x0260 - 0x0260)
+class UChallenge_VehicleKill_HorseRamming_C : public UChallenge_Enemy_Ger_C
+{
+public:
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindClass("BlueprintGeneratedClass Challenge_VehicleKill_HorseRamming.Challenge_VehicleKill_HorseRamming_C");
+		return ptr;
+	}
+
+};
+
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif

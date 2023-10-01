@@ -1,0 +1,37 @@
+#pragma once
+
+// Borderlands 3 SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "BL3_A_Tink_FloorPanel_OpenClose_structs.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Classes
+//---------------------------------------------------------------------------
+
+// BlueprintGeneratedClass A_Tink_FloorPanel_OpenClose.A_Tink_FloorPanel_OpenClose_C
+// 0x0008 (0x0220 - 0x0218)
+class UA_Tink_FloorPanel_OpenClose_C : public UOakAction_Anim
+{
+public:
+	class AActor*                                      MySelf;                                                   // 0x0218(0x0008) (Edit, BlueprintVisible, ZeroConstructor, DisableEditOnTemplate, DisableEditOnInstance, IsPlainOldData)
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindClass("BlueprintGeneratedClass A_Tink_FloorPanel_OpenClose.A_Tink_FloorPanel_OpenClose_C");
+		return ptr;
+	}
+
+};
+
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif

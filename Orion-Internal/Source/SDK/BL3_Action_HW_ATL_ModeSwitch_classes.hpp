@@ -1,0 +1,36 @@
+#pragma once
+
+// Borderlands 3 SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "BL3_Action_HW_ATL_ModeSwitch_structs.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Classes
+//---------------------------------------------------------------------------
+
+// BlueprintGeneratedClass Action_HW_ATL_ModeSwitch.Action_HW_ATL_ModeSwitch_C
+// 0x0000 (0x0220 - 0x0220)
+class UAction_HW_ATL_ModeSwitch_C : public UAction_Weapon_Reload_Master_C
+{
+public:
+
+	static UClass* StaticClass()
+	{
+		static auto ptr = UObject::FindClass("BlueprintGeneratedClass Action_HW_ATL_ModeSwitch.Action_HW_ATL_ModeSwitch_C");
+		return ptr;
+	}
+
+};
+
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif

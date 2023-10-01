@@ -1,0 +1,328 @@
+// Borderlands 3 SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "BL3_BPAnim_SirenBrawler_GhostArms_3rd_parameters.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Functions
+//---------------------------------------------------------------------------
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_ED389ABB48D67538B37F59B18C24DDF2
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_ED389ABB48D67538B37F59B18C24DDF2()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_ED389ABB48D67538B37F59B18C24DDF2");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_ED389ABB48D67538B37F59B18C24DDF2_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_9252354142ED505FD2E3B8A613700F18
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_9252354142ED505FD2E3B8A613700F18()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_9252354142ED505FD2E3B8A613700F18");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_9252354142ED505FD2E3B8A613700F18_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_A2C4F1EC4CDE9890986FAB88DFD6BBBE
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_A2C4F1EC4CDE9890986FAB88DFD6BBBE()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_A2C4F1EC4CDE9890986FAB88DFD6BBBE");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_A2C4F1EC4CDE9890986FAB88DFD6BBBE_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_E240F95A401072EF32B27EB594EDF607
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_E240F95A401072EF32B27EB594EDF607()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_E240F95A401072EF32B27EB594EDF607");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_E240F95A401072EF32B27EB594EDF607_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendSpacePlayer_E8136BFD4735DCC4511EC3AA79923321
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendSpacePlayer_E8136BFD4735DCC4511EC3AA79923321()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendSpacePlayer_E8136BFD4735DCC4511EC3AA79923321");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendSpacePlayer_E8136BFD4735DCC4511EC3AA79923321_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_ApplyAdditive_07C45E674EAA2FF3E9E8DCBCF41920F5
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_ApplyAdditive_07C45E674EAA2FF3E9E8DCBCF41920F5()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_ApplyAdditive_07C45E674EAA2FF3E9E8DCBCF41920F5");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_ApplyAdditive_07C45E674EAA2FF3E9E8DCBCF41920F5_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_77EB1FA74CB963269BE491B3FED55207
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_77EB1FA74CB963269BE491B3FED55207()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_77EB1FA74CB963269BE491B3FED55207");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_77EB1FA74CB963269BE491B3FED55207_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_396E43C34AB85BA94ACCFF9BAD2EB96E
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_396E43C34AB85BA94ACCFF9BAD2EB96E()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_396E43C34AB85BA94ACCFF9BAD2EB96E");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_396E43C34AB85BA94ACCFF9BAD2EB96E_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_09569D5C4EBCD1DEF5E900BFF9477A53
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_09569D5C4EBCD1DEF5E900BFF9477A53()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_09569D5C4EBCD1DEF5E900BFF9477A53");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_09569D5C4EBCD1DEF5E900BFF9477A53_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_106F22CF43ECFB85DFFDFDB059F96597
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_106F22CF43ECFB85DFFDFDB059F96597()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_106F22CF43ECFB85DFFDFDB059F96597");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_106F22CF43ECFB85DFFDFDB059F96597_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_RotationOffsetBlendSpace_A0057AB14870D1D2ADB9F48664881373
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_RotationOffsetBlendSpace_A0057AB14870D1D2ADB9F48664881373()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_RotationOffsetBlendSpace_A0057AB14870D1D2ADB9F48664881373");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_RotationOffsetBlendSpace_A0057AB14870D1D2ADB9F48664881373_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendListByBool_6594A2B941E2E241E62AACA3A42A3311
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendListByBool_6594A2B941E2E241E62AACA3A42A3311()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendListByBool_6594A2B941E2E241E62AACA3A42A3311");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendListByBool_6594A2B941E2E241E62AACA3A42A3311_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_RotationOffsetBlendSpace_463F93DB4B9B715F0FF6089349EE97BE
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_RotationOffsetBlendSpace_463F93DB4B9B715F0FF6089349EE97BE()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_RotationOffsetBlendSpace_463F93DB4B9B715F0FF6089349EE97BE");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_RotationOffsetBlendSpace_463F93DB4B9B715F0FF6089349EE97BE_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendListByBool_705EFBA3465EA2632068B697B888025C
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendListByBool_705EFBA3465EA2632068B697B888025C()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendListByBool_705EFBA3465EA2632068B697B888025C");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_BlendListByBool_705EFBA3465EA2632068B697B888025C_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_DC0DBA164D002CB8049F13A2CF513B8A
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_DC0DBA164D002CB8049F13A2CF513B8A()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_DC0DBA164D002CB8049F13A2CF513B8A");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_DC0DBA164D002CB8049F13A2CF513B8A_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_2AFEA2FE4221E5CAE420E3A1240E8D76
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_2AFEA2FE4221E5CAE420E3A1240E8D76()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_2AFEA2FE4221E5CAE420E3A1240E8D76");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_2AFEA2FE4221E5CAE420E3A1240E8D76_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_3ED701F140785DBD69E8939FE1DFB7FA
+// (BlueprintEvent)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_3ED701F140785DBD69E8939FE1DFB7FA()
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_3ED701F140785DBD69E8939FE1DFB7FA");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_AnimGraphNode_TransitionResult_3ED701F140785DBD69E8939FE1DFB7FA_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd
+// ()
+// Parameters:
+// int                            EntryPoint                     (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData)
+
+void UBPAnim_SirenBrawler_GhostArms_3rd_C::ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd(int EntryPoint)
+{
+	static auto fn = UObject::FindObject<UFunction>("Function BPAnim_SirenBrawler_GhostArms_3rd.BPAnim_SirenBrawler_GhostArms_3rd_C.ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd");
+
+	UBPAnim_SirenBrawler_GhostArms_3rd_C_ExecuteUbergraph_BPAnim_SirenBrawler_GhostArms_3rd_Params params;
+	params.EntryPoint = EntryPoint;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif

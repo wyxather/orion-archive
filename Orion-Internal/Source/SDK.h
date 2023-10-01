@@ -1,7 +1,7 @@
 #pragma once
 
 // Borderlands 3 SDK
-
+#include "SDK/Math.h"
 
 #include "SDK/BL3_Basic.hpp"
 

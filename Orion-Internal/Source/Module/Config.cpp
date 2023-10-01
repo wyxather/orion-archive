@@ -204,15 +204,57 @@ auto Config::save() noexcept -> void
 	{
 #pragma push_macro("CONFIG")
 #define CONFIG(v) write<#v>(o, v)
-		CONFIG(orion.hitbox[0]);
-		CONFIG(orion.hitbox[1]);
-		CONFIG(orion.hitbox[2]);
-		CONFIG(orion.hitbox[3]);
-		CONFIG(orion.color[0]);
-		CONFIG(orion.color[1]);
-		CONFIG(orion.color[2]);
-		CONFIG(orion.color[3]);
-		CONFIG(orion.target);
+
+		CONFIG(orion.legitbot.enable);
+		CONFIG(orion.legitbot.aimkey[0]);
+		CONFIG(orion.legitbot.aimkey[1]);
+		CONFIG(orion.legitbot.hitbox[0]);
+		CONFIG(orion.legitbot.hitbox[1]);
+		CONFIG(orion.legitbot.hitbox[2]);
+		CONFIG(orion.legitbot.hitbox[3]);
+		CONFIG(orion.legitbot.hitbox[4]);
+		CONFIG(orion.legitbot.hitbox[5]);
+		CONFIG(orion.legitbot.hitbox[6]);
+		CONFIG(orion.legitbot.hitbox[7]);
+		CONFIG(orion.legitbot.hitbox[8]);
+		CONFIG(orion.legitbot.hitbox[9]);
+		CONFIG(orion.legitbot.hitbox[10]);
+		CONFIG(orion.legitbot.fov);
+
+		CONFIG(orion.players.enemy.box.enable);
+		CONFIG(orion.players.enemy.box.type);
+		CONFIG(orion.players.enemy.box.color[0]);
+		CONFIG(orion.players.enemy.box.color[1]);
+		CONFIG(orion.players.enemy.box.color[2]);
+		CONFIG(orion.players.enemy.box.color[3]);
+		CONFIG(orion.players.enemy.box.scale[0]);
+		CONFIG(orion.players.enemy.box.scale[1]);
+		CONFIG(orion.players.enemy.box.scale[2]);
+
+		CONFIG(orion.players.enemy.name);
+		CONFIG(orion.players.enemy.weapon);
+		CONFIG(orion.players.enemy.snapline);
+		CONFIG(orion.players.enemy.healthbar);
+		CONFIG(orion.players.enemy.shieldbar);
+
+		CONFIG(orion.main.exploits.god_mode);
+		CONFIG(orion.main.exploits.no_ammo_cost);
+		CONFIG(orion.main.exploits.no_recoil);
+		CONFIG(orion.main.exploits.no_sway);
+		CONFIG(orion.main.exploits.no_heat);
+
+		CONFIG(orion.main.fire_rate.enable);
+		CONFIG(orion.main.fire_rate.value);
+
+		CONFIG(orion.main.spread.enable);
+		CONFIG(orion.main.spread.value);
+
+		CONFIG(orion.main.accuracy.enable);
+		CONFIG(orion.main.accuracy.value);
+
+		CONFIG(orion.main.damage.enable);
+		CONFIG(orion.main.damage.value);
+
 #pragma pop_macro("CONFIG")
 	}
 	save(static_cast<const void*>(&o));
@@ -225,15 +267,57 @@ auto Config::load(const File& file) noexcept -> void
 	{
 #pragma push_macro("CONFIG")
 #define CONFIG(v) read<#v>(o, v)
-		CONFIG(orion.hitbox[0]);
-		CONFIG(orion.hitbox[1]);
-		CONFIG(orion.hitbox[2]);
-		CONFIG(orion.hitbox[3]);
-		CONFIG(orion.color[0]);
-		CONFIG(orion.color[1]);
-		CONFIG(orion.color[2]);
-		CONFIG(orion.color[3]);
-		CONFIG(orion.target);
+
+		CONFIG(orion.legitbot.enable);
+		CONFIG(orion.legitbot.aimkey[0]);
+		CONFIG(orion.legitbot.aimkey[1]);
+		CONFIG(orion.legitbot.hitbox[0]);
+		CONFIG(orion.legitbot.hitbox[1]);
+		CONFIG(orion.legitbot.hitbox[2]);
+		CONFIG(orion.legitbot.hitbox[3]);
+		CONFIG(orion.legitbot.hitbox[4]);
+		CONFIG(orion.legitbot.hitbox[5]);
+		CONFIG(orion.legitbot.hitbox[6]);
+		CONFIG(orion.legitbot.hitbox[7]);
+		CONFIG(orion.legitbot.hitbox[8]);
+		CONFIG(orion.legitbot.hitbox[9]);
+		CONFIG(orion.legitbot.hitbox[10]);
+		CONFIG(orion.legitbot.fov);
+
+		CONFIG(orion.players.enemy.box.enable);
+		CONFIG(orion.players.enemy.box.type);
+		CONFIG(orion.players.enemy.box.color[0]);
+		CONFIG(orion.players.enemy.box.color[1]);
+		CONFIG(orion.players.enemy.box.color[2]);
+		CONFIG(orion.players.enemy.box.color[3]);
+		CONFIG(orion.players.enemy.box.scale[0]);
+		CONFIG(orion.players.enemy.box.scale[1]);
+		CONFIG(orion.players.enemy.box.scale[2]);
+
+		CONFIG(orion.players.enemy.name);
+		CONFIG(orion.players.enemy.weapon);
+		CONFIG(orion.players.enemy.snapline);
+		CONFIG(orion.players.enemy.healthbar);
+		CONFIG(orion.players.enemy.shieldbar);
+
+		CONFIG(orion.main.exploits.god_mode);
+		CONFIG(orion.main.exploits.no_ammo_cost);
+		CONFIG(orion.main.exploits.no_recoil);
+		CONFIG(orion.main.exploits.no_sway);
+		CONFIG(orion.main.exploits.no_heat);
+
+		CONFIG(orion.main.fire_rate.enable);
+		CONFIG(orion.main.fire_rate.value);
+
+		CONFIG(orion.main.spread.enable);
+		CONFIG(orion.main.spread.value);
+
+		CONFIG(orion.main.accuracy.enable);
+		CONFIG(orion.main.accuracy.value);
+
+		CONFIG(orion.main.damage.enable);
+		CONFIG(orion.main.damage.value);
+
 #pragma pop_macro("CONFIG")
 	}
 }

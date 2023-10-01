@@ -1,0 +1,162 @@
+#pragma once
+
+// Borderlands 3 SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "BL3_BPAnim_Skag_classes.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Parameters
+//---------------------------------------------------------------------------
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_A91552B74E7882584959D785D910B380
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_A91552B74E7882584959D785D910B380_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_30590F7640E04BCC1D2F8FA51AC7D2BB
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_30590F7640E04BCC1D2F8FA51AC7D2BB_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_24DC45FE48E24E05DCE848BD3CCEA7AE
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_24DC45FE48E24E05DCE848BD3CCEA7AE_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_GbxAnimGraphNode_BlendListByFloatInRange_85066416469580F5644BD3B2390EF390
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_GbxAnimGraphNode_BlendListByFloatInRange_85066416469580F5644BD3B2390EF390_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_602060D84FD6E1EBBC6B4FB88B996304
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_602060D84FD6E1EBBC6B4FB88B996304_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_864F6E704E2C726C3535088EBFBCD982
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_864F6E704E2C726C3535088EBFBCD982_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_1499E35A4114B176E4BA74908B7B3B81
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_1499E35A4114B176E4BA74908B7B3B81_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_001CBF4E408C77ABF0E639A5C6BF8381
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_001CBF4E408C77ABF0E639A5C6BF8381_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_E7FED94C4C37958B5BD41EAEAA7D40A8
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_E7FED94C4C37958B5BD41EAEAA7D40A8_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_DCE6BAEE40FE82CBC73516B5F7AC74B2
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_DCE6BAEE40FE82CBC73516B5F7AC74B2_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_DF2BC2FF49F3B2317D36758A555E398E
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_DF2BC2FF49F3B2317D36758A555E398E_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_759CE5254F9BE772D89067A7AAD50E1B
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_759CE5254F9BE772D89067A7AAD50E1B_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_3EF59DFF42EBF49E1634E7A00C7157B5
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_3EF59DFF42EBF49E1634E7A00C7157B5_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_17974FF04C3D5CC411FD868BB0A8549E
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_17974FF04C3D5CC411FD868BB0A8549E_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_32ADEA574D91A1052B7521B5A25F0031
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_32ADEA574D91A1052B7521B5A25F0031_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_913A1DEE4B04067B10C0E7B8A35923E5
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_913A1DEE4B04067B10C0E7B8A35923E5_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_21FBF10F4AA7175A25E44D907CCAEA87
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_21FBF10F4AA7175A25E44D907CCAEA87_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_F127B1B6455E7B0BA37652AB8716C6E0
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_SequencePlayer_F127B1B6455E7B0BA37652AB8716C6E0_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_GbxAnimGraphNode_BlendListByFloatInRange_96760761493211BF835D7D810621A45E
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_GbxAnimGraphNode_BlendListByFloatInRange_96760761493211BF835D7D810621A45E_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_56907E2A4939F061C074B9A71FCD5E12
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_BlendSpacePlayer_56907E2A4939F061C074B9A71FCD5E12_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_3B72D952429298AE0ED09CAABB671FC7
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_3B72D952429298AE0ED09CAABB671FC7_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_AimOffsetLookAt_2B69FFBD44F51F3D348CFA86A051B703
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_AimOffsetLookAt_2B69FFBD44F51F3D348CFA86A051B703_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_AA6A069C4740BD67C82548976D7CDE0A
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_AA6A069C4740BD67C82548976D7CDE0A_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_558B11774B134172480784847C2A1BB7
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_558B11774B134172480784847C2A1BB7_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_36B1D02442F63B9B85BAF5AFAE61F081
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_36B1D02442F63B9B85BAF5AFAE61F081_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_0ABA9C0E410F2149FAA97D920CE370CC
+struct UBPAnim_Skag_C_EvaluateGraphExposedInputs_ExecuteUbergraph_BPAnim_Skag_AnimGraphNode_TransitionResult_0ABA9C0E410F2149FAA97D920CE370CC_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.OnStanceChanged
+struct UBPAnim_Skag_C_OnStanceChanged_Params
+{
+};
+
+// Function BPAnim_Skag.BPAnim_Skag_C.ExecuteUbergraph_BPAnim_Skag
+struct UBPAnim_Skag_C_ExecuteUbergraph_BPAnim_Skag_Params
+{
+	int                                                EntryPoint;                                               // (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData)
+};
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif

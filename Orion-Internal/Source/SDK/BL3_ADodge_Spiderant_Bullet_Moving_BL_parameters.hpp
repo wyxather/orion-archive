@@ -1,0 +1,21 @@
+#pragma once
+
+// Borderlands 3 SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "BL3_ADodge_Spiderant_Bullet_Moving_BL_classes.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Parameters
+//---------------------------------------------------------------------------
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif
