@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{967041df-5893-444a-b750-cfc885c00368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{48de0a27-233b-4b6d-b6fa-cda4bfc7017c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Module">
+      <UniqueIdentifier>{26252e08-005b-4e98-8944-222c2d7c9894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\MinHook">
+      <UniqueIdentifier>{9c5a0eb0-161a-46f1-978f-c3227ea65d2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\MinHook\include">
+      <UniqueIdentifier>{44987db8-2a0d-4d08-8da4-806a7de769cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\MinHook\src">
+      <UniqueIdentifier>{0b3de9a1-b63b-4a92-b2da-70a364238b3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\MinHook\src\hde">
+      <UniqueIdentifier>{2ad787a0-0a51-4126-8213-6574519b378d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\ImGui">
+      <UniqueIdentifier>{6c0ac559-9c5d-4f35-a347-bd0dca0006d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SDK">
+      <UniqueIdentifier>{ce8f7cae-42ab-4538-b646-f22280d7e6fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Hacks">
+      <UniqueIdentifier>{d90cb006-59c0-460f-8ef4-94c6a17d7077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Resources">
+      <UniqueIdentifier>{1437e532-2cd6-43a1-bd69-5b36c0f8e549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Resources\Fonts">
+      <UniqueIdentifier>{67f099b9-9b24-4b41-bbe0-85758ddbd1b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Resources\Shaders">
+      <UniqueIdentifier>{6b5899c2-314b-4fd5-9f3c-7b75fb08af5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SDK\Struct">
+      <UniqueIdentifier>{213f44d8-7e52-429a-a2a3-dd6ea0962ba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SDK\Class">
+      <UniqueIdentifier>{93d75761-1f34-4e53-b304-5e583a8b5f55}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Dependencies\lazy_importer.hpp">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\pch.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\xorstr.hpp">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Orion.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module\Window.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utility.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\stb.hh">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module\Console.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module\Renderer.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\include\MinHook.h">
+      <Filter>Dependencies\MinHook\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\buffer.h">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\trampoline.h">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\hde32.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\hde64.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\pstdint.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\table32.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\MinHook\src\hde\table64.h">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module\Hooks.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imconfig.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx9.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx11.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_win32.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_internal.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_textedit.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module\Gui.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resources\Fonts\fontawesome.h">
+      <Filter>Source\Resources\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_custom.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module\Config.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\json.hpp">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module\Input.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Module\Game.h">
+      <Filter>Source\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resources\Fonts\museosanscyrl.h">
+      <Filter>Source\Resources\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Hacks\Misc.h">
+      <Filter>Source\Hacks</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Struct\Matrix3x4.h">
+      <Filter>Source\SDK\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Struct\Matrix4x4.h">
+      <Filter>Source\SDK\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Class\Entity.h">
+      <Filter>Source\SDK\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Struct\Vector3.h">
+      <Filter>Source\SDK\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Class\Class.h">
+      <Filter>Source\SDK\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Struct\Matrix4x4.h">
+      <Filter>Source\SDK\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Struct\Matrix3x4.h">
+      <Filter>Source\SDK\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDK\Math.h">
+      <Filter>Source\SDK</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\pch.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entry.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Orion.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module\Window.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module\Console.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module\Renderer.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\buffer.c">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\hook.c">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\trampoline.c">
+      <Filter>Dependencies\MinHook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\hde\hde32.c">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\MinHook\src\hde\hde64.c">
+      <Filter>Dependencies\MinHook\src\hde</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\pch-c.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module\Hooks.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx9.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_win32.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module\Gui.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_custom.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module\Config.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module\Input.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Module\Game.cpp">
+      <Filter>Source\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Hacks\Misc.cpp">
+      <Filter>Source\Hacks</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Source\Resources\Shaders\blur_x.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\blur_y.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\bloom_combine.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\bloom_extract.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\gaussian_blur.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\default_vs11.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\default_ps.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Resources\Shaders\default_vs.hlsl">
+      <Filter>Source\Resources\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
