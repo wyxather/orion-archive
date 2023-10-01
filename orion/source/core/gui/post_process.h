@@ -89,7 +89,11 @@ namespace orion::core::gui {
 
             explicit DeviceResource() noexcept = default;
 
-            auto validate(ID3D11DeviceContext& device_context) noexcept -> void;
+            auto validate(
+                ID3D11DeviceContext& device_context,
+                ID3D11RenderTargetView& render_target_view
+            ) noexcept -> void;
+
             auto invalidate() noexcept -> void;
 
         private:

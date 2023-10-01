@@ -117,6 +117,7 @@ class Renderer::DirectX9 final {
         orion.get_platform().imgui_new_frame();
         if (ImGui::GetIO().BackendRendererUserData == nullptr) {
             ImGui_ImplDX9_Init(device);
+            ImGui_ImplDX9_NewFrame();
             orion.get_gui().init();
             orion.get_game().init();
         } else {
@@ -195,6 +196,7 @@ class Renderer::DirectX11 final {
                     device.Get(),
                     device_context.Get()
                 );
+                ImGui_ImplDX11_NewFrame();
                 orion.get_gui().init();
                 orion.get_game().init();
             }

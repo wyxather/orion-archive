@@ -229,14 +229,19 @@ void BlurD3D9::invalidate() noexcept {
     }
 }
 
-auto BlurD3D11::DeviceResource::validate(ID3D11DeviceContext& device_context
+auto BlurD3D11::DeviceResource::validate(
+    ID3D11DeviceContext& device_context,
+    ID3D11RenderTargetView& render_target_view
 ) noexcept -> void {
     device_context.OMGetRenderTargets(
         1,
-        render_target_view.GetAddressOf(),
+        this->render_target_view.GetAddressOf(),
         depth_stencil_view.GetAddressOf()
     );
-    render_target_view->GetResource(
+    if (this->render_target_view == nullptr) {
+        this->render_target_view.Attach(&render_target_view);
+    }
+    this->render_target_view->GetResource(
         reinterpret_cast<ID3D11Resource**>(render_target.GetAddressOf())
     );
 }
@@ -626,7 +631,10 @@ auto BlurD3D11::validate() noexcept -> void {
     const auto& io = ImGui::GetIO();
     auto& data = *static_cast<ImGui_ImplDX11_Data*>(io.BackendRendererUserData);
 
-    device_resource.validate(*data.pd3dDeviceContext);
+    device_resource.validate(
+        *data.pd3dDeviceContext,
+        *data.pRenderTarget.Get()
+    );
     pixel_shader[PS_BLOOM_COMBINE]
         .validate(*data.pd3dDevice, bloom_combine, IM_ARRAYSIZE(bloom_combine));
     pixel_shader[PS_BLOOM_EXTRACT]
