@@ -9,31 +9,31 @@ namespace orion::utilities {
         NON_MOVEABLE(String)
 
     private:
-        static inline auto data = xorarr(stb::consteval_value<str>::value);
+        static inline auto value = xorarr(stb::consteval_value<str>::value);
 
     public:
         constexpr explicit String() noexcept {
-            data.crypt();
+            value.crypt();
         }
 
         constexpr ~String() noexcept {
-            data.crypt();
+            value.crypt();
         }
 
         NODISCARD static consteval auto size() noexcept {
-            using size_type = decltype(data)::size_type;
-            return static_cast<size_type>(data.size());
+            using size_type = decltype(value)::size_type;
+            return static_cast<size_type>(value.size());
         }
 
         NODISCARD constexpr auto c_str() const noexcept {
-            using const_pointer = decltype(data)::const_pointer;
-            return static_cast<const_pointer>(data.get());
+            using const_pointer = decltype(value)::const_pointer;
+            return static_cast<const_pointer>(value.get());
         }
 
         NODISCARD constexpr explicit(false) operator const
             char*() const noexcept {
-            using const_pointer = decltype(data)::const_pointer;
-            return static_cast<const_pointer>(data.get());
+            using const_pointer = decltype(value)::const_pointer;
+            return static_cast<const_pointer>(value.get());
         }
     };
 

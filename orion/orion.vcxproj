@@ -67,6 +67,7 @@
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\resources\fonts\fontawesome.h" />
     <ClInclude Include="source\resources\fonts\museosanscyrl.h" />
+    <ClInclude Include="source\utilities\memory.h" />
     <ClInclude Include="source\utilities\virtual_method.h" />
     <ClInclude Include="source\engine\matrix3x4.h" />
     <ClInclude Include="source\engine\matrix4x4.h" />
