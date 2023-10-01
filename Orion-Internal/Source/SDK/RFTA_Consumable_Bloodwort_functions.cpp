@@ -1,0 +1,118 @@
+// Remnant: From the Ashes SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "RFTA_Consumable_Bloodwort_parameters.hpp"
+
+namespace SDK
+{
+//---------------------------------------------------------------------------
+//Functions
+//---------------------------------------------------------------------------
+
+// Function Consumable_Bloodwort.Consumable_Bloodwort_C.GetHealthRegenDisplay
+// 00007FF6F8B35350
+// (Public, HasOutParms, BlueprintCallable, BlueprintEvent, BlueprintPure)
+// Parameters:
+// float                          Regen                          (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+
+void AConsumable_Bloodwort_C::GetHealthRegenDisplay(float* Regen)
+{
+	static auto fn = UObject::FindObject<UFunction>("Function Consumable_Bloodwort.Consumable_Bloodwort_C.GetHealthRegenDisplay");
+
+	AConsumable_Bloodwort_C_GetHealthRegenDisplay_Params params;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+
+	if (Regen != nullptr)
+		*Regen = params.Regen;
+}
+
+
+// Function Consumable_Bloodwort.Consumable_Bloodwort_C.ModifyInspectInfo
+// 00007FF6F8B35350
+// (Event, Public, HasOutParms, HasDefaults, BlueprintCallable, BlueprintEvent)
+// Parameters:
+// class AActor**                 Actor                          (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+// class UItemInstanceData**      InInstanceData                 (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+// struct FInspectInfo            Info                           (BlueprintVisible, BlueprintReadOnly, Parm, OutParm, ReferenceParm)
+// bool                           Rtn                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor)
+
+void AConsumable_Bloodwort_C::ModifyInspectInfo(class AActor** Actor, class UItemInstanceData** InInstanceData, struct FInspectInfo* Info, bool* Rtn)
+{
+	static auto fn = UObject::FindObject<UFunction>("Function Consumable_Bloodwort.Consumable_Bloodwort_C.ModifyInspectInfo");
+
+	AConsumable_Bloodwort_C_ModifyInspectInfo_Params params;
+	params.Actor = Actor;
+	params.InInstanceData = InInstanceData;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+
+	if (Info != nullptr)
+		*Info = params.Info;
+	if (Rtn != nullptr)
+		*Rtn = params.Rtn;
+}
+
+
+// Function Consumable_Bloodwort.Consumable_Bloodwort_C.DoAction
+// 00007FF6F8B35350
+// (Public, BlueprintCallable, BlueprintEvent)
+// Parameters:
+// class UActionComponent**       ActionComponent                (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+// class AActor**                 Cause                          (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+// class AActor**                 Target                         (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+
+void AConsumable_Bloodwort_C::DoAction(class UActionComponent** ActionComponent, class AActor** Cause, class AActor** Target)
+{
+	static auto fn = UObject::FindObject<UFunction>("Function Consumable_Bloodwort.Consumable_Bloodwort_C.DoAction");
+
+	AConsumable_Bloodwort_C_DoAction_Params params;
+	params.ActionComponent = ActionComponent;
+	params.Cause = Cause;
+	params.Target = Target;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+// Function Consumable_Bloodwort.Consumable_Bloodwort_C.ExecuteUbergraph_Consumable_Bloodwort
+// 00007FF6F8B35350
+// (Final, HasDefaults)
+// Parameters:
+// int*                           EntryPoint                     (BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+
+void AConsumable_Bloodwort_C::ExecuteUbergraph_Consumable_Bloodwort(int* EntryPoint)
+{
+	static auto fn = UObject::FindObject<UFunction>("Function Consumable_Bloodwort.Consumable_Bloodwort_C.ExecuteUbergraph_Consumable_Bloodwort");
+
+	AConsumable_Bloodwort_C_ExecuteUbergraph_Consumable_Bloodwort_Params params;
+	params.EntryPoint = EntryPoint;
+
+	auto flags = fn->FunctionFlags;
+
+	UObject::ProcessEvent(fn, &params);
+
+	fn->FunctionFlags = flags;
+}
+
+
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif

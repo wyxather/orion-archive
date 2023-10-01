@@ -1,0 +1,24 @@
+#pragma once
+
+// Remnant: From the Ashes SDK
+
+#ifdef _MSC_VER
+	#pragma pack(push, 0x8)
+#endif
+
+#include "RFTA_Basic.hpp"
+#include "RFTA_GunfireRuntime_classes.hpp"
+#include "RFTA_S_FloatPair_classes.hpp"
+#include "RFTA_Engine_classes.hpp"
+#include "RFTA_CoreUObject_classes.hpp"
+#include "RFTA_S_Root_Twist_Data_classes.hpp"
+#include "RFTA_S_BranchOptions_classes.hpp"
+#include "RFTA_S_Root_Branch_classes.hpp"
+
+namespace SDK
+{
+}
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif
