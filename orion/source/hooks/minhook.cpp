@@ -4,19 +4,22 @@
 
 using orion::hooks::MinHook;
 
-MinHook::MinHook(const std::size_t size, void* const gadget) noexcept :
+MinHook::MinHook(const std::size_t size, const void* const gadget) noexcept :
     gadget {gadget},
     base {nullptr},
     originals {std::make_unique<decltype(originals)::element_type[]>(size)} {}
 
-MinHook::MinHook(void* const vmt_ptr, void* const gadget) noexcept :
+MinHook::MinHook(const void* const vmt_ptr, const void* const gadget) noexcept :
     gadget {gadget},
     base {vmt_ptr},
     originals {std::make_unique<decltype(originals)::element_type[]>(
         hooks::calc_vmt_length(vmt_ptr)
     )} {}
 
-MinHook::MinHook(void** const class_ptr, void* const gadget) noexcept :
+MinHook::MinHook(
+    const void* const* const class_ptr,
+    const void* const gadget
+) noexcept :
     gadget {gadget},
     base {*class_ptr},
     originals {std::make_unique<decltype(originals)::element_type[]>(
@@ -49,5 +52,9 @@ auto MinHook::hook_at(
 
 auto MinHook::hook_at(const std::size_t index, void* const function)
     const noexcept -> void {
-    return hook_at(index, reinterpret_cast<void**>(base)[index], function);
+    return hook_at(
+        index,
+        reinterpret_cast<void* const*>(base)[index],
+        function
+    );
 }

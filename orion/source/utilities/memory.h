@@ -6,6 +6,14 @@ namespace orion::utilities {
     public:
         NON_CONSTRUCTIBLE(Memory);
 
+        /// <summary>
+        /// Requires Kernel32.
+        /// </summary>
+        /// <param name="module_handle"></param>
+        /// <returns></returns>
+        static auto get_module_bytes(const HMODULE module_handle) noexcept
+            -> std::span<const std::uint8_t>;
+
     private:
         static constexpr auto PATTERN_MASKED = '\0';
         using PatternType = std::uint8_t;

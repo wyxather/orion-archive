@@ -155,6 +155,7 @@
     <ClCompile Include="source\engine\matrix3x4.cpp" />
     <ClCompile Include="source\engine\matrix4x4.cpp" />
     <ClCompile Include="source\engine\vector3.cpp" />
+    <ClCompile Include="source\utilities\memory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="source\resources\shaders\bloom_combine.hlsl">

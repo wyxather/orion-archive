@@ -302,6 +302,9 @@
     <ClCompile Include="source\modules\combase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\utilities\memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="source\resources\shaders\gaussian_blur.hlsl">

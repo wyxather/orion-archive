@@ -5,6 +5,7 @@
 using Microsoft::WRL::ComPtr;
 using orion::core::Renderer;
 using orion::hooks::CallConv;
+using orion::utilities::Memory;
 using orion::utilities::String;
 
 namespace {
@@ -91,17 +92,19 @@ class Renderer::DirectX9 final {
             orion.get_gui().invalidate();
             ImGui_ImplDX9_InvalidateDeviceObjects();
             const auto result =
-                orion.get_renderer()
-                    .get_hooks()
-                    .call<16, HRESULT, CallConv::StdCall>(device, params);
+                orion.get_renderer().get_hooks().stdcall<16, HRESULT>(
+                    device,
+                    params
+                );
             ImGui_ImplDX9_CreateDeviceObjects();
             orion.get_gui().validate();
             orion.get_game().validate();
             return result;
         }
-        return orion.get_renderer()
-            .get_hooks()
-            .call<16, HRESULT, CallConv::StdCall>(device, params);
+        return orion.get_renderer().get_hooks().stdcall<16, HRESULT>(
+            device,
+            params
+        );
     }
 
     static auto STDMETHODCALLTYPE present(
@@ -130,13 +133,7 @@ class Renderer::DirectX9 final {
         }
         return orion.get_renderer()
             .get_hooks()
-            .call<17, HRESULT, CallConv::StdCall>(
-                device,
-                src,
-                dst,
-                window,
-                dirty_region
-            );
+            .stdcall<17, HRESULT>(device, src, dst, window, dirty_region);
     }
 };
 
@@ -157,31 +154,28 @@ class Renderer::DirectX11 final {
             orion.get_game().invalidate();
             orion.get_gui().invalidate();
             ImGui_ImplDX11_InvalidateDeviceObjects();
-            const auto result = orion.get_renderer()
-                                    .get_hooks()
-                                    .call<13, HRESULT, CallConv::StdCall>(
-                                        swapchain,
-                                        count,
-                                        width,
-                                        height,
-                                        format,
-                                        flags
-                                    );
+            const auto result =
+                orion.get_renderer().get_hooks().stdcall<13, HRESULT>(
+                    swapchain,
+                    count,
+                    width,
+                    height,
+                    format,
+                    flags
+                );
             ImGui_ImplDX11_CreateDeviceObjects();
             orion.get_gui().validate();
             orion.get_game().validate();
             return result;
         }
-        return orion.get_renderer()
-            .get_hooks()
-            .call<13, HRESULT, CallConv::StdCall>(
-                swapchain,
-                count,
-                width,
-                height,
-                format,
-                flags
-            );
+        return orion.get_renderer().get_hooks().stdcall<13, HRESULT>(
+            swapchain,
+            count,
+            width,
+            height,
+            format,
+            flags
+        );
     }
 
     static auto STDMETHODCALLTYPE present(
@@ -213,13 +207,11 @@ class Renderer::DirectX11 final {
             ImGui::Render();
             ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
         }
-        return orion.get_renderer()
-            .get_hooks()
-            .call<8, HRESULT, CallConv::StdCall>(
-                swapchain,
-                sync_interval,
-                flags
-            );
+        return orion.get_renderer().get_hooks().stdcall<8, HRESULT>(
+            swapchain,
+            sync_interval,
+            flags
+        );
     }
 };
 
@@ -418,7 +410,11 @@ auto Renderer::hook() noexcept -> void {
                 table[i] = (*reinterpret_cast<decltype(table)::value_type**>(
                     device_context.Get()
                 ))[i];
-            hooks.emplace(table.data());
+            hooks.emplace(
+                table.data(),
+                Memory::Pattern<"FF 23">().find(Memory::get_module_bytes(handle)
+                )
+            );
             hooks->hook_at(8, &DirectX11::present);
             hooks->hook_at(13, &DirectX11::resize_buffers);
             break;
@@ -488,7 +484,11 @@ auto Renderer::hook() noexcept -> void {
                 != D3D_OK) {
                 break;
             }
-            hooks.emplace(reinterpret_cast<void**>(device.Get()));
+            hooks.emplace(
+                reinterpret_cast<void**>(device.Get()),
+                Memory::Pattern<"FF 23">().find(Memory::get_module_bytes(handle)
+                )
+            );
             hooks->hook_at(16, &DirectX9::reset);
             hooks->hook_at(17, &DirectX9::present);
             break;

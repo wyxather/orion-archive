@@ -19,8 +19,10 @@ namespace orion::modules {
         decltype(&FreeLibraryAndExitThread) free_library_and_exit_thread =
             nullptr;
         decltype(&GetConsoleWindow) get_console_window = nullptr;
+        decltype(&GetCurrentProcess) get_current_process = nullptr;
         decltype(&GetCurrentProcessId) get_current_process_id = nullptr;
         decltype(&GetModuleHandleA) get_module_handle_a = nullptr;
+        decltype(&GetModuleInformation) get_module_information = nullptr;
         decltype(&GetProcAddress) get_proc_address = nullptr;
         decltype(&GetStdHandle) get_std_handle = nullptr;
         decltype(&LoadLibraryA) load_library_a = nullptr;

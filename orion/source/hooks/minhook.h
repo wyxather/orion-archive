@@ -25,17 +25,17 @@ namespace orion {
 
             explicit MinHook(
                 const std::size_t size,
-                void* const gadget = nullptr
+                const void* const gadget = nullptr
             ) noexcept;
 
             explicit MinHook(
-                void* const vmt_ptr,
-                void* const gadget = nullptr
+                const void* const vmt_ptr,
+                const void* const gadget = nullptr
             ) noexcept;
 
             explicit MinHook(
-                void** class_ptr,
-                void* const gadget = nullptr
+                const void* const* const class_ptr,
+                const void* const gadget = nullptr
             ) noexcept;
 
             auto hook_at(
@@ -52,8 +52,8 @@ namespace orion {
             }
 
         private:
-            void* gadget;
-            void* base;
+            const void* const gadget;
+            const void* const base;
             std::unique_ptr<void*[]> originals;
 
         public:
@@ -64,23 +64,33 @@ namespace orion {
                 typename... Args>
             NODISCARD constexpr auto call(Args... args) const noexcept
                 -> ReturnType {
-                using enum orion::hooks::CallConv;
                 switch (calling_conv) {
-                    case StdCall:
-                        return static_cast<ReturnType(__stdcall*)(Args...
-                        )>(originals[index])(args...);
-                    case ThisCall:
-                        return static_cast<ReturnType(__thiscall*)(Args...
-                        )>(originals[index])(args...);
-                    case FastCall:
-                        return static_cast<ReturnType(__fastcall*)(Args...
-                        )>(originals[index])(args...);
-                    case VectorCall:
-                        return static_cast<ReturnType(__vectorcall*)(Args...
-                        )>(originals[index])(args...);
-                    default:
-                        return static_cast<ReturnType(__stdcall*)(Args...
-                        )>(originals[index])(args...);
+                    using enum CallConv;
+                    case StdCall: {
+                        using Fn = ReturnType(__stdcall*)(Args...);
+                        const auto fn = static_cast<Fn>(originals[index]);
+                        return fn(args...);
+                    }
+                    case ThisCall: {
+                        using Fn = ReturnType(__thiscall*)(Args...);
+                        const auto fn = static_cast<Fn>(originals[index]);
+                        return fn(args...);
+                    }
+                    case FastCall: {
+                        using Fn = ReturnType(__fastcall*)(Args...);
+                        const auto fn = static_cast<Fn>(originals[index]);
+                        return fn(args...);
+                    }
+                    case VectorCall: {
+                        using Fn = ReturnType(__vectorcall*)(Args...);
+                        const auto fn = static_cast<Fn>(originals[index]);
+                        return fn(args...);
+                    }
+                    default: {
+                        using Fn = ReturnType(__stdcall*)(Args...);
+                        const auto fn = static_cast<Fn>(originals[index]);
+                        return fn(args...);
+                    }
                 }
             }
 
@@ -89,8 +99,8 @@ namespace orion {
             NODISCARD constexpr auto cdeclcall(Args... args) const noexcept
                 -> ReturnType {
                 return RetSpoof::invoke_cdecl<ReturnType>(
-                    static_cast<std::uintptr_t>(originals[index]),
-                    static_cast<std::uintptr_t>(gadget),
+                    originals[index],
+                    gadget,
                     args...
                 );
             }
@@ -99,8 +109,8 @@ namespace orion {
             NODISCARD constexpr auto stdcall(Args... args) const noexcept
                 -> ReturnType {
                 return RetSpoof::invoke_stdcall<ReturnType>(
-                    static_cast<std::uintptr_t>(originals[index]),
-                    static_cast<std::uintptr_t>(gadget),
+                    originals[index],
+                    gadget,
                     args...
                 );
             }
@@ -113,9 +123,9 @@ namespace orion {
             NODISCARD constexpr auto
             thiscall(Self self, Args... args) const noexcept -> ReturnType {
                 return RetSpoof::invoke_thiscall<ReturnType>(
-                    static_cast<std::uintptr_t>(self),
-                    static_cast<std::uintptr_t>(originals[index]),
-                    static_cast<std::uintptr_t>(gadget),
+                    self,
+                    originals[index],
+                    gadget,
                     args...
                 );
             }
@@ -130,10 +140,10 @@ namespace orion {
             fastcall(Self self, Garbage garbage, Args... args) const noexcept
                 -> ReturnType {
                 return RetSpoof::invoke_fastcall<ReturnType>(
-                    static_cast<std::uintptr_t>(self),
-                    static_cast<std::uintptr_t>(garbage),
-                    static_cast<std::uintptr_t>(originals[index]),
-                    static_cast<std::uintptr_t>(gadget),
+                    self,
+                    garbage,
+                    originals[index],
+                    gadget,
                     args...
                 );
             }
@@ -141,56 +151,41 @@ namespace orion {
             template<std::size_t index, typename ReturnType, typename... Args>
             NODISCARD constexpr auto cdeclcall(Args... args) const noexcept
                 -> ReturnType {
-                using Fn = ReturnType(__cdecl*)(Args...);
-                return RetSpoof64::call(
-                    gadget,
-                    static_cast<Fn>(originals[index]),
-                    args...
-                );
+                using Fn = ReturnType (*)(Args...);
+                const auto fn = static_cast<Fn>(originals[index]);
+                return RetSpoof64::call(gadget, fn, args...);
             }
 
             template<std::size_t index, typename ReturnType, typename... Args>
             NODISCARD constexpr auto stdcall(Args... args) const noexcept
                 -> ReturnType {
-                using Fn = ReturnType(__stdcall*)(Args...);
-                return RetSpoof64::call(
-                    gadget,
-                    static_cast<Fn>(originals[index]),
-                    args...
-                );
+                using Fn = ReturnType (*)(Args...);
+                const auto fn = static_cast<Fn>(originals[index]);
+                return RetSpoof64::call(gadget, fn, args...);
             }
 
             template<std::size_t index, typename ReturnType, typename... Args>
             NODISCARD constexpr auto thiscall(Args... args) const noexcept
                 -> ReturnType {
-                using Fn = ReturnType(__thiscall*)(Args...);
-                return RetSpoof64::call(
-                    gadget,
-                    static_cast<Fn>(originals[index]),
-                    args...
-                );
+                using Fn = ReturnType (*)(Args...);
+                const auto fn = static_cast<Fn>(originals[index]);
+                return RetSpoof64::call(gadget, fn, args...);
             }
 
             template<std::size_t index, typename ReturnType, typename... Args>
             NODISCARD constexpr auto fastcall(Args... args) const noexcept
                 -> ReturnType {
-                using Fn = ReturnType(__fastcall*)(Args...);
-                return RetSpoof64::call(
-                    gadget,
-                    static_cast<Fn>(originals[index]),
-                    args...
-                );
+                using Fn = ReturnType (*)(Args...);
+                const auto fn = static_cast<Fn>(originals[index]);
+                return RetSpoof64::call(gadget, fn, args...);
             }
 
             template<std::size_t index, typename ReturnType, typename... Args>
             NODISCARD constexpr auto vectorcall(Args... args) const noexcept
                 -> ReturnType {
-                using Fn = ReturnType(__vectorcall*)(Args...);
-                return RetSpoof64::call(
-                    gadget,
-                    static_cast<Fn>(originals[index]),
-                    args...
-                );
+                using Fn = ReturnType (*)(Args...);
+                const auto fn = static_cast<Fn>(originals[index]);
+                return RetSpoof64::call(gadget, fn, args...);
             }
 #endif
         };

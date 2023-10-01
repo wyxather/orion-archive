@@ -1,6 +1,6 @@
 #include "source/orion.h"
 
-auto orion::hooks::calc_vmt_length(void* const vmt_ptr) noexcept
+auto orion::hooks::calc_vmt_length(const void* const vmt_ptr) noexcept
     -> std::size_t {
     std::size_t length = 0;
     constexpr auto MEMORY_PROTECTION_FLAGS = PAGE_EXECUTE | PAGE_EXECUTE_READ
@@ -8,7 +8,7 @@ auto orion::hooks::calc_vmt_length(void* const vmt_ptr) noexcept
     MEMORY_BASIC_INFORMATION memory_basic_info;
     do {
         if (orion.get_kernel32().virtual_query(
-                static_cast<void**>(vmt_ptr)[length],
+                static_cast<void* const*>(vmt_ptr)[length],
                 &memory_basic_info,
                 sizeof(memory_basic_info)
             ) < NULL
@@ -20,7 +20,7 @@ auto orion::hooks::calc_vmt_length(void* const vmt_ptr) noexcept
     return length;
 }
 
-auto orion::hooks::calc_vmt_length(void** const class_ptr) noexcept
+auto orion::hooks::calc_vmt_length(const void* const* const class_ptr) noexcept
     -> std::size_t {
     return calc_vmt_length(*class_ptr);
 }

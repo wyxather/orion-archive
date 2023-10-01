@@ -14,8 +14,10 @@ Kernel32::Kernel32() noexcept {
     free_library_and_exit_thread =
         LI_FUNC(FreeLibraryAndExitThread)::in(handle);
     get_console_window = LI_FUNC(GetConsoleWindow)::in(handle);
+    get_current_process = LI_FUNC(GetCurrentProcess)::in(handle);
     get_current_process_id = LI_FUNC(GetCurrentProcessId)::in(handle);
     get_module_handle_a = LI_FUNC(GetModuleHandleA)::in(handle);
+    get_module_information = LI_FUNC(GetModuleInformation)::in(handle);
     get_proc_address = LI_FUNC(GetProcAddress)::in(handle);
     get_std_handle = LI_FUNC(GetStdHandle)::in(handle);
     load_library_a = LI_FUNC(LoadLibraryA)::in(handle);
@@ -33,8 +35,10 @@ Kernel32::~Kernel32() noexcept {
     free_library = nullptr;
     free_library_and_exit_thread = nullptr;
     get_console_window = nullptr;
+    get_current_process = nullptr;
     get_current_process_id = nullptr;
     get_module_handle_a = nullptr;
+    get_module_information = nullptr;
     get_proc_address = nullptr;
     get_std_handle = nullptr;
     load_library_a = nullptr;

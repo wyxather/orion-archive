@@ -6,7 +6,7 @@ namespace orion::hooks {
 
     namespace detail {
 
-        extern "C" void* _ret_spoof();
+        EXTERN_C auto __cdecl _ret_spoof() -> void*;
 
     }
 

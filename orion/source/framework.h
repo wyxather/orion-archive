@@ -16,3 +16,5 @@
 
 #pragma pop_macro("NOMINMAX")
 #pragma pop_macro("WIN32_LEAN_AND_MEAN")
+
+#include <Psapi.h>

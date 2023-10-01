@@ -12,6 +12,7 @@
 using Microsoft::WRL::ComPtr;
 using orion::core::Input;
 using orion::hooks::CallConv;
+using orion::utilities::Memory;
 using orion::utilities::String;
 
 Input::Input(const Type type) noexcept {
@@ -95,7 +96,10 @@ auto Input::hook() noexcept -> void {
             != DI_OK) {
             return;
         }
-        hooks.emplace(reinterpret_cast<void**>(direct_input_8_device.Get()));
+        hooks.emplace(
+            reinterpret_cast<void**>(direct_input_8_device.Get()),
+            Memory::Pattern<"FF 23">().find(Memory::get_module_bytes(handle))
+        );
         hooks->hook_at(9, &DirectInput8::get_device_state);
         hooks->hook_at(10, &DirectInput8::get_device_data);
     }
@@ -114,8 +118,7 @@ auto STDMETHODCALLTYPE Input::DirectInput8::get_device_state(
 ) noexcept -> HRESULT {
     static std::array<bool, 2> key {};
     const auto result =
-        orion.get_input()
-            .hooks->call<9, HRESULT, CallConv::StdCall>(device, size, data);
+        orion.get_input().hooks->stdcall<9, HRESULT>(device, size, data);
     if (!orion.get_gui().is_open() || result != DI_OK) {
         return result;
     }
@@ -165,13 +168,8 @@ auto STDMETHODCALLTYPE Input::DirectInput8::get_device_data(
     const DWORD flags
 ) noexcept -> HRESULT {
     const auto result =
-        orion.get_input().hooks->call<10, HRESULT, CallConv::StdCall>(
-            device,
-            size,
-            data,
-            count,
-            flags
-        );
+        orion.get_input()
+            .hooks->stdcall<10, HRESULT>(device, size, data, count, flags);
     if (!orion.get_gui().is_open() || result != DI_OK) {
         return result;
     }

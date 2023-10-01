@@ -16,18 +16,18 @@ namespace orion::hooks {
 
             constexpr explicit Context() noexcept = default;
 
-            const std::uintptr_t ebx_backup = 0;
-            const std::uintptr_t address_to_jump_to_in_gadget = 0;
-            const std::uintptr_t invoker_return_address = 0;
+            const void* const ebx_backup = nullptr;
+            const void* const address_to_jump_to_in_gadget = nullptr;
+            const void* const invoker_return_address = nullptr;
         };
 
         template<typename ReturnType, typename... Args>
         NODISCARD __declspec(naked) constexpr auto __fastcall invoke_fastcall(
-            const std::uintptr_t /*ecx*/,
-            const std::uintptr_t /*edx*/,
-            const std::uintptr_t /*function_address*/,
+            const void* const /*ecx*/,
+            const void* const /*edx*/,
+            const void* const /*function_address*/,
             const Context* const /*context*/,
-            const std::uintptr_t /*gadget_address*/,
+            const void* const /*gadget_address*/,
             Args... /*args*/
         ) noexcept -> ReturnType {
             __asm {
@@ -47,9 +47,9 @@ namespace orion::hooks {
 
         template<typename ReturnType, typename... Args>
         NODISCARD __declspec(naked) constexpr auto __cdecl invoke_cdecl(
-            const std::uintptr_t /*function_address*/,
+            const void* const /*function_address*/,
             const Context* const /*context*/,
-            const std::uintptr_t /*gadget_Address*/,
+            const void* const /*gadget_Address*/,
             Args... /*args*/
         ) noexcept -> ReturnType {
             __asm {
@@ -76,10 +76,10 @@ namespace orion::hooks {
 
         template<typename ReturnType, typename... Args>
         NODISCARD static constexpr auto invoke_fastcall(
-            const std::uintptr_t ecx,
-            const std::uintptr_t edx,
-            const std::uintptr_t function_address,
-            const std::uintptr_t gadget_address,
+            const void* const ecx,
+            const void* const edx,
+            const void* const function_address,
+            const void* const gadget_address,
             Args... args
         ) noexcept -> ReturnType {
             const detail::Context context;
@@ -95,9 +95,9 @@ namespace orion::hooks {
 
         template<typename ReturnType, typename... Args>
         NODISCARD static constexpr auto invoke_thiscall(
-            const std::uintptr_t ecx,
-            const std::uintptr_t function_address,
-            const std::uintptr_t gadget_address,
+            const void* const ecx,
+            const void* const function_address,
+            const void* const gadget_address,
             Args... args
         ) noexcept -> ReturnType {
             return invoke_fastcall<ReturnType, Args...>(
@@ -111,8 +111,8 @@ namespace orion::hooks {
 
         template<typename ReturnType, typename... Args>
         NODISCARD static constexpr auto invoke_stdcall(
-            const std::uintptr_t function_address,
-            const std::uintptr_t gadget_address,
+            const void* const function_address,
+            const void* const gadget_address,
             Args... args
         ) noexcept -> ReturnType {
             return invoke_thiscall<ReturnType, Args...>(
@@ -125,8 +125,8 @@ namespace orion::hooks {
 
         template<typename ReturnType, typename... Args>
         NODISCARD static constexpr auto invoke_cdecl(
-            const std::uintptr_t function_address,
-            const std::uintptr_t gadget_address,
+            const void* const function_address,
+            const void* const gadget_address,
             Args... args
         ) noexcept -> ReturnType {
             const detail::Context context;
