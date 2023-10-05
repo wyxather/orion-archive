@@ -4,6 +4,9 @@ namespace orion::core {
 
     class Game final {
     public:
+        NON_COPYABLE(Game)
+        NON_MOVEABLE(Game)
+
         explicit Game() noexcept;
 
         ~Game() noexcept;
