@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "source/engine/unreal/object_array.h"
 
 namespace OffsetFinder

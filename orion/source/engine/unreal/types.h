@@ -2,7 +2,6 @@
 #include <iostream>
 #include <format>
 #include <fstream>
-#include <vector>
 #include <sstream>
 #include "source/engine/unreal/enums.h"
 

@@ -1,10 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <format>
-#include <filesystem>
 #include "source/engine/unreal/object_array.h"
-#include "source/engine/unreal/offsets.h"
-#include "source/engine/unreal/utils.h"
 
 namespace fs = std::filesystem;
 

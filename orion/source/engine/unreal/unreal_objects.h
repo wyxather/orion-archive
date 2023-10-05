@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <unordered_map>
 #include "source/engine/unreal/enums.h"
 #include "source/engine/unreal/unreal_types.h"

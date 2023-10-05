@@ -1,8 +1,5 @@
 #pragma once
-#include <Windows.h>
 #include <iostream>
-#include <vector>
-#include <string>
 #include <fstream>
 
 struct CLIENT_ID

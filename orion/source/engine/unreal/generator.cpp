@@ -1,8 +1,6 @@
 #include "source/engine/unreal/generator.h"
 #include "source/engine/unreal/name_array.h"
 
-#include <future>
-
 Generator::FunctionsMap Generator::PredefinedFunctions;
 Generator::MemberMap Generator::PredefinedMembers;
 

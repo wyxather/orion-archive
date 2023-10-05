@@ -1,5 +1,4 @@
 #include "source/engine/unreal/types.h"
-#include "source/engine/unreal/enums.h"
 #include "source/engine/unreal/generator.h"
 
 Types::Struct::Struct(std::string Name, bool bIsClass, std::string Super)

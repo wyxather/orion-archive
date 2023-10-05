@@ -1,7 +1,4 @@
-#include <algorithm>
-
 #include "source/engine/unreal/package.h"
-#include "source/engine/unreal/settings.h"
 #include "source/engine/unreal/generator.h"
 
 std::ofstream Package::DebugAssertionStream;

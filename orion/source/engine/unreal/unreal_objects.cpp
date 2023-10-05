@@ -1,7 +1,4 @@
-#include <format>
-
 #include "source/engine/unreal/unreal_objects.h"
-#include "source/engine/unreal/offsets.h"
 #include "source/engine/unreal/object_array.h"
 
 std::unordered_map<int32, std::string> UEEnum::BigEnums;

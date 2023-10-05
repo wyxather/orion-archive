@@ -1,6 +1,5 @@
 #pragma once
 
-#include <filesystem>
 #include "source/engine/unreal/types.h"
 #include "source/engine/unreal/settings.h"
 
