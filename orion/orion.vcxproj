@@ -43,6 +43,19 @@
     <ClInclude Include="dependencies\xorstr.hpp" />
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\core\log.h" />
+    <ClInclude Include="source\engine\unreal\enums.h" />
+    <ClInclude Include="source\engine\unreal\file_writer.h" />
+    <ClInclude Include="source\engine\unreal\generator.h" />
+    <ClInclude Include="source\engine\unreal\name_array.h" />
+    <ClInclude Include="source\engine\unreal\object_array.h" />
+    <ClInclude Include="source\engine\unreal\offsets.h" />
+    <ClInclude Include="source\engine\unreal\offset_finder.h" />
+    <ClInclude Include="source\engine\unreal\package.h" />
+    <ClInclude Include="source\engine\unreal\settings.h" />
+    <ClInclude Include="source\engine\unreal\types.h" />
+    <ClInclude Include="source\engine\unreal\unreal_objects.h" />
+    <ClInclude Include="source\engine\unreal\unreal_types.h" />
+    <ClInclude Include="source\engine\unreal\utils.h" />
     <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\core\config.h" />
     <ClInclude Include="source\core\console.h" />
@@ -119,6 +132,15 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="source\application.cpp" />
+    <ClCompile Include="source\engine\unreal\file_writer.cpp" />
+    <ClCompile Include="source\engine\unreal\generator.cpp" />
+    <ClCompile Include="source\engine\unreal\name_array.cpp" />
+    <ClCompile Include="source\engine\unreal\object_array.cpp" />
+    <ClCompile Include="source\engine\unreal\offsets.cpp" />
+    <ClCompile Include="source\engine\unreal\package.cpp" />
+    <ClCompile Include="source\engine\unreal\types.cpp" />
+    <ClCompile Include="source\engine\unreal\unreal_objects.cpp" />
+    <ClCompile Include="source\engine\unreal\unreal_types.cpp" />
     <ClCompile Include="source\entry_point.cpp" />
     <ClCompile Include="source\hooks\hooks.cpp" />
     <ClCompile Include="source\hooks\minhook.cpp" />
