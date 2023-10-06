@@ -32,8 +32,8 @@ void Off::InSDK::InitPE()
 			Off::InSDK::PEIndex = i;
 			Off::InSDK::PEOffset = GetOffset(Vft[i]);
 
-			std::cout << "PE-Offset: 0x" << std::hex << Off::InSDK::PEOffset << "\n";
-			std::cout << "PE-Index: 0x" << std::hex << i << "\n\n";
+			log::info("PE-{}: {:#x}", "Offset", Off::InSDK::PEOffset);
+			log::info("PE-{}: {:#x}({})", "Index", i, i);
 			return;
 		}
 	}
@@ -50,8 +50,8 @@ void Off::InSDK::InitPE()
 			Off::InSDK::PEIndex = i;
 			Off::InSDK::PEOffset = GetOffset(PeAddr);
 
-			std::cout << "PE-Offset: 0x" << std::hex << Off::InSDK::PEOffset << "\n";
-			std::cout << "PE-Index: 0x" << std::hex << i << "\n\n";
+			log::info("PE-{}: {:#x}", "Offset", Off::InSDK::PEOffset);
+            log::info("PE-{}: {:#x}({})", "Index", i, i);
 			return;
 		}
 	}
