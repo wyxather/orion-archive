@@ -1,7 +1,7 @@
 #include "source/engine/unreal/offsets.h"
 #include "source/engine/unreal/offset_finder.h"
-
 #include "source/engine/unreal/name_array.h"
+#include "source/core/log.h"
 
 void Off::InSDK::InitPE()
 {
@@ -75,83 +75,72 @@ void Off::InSDK::InitPE(int32 Index)
 void Off::Init()
 {
 	OffsetFinder::InitUObjectOffsets();
-
 	OffsetFinder::InitFNameSettings();
-
 	::NameArray::PostInit();
-
 	Off::UStruct::Children = OffsetFinder::FindChildOffset();
-	std::cout << "Off::UStruct::Children: " << Off::UStruct::Children << "\n";
-
 	Off::UField::Next = OffsetFinder::FindUFieldNextOffset();
-	std::cout << "Off::UField::Next: " << Off::UField::Next << "\n";
-
 	Off::UStruct::SuperStruct = OffsetFinder::FindSuperOffset();
-	std::cout << "Off::UStruct::SuperStruct: " << Off::UStruct::SuperStruct << "\n";
-
 	Off::UStruct::Size = OffsetFinder::FindStructSizeOffset();
-	std::cout << "Off::UStruct::Size: " << Off::UStruct::Size << "\n";
-
 	Off::UClass::CastFlags = OffsetFinder::FindCastFlagsOffset();
-	std::cout << "Off::UClass::CastFlags: " << Off::UClass::CastFlags << "\n";
-
 	if (Settings::Internal::bUseFProperty)
 	{
-		std::cout << "Game uses FProperty system\n\n";
-
 		Off::UStruct::ChildProperties = OffsetFinder::FindChildPropertiesOffset();
-		std::cout << "Off::UStruct::ChildProperties: " << Off::UStruct::ChildProperties << "\n";
-
 		OffsetFinder::FixupHardcodedOffsets(); // must be called after FindChildPropertiesOffset 
-
 		Off::FField::Next = OffsetFinder::FindFFieldNextOffset();
-		std::cout << "Off::FField::Next: " << Off::FField::Next << "\n";
-		
 		Off::FField::Name = OffsetFinder::FindFFieldNameOffset();
-		std::cout << "Off::FField::Name: " << Off::FField::Name << "\n";
 	}
-
 	Off::UClass::ClassDefaultObject = OffsetFinder::FindDefaultObjectOffset();
-	std::cout << "Off::UClass::ClassDefaultObject: " << Off::UClass::ClassDefaultObject << "\n";
-
 	Off::UEnum::Names = OffsetFinder::FindEnumNamesOffset();
-	std::cout << "Off::UEnum::Names: " << Off::UEnum::Names << "\n";
-
 	Off::UFunction::FunctionFlags = OffsetFinder::FindFunctionFlagsOffset();
-	std::cout << "Off::UFunction::FunctionFlags: " << Off::UFunction::FunctionFlags << "\n\n";
-
 	Off::UFunction::ExecFunction = OffsetFinder::FindFunctionNativeFuncOffset();
-	std::cout << "Off::UFunction::ExecFunction: " << Off::UFunction::ExecFunction << "\n\n";
-
 	Off::UProperty::ElementSize = OffsetFinder::FindElementSizeOffset();
-	std::cout << "Off::UProperty::ElementSize: " << Off::UProperty::ElementSize << "\n";
-
 	Off::UProperty::ArrayDim = OffsetFinder::FindArrayDimOffset();
-	std::cout << "Off::UProperty::ArrayDim: " << Off::UProperty::ArrayDim << "\n";
-
 	Off::UProperty::Offset_Internal = OffsetFinder::FindOffsetInternalOffset();
-	std::cout << "Off::UProperty::Offset_Internal: " << Off::UProperty::Offset_Internal << "\n";
-
 	Off::UProperty::PropertyFlags = OffsetFinder::FindPropertyFlagsOffset();
-	std::cout << "Off::UProperty::PropertyFlags: " << Off::UProperty::PropertyFlags << "\n";
-
 	const int32 PropertySize = OffsetFinder::FindBoolPropertyBaseOffset();
-	std::cout << "UPropertySize: " << PropertySize << "\n\n";
-
 	Off::UArrayProperty::Inner = OffsetFinder::FindInnerTypeOffset(PropertySize);
-	std::cout << "Off::UArrayProperty::Inner: " << Off::UArrayProperty::Inner << "\n";
-	
 	Off::USetProperty::ElementProp = OffsetFinder::FindSetPropertyBaseOffset(PropertySize);
-	std::cout << "Off::USetProperty::ElementProp: " << Off::USetProperty::ElementProp << "\n";
-	
 	Off::UMapProperty::Base = OffsetFinder::FindMapPropertyBaseOffset(PropertySize);
-	std::cout << "Off::UMapProperty::Base: " << Off::UMapProperty::Base << "\n\n";
-
 	Off::UByteProperty::Enum = PropertySize;
 	Off::UBoolProperty::Base = PropertySize;
 	Off::UObjectProperty::PropertyClass = PropertySize;
 	Off::UStructProperty::Struct = PropertySize;
 	Off::UEnumProperty::Base = PropertySize;
-
 	Off::UClassProperty::MetaClass = PropertySize + 0x8; //0x8 inheritance from UObjectProperty
+
+	if (Settings::Internal::bUseFProperty)
+        log::info("Game uses FProperty system");
+    log::info(
+        "{}PropertySize: {:x}",
+        Settings::Internal::bUseFProperty ? "F" : "U",
+		PropertySize
+    );
+#pragma push_macro("log_offset")
+#define log_offset(o) log::info("{}: {:x}", #o, o)
+    log_offset(Off::UField::Next);
+    log_offset(Off::UEnum::Names);
+    log_offset(Off::UStruct::SuperStruct);
+    log_offset(Off::UStruct::Children);
+    log_offset(Off::UStruct::ChildProperties);
+    log_offset(Off::UStruct::Size);
+    log_offset(Off::UClass::CastFlags);
+    log_offset(Off::UClass::ClassDefaultObject);
+    log_offset(Off::UFunction::FunctionFlags);
+    log_offset(Off::UFunction::ExecFunction);
+    log_offset(Off::FField::Next);
+    log_offset(Off::FField::Name);
+    log_offset(Off::UProperty::ArrayDim);
+    log_offset(Off::UProperty::ElementSize);
+    log_offset(Off::UProperty::PropertyFlags);
+    log_offset(Off::UProperty::Offset_Internal);
+    log_offset(Off::UArrayProperty::Inner);
+    log_offset(Off::USetProperty::ElementProp);
+    log_offset(Off::UMapProperty::Base);
+    log_offset(Off::UByteProperty::Enum);
+    log_offset(Off::UBoolProperty::Base);
+    log_offset(Off::UObjectProperty::PropertyClass);
+    log_offset(Off::UStructProperty::Struct);
+    log_offset(Off::UEnumProperty::Base);
+    log_offset(Off::UClassProperty::MetaClass);
+#pragma pop_macro("log_offset")
 }
