@@ -556,6 +556,7 @@ namespace Offsets
 
 	HeaderStream << "\n#include \"PropertyFixup.hpp\"\n";
 	HeaderStream << "\n#include \"SDK/" << (Settings::FilePrefix ? Settings::FilePrefix : "") << "Basic.hpp\"\n";
+	HeaderStream << "\n#pragma pack(push, 1)\n";
 
 	if (Settings::bIncludeOnlyRelevantPackages)
 	{
@@ -598,6 +599,8 @@ namespace Offsets
 	
 		HeaderStream << IncludesString;
 	}
+
+	HeaderStream << "\n\n#pragma pack(pop)\n";
 
 	if constexpr (Settings::Debug::bGenerateAssertionsForPredefinedMembers)
 	{
