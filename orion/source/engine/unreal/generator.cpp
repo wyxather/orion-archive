@@ -545,6 +545,12 @@ namespace Offsets
 }}
 )", Off::InSDK::GObjects, Off::InSDK::AppendNameToString, Off::InSDK::GNames, Off::InSDK::PEOffset, Off::InSDK::PEIndex);
 
+	HeaderStream << "#undef NEAR\n";
+	HeaderStream << "#undef FAR\n";
+	HeaderStream << "#undef ETIME\n";
+	HeaderStream << "#undef EOTHER\n";
+	HeaderStream << "#undef CreateDialog\n";
+
 	if (Settings::XORString)
 		HeaderStream << std::format("#define {}(str) str\n", Settings::XORString);
 
