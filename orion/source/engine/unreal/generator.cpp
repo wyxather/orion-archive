@@ -518,16 +518,10 @@ void Generator::GenerateSDKHeader(const fs::path& SdkPath, int32 BiggestPackageI
 	std::ofstream HeaderStream(SdkPath / "SDK.hpp");
 
 	HeaderStream << "#pragma once\n\n";
-	HeaderStream << "// Made with <3 by me [Encryqed] && you [Fischsalat] + him [TempAccountNull]\n\n";
 
 	HeaderStream << std::format("// {}\n", Settings::GameName);
 	HeaderStream << std::format("// {}\n\n", Settings::GameVersion);
 	HeaderStream << std::format("// Main-package: {}\n\n", ObjectArray::GetByIndex(BiggestPackageIdx).GetValidName());
-
-	HeaderStream << "#include <string>\n";
-	HeaderStream << "#include <Windows.h>\n";
-	HeaderStream << "#include <iostream>\n";
-	HeaderStream << "#include <type_traits>\n\n";
 
 	HeaderStream << "typedef __int8 int8;\n";
 	HeaderStream << "typedef __int16 int16;\n";
