@@ -1,4 +1,5 @@
 #include "source/engine/unreal/object_array.h"
+#include "source/core/log.h"
 
 namespace fs = std::filesystem;
 
@@ -167,9 +168,6 @@ void ObjectArray::InitializeChunkSize(uint8_t* ChunksPtr)
 /* We don't speak about this function... */
 void ObjectArray::Init(bool bScanAllMemory)
 {
-	if (!bScanAllMemory)
-		std::cout << "\nDumper-7 by me, you & him\n\n\n";
-
 	uintptr_t ImageBase = GetImageBase();
 	PIMAGE_DOS_HEADER DosHeader = (PIMAGE_DOS_HEADER)(ImageBase);
 	PIMAGE_NT_HEADERS NtHeader = (PIMAGE_NT_HEADERS)(ImageBase + DosHeader->e_lfanew);
@@ -192,10 +190,6 @@ void ObjectArray::Init(bool bScanAllMemory)
 		}
 	}
 
-	if (!bScanAllMemory)
-		std::cout << "Searching for GObjects...\n\n";
-
-
 	for (int i = 0; i < SearchRange; i += 0x4)
 	{
 
@@ -210,7 +204,10 @@ void ObjectArray::Init(bool bScanAllMemory)
 
 			Off::InSDK::GObjects = uintptr_t(SearchBase + i) - ImageBase;
 
-			std::cout << "Found FFixedUObjectArray GObjects at offset 0x" << std::hex << Off::InSDK::GObjects << std::dec << "\n\n";
+			log::info(
+                "Found FFixedUObjectArray GObjects at offset {:#X}",
+                Off::InSDK::GObjects
+            );
 
 			ByIndex = [](void* ObjectsArray, int32 Index, uint32 FUObjectItemSize, uint32 FUObjectItemOffset, uint32 PerChunk) -> void*
 			{
@@ -238,7 +235,10 @@ void ObjectArray::Init(bool bScanAllMemory)
 
 			Off::InSDK::GObjects = uintptr_t(SearchBase + i) - ImageBase;
 
-			std::cout << "Found FChunkedFixedUObjectArray GObjects at offset 0x" << std::hex << Off::InSDK::GObjects << std::dec << "\n\n";
+			log::info(
+                "Found FChunkedFixedUObjectArray GObjects at offset {:#X}",
+                Off::InSDK::GObjects
+            );
 
 			ByIndex = [](void* ObjectsArray, int32 Index, uint32 FUObjectItemSize, uint32 FUObjectItemOffset, uint32 PerChunk) -> void*
 			{
@@ -273,7 +273,7 @@ void ObjectArray::Init(bool bScanAllMemory)
 	}
 
 	if (!bScanAllMemory)
-		std::cout << "\nGObjects couldn't be found!\n\n\n";
+        log::error("GObjects couldn't be found!");
 }
 
 void ObjectArray::Init(int32 GObjectsOffset, int32 ElementsPerChunk, bool bIsChunked)
