@@ -511,8 +511,6 @@ void Generator::GenerateSDK()
 	GenerateSDKHeader(GenFolder, IndexOfBiggestPackage);
 	GenerateFixupFile(GenFolder);
 	GenerateBasicFile(SDKFolder);
-
-	std::cout << "\n\n[=] Done [=]\n\n";
 }
 
 void Generator::GenerateSDKHeader(const fs::path& SdkPath, int32 BiggestPackageIdx)
