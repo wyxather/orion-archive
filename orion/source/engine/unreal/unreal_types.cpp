@@ -1,5 +1,6 @@
 #include "source/engine/unreal/unreal_types.h"
 #include "source/engine/unreal/name_array.h"
+#include "source/core/log.h"
 
 void(*FName::AppendString)(void*, FString&) = nullptr;
 
@@ -135,8 +136,10 @@ void FName::Init()
 		return;
 	}
 
-
-	std::cout << "Found FName::AppendString at Offset 0x" << std::hex << Off::InSDK::AppendNameToString << "\n\n";
+	log::info(
+        "Found FName::AppendString at Offset {:#X}",
+        Off::InSDK::AppendNameToString
+    );
 
 	ToStr = [](void* Name) -> std::string
 	{
