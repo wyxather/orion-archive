@@ -479,11 +479,11 @@ Types::Function Package::StaticGenerateFunction(UEFunction& Function, UEStruct& 
 
 	if (Settings::XORString)
 	{
-		FuncBody += std::format("\t\tFunc = Class->GetFunction({0}(\"{1}\"), {0}(\"{2}\"));\n\n", Settings::XORString, Super.GetName(), Function.GetName());
+		FuncBody += std::format("\t\tFunc = this->Class->GetFunction({0}(\"{1}\"), {0}(\"{2}\"));\n\n", Settings::XORString, Super.GetName(), Function.GetName());
 	}
 	else
 	{
-		FuncBody += std::format("\t\tFunc = Class->GetFunction(\"{}\", \"{}\");\n\n", Super.GetName(), Function.GetName());
+		FuncBody += std::format("\t\tFunc = this->Class->GetFunction(\"{}\", \"{}\");\n\n", Super.GetName(), Function.GetName());
 	}
 
 	if (bHasParams)
