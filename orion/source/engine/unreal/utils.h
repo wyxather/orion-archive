@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef _WIN64
+
 #include <iostream>
 #include <fstream>
 
@@ -533,5 +536,4 @@ inline MemAddress FindByWStringInAllSections(const wchar_t* RefStr)
 	return FindByStringInAllSections<const wchar_t*>(RefStr);
 }
 
-
-
+#endif

@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef _WIN64
+
 #include "source/engine/unreal/unreal_objects.h"
 
 class ObjectArray
@@ -80,5 +83,6 @@ public:
 	}
 };
 
-
 #define InitObjectArrayDecryption(DecryptionLambda) ObjectArray::InitDecryption(DecryptionLambda, #DecryptionLambda)
+
+#endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef _WIN64
+
 #include <unordered_map>
 #include "source/engine/unreal/enums.h"
 #include "source/engine/unreal/unreal_types.h"
@@ -418,3 +420,5 @@ public:
 
 	std::string GetCppType() const;
 };
+
+#endif

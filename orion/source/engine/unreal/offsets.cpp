@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/offsets.h"
 #include "source/engine/unreal/offset_finder.h"
 #include "source/engine/unreal/name_array.h"
@@ -144,3 +146,5 @@ void Off::Init()
     log_offset(Off::UClassProperty::MetaClass);
 #pragma pop_macro("log_offset")
 }
+
+#endif

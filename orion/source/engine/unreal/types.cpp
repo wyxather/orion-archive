@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/types.h"
 #include "source/engine/unreal/generator.h"
 
@@ -294,3 +296,5 @@ std::string Types::Enum::GetGeneratedBody()
 
 	return Body + "};\n\n";
 }
+
+#endif

@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef _WIN64
+
 #include <iostream>
 #include <format>
 #include <fstream>
@@ -153,3 +156,5 @@ namespace Types
 		std::string GetGeneratedBody();
 	};
 }
+
+#endif

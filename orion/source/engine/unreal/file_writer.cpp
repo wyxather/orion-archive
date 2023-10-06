@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/file_writer.h"
 #include "source/engine/unreal/settings.h"
 
@@ -244,3 +246,5 @@ std::ofstream& FileWriter::DebugGetStream()
 {
 	return FileStream;
 }
+
+#endif

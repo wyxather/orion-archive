@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef _WIN64
+
 #include <unordered_set>
 #include <filesystem>
 
@@ -141,3 +143,5 @@ public:
 		return PackageObject;
 	}
 };
+
+#endif

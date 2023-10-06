@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/generator.h"
 #include "source/engine/unreal/name_array.h"
 
@@ -2839,3 +2841,5 @@ public:
 //		return ComparisonIndex != Other.ComparisonIndex;
 //	}
 //};
+
+#endif

@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef _WIN64
+
 #include <iostream>
 #include "source/engine/unreal/enums.h"
 #include "source/engine/unreal/utils.h"
@@ -179,3 +181,5 @@ public:
 
 	static void* DEBUGGetAppendString();
 };
+
+#endif

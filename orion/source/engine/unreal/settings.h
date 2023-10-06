@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef _WIN64
 
 namespace Settings
 {
@@ -55,3 +56,5 @@ namespace Settings
 		inline std::string MainGamePackageName;
 	}
 }
+
+#endif

@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/unreal_types.h"
 #include "source/engine/unreal/name_array.h"
 #include "source/core/log.h"
@@ -239,3 +241,5 @@ void* FName::DEBUGGetAppendString()
 {
 	return (void*)(AppendString);
 }
+
+#endif

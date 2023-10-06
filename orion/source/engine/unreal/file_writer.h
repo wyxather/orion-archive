@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef _WIN64
+
 #include "source/engine/unreal/types.h"
 #include "source/engine/unreal/settings.h"
 
@@ -112,3 +114,5 @@ public:
 		Stream.flush();
 	}
 };
+
+#endif

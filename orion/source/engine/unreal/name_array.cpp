@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/name_array.h"
 
 /* DEBUG */
@@ -369,3 +371,4 @@ FNameEntry NameArray::GetNameEntry(int32 Idx)
 	return ByIndex(GNames, Idx, FNameBlockOffsetBits);
 }
 
+#endif

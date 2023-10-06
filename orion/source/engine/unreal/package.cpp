@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/package.h"
 #include "source/engine/unreal/generator.h"
 
@@ -724,3 +726,5 @@ void Package::GenerateEnum(UEEnum Enum)
 {
 	AllEnums.push_back(StaticGenerateEnum(Enum));
 }
+
+#endif

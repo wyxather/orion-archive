@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef _WIN64
+
 #include "source/engine/unreal/enums.h"
 #include "source/engine/unreal/settings.h"
 
@@ -200,3 +203,5 @@ namespace Off
 		inline int32 Base;
 	}
 }
+
+#endif

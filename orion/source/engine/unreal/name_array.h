@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef _WIN64
+
 #include "source/engine/unreal/unreal_types.h"
 
 class FNameEntry
@@ -62,3 +65,5 @@ public:
 	static FNameEntry GetNameEntry(void* Name);
 	static FNameEntry GetNameEntry(int32 Idx);
 };
+
+#endif

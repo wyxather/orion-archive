@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef _WIN64
+
 #include <future>
 #include <set>
 #include "source/engine/unreal/file_writer.h"
@@ -67,3 +69,5 @@ private:
 	static void GenerateFixupFile(const fs::path& SdkPath);
 	static void GenerateBasicFile(const fs::path& SdkPath);
 };
+
+#endif

@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/object_array.h"
 #include "source/core/log.h"
 
@@ -604,3 +606,5 @@ void TemplateTypeCreationForObjectArray(void)
 	ObjectArray::GetByIndex<UESetProperty>(-1);
 	ObjectArray::GetByIndex<UEEnumProperty>(-1);
 }
+
+#endif

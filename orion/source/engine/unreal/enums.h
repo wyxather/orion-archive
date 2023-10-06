@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef _WIN64
+
 typedef __int8 int8;
 typedef __int16 int16;
 typedef __int32 int32;
@@ -701,3 +703,5 @@ static EMappingsTypeFlags EPropertyFlagsToMappingFlags(EClassCastFlags Flags)
 
 	return EMappingsTypeFlags::Unknown;
 }
+
+#endif

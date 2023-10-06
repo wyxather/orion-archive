@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef _WIN64
+
 #include "source/engine/unreal/object_array.h"
 
 namespace OffsetFinder
@@ -599,3 +601,5 @@ namespace OffsetFinder
 		return FindOffset(Infos);
 	}
 }
+
+#endif

@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "source/engine/unreal/unreal_objects.h"
 #include "source/engine/unreal/object_array.h"
 
@@ -1175,3 +1177,5 @@ void TemplateTypeCreationForUnrealObjects(void)
 	CDummy.Cast<UEEnumProperty&>();
 	CDummy.Cast<UEInterfaceProperty&>();
 }
+
+#endif
