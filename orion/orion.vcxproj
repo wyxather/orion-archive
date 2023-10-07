@@ -53,6 +53,7 @@
     <ClInclude Include="source\engine\unreal\package.h" />
     <ClInclude Include="source\engine\unreal\settings.h" />
     <ClInclude Include="source\engine\unreal\types.h" />
+    <ClInclude Include="source\engine\unreal\unreal.h" />
     <ClInclude Include="source\engine\unreal\unreal_objects.h" />
     <ClInclude Include="source\engine\unreal\unreal_types.h" />
     <ClInclude Include="source\engine\unreal\utils.h" />
@@ -139,6 +140,7 @@
     <ClCompile Include="source\engine\unreal\offsets.cpp" />
     <ClCompile Include="source\engine\unreal\package.cpp" />
     <ClCompile Include="source\engine\unreal\types.cpp" />
+    <ClCompile Include="source\engine\unreal\unreal.cpp" />
     <ClCompile Include="source\engine\unreal\unreal_objects.cpp" />
     <ClCompile Include="source\engine\unreal\unreal_types.cpp" />
     <ClCompile Include="source\entry_point.cpp" />
