@@ -399,7 +399,7 @@ void Package::StaticGenerateMembers(const std::vector<UEProperty>& MemberVector,
 		}
 	}
 
-	if (StructSize > PrevPropertyEnd)
+	if (!bIsSuperFunction && StructSize > PrevPropertyEnd)
 	{
 		Struct.AddMember(GenerateBytePadding(PrevPropertyEnd, StructSize - PrevPropertyEnd, "Fixing Size Of Struct [ Dumper-7 ]"));
 	}
@@ -423,7 +423,15 @@ Types::Function Package::StaticGenerateFunction(UEFunction& Function, UEStruct& 
 	bool bHasRetType = false;
 	bool bHasParams = false;
 
-	for (UEProperty Param : Function.GetProperties())
+	auto Properties = Function.GetProperties();
+    std::erase_if(
+        Properties,
+        [](const auto& Property) {
+        return !Property.HasPropertyFlags(EPropertyFlags::Parm);
+		}
+    );
+
+	for (UEProperty Param : Properties)
 	{
 		bHasParams = true;
 
@@ -472,7 +480,7 @@ Types::Function Package::StaticGenerateFunction(UEFunction& Function, UEStruct& 
 	Func.AddComment("(" + Function.StringifyFlags() + ")");
 	Func.AddComment("Parameters:");
 
-	for (UEProperty Param : Function.GetProperties())
+	for (UEProperty Param : Properties)
 	{
 		Func.AddComment(std::format("{:{}}{:{}}({})", Param.GetCppType(), 35, Param.GetValidName(), 65, Param.StringifyFlags()));
 	}
@@ -534,7 +542,9 @@ Types::Struct Package::StaticGenerateStruct(UEStruct Struct, bool bIsFunction)
 	auto It = UEStruct::StructSizes.find(Struct.GetIndex());
 
 	if (It != UEStruct::StructSizes.end())
-		Size = It->second;
+        Size = It->second;
+
+    std::vector<UEProperty> Properties = Struct.GetProperties();
 
 	if (!bIsFunction)
 	{
@@ -551,11 +561,15 @@ Types::Struct Package::StaticGenerateStruct(UEStruct Struct, bool bIsFunction)
 				SuperSize = It->second;
 		}
 	}
+	else
+	{
+        std::erase_if(Properties, [](const auto& Property) {
+            return !Property.HasPropertyFlags(EPropertyFlags::Parm);
+        });
+	}
 
 	RetStruct.AddComment(std::format("0x{:X} (0x{:X} - 0x{:X})", Size - SuperSize, Size, SuperSize));
 	RetStruct.AddComment(Struct.GetFullName());
-
-	std::vector<UEProperty> Properties = Struct.GetProperties();
 
 	static int NumProps = 0;
 	static int NumFuncs = 0;
