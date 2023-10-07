@@ -228,6 +228,9 @@
     <ClInclude Include="source\engine\unreal\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine\unreal\unreal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\imgui\imgui.cpp">
@@ -369,6 +372,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\engine\unreal\unreal_types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine\unreal\unreal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
