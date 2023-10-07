@@ -132,6 +132,14 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="game\SDK\Basic.cpp" />
+    <ClCompile Include="game\SDK\BattleCharacterBaseBP_functions.cpp" />
+    <ClCompile Include="game\SDK\BattleCommandMenuActorBP_functions.cpp" />
+    <ClCompile Include="game\SDK\BattlePlayerBP_functions.cpp" />
+    <ClCompile Include="game\SDK\CoreUObject_functions.cpp" />
+    <ClCompile Include="game\SDK\KSSaveDataManagerBP_functions.cpp" />
+    <ClCompile Include="game\SDK\KSSaveGameBP_functions.cpp" />
+    <ClCompile Include="game\SDK\Majesty_functions.cpp" />
     <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\engine\unreal\file_writer.cpp" />
     <ClCompile Include="source\engine\unreal\generator.cpp" />

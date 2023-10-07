@@ -21,9 +21,19 @@ class Config final
 
         constexpr explicit Data() noexcept = default;
 
-        bool hitbox[4] = {};
-        float color[4] = {};
-        int target = {};
+        struct Player
+        {
+            bool god_mode = false;
+            bool resist_disease = false;
+            bool max_stats = false;
+            bool repeat_on_boost = false;
+            float hit_ratio = 0.f;
+            float ability_ratio = 0.f;
+            float critical_ratio = 0.f;
+            float critical_power = 0.f;
+        };
+
+        Player player[8];
     };
 
     auto save() noexcept -> void;

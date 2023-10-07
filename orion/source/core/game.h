@@ -20,6 +20,15 @@ class Game final
     auto draw() noexcept -> void;
     auto validate() noexcept -> void;
     auto invalidate() noexcept -> void;
+
+  private:
+    std::optional<hooks::Type> object;
+
+  public:
+    NODISCARD constexpr auto get_object() const noexcept -> const auto&
+    {
+        return object.value();
+    }
 };
 
 } // namespace orion::core

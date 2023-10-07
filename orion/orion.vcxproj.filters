@@ -374,7 +374,25 @@
     <ClCompile Include="source\engine\unreal\unreal_types.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game\SDK\Basic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game\SDK\CoreUObject_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game\SDK\BattlePlayerBP_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="source\engine\unreal\unreal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game\SDK\BattleCharacterBaseBP_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game\SDK\BattleCommandMenuActorBP_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game\SDK\Majesty_functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

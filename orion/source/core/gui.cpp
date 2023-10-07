@@ -252,6 +252,7 @@ auto Gui::builder() noexcept -> void
     }
     if (Body body{})
     {
+        static int player = 0;
         if (Body::Head head{})
         {
             head.save();
@@ -262,6 +263,10 @@ auto Gui::builder() noexcept -> void
                     orion.get_config().update();
                 }
                 head.create();
+            }
+            else if (Body::Head::Content content{Fnv1a<"Main">::value})
+            {
+                head.combo<"Hikari\0Ochette\0Castti\0Partitio\0Temenos\0Osvald\0Throne\0Agnea\0">(player);
             }
         }
         if (Body::Content content{})
@@ -275,33 +280,28 @@ auto Gui::builder() noexcept -> void
             {
                 if (Body::Content::Panel::Table table{})
                 {
-                    if (Body::Content::Panel::Table::Group<"General", true> group{})
+                    auto& config = orion.get_config().get_data();
+                    if (Body::Content::Panel::Table::Group<"Battle", true> group{})
                     {
                         if (Body::Content::Panel::Table::Widget widget{})
                         {
-                            widget.toggle<"Unlimited Blade">(orion.get_config().get_data().hitbox[0],
-                                                             orion.get_config().get_data().color, colo_reference,
-                                                             &popup_alpha);
-                            widget.toggle<"Unlimited Works", "Spawn Unlimited Jobs">(
-                                orion.get_config().get_data().hitbox[1]);
-                            widget.combo<"Hitbox", "Head\0Neck\0Body\0Legs\0Arms\0">(
-                                orion.get_config().get_data().target);
-                            widget.combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0Arms\0">(
-                                orion.get_config().get_data().target);
-                            widget.multi_combo<"Hitbox", "Head\0Neck\0Body\0Legs\0">(
-                                orion.get_config().get_data().hitbox);
-                            widget.multi_combo<"Hitbox2", "Head\0Neck\0Body\0Legs\0">(
-                                orion.get_config().get_data().hitbox);
+                            widget.toggle<"God Mode">(config.player[player].god_mode);
+                            widget.toggle<"Max Stats">(config.player[player].max_stats);
+                            widget.toggle<"Resist Disease">(config.player[player].resist_disease);
+                            widget.toggle<"Repeat On Boost">(config.player[player].repeat_on_boost);
                         }
                     }
-                    if (Body::Content::Panel::Table::Group<"Movement", true> group{})
+                    if (Body::Content::Panel::Table::Group<"Command", true> group{})
                     {
                         if (Body::Content::Panel::Table::Widget widget{})
                         {
-                            widget.toggle<"Unlimited Blade">(orion.get_config().get_data().hitbox[0],
-                                                             orion.get_config().get_data().color, colo_reference,
-                                                             &popup_alpha);
-                            widget.slider<"Unlimited Works", "%.1f", 0.f, 1.f>(orion.get_config().get_data().color[0]);
+                            widget.slider<"Hit Ratio", "%.0f", 0.f, 10000000.0f>(config.player[player].hit_ratio);
+                            widget.slider<"Ability Ratio", "%.0f", 0.f, 10000000.0f>(
+                                config.player[player].ability_ratio);
+                            widget.slider<"Critical Ratio", "%.0f", 0.f, 10000000.0f>(
+                                config.player[player].critical_ratio);
+                            widget.slider<"Critical Power", "%.0f", 0.f, 10000000.0f>(
+                                config.player[player].critical_power);
                         }
                     }
                 }

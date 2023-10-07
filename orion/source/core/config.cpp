@@ -220,15 +220,77 @@ auto Config::save() noexcept -> void
     nlohmann::json json;
 #pragma push_macro("CONFIG")
 #define CONFIG(object) write<#object>(json, object)
-    CONFIG(data.hitbox[0]);
-    CONFIG(data.hitbox[1]);
-    CONFIG(data.hitbox[2]);
-    CONFIG(data.hitbox[3]);
-    CONFIG(data.color[0]);
-    CONFIG(data.color[1]);
-    CONFIG(data.color[2]);
-    CONFIG(data.color[3]);
-    CONFIG(data.target);
+    CONFIG(data.player[0].ability_ratio);
+    CONFIG(data.player[0].critical_power);
+    CONFIG(data.player[0].critical_ratio);
+    CONFIG(data.player[0].repeat_on_boost);
+    CONFIG(data.player[0].god_mode);
+    CONFIG(data.player[0].hit_ratio);
+    CONFIG(data.player[0].max_stats);
+    CONFIG(data.player[0].resist_disease);
+
+    CONFIG(data.player[1].ability_ratio);
+    CONFIG(data.player[1].critical_power);
+    CONFIG(data.player[1].critical_ratio);
+    CONFIG(data.player[1].repeat_on_boost);
+    CONFIG(data.player[1].god_mode);
+    CONFIG(data.player[1].hit_ratio);
+    CONFIG(data.player[1].max_stats);
+    CONFIG(data.player[1].resist_disease);
+
+    CONFIG(data.player[2].ability_ratio);
+    CONFIG(data.player[2].critical_power);
+    CONFIG(data.player[2].critical_ratio);
+    CONFIG(data.player[2].repeat_on_boost);
+    CONFIG(data.player[2].god_mode);
+    CONFIG(data.player[2].hit_ratio);
+    CONFIG(data.player[2].max_stats);
+    CONFIG(data.player[2].resist_disease);
+
+    CONFIG(data.player[3].ability_ratio);
+    CONFIG(data.player[3].critical_power);
+    CONFIG(data.player[3].critical_ratio);
+    CONFIG(data.player[3].repeat_on_boost);
+    CONFIG(data.player[3].god_mode);
+    CONFIG(data.player[3].hit_ratio);
+    CONFIG(data.player[3].max_stats);
+    CONFIG(data.player[3].resist_disease);
+
+    CONFIG(data.player[4].ability_ratio);
+    CONFIG(data.player[4].critical_power);
+    CONFIG(data.player[4].critical_ratio);
+    CONFIG(data.player[4].repeat_on_boost);
+    CONFIG(data.player[4].god_mode);
+    CONFIG(data.player[4].hit_ratio);
+    CONFIG(data.player[4].max_stats);
+    CONFIG(data.player[4].resist_disease);
+
+    CONFIG(data.player[5].ability_ratio);
+    CONFIG(data.player[5].critical_power);
+    CONFIG(data.player[5].critical_ratio);
+    CONFIG(data.player[5].repeat_on_boost);
+    CONFIG(data.player[5].god_mode);
+    CONFIG(data.player[5].hit_ratio);
+    CONFIG(data.player[5].max_stats);
+    CONFIG(data.player[5].resist_disease);
+
+    CONFIG(data.player[6].ability_ratio);
+    CONFIG(data.player[6].critical_power);
+    CONFIG(data.player[6].critical_ratio);
+    CONFIG(data.player[6].repeat_on_boost);
+    CONFIG(data.player[6].god_mode);
+    CONFIG(data.player[6].hit_ratio);
+    CONFIG(data.player[6].max_stats);
+    CONFIG(data.player[6].resist_disease);
+
+    CONFIG(data.player[7].ability_ratio);
+    CONFIG(data.player[7].critical_power);
+    CONFIG(data.player[7].critical_ratio);
+    CONFIG(data.player[7].repeat_on_boost);
+    CONFIG(data.player[7].god_mode);
+    CONFIG(data.player[7].hit_ratio);
+    CONFIG(data.player[7].max_stats);
+    CONFIG(data.player[7].resist_disease);
 #pragma pop_macro("CONFIG")
     save(static_cast<const void*>(&json));
 }
@@ -239,14 +301,76 @@ auto Config::load(const File& file) noexcept -> void
     load(static_cast<void*>(&json), file);
 #pragma push_macro("CONFIG")
 #define CONFIG(object) read<#object>(json, object)
-    CONFIG(data.hitbox[0]);
-    CONFIG(data.hitbox[1]);
-    CONFIG(data.hitbox[2]);
-    CONFIG(data.hitbox[3]);
-    CONFIG(data.color[0]);
-    CONFIG(data.color[1]);
-    CONFIG(data.color[2]);
-    CONFIG(data.color[3]);
-    CONFIG(data.target);
+    CONFIG(data.player[0].ability_ratio);
+    CONFIG(data.player[0].critical_power);
+    CONFIG(data.player[0].critical_ratio);
+    CONFIG(data.player[0].repeat_on_boost);
+    CONFIG(data.player[0].god_mode);
+    CONFIG(data.player[0].hit_ratio);
+    CONFIG(data.player[0].max_stats);
+    CONFIG(data.player[0].resist_disease);
+
+    CONFIG(data.player[1].ability_ratio);
+    CONFIG(data.player[1].critical_power);
+    CONFIG(data.player[1].critical_ratio);
+    CONFIG(data.player[1].repeat_on_boost);
+    CONFIG(data.player[1].god_mode);
+    CONFIG(data.player[1].hit_ratio);
+    CONFIG(data.player[1].max_stats);
+    CONFIG(data.player[1].resist_disease);
+
+    CONFIG(data.player[2].ability_ratio);
+    CONFIG(data.player[2].critical_power);
+    CONFIG(data.player[2].critical_ratio);
+    CONFIG(data.player[2].repeat_on_boost);
+    CONFIG(data.player[2].god_mode);
+    CONFIG(data.player[2].hit_ratio);
+    CONFIG(data.player[2].max_stats);
+    CONFIG(data.player[2].resist_disease);
+
+    CONFIG(data.player[3].ability_ratio);
+    CONFIG(data.player[3].critical_power);
+    CONFIG(data.player[3].critical_ratio);
+    CONFIG(data.player[3].repeat_on_boost);
+    CONFIG(data.player[3].god_mode);
+    CONFIG(data.player[3].hit_ratio);
+    CONFIG(data.player[3].max_stats);
+    CONFIG(data.player[3].resist_disease);
+
+    CONFIG(data.player[4].ability_ratio);
+    CONFIG(data.player[4].critical_power);
+    CONFIG(data.player[4].critical_ratio);
+    CONFIG(data.player[4].repeat_on_boost);
+    CONFIG(data.player[4].god_mode);
+    CONFIG(data.player[4].hit_ratio);
+    CONFIG(data.player[4].max_stats);
+    CONFIG(data.player[4].resist_disease);
+
+    CONFIG(data.player[5].ability_ratio);
+    CONFIG(data.player[5].critical_power);
+    CONFIG(data.player[5].critical_ratio);
+    CONFIG(data.player[5].repeat_on_boost);
+    CONFIG(data.player[5].god_mode);
+    CONFIG(data.player[5].hit_ratio);
+    CONFIG(data.player[5].max_stats);
+    CONFIG(data.player[5].resist_disease);
+
+    CONFIG(data.player[6].ability_ratio);
+    CONFIG(data.player[6].critical_power);
+    CONFIG(data.player[6].critical_ratio);
+    CONFIG(data.player[6].repeat_on_boost);
+    CONFIG(data.player[6].god_mode);
+    CONFIG(data.player[6].hit_ratio);
+    CONFIG(data.player[6].max_stats);
+    CONFIG(data.player[6].resist_disease);
+
+    CONFIG(data.player[7].ability_ratio);
+    CONFIG(data.player[7].critical_power);
+    CONFIG(data.player[7].critical_ratio);
+    CONFIG(data.player[7].repeat_on_boost);
+    CONFIG(data.player[7].god_mode);
+    CONFIG(data.player[7].hit_ratio);
+    CONFIG(data.player[7].max_stats);
+    CONFIG(data.player[7].resist_disease);
 #pragma pop_macro("CONFIG")
 }
