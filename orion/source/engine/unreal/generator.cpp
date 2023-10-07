@@ -2392,7 +2392,7 @@ inline bool operator&(EClassCastFlags Left, EClassCastFlags Right)
 	BasicHeader.Write(
 		R"(
 
-enum class EClassFlags : int32
+enum EClassFlags
 {
 	CLASS_None					= 0x00000000u,
 	Abstract					= 0x00000001u,
@@ -2428,6 +2428,8 @@ enum class EClassFlags : int32
 	ConfigDoNotCheckDefaults	= 0x40000000u,
 	NewerVersionExists			= 0x80000000u,
 };
+
+static_assert(sizeof(EClassFlags) == 0x4);
 )");
 
 	BasicHeader.Write(
