@@ -6,6 +6,7 @@
 #include <format>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
 #include "source/engine/unreal/enums.h"
 
 namespace Types
@@ -42,10 +43,11 @@ namespace Types
 
 	class Member
 	{
-	private:
+        friend class Struct;
+
 		std::string Type;
 		std::string Name;
-		std::string Comment = "";
+        std::string Comment = "";
 
 	public:
 		Member(std::string Type, std::string Name, std::string Comment = "");
@@ -57,7 +59,8 @@ namespace Types
 
 	class Parameter
 	{
-	private:
+        friend class Function;
+
 		bool bIsOutPtr;
 		std::string Type;
 		std::string Name;
@@ -79,7 +82,8 @@ namespace Types
 		std::string Declaration;
 		std::string InnerBody;
 		std::string Comments;
-		std::vector<Member> StructMembers;
+        std::vector<Member> StructMembers;
+        std::unordered_map<std::string, std::size_t> StructMembersNameConflict;
 		int32 CustomAlignSize;
 
 	public:
@@ -113,7 +117,8 @@ namespace Types
 		std::string Body;
 		std::string DeclarationH;
 		std::string DeclarationCPP;
-		std::vector<Parameter> Parameters;
+        std::vector<Parameter> Parameters;
+        std::unordered_map<std::string, std::size_t> ParametersNameConflict;
 		std::string Comments;
 
 	public:

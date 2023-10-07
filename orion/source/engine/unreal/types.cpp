@@ -22,11 +22,29 @@ void Types::Struct::AddComment(std::string Comment)
 
 void Types::Struct::AddMember(Member& NewMember)
 {
+    if (const auto it = std::find_if(
+            StructMembers.cbegin(),
+            StructMembers.cend(),
+            [&](const auto& Member) { return Member.Name == NewMember.Name; }
+        );
+        it != StructMembers.cend()) {
+        NewMember.Name +=
+            std::to_string(StructMembersNameConflict[it->Name] += 1);
+    }
 	StructMembers.push_back(NewMember);
 }
 
 void Types::Struct::AddMember(Member&& NewMember)
 {
+    if (const auto it = std::find_if(
+            StructMembers.cbegin(),
+            StructMembers.cend(),
+            [&](const auto& Member) { return Member.Name == NewMember.Name; }
+        );
+        it != StructMembers.cend()) {
+        NewMember.Name +=
+            std::to_string(StructMembersNameConflict[it->Name] += 1);
+    }
 	StructMembers.emplace_back(std::move(NewMember));
 }
 
@@ -34,6 +52,17 @@ void Types::Struct::AddMembers(std::vector<Member>& NewMembers)
 {
 	for (Member NewMember : NewMembers)
 	{
+        if (const auto it = std::find_if(
+                StructMembers.cbegin(),
+                StructMembers.cend(),
+                [&](const auto& Member) {
+                    return Member.Name == NewMember.Name;
+                }
+            );
+            it != StructMembers.cend()) {
+            NewMember.Name +=
+                std::to_string(StructMembersNameConflict[it->Name] += 1);
+        }
 		StructMembers.push_back(NewMember);
 	}
 }
@@ -163,6 +192,14 @@ std::string Types::Member::GetGeneratedBody()
 
 Types::Function::Function(std::string Type, std::string Name, std::string SuperName, std::vector<Parameter> Parameters, bool bIsStatic, bool bAddNewLine)
 {
+	for (auto it = Parameters.begin(); it != Parameters.end(); ++it) {
+		for (auto it2 = Parameters.cbegin(); it2 != it; ++it2) {
+			if (it->Name == it2->Name) {
+                it->Name = std::to_string(ParametersNameConflict[it->Name] += 1);
+			}
+		}
+	}
+ 
 	this->Parameters = Parameters;
 
 	std::string ParamStr = GetParametersAsString();
