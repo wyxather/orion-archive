@@ -42,47 +42,47 @@ namespace orion {
         }
 
         NODISCARD constexpr auto get_kernel32() const noexcept -> const auto& {
-            return kernel32.value();
+            return *kernel32;
         }
 
         NODISCARD constexpr auto get_user32() const noexcept -> const auto& {
-            return user32.value();
+            return *user32;
         }
 
         NODISCARD constexpr auto get_shell32() const noexcept -> const auto& {
-            return shell32.value();
+            return *shell32;
         }
 
         NODISCARD constexpr auto get_combase() const noexcept -> const auto& {
-            return combase.value();
+            return *combase;
         }
 
         NODISCARD constexpr auto get_console() const noexcept -> const auto& {
-            return console.value();
+            return *console;
         }
 
         NODISCARD constexpr auto get_platform() const noexcept -> const auto& {
-            return platform.value();
+            return *platform;
         }
 
         NODISCARD constexpr auto get_renderer() const noexcept -> const auto& {
-            return renderer.value();
+            return *renderer;
         }
 
         NODISCARD constexpr auto get_input() const noexcept -> const auto& {
-            return input.value();
+            return *input;
         }
 
         NODISCARD constexpr auto get_config() noexcept -> auto& {
-            return config.value();
+            return *config;
         }
 
         NODISCARD constexpr auto get_gui() noexcept -> auto& {
-            return gui.value();
+            return *gui;
         }
 
         NODISCARD constexpr auto get_game() noexcept -> auto& {
-            return game.value();
+            return *game;
         }
     };
 
