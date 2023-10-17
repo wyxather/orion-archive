@@ -438,8 +438,6 @@ namespace orion::core::gui {
 
         template<stb::fixed_string str, stb::fixed_string items>
         auto combo(int& value) noexcept {
-            static float popupAlpha;
-
             String<str> name;
             String<items> item;
 
@@ -460,8 +458,6 @@ namespace orion::core::gui {
             if (ImGui::TableSetColumnIndex(1)) {
                 ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
                 const StyleVar styleVar[] {
-                    {ImGuiStyleVar_::ImGuiStyleVar_DisabledAlpha,
-                     std::powf(popupAlpha, 2) * ImGui::GetStyle().Alpha},
                     {ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3},
                     {ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3},
                     {ImGuiStyleVar_::ImGuiStyleVar_FramePadding,
@@ -490,23 +486,6 @@ namespace orion::core::gui {
                      ImVec4 {.0823529f, .0823529f, .0823529f, 1}},
                 };
                 ImGui::Combo(name.c_str(), &value, item);
-                bool popup_open = ImGui::IsPopupOpen(
-                    ImHashStr(
-                        "##ComboPopup",
-                        0,
-                        ImGui::GetCurrentWindow()->GetID(name.c_str())
-                    ),
-                    ImGuiPopupFlags_::ImGuiPopupFlags_None
-                );
-                if (popup_open) {
-                    popupAlpha = std::clamp(
-                        ImGui::GetIO().DeltaTime * 2 + popupAlpha,
-                        0.f,
-                        1.f
-                    );
-                } else {
-                    popupAlpha = {};
-                }
             }
 
             if (ImGui::TableSetColumnIndex(0)) {
@@ -528,7 +507,6 @@ namespace orion::core::gui {
             constexpr auto textPositionVerticalOffset {2.00f};
 
             static std::string preview;
-            static float popupAlpha;
 
             const Gui::PushFont font {
                 orion.get_gui().get_fonts().factory,
@@ -548,8 +526,6 @@ namespace orion::core::gui {
                 ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 
                 const StyleVar styleVar[] {
-                    {ImGuiStyleVar_::ImGuiStyleVar_DisabledAlpha,
-                     std::powf(popupAlpha, 2) * ImGui::GetStyle().Alpha},
                     {ImGuiStyleVar_::ImGuiStyleVar_PopupRounding, 3},
                     {ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3},
                     {ImGuiStyleVar_::ImGuiStyleVar_FramePadding,
@@ -601,15 +577,7 @@ namespace orion::core::gui {
                     }
 
                     ImGui::EndCombo();
-
-                    popupAlpha = std::clamp(
-                        ImGui::GetIO().DeltaTime * 2 + popupAlpha,
-                        0.f,
-                        1.f
-                    );
                 } else {
-                    popupAlpha = {};
-
                     auto p {item.c_str()};
                     while (*p) {
                         list.emplace_back(p);
