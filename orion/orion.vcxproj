@@ -69,7 +69,7 @@
     <ClInclude Include="source\core\renderer.h" />
     <ClInclude Include="source\hooks\hooks.h" />
     <ClInclude Include="source\hooks\minhook.h" />
-    <ClInclude Include="source\entry_point.h" />
+    <ClInclude Include="source\dllmain.h" />
     <ClInclude Include="source\hooks\ret_spoof.h" />
     <ClInclude Include="source\hooks\ret_spoof_64.h" />
     <ClInclude Include="source\modules\combase.h" />
@@ -143,10 +143,9 @@
     <ClCompile Include="source\engine\unreal\unreal.cpp" />
     <ClCompile Include="source\engine\unreal\unreal_objects.cpp" />
     <ClCompile Include="source\engine\unreal\unreal_types.cpp" />
-    <ClCompile Include="source\entry_point.cpp" />
+    <ClCompile Include="source\dllmain.cpp" />
     <ClCompile Include="source\hooks\hooks.cpp" />
     <ClCompile Include="source\hooks\minhook.cpp" />
-    <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\core\config.cpp" />
     <ClCompile Include="source\core\console.cpp" />
     <ClCompile Include="source\core\game.cpp" />

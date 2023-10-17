@@ -17,11 +17,8 @@ namespace orion {
             const LPVOID reserved
         ) -> BOOL;
 
-        NODISCARD static auto process(
-            const HMODULE module_handle,
-            const DWORD reason_for_call,
-            const LPVOID reserved
-        ) noexcept -> BOOL;
+        NODISCARD static auto on_attach(const HMODULE module_handle) noexcept
+            -> void;
     };
 
 }  // namespace orion
