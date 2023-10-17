@@ -294,7 +294,7 @@ namespace orion::core::gui {
             }
         }
 
-        template<stb::fixed_string str>
+        template<stb::fixed_string str, stb::fixed_string tip = "">
         constexpr void toggle(
             bool& value,
             float color[4],
@@ -328,6 +328,13 @@ namespace orion::core::gui {
                 ImGui::SetCursorPos(pos);
                 ratio =
                     ImGui::ButtonToggle(name.c_str(), value, toggleWidthMult);
+
+                if constexpr (tip[0] != '\0') {
+                    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled
+                        )) {
+                        ImGui::SetTooltip(String<tip>());
+                    }
+                }
 
                 if (color) {
                     constexpr auto itemSpaceWidth {8.00f};
@@ -424,9 +431,9 @@ namespace orion::core::gui {
             }
         }
 
-        template<stb::fixed_string str>
+        template<stb::fixed_string str, stb::fixed_string tip = "">
         constexpr auto toggle(bool& value) noexcept {
-            return toggle<str>(value, nullptr, nullptr, nullptr);
+            return toggle<str, tip>(value, nullptr, nullptr, nullptr);
         }
 
         template<stb::fixed_string str, stb::fixed_string items>
@@ -487,7 +494,7 @@ namespace orion::core::gui {
                     ImHashStr(
                         "##ComboPopup",
                         0,
-                        ImGui::GetCurrentWindow()->GetID(name)
+                        ImGui::GetCurrentWindow()->GetID(name.c_str())
                     ),
                     ImGuiPopupFlags_::ImGuiPopupFlags_None
                 );

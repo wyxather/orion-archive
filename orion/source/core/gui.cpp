@@ -345,7 +345,9 @@ auto Gui::builder() noexcept -> void {
                                 colo_reference,
                                 &popup_alpha
                             );
-                            widget.toggle<"Unlimited Works">(
+                            widget.toggle<
+                                "Unlimited Works",
+                                "Spawn Unlimited Jobs">(
                                 orion.get_config().get_data().hitbox[1]
                             );
                             widget.combo<
