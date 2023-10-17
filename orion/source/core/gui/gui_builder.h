@@ -372,7 +372,8 @@ namespace orion::core::gui {
                         - ImVec2 {ImGui::GetFrameHeight() * toggleWidthMult, 0}
                     );
                     if (ImGui::Button(std::string {
-                            std::string {colorIcon} + "##" + name.c_str()
+                            std::string {colorIcon} + String<"##">().c_str()
+                            + name.c_str()
                         }
                                           .c_str())) {
                         colorReference[0] = color[0];
@@ -555,7 +556,10 @@ namespace orion::core::gui {
                 };
 
                 if (ImGui::BeginCombo(
-                        std::string {std::string {"##"} + name.c_str()}.c_str(),
+                        std::string {
+                            std::string {String<"##">().c_str()} + name.c_str()
+                        }
+                            .c_str(),
                         preview.c_str()
                     )) {
                     auto p {item.c_str()};
@@ -592,8 +596,9 @@ namespace orion::core::gui {
                 }
                 preview = {};
                 for (std::size_t i {}; i < selected.size(); ++i) {
-                    i == selected.size() - 1 ? preview += selected[i]
-                                             : preview += selected[i] + ", ";
+                    i == selected.size() - 1
+                        ? preview += selected[i]
+                        : preview += selected[i] + String<", ">().c_str();
                 }
             }
 
@@ -675,7 +680,10 @@ namespace orion::core::gui {
                             0});
                     ImGui::SetNextItemWidth(inputTextWidth);
                     if (ImGui::InputFloat(
-                            std::string {std::string {"##"} + name.c_str()}
+                            std::string {
+                                std::string {String<"##">().c_str()}
+                                + name.c_str()
+                            }
                                 .c_str(),
                             &value,
                             0.f,
@@ -700,7 +708,10 @@ namespace orion::core::gui {
                     - style.CellPadding.x - 8
                 );
                 ImGui::SliderFloat5(
-                    std::string {std::string {"###"} + name.c_str()}.c_str(),
+                    std::string {
+                        std::string {String<"###">().c_str()} + name.c_str()
+                    }
+                        .c_str(),
                     value,
                     min,
                     max,
