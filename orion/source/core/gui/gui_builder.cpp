@@ -827,7 +827,7 @@ auto Body::Content::Panel::Config::draw(
         ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_Alpha, popup_alpha);
         ImGui::SetNextWindowSize(
             ImVec2 {256.0f, 35.0f}
-                * utilities::math::easing::in_out_quart(style.Alpha),
+                * utilities::math::easing::in_out_quart(popup_alpha),
             ImGuiCond_::ImGuiCond_Always
         );
         if (ImGui::BeginPopup(
