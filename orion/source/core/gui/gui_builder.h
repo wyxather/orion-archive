@@ -331,8 +331,36 @@ namespace orion::core::gui {
 
                 if constexpr (tip[0] != '\0') {
                     if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled
-                        )) {
-                        ImGui::SetTooltip(String<tip>());
+                        )
+                        && ImGui::GetCurrentContext()->HoveredIdTimer > 0.5f) {
+                        const auto& colors = ImGui::GetStyle().Colors;
+                        const auto& popup_bg =
+                            colors[ImGuiCol_::ImGuiCol_PopupBg];
+                        const auto& text_col = colors[ImGuiCol_::ImGuiCol_Text];
+                        const auto alpha =
+                            utilities::math::easing::out_expo(std::clamp(
+                                ImGui::GetCurrentContext()->HoveredIdTimer
+                                    - 0.5f,
+                                0.0f,
+                                1.0f
+                            ));
+                        const StyleColor color[] = {
+                            {ImGuiCol_::ImGuiCol_PopupBg,
+                             ImVec4 {
+                                 popup_bg.x,
+                                 popup_bg.y,
+                                 popup_bg.z,
+                                 std::clamp(alpha, 0.0f, popup_bg.w)
+                             }},
+                            {ImGuiCol_::ImGuiCol_Text,
+                             ImVec4 {
+                                 text_col.x,
+                                 text_col.y,
+                                 text_col.z,
+                                 std::clamp(alpha, 0.0f, text_col.w)
+                             }},
+                        };
+                        ImGui::SetTooltip(String<tip>().c_str());
                     }
                 }
 
