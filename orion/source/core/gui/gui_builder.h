@@ -346,7 +346,6 @@ namespace orion::core::gui {
                     const auto colorLabel {
                         std::string {colorIcon} + name.c_str()
                     };
-                    const auto& style = ImGui::GetStyle();
 
                     const StyleVar styleVar[] {
                         {ImGuiStyleVar_::ImGuiStyleVar_FrameRounding, 3},
@@ -384,11 +383,12 @@ namespace orion::core::gui {
                         *popupAlpha = {};
                     }
                     const StyleVar styleVar2[] {
-                        {ImGuiStyleVar_::ImGuiStyleVar_Alpha,
-                         std::sqrtf(*popupAlpha) * style.Alpha}
+                        {ImGuiStyleVar_::ImGuiStyleVar_Alpha, *popupAlpha}
                     };
                     ImGui::SetNextWindowSize(
-                        ImVec2 {308, 256} * style.Alpha,
+                        ImVec2 {308, 256}
+                            * utilities::math::easing::in_out_quart(*popupAlpha
+                            ),
                         ImGuiCond_::ImGuiCond_Always
                     );
                     if (ImGui::BeginPopup(
@@ -407,7 +407,7 @@ namespace orion::core::gui {
                         );
                         ImGui::EndPopup();
                         *popupAlpha = std::clamp(
-                            *popupAlpha + ImGui::GetIO().DeltaTime * 4,
+                            *popupAlpha + ImGui::GetIO().DeltaTime,
                             0.f,
                             1.f
                         );
