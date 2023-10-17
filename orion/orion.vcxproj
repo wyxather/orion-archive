@@ -523,6 +523,7 @@
       <StringPooling>true</StringPooling>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BuildStlModules>false</BuildStlModules>
+      <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -594,6 +595,7 @@
       <PreprocessorDefinitions>ORION_EXPORTS;_WINDOWS;_USRDLL;WIN32_LEAN_AND_MEAN;NOMINMAX;_USE_MATH_DEFINES;JM_XORSTR_DISABLE_AVX_INTRINSICS;_HAS_EXCEPTIONS=0;NDEBUG</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BuildStlModules>false</BuildStlModules>
+      <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
