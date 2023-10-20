@@ -4,15 +4,15 @@
 
 using orion::modules::Kernel32;
 
-Kernel32::Kernel32() noexcept {
+Kernel32::Kernel32() noexcept
+{
     const auto handle = LI_MOD("kernel32.dll")::get();
     alloc_console = LI_FUNC(AllocConsole)::in(handle);
     close_handle = LI_FUNC(CloseHandle)::in(handle);
     create_thread = LI_FUNC(CreateThread)::in(handle);
     free_console = LI_FUNC(FreeConsole)::in(handle);
     free_library = LI_FUNC(FreeLibrary)::in(handle);
-    free_library_and_exit_thread =
-        LI_FUNC(FreeLibraryAndExitThread)::in(handle);
+    free_library_and_exit_thread = LI_FUNC(FreeLibraryAndExitThread)::in(handle);
     get_console_window = LI_FUNC(GetConsoleWindow)::in(handle);
     get_current_process = LI_FUNC(GetCurrentProcess)::in(handle);
     get_current_process_id = LI_FUNC(GetCurrentProcessId)::in(handle);
@@ -27,7 +27,8 @@ Kernel32::Kernel32() noexcept {
     virtual_query = LI_FUNC(VirtualQuery)::in(handle);
 }
 
-Kernel32::~Kernel32() noexcept {
+Kernel32::~Kernel32() noexcept
+{
     alloc_console = nullptr;
     close_handle = nullptr;
     create_thread = nullptr;

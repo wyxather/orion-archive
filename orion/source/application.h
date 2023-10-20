@@ -1,35 +1,40 @@
 #pragma once
 
-namespace orion {
+namespace orion
+{
 
-    namespace hooks {
+namespace hooks
+{
 
-        class MinHook;
+class MinHook;
 
-    }
+}
 
-    namespace core {
+namespace core
+{
 
-        class Platform;
+class Platform;
 
-    }
+}
 
-    class Application final {
-        NON_CONSTRUCTIBLE(Application)
+class Application final
+{
+    NON_CONSTRUCTIBLE(Application)
 
-        friend core::Platform;
+    friend core::Platform;
 
-        static auto setup() noexcept -> void;
-        static auto exit() noexcept -> void;
-    };
+    static auto setup() noexcept -> void;
+    static auto exit() noexcept -> void;
+};
 
-    class Unload final {
-        NON_CONSTRUCTIBLE(Unload)
+class Unload final
+{
+    NON_CONSTRUCTIBLE(Unload)
 
-        friend Application;
-        friend hooks::MinHook;
+    friend Application;
+    friend hooks::MinHook;
 
-        [[noreturn]] static auto WINAPI unload(LPCVOID) noexcept -> void;
-    };
+    [[noreturn]] static auto WINAPI unload(LPCVOID) noexcept -> void;
+};
 
-}  // namespace orion
+} // namespace orion

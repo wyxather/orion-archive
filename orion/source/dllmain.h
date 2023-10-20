@@ -1,24 +1,18 @@
 #pragma once
 
-auto APIENTRY DllEntryPoint(
-    const HMODULE module_handle,
-    const DWORD reason_for_call,
-    const LPVOID reserved
-) -> BOOL;
+auto APIENTRY DllEntryPoint(const HMODULE module_handle, const DWORD reason_for_call, const LPVOID reserved) -> BOOL;
 
-namespace orion {
+namespace orion
+{
 
-    class EntryPoint final {
-        NON_CONSTRUCTIBLE(EntryPoint)
+class EntryPoint final
+{
+    NON_CONSTRUCTIBLE(EntryPoint)
 
-        friend auto APIENTRY ::DllEntryPoint(
-            const HMODULE module_handle,
-            const DWORD reason_for_call,
-            const LPVOID reserved
-        ) -> BOOL;
+    friend auto APIENTRY ::DllEntryPoint(const HMODULE module_handle, const DWORD reason_for_call,
+                                         const LPVOID reserved) -> BOOL;
 
-        NODISCARD static auto on_attach(const HMODULE module_handle) noexcept
-            -> void;
-    };
+    NODISCARD static auto on_attach(const HMODULE module_handle) noexcept -> void;
+};
 
-}  // namespace orion
+} // namespace orion

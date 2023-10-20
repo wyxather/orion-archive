@@ -4,19 +4,25 @@
 using orion::modules::User32;
 using orion::utilities::String;
 
-User32::User32() noexcept {
+User32::User32() noexcept
+{
     constexpr char USER32[] = "user32.dll";
     const auto user32 = LI_MOD(USER32)::safe<decltype(handle)>();
-    if (user32 != nullptr) {
+    if (user32 != nullptr)
+    {
         initialize(user32);
-    } else {
+    }
+    else
+    {
         handle = orion.get_kernel32().load_library_a(String<USER32>());
         initialize(handle);
     }
 }
 
-User32::~User32() noexcept {
-    if (handle != nullptr) {
+User32::~User32() noexcept
+{
+    if (handle != nullptr)
+    {
         orion.get_kernel32().free_library(handle);
         handle = nullptr;
     }
@@ -38,7 +44,8 @@ User32::~User32() noexcept {
     unregister_class = nullptr;
 }
 
-auto orion::modules::User32::initialize(const HMODULE handle) noexcept -> void {
+auto orion::modules::User32::initialize(const HMODULE handle) noexcept -> void
+{
     call_window_proc = LI_FUNC(CallWindowProc)::in(handle);
     create_window_ex = LI_FUNC(CreateWindowEx)::in(handle);
     destroy_window = LI_FUNC(DestroyWindow)::in(handle);
@@ -48,8 +55,7 @@ auto orion::modules::User32::initialize(const HMODULE handle) noexcept -> void {
     get_window_long_ptr = LI_FUNC(GetWindowLongPtr)::in(handle);
     get_window_text_a = LI_FUNC(GetWindowTextA)::in(handle);
     get_window_text_length_a = LI_FUNC(GetWindowTextLengthA)::in(handle);
-    get_window_thread_process_id =
-        LI_FUNC(GetWindowThreadProcessId)::in(handle);
+    get_window_thread_process_id = LI_FUNC(GetWindowThreadProcessId)::in(handle);
     is_window_visible = LI_FUNC(IsWindowVisible)::in(handle);
     message_box_a = LI_FUNC(MessageBoxA)::in(handle);
     post_message = LI_FUNC(PostMessage)::in(handle);

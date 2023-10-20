@@ -1,22 +1,24 @@
 #pragma once
 
-namespace orion::modules {
+namespace orion::modules
+{
 
-    class Combase final {
-    public:
-        NON_COPYABLE(Combase)
-        NON_MOVEABLE(Combase)
+class Combase final
+{
+  public:
+    NON_COPYABLE(Combase)
+    NON_MOVEABLE(Combase)
 
-        explicit Combase() noexcept;
+    explicit Combase() noexcept;
 
-        ~Combase() noexcept;
+    ~Combase() noexcept;
 
-        decltype(&CoTaskMemFree) co_task_mem_free = nullptr;
+    decltype(&CoTaskMemFree) co_task_mem_free = nullptr;
 
-    private:
-        auto initialize(const HMODULE handle) noexcept -> void;
+  private:
+    auto initialize(const HMODULE handle) noexcept -> void;
 
-        HMODULE handle = nullptr;
-    };
+    HMODULE handle = nullptr;
+};
 
-}  // namespace orion::modules
+} // namespace orion::modules
