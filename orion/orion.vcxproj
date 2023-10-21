@@ -198,6 +198,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="source\context.h" />
     <ClInclude Include="source\dllmain.h" />
     <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\pch.h" />

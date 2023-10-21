@@ -7,5 +7,6 @@
 #include <utility>
 
 #include "source/framework.h"
+#include "source/utilities/option.h"
 
 #endif
