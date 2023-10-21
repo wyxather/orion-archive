@@ -1,5 +1,3 @@
-#include "pch.h"
-
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
 BOOL APIENTRY DllEntryPoint(const HMODULE moduleHandle, const DWORD reason, const LPVOID reserved)
