@@ -1,6 +1,9 @@
 #include "pch.h"
 
-BOOL APIENTRY DllEntryPoint(HMODULE moduleHandle, DWORD reason, LPVOID reserved)
+EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
+
+BOOL APIENTRY DllEntryPoint(const HMODULE moduleHandle, const DWORD reason, const LPVOID reserved)
 {
-    return TRUE;
+    const auto crtInitResult = _CRT_INIT(moduleHandle, reason, reserved);
+    return crtInitResult;
 }
