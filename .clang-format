@@ -49,6 +49,7 @@ BreakConstructorInitializers: BeforeColon
 BreakStringLiterals: true
 CompactNamespaces: false
 Cpp11BracedListStyle: false
+EmptyLineBeforeAccessModifier: LogicalBlock
 FixNamespaceComments: true
 IncludeBlocks: Regroup
 IncludeCategories: 
