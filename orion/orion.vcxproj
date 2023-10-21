@@ -198,6 +198,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\lazy_importer.hpp" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\dllmain.h" />
     <ClInclude Include="source\framework.h" />
