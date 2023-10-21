@@ -201,6 +201,7 @@
     <ClInclude Include="source\dllmain.h" />
     <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\pch.h" />
+    <ClInclude Include="source\utilities\option.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\dllmain.cpp" />
