@@ -1,5 +1,6 @@
 #pragma once
 
+#include "source/core/console.h"
 #include "source/imports/kernel32.h"
 
 namespace orion
@@ -25,11 +26,17 @@ struct Context final
         return *kernel32;
     }
 
+    _NODISCARD constexpr auto& getConsole() const noexcept
+    {
+        return *console;
+    }
+
   private:
     friend class Main;
 
     utilities::Option<const HMODULE>           handle;
     utilities::Option<const imports::Kernel32> kernel32;
+    utilities::Option<const core::Console>     console;
 };
 
 constinit inline Context context;
