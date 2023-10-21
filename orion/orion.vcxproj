@@ -130,6 +130,7 @@
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;kernel32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -175,6 +176,7 @@
       <EnableUAC>false</EnableUAC>
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;kernel32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
