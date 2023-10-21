@@ -209,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp" />
+    <ClCompile Include="source\core\console.cpp" />
     <ClCompile Include="source\dllmain.cpp" />
     <ClCompile Include="source\imports\kernel32.cpp" />
     <ClCompile Include="source\pch.cpp">
