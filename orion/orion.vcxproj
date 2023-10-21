@@ -209,6 +209,7 @@
   <ItemGroup>
     <ClCompile Include="source\context.cpp" />
     <ClCompile Include="source\dllmain.cpp" />
+    <ClCompile Include="source\imports\kernel32.cpp" />
     <ClCompile Include="source\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
