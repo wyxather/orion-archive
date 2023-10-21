@@ -85,6 +85,7 @@ NamespaceIndentation: None
 PointerAlignment: Left
 ReflowComments: true
 SortIncludes: true
+SeparateDefinitionBlocks: Always
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
