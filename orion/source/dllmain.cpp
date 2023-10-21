@@ -17,4 +17,5 @@ BOOL APIENTRY DllEntryPoint(const HMODULE moduleHandle, const DWORD reason, cons
 void orion::Main::onAttach(const HMODULE moduleHandle) noexcept
 {
     context.handle.emplace(moduleHandle);
+    context.kernel32.emplace(LI_MOD("kernel32.dll")::get());
 }
