@@ -199,6 +199,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\lazy_importer.hpp" />
+    <ClInclude Include="dependencies\stb.hh" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\core\console.h" />
     <ClInclude Include="source\dllmain.h" />
