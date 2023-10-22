@@ -25,6 +25,8 @@ struct Console final
     ~Console() noexcept;
 
   private:
+    static BOOL WINAPI ctrlHandler(DWORD ctrlType) noexcept;
+
     HANDLE stdOutputHandle = nullptr;
 };
 
