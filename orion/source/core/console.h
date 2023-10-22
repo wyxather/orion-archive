@@ -32,6 +32,7 @@ struct Console final
     static BOOL WINAPI ctrlHandler(DWORD ctrlType) noexcept;
 
     void print(char* buffer, std::size_t bufferSize, const char* format, ...) const noexcept;
+    void setTextOutputColor(WORD color) const noexcept;
 
     HANDLE stdOutputHandle = nullptr;
 };

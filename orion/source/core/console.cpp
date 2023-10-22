@@ -28,6 +28,11 @@ void orion::core::Console::print(char* const       buffer,
     context.getKernel32().writeConsoleA(stdOutputHandle, buffer, bufferWrittenCount, nullptr, nullptr);
 }
 
+void orion::core::Console::setTextOutputColor(const WORD color) const noexcept
+{
+    context.getKernel32().setConsoleTextAttribute(stdOutputHandle, color);
+}
+
 BOOL WINAPI orion::core::Console::ctrlHandler(const DWORD ctrlType) noexcept
 {
     switch (ctrlType)
