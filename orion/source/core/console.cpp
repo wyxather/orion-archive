@@ -16,6 +16,18 @@ orion::core::Console::~Console() noexcept
     context.getKernel32().freeConsole();
 }
 
+void orion::core::Console::print(char* const       buffer,
+                                 const std::size_t bufferSize,
+                                 const char* const format,
+                                 ...) const noexcept
+{
+    va_list args;
+    va_start(args, format);
+    const auto bufferWrittenCount = context.getMsvcrt()._vsnprintf_s(buffer, bufferSize, bufferSize - 1, format, args);
+    va_end(args);
+    context.getKernel32().writeConsoleA(stdOutputHandle, buffer, bufferWrittenCount, nullptr, nullptr);
+}
+
 BOOL WINAPI orion::core::Console::ctrlHandler(const DWORD ctrlType) noexcept
 {
     switch (ctrlType)
