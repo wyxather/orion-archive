@@ -4,7 +4,9 @@ orion::core::Console::Console(const imports::Kernel32& kernel32, const imports::
 {
     kernel32.allocConsole();
     kernel32.setConsoleCtrlHandler(ctrlHandler, TRUE);
-    stdOutputHandle = kernel32.getStdHandle(STD_OUTPUT_HANDLE);
+    stdOutputHandle   = kernel32.getStdHandle(STD_OUTPUT_HANDLE);
+    const auto window = kernel32.getConsoleWindow();
+    user32.setWindowLongPtr(window, GWL_STYLE, user32.getWindowLongPtr(window, GWL_STYLE) & ~WS_SYSMENU);
 }
 
 orion::core::Console::~Console() noexcept
