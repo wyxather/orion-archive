@@ -103,6 +103,7 @@ SpaceInEmptyBlock: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
 SpacesInContainerLiterals: true
+SpacesInConditionalStatement: true
 SpacesInSquareBrackets: false
 Standard: Latest
 UseTab: Never
