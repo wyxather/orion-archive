@@ -1,6 +1,8 @@
 #include "source/context.h"
 
-orion::core::Console::Console(const imports::Kernel32& kernel32, const imports::User32& user32) noexcept
+orion::core::Console::Console(const imports::Kernel32& kernel32,
+                              const imports::Msvcrt&   msvcrt,
+                              const imports::User32&   user32) noexcept
 {
     kernel32.allocConsole();
     kernel32.setConsoleCtrlHandler(ctrlHandler, TRUE);

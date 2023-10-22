@@ -7,6 +7,7 @@ namespace imports
 {
 
 struct Kernel32;
+struct Msvcrt;
 struct User32;
 
 } // namespace imports
@@ -21,7 +22,9 @@ struct Console final
     Console(const Console&)            = delete;
     Console& operator=(const Console&) = delete;
 
-    explicit Console(const imports::Kernel32& kernel32, const imports::User32& user32) noexcept;
+    explicit Console(const imports::Kernel32& kernel32,
+                     const imports::Msvcrt&   msvcrt,
+                     const imports::User32&   user32) noexcept;
 
     ~Console() noexcept;
 
