@@ -12,8 +12,9 @@ struct Kernel32 final
 
     explicit Kernel32(void* kernel32) noexcept;
 
-    decltype(&AllocConsole) allocConsole = nullptr;
-    decltype(&FreeConsole)  freeConsole  = nullptr;
+    decltype(&AllocConsole)          allocConsole          = nullptr;
+    decltype(&FreeConsole)           freeConsole           = nullptr;
+    decltype(&GetConsoleWindow)      getConsoleWindow      = nullptr;
 };
 
 } // namespace orion::imports
