@@ -30,8 +30,10 @@ struct Console final
 
   private:
     static BOOL WINAPI ctrlHandler( DWORD ctrlType ) noexcept;
+    static int         format(
+                char* buffer, std::size_t bufferSizeInBytes, std::size_t maxNumChars, const char* format, ... ) noexcept;
 
-    void print(char* buffer, std::size_t bufferSize, const char* format, ...) const noexcept;
+    void print( const char* buffer, DWORD numCharsToWrite ) const noexcept;
     void setTextOutputColor( WORD color ) const noexcept;
 
     HANDLE stdOutputHandle = nullptr;

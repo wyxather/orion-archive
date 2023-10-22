@@ -16,16 +16,9 @@ orion::core::Console::~Console() noexcept
     context.getKernel32().freeConsole();
 }
 
-void orion::core::Console::print(char* const       buffer,
-                                 const std::size_t bufferSize,
-                                 const char* const format,
-                                 ...) const noexcept
+void orion::core::Console::print( const char* const buffer, const DWORD numCharsToWrite ) const noexcept
 {
-    va_list args;
-    va_start(args, format);
-    const auto bufferWrittenCount = context.getMsvcrt()._vsnprintf_s(buffer, bufferSize, bufferSize - 1, format, args);
-    va_end(args);
-    context.getKernel32().writeConsoleA(stdOutputHandle, buffer, bufferWrittenCount, nullptr, nullptr);
+    context.getKernel32().writeConsoleA( stdOutputHandle, buffer, numCharsToWrite, nullptr, nullptr );
 }
 
 void orion::core::Console::setTextOutputColor( const WORD color ) const noexcept
@@ -43,4 +36,18 @@ BOOL WINAPI orion::core::Console::ctrlHandler( const DWORD ctrlType ) noexcept
     default:
         return FALSE;
     }
+}
+
+int orion::core::Console::format( char* const       buffer,
+                                  const std::size_t bufferSizeInBytes,
+                                  const std::size_t maxNumChars,
+                                  const char* const format,
+                                  ... ) noexcept
+{
+    va_list args;
+    va_start( args, format );
+    const auto numCharsWritten =
+        context.getMsvcrt()._vsnprintf_s( buffer, bufferSizeInBytes, maxNumChars, format, args );
+    va_end( args );
+    return numCharsWritten;
 }
