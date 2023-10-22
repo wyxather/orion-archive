@@ -204,6 +204,7 @@
     <ClInclude Include="source\dllmain.h" />
     <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\imports\kernel32.h" />
+    <ClInclude Include="source\imports\user32.h" />
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\utilities\option.h" />
   </ItemGroup>
