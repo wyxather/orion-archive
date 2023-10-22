@@ -23,6 +23,9 @@ struct Console final
     explicit Console(const imports::Kernel32& kernel32) noexcept;
 
     ~Console() noexcept;
+
+  private:
+    HANDLE stdOutputHandle = nullptr;
 };
 
 } // namespace core
