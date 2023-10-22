@@ -18,6 +18,7 @@ struct Kernel32 final
     decltype(&GetDateFormatA)          getDateFormatA          = nullptr;
     decltype(&GetLocalTime)            getLocalTime            = nullptr;
     decltype(&GetStdHandle)            getStdHandle            = nullptr;
+    decltype(&GetTimeFormatA)          getTimeFormatA          = nullptr;
     decltype(&SetConsoleCtrlHandler)   setConsoleCtrlHandler   = nullptr;
     decltype(&SetConsoleTextAttribute) setConsoleTextAttribute = nullptr;
     decltype(&WriteConsoleA)           writeConsoleA           = nullptr;
