@@ -7,4 +7,5 @@ orion::imports::Kernel32::Kernel32(void* const kernel32) noexcept
     getConsoleWindow      = LI_FUNC(GetConsoleWindow)::in(kernel32);
     getStdHandle          = LI_FUNC(GetStdHandle)::in(kernel32);
     setConsoleCtrlHandler = LI_FUNC(SetConsoleCtrlHandler)::in(kernel32);
+    writeConsoleA         = LI_FUNC(WriteConsoleA)::in(kernel32);
 }

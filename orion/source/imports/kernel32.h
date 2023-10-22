@@ -17,6 +17,7 @@ struct Kernel32 final
     decltype(&GetConsoleWindow)      getConsoleWindow      = nullptr;
     decltype(&GetStdHandle)          getStdHandle          = nullptr;
     decltype(&SetConsoleCtrlHandler) setConsoleCtrlHandler = nullptr;
+    decltype(&WriteConsoleA)         writeConsoleA         = nullptr;
 };
 
 } // namespace orion::imports
