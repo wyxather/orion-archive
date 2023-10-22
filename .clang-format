@@ -104,6 +104,7 @@ SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
 SpacesInContainerLiterals: true
 SpacesInConditionalStatement: true
+SpacesInParentheses: true
 SpacesInSquareBrackets: false
 Standard: Latest
 UseTab: Never
