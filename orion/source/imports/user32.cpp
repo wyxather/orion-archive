@@ -9,5 +9,6 @@ orion::imports::User32::User32( void* const user32 ) noexcept
     getWindowTextA           = LI_FUNC( GetWindowTextA )::in( user32 );
     getWindowTextLengthA     = LI_FUNC( GetWindowTextLengthA )::in( user32 );
     getWindowThreadProcessId = LI_FUNC( GetWindowThreadProcessId )::in( user32 );
+    isWindowVisible          = LI_FUNC( IsWindowVisible )::in( user32 );
     setWindowLongPtr         = LI_FUNC( SetWindowLongPtr )::in( user32 );
 }
