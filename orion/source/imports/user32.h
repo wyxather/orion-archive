@@ -18,6 +18,7 @@ struct User32 final
     decltype( &GetWindowLongPtr )         getWindowLongPtr         = nullptr;
     decltype( &GetWindowTextA )           getWindowTextA           = nullptr;
     decltype( &GetWindowTextLengthA )     getWindowTextLengthA     = nullptr;
+    decltype( &GetWindowThreadProcessId ) getWindowThreadProcessId = nullptr;
     decltype( &SetWindowLongPtr )         setWindowLongPtr         = nullptr;
 };
 
