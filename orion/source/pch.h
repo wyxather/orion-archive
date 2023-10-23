@@ -4,6 +4,7 @@
 #include <array>
 #include <cassert>
 #include <cstddef>
+#include <source_location>
 #include <utility>
 
 #define LAZY_IMPORTER_CASE_INSENSITIVE
