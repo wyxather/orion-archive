@@ -14,6 +14,7 @@ struct User32 final
 
     decltype( &CallWindowProc )           callWindowProc           = nullptr;
     decltype( &EnumWindows )              enumWindows              = nullptr;
+    decltype( &GetClassNameA )            getClassNameA            = nullptr;
     decltype( &GetWindowLongPtr )         getWindowLongPtr         = nullptr;
     decltype( &SetWindowLongPtr )         setWindowLongPtr         = nullptr;
 };
