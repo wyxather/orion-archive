@@ -200,6 +200,7 @@
   <ItemGroup>
     <ClInclude Include="dependencies\lazy_importer.hpp" />
     <ClInclude Include="dependencies\stb.hh" />
+    <ClInclude Include="dependencies\xorstr.hpp" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\core\console.h" />
     <ClInclude Include="source\dllmain.h" />
