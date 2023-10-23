@@ -20,6 +20,7 @@ struct User32 final
     decltype( &GetWindowTextLengthA )     getWindowTextLengthA     = nullptr;
     decltype( &GetWindowThreadProcessId ) getWindowThreadProcessId = nullptr;
     decltype( &IsWindowVisible )          isWindowVisible          = nullptr;
+    decltype( &MessageBoxA )              messageBoxA              = nullptr;
     decltype( &SetWindowLongPtr )         setWindowLongPtr         = nullptr;
 };
 
