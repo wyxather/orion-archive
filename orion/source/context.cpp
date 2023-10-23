@@ -2,6 +2,7 @@
 
 orion::Context::~Context()
 {
+    platform.reset();
     console.reset();
     user32.reset();
     msvcrt.reset();
