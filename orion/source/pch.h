@@ -15,6 +15,19 @@
 #define LI_FUNC( name )  LI_FUNC_( name )
 
 #include "dependencies/stb.hh"
+
+#define JM_XORSTR_DISABLE_AVX_INTRINSICS
+#include "dependencies/xorstr.hpp"
+#define xorarr( arr )                                                                                                  \
+    ::jm::xor_string(                                                                                                  \
+        []()                                                                                                           \
+        {                                                                                                              \
+            return arr.data();                                                                                         \
+        },                                                                                                             \
+        std::integral_constant<std::size_t, arr.size()> {},                                                            \
+        std::make_index_sequence<::jm::detail::_buffer_size<sizeof( arr )>()> {} )
+#define xorarr_( arr ) xorarr( arr ).crypt_get()
+
 #include "source/framework.h"
 #include "source/utilities/option.h"
 
