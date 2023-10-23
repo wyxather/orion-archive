@@ -5,6 +5,7 @@ orion::imports::Kernel32::Kernel32( void* const kernel32 ) noexcept
     allocConsole            = LI_FUNC( AllocConsole )::in( kernel32 );
     freeConsole             = LI_FUNC( FreeConsole )::in( kernel32 );
     getConsoleWindow        = LI_FUNC( GetConsoleWindow )::in( kernel32 );
+    getCurrentProcessId     = LI_FUNC( GetCurrentProcessId )::in( kernel32 );
     getDateFormatA          = LI_FUNC( GetDateFormatA )::in( kernel32 );
     getLocalTime            = LI_FUNC( GetLocalTime )::in( kernel32 );
     getStdHandle            = LI_FUNC( GetStdHandle )::in( kernel32 );

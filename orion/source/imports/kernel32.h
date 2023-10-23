@@ -15,6 +15,7 @@ struct Kernel32 final
     decltype( &AllocConsole )            allocConsole            = nullptr;
     decltype( &FreeConsole )             freeConsole             = nullptr;
     decltype( &GetConsoleWindow )        getConsoleWindow        = nullptr;
+    decltype( &GetCurrentProcessId )     getCurrentProcessId     = nullptr;
     decltype( &GetDateFormatA )          getDateFormatA          = nullptr;
     decltype( &GetLocalTime )            getLocalTime            = nullptr;
     decltype( &GetStdHandle )            getStdHandle            = nullptr;
