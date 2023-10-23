@@ -12,8 +12,10 @@ struct User32 final
 
     explicit User32( void* user32 ) noexcept;
 
-    decltype( &GetWindowLongPtr ) getWindowLongPtr = nullptr;
-    decltype( &SetWindowLongPtr ) setWindowLongPtr = nullptr;
+    decltype( &CallWindowProc )           callWindowProc           = nullptr;
+    decltype( &EnumWindows )              enumWindows              = nullptr;
+    decltype( &GetWindowLongPtr )         getWindowLongPtr         = nullptr;
+    decltype( &SetWindowLongPtr )         setWindowLongPtr         = nullptr;
 };
 
 } // namespace orion::imports
