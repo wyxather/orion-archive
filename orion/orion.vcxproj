@@ -205,6 +205,7 @@
     <ClInclude Include="dependencies\xorstr.hpp" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\core\console.h" />
+    <ClInclude Include="source\core\platform.h" />
     <ClInclude Include="source\dllmain.h" />
     <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\imports\kernel32.h" />
