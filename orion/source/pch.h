@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <source_location>
 #include <utility>
+#include <vector>
 
 #define LAZY_IMPORTER_CASE_INSENSITIVE
 #include "dependencies/lazy_importer.hpp"
