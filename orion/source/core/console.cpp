@@ -1,7 +1,7 @@
 #include "source/context.h"
 
 orion::core::Console::Console( const imports::Kernel32& kernel32,
-                              const imports::Msvcrt&   msvcrt,
+                               const imports::Msvcrt&   msvcrt,
                                const imports::User32&   user32 ) noexcept
 {
     kernel32.allocConsole();
@@ -16,9 +16,9 @@ orion::core::Console::~Console() noexcept
     context.getKernel32().freeConsole();
 }
 
-void orion::core::Console::print( const char* const buffer, const DWORD numCharsToWrite ) const noexcept
+void orion::core::Console::print( const char* const str, const DWORD strLen ) const noexcept
 {
-    context.getKernel32().writeConsoleA( stdOutputHandle, buffer, numCharsToWrite, nullptr, nullptr );
+    context.getKernel32().writeConsoleA( stdOutputHandle, str, strLen, nullptr, nullptr );
 }
 
 void orion::core::Console::setTextOutputColor( const WORD color ) const noexcept
@@ -38,6 +38,30 @@ BOOL WINAPI orion::core::Console::ctrlHandler( const DWORD ctrlType ) noexcept
     }
 }
 
+void orion::core::Console::printPrefix( std::array<char, 512>& buffer,
+                                        const char* const      mode,
+                                        const WORD             color,
+                                        const char* const      fileName,
+                                        const std::size_t      line ) const noexcept
+{
+    const auto localTime  = getLocalTime();
+    const auto dateFormat = getDateFormat( localTime );
+    const auto timeFormat = getTimeFormat( localTime );
+    print( buffer.data(),
+           format( buffer.data(),
+                   sizeof( buffer ),
+                   buffer.size(),
+                   xorstr_( "[%s %s.%d " ),
+                   dateFormat.data(),
+                   timeFormat.data(),
+                   localTime.wMilliseconds ) );
+    setTextOutputColor( color );
+    print( buffer.data(), format( buffer.data(), sizeof( buffer ), buffer.size(), xorstr_( "%-6s" ), mode ) );
+    setTextOutputColor( FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED );
+    print( buffer.data(),
+           format( buffer.data(), sizeof( buffer ), buffer.size(), xorstr_( "%s:%zu] " ), fileName, line ) );
+}
+
 int orion::core::Console::format( char* const       buffer,
                                   const std::size_t bufferSizeInBytes,
                                   const std::size_t maxNumChars,
@@ -50,4 +74,40 @@ int orion::core::Console::format( char* const       buffer,
         context.getMsvcrt()._vsnprintf_s( buffer, bufferSizeInBytes, maxNumChars, format, args );
     va_end( args );
     return numCharsWritten;
+}
+
+const orion::core::Console& orion::core::Console::getConsole() noexcept
+{
+    return context.getConsole();
+}
+
+std::array<char, 12> orion::core::Console::getDateFormat( const SYSTEMTIME& time ) noexcept
+{
+    std::array<char, 12> dateFormat;
+    context.getKernel32().getDateFormatA( LOCALE_USER_DEFAULT,
+                                          0,
+                                          &time,
+                                          xorstr_( "yyyy-MMM-dd" ),
+                                          dateFormat.data(),
+                                          static_cast<int>( dateFormat.size() ) );
+    return dateFormat;
+}
+
+SYSTEMTIME orion::core::Console::getLocalTime() noexcept
+{
+    SYSTEMTIME localTime;
+    context.getKernel32().getLocalTime( &localTime );
+    return localTime;
+}
+
+std::array<char, 9> orion::core::Console::getTimeFormat( const SYSTEMTIME& time ) noexcept
+{
+    std::array<char, 9> timeFormat;
+    context.getKernel32().getTimeFormatA( LOCALE_NAME_USER_DEFAULT,
+                                          0,
+                                          &time,
+                                          xorstr_( "HH':'mm':'ss" ),
+                                          timeFormat.data(),
+                                          static_cast<int>( timeFormat.size() ) );
+    return timeFormat;
 }
