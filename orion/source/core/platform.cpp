@@ -40,7 +40,12 @@ BOOL orion::core::Platform::Window::enumWindowsProc( const HWND window, Window& 
     {
         return TRUE;
     }
-    switch ( const auto windowText = getText( window ); getUserInput( window, className.data(), windowText.data() ) )
+    const auto windowText = getText( window );
+    if ( windowText.empty() )
+    {
+        return TRUE;
+    }
+    switch ( getUserInput( window, className.data(), windowText.data() ) )
     {
     case IDYES:
         self.handle            = window;
