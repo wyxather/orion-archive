@@ -10,6 +10,11 @@ orion::core::Platform::Window::Window( const imports::Kernel32& kernel32, const 
     user32.enumWindows( reinterpret_cast<WNDENUMPROC>( enumWindowsProc ), reinterpret_cast<LPARAM>( this ) );
 }
 
+void orion::core::Platform::Window::hook( const imports::User32& user32 ) const noexcept
+{
+    user32.setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( &procedure ) );
+}
+
 LRESULT orion::core::Platform::Window::callOriginalProcedure( const HWND   window,
                                                               const UINT   message,
                                                               const WPARAM wParam,

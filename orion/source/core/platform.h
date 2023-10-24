@@ -37,6 +37,8 @@ struct Platform final
 
         explicit Window( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept;
 
+        void hook( const imports::User32& user32 ) const noexcept;
+
       private:
         static BOOL CALLBACK    enumWindowsProc( HWND window, Window& self ) noexcept;
         static LRESULT CALLBACK procedure( HWND window, UINT message, WPARAM wParam, LPARAM lParam ) noexcept;
