@@ -3,6 +3,8 @@
 namespace orion
 {
 
+class Main;
+
 namespace imports
 {
 
@@ -24,6 +26,8 @@ struct Platform final
     explicit Platform( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept;
 
   private:
+    friend Main;
+
     struct Window final
     {
         Window( Window&& )                 = delete;
@@ -56,7 +60,6 @@ struct Platform final
         WNDPROC originalProcedure = nullptr;
     };
 
-  public:
     const Window window;
 };
 
