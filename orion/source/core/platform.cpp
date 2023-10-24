@@ -1,3 +1,4 @@
+#include "source/application.h"
 #include "source/context.h"
 
 orion::core::Platform::Platform( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept
@@ -58,6 +59,17 @@ LRESULT orion::core::Platform::Window::procedure( const HWND   window,
                                                   const WPARAM wParam,
                                                   const LPARAM lParam ) noexcept
 {
+    if ( message == WM_KEYUP )
+    {
+        switch ( wParam )
+        {
+        case VK_END:
+            Application::exit();
+            break;
+        default:
+            break;
+        }
+    }
     return context.getPlatform().window.callOriginalProcedure( window, message, wParam, lParam );
 }
 
