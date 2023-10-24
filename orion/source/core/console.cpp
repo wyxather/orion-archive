@@ -51,7 +51,7 @@ void orion::core::Console::printPrefix( std::array<char, 512>& buffer,
            format( buffer.data(),
                    sizeof( buffer ),
                    buffer.size(),
-                   xorstr_( "[%s %s.%d " ),
+                   xorstr_( "[%s %s.%03d " ),
                    dateFormat.data(),
                    timeFormat.data(),
                    localTime.wMilliseconds ) );
