@@ -14,6 +14,7 @@ struct Kernel32 final
 
     decltype( &AllocConsole )             allocConsole             = nullptr;
     decltype( &CloseHandle )              closeHandle              = nullptr;
+    decltype( &CreateThread )             createThread             = nullptr;
     decltype( &FreeConsole )              freeConsole              = nullptr;
     decltype( &FreeLibraryAndExitThread ) freeLibraryAndExitThread = nullptr;
     decltype( &GetConsoleWindow )         getConsoleWindow         = nullptr;

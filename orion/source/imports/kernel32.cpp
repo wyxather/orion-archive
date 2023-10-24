@@ -4,6 +4,7 @@ orion::imports::Kernel32::Kernel32( void* const kernel32 ) noexcept
 {
     allocConsole             = LI_FUNC( AllocConsole )::in( kernel32 );
     closeHandle              = LI_FUNC( CloseHandle )::in( kernel32 );
+    createThread             = LI_FUNC( CreateThread )::in( kernel32 );
     freeConsole              = LI_FUNC( FreeConsole )::in( kernel32 );
     freeLibraryAndExitThread = LI_FUNC( FreeLibraryAndExitThread )::in( kernel32 );
     getConsoleWindow         = LI_FUNC( GetConsoleWindow )::in( kernel32 );
