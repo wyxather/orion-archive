@@ -33,11 +33,6 @@ struct Platform final
 
         explicit Window( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept;
 
-        _NODISCARD LRESULT callOriginalProcedure( HWND   window,
-                                                  UINT   message,
-                                                  WPARAM wParam,
-                                                  LPARAM lParam ) const noexcept;
-
       private:
         static BOOL CALLBACK    enumWindowsProc( HWND window, Window& self ) noexcept;
         static LRESULT CALLBACK procedure( HWND window, UINT message, WPARAM wParam, LPARAM lParam ) noexcept;
@@ -51,6 +46,11 @@ struct Platform final
         _NODISCARD static bool  isVisible( HWND window ) noexcept;
         _NODISCARD static bool  isEqualToCurrentProcessId( DWORD processId ) noexcept;
         _NODISCARD static bool  isConsole( const char* className ) noexcept;
+
+        _NODISCARD LRESULT callOriginalProcedure( HWND   window,
+                                                  UINT   message,
+                                                  WPARAM wParam,
+                                                  LPARAM lParam ) const noexcept;
 
         HWND    handle            = nullptr;
         WNDPROC originalProcedure = nullptr;
