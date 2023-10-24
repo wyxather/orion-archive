@@ -3,6 +3,7 @@
 namespace orion
 {
 
+class Application;
 class Main;
 
 namespace imports
@@ -26,6 +27,7 @@ struct Platform final
     explicit Platform( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept;
 
   private:
+    friend Application;
     friend Main;
 
     struct Window final
