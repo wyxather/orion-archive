@@ -83,5 +83,8 @@
     <ClCompile Include="source\core\platform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
