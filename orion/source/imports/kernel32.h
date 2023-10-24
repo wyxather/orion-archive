@@ -25,6 +25,7 @@ struct Kernel32 final
     decltype( &GetTimeFormatA )           getTimeFormatA           = nullptr;
     decltype( &SetConsoleCtrlHandler )    setConsoleCtrlHandler    = nullptr;
     decltype( &SetConsoleTextAttribute )  setConsoleTextAttribute  = nullptr;
+    decltype( &Sleep )                    sleep                    = nullptr;
     decltype( &WriteConsoleA )            writeConsoleA            = nullptr;
 };
 
