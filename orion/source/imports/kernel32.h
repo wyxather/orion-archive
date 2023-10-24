@@ -12,17 +12,18 @@ struct Kernel32 final
 
     explicit Kernel32( void* kernel32 ) noexcept;
 
-    decltype( &AllocConsole )            allocConsole            = nullptr;
-    decltype( &FreeConsole )             freeConsole             = nullptr;
-    decltype( &GetConsoleWindow )        getConsoleWindow        = nullptr;
-    decltype( &GetCurrentProcessId )     getCurrentProcessId     = nullptr;
-    decltype( &GetDateFormatA )          getDateFormatA          = nullptr;
-    decltype( &GetLocalTime )            getLocalTime            = nullptr;
-    decltype( &GetStdHandle )            getStdHandle            = nullptr;
-    decltype( &GetTimeFormatA )          getTimeFormatA          = nullptr;
-    decltype( &SetConsoleCtrlHandler )   setConsoleCtrlHandler   = nullptr;
-    decltype( &SetConsoleTextAttribute ) setConsoleTextAttribute = nullptr;
-    decltype( &WriteConsoleA )           writeConsoleA           = nullptr;
+    decltype( &AllocConsole )             allocConsole             = nullptr;
+    decltype( &FreeConsole )              freeConsole              = nullptr;
+    decltype( &FreeLibraryAndExitThread ) freeLibraryAndExitThread = nullptr;
+    decltype( &GetConsoleWindow )         getConsoleWindow         = nullptr;
+    decltype( &GetCurrentProcessId )      getCurrentProcessId      = nullptr;
+    decltype( &GetDateFormatA )           getDateFormatA           = nullptr;
+    decltype( &GetLocalTime )             getLocalTime             = nullptr;
+    decltype( &GetStdHandle )             getStdHandle             = nullptr;
+    decltype( &GetTimeFormatA )           getTimeFormatA           = nullptr;
+    decltype( &SetConsoleCtrlHandler )    setConsoleCtrlHandler    = nullptr;
+    decltype( &SetConsoleTextAttribute )  setConsoleTextAttribute  = nullptr;
+    decltype( &WriteConsoleA )            writeConsoleA            = nullptr;
 };
 
 } // namespace orion::imports
