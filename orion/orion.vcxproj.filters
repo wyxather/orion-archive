@@ -54,6 +54,9 @@
     <ClInclude Include="source\core\platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp">
