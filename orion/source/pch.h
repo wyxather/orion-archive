@@ -8,6 +8,10 @@
 #include <utility>
 #include <vector>
 
+#define JSON_NO_IO
+#define JSON_NOEXCEPTION
+#include "dependencies/json.hpp"
+
 #define LAZY_IMPORTER_CASE_INSENSITIVE
 #include "dependencies/lazy_importer.hpp"
 #define LI_MOD_( name )  ::li::detail::lazy_module<LAZY_IMPORTER_KHASH( name )>
