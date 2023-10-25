@@ -5,6 +5,8 @@ namespace orion::imports
 
 struct User32 final
 {
+    friend void to_json( nlohmann::json& json, const User32& user32 ) noexcept;
+
     User32( User32&& )                 = delete;
     User32& operator=( User32&& )      = delete;
     User32( const User32& )            = delete;

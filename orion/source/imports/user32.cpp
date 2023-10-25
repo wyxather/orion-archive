@@ -13,3 +13,19 @@ orion::imports::User32::User32( void* const user32 ) noexcept
     messageBoxA              = LI_FUNC( MessageBoxA )::in( user32 );
     setWindowLongPtr         = LI_FUNC( SetWindowLongPtr )::in( user32 );
 }
+
+void orion::imports::to_json( nlohmann::json& json, const User32& user32 ) noexcept
+{
+    json = {
+        { xorstr_( "callWindowProc" ), reinterpret_cast<std::uintptr_t>( user32.callWindowProc ) },
+        { xorstr_( "enumWindows" ), reinterpret_cast<std::uintptr_t>( user32.enumWindows ) },
+        { xorstr_( "getClassNameA" ), reinterpret_cast<std::uintptr_t>( user32.getClassNameA ) },
+        { xorstr_( "getWindowLongPtr" ), reinterpret_cast<std::uintptr_t>( user32.getWindowLongPtr ) },
+        { xorstr_( "getWindowTextA" ), reinterpret_cast<std::uintptr_t>( user32.getWindowTextA ) },
+        { xorstr_( "getWindowTextLengthA" ), reinterpret_cast<std::uintptr_t>( user32.getWindowTextLengthA ) },
+        { xorstr_( "getWindowThreadProcessId" ), reinterpret_cast<std::uintptr_t>( user32.getWindowThreadProcessId ) },
+        { xorstr_( "isWindowVisible" ), reinterpret_cast<std::uintptr_t>( user32.isWindowVisible ) },
+        { xorstr_( "messageBoxA" ), reinterpret_cast<std::uintptr_t>( user32.messageBoxA ) },
+        { xorstr_( "setWindowLongPtr" ), reinterpret_cast<std::uintptr_t>( user32.setWindowLongPtr ) },
+    };
+}
