@@ -19,6 +19,8 @@ namespace core
 
 struct Console final
 {
+    friend void to_json( nlohmann::json& json, const Console& console ) noexcept;
+
     Console( Console&& )                 = delete;
     Console& operator=( Console&& )      = delete;
     Console( const Console& )            = delete;

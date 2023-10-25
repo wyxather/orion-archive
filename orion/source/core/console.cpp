@@ -111,3 +111,11 @@ std::array<char, 9> orion::core::Console::getTimeFormat( const SYSTEMTIME& time 
                                           static_cast<int>( timeFormat.size() ) );
     return timeFormat;
 }
+
+void orion::core::to_json( nlohmann::json& json, const Console& console ) noexcept
+{
+    json = {
+        { xorstr_( "mode" ), Console::mode },
+        { xorstr_( "stdOutputHandle" ), reinterpret_cast<std::uintptr_t>( console.stdOutputHandle ) },
+    };
+}
