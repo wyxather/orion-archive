@@ -200,6 +200,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\json.hpp" />
     <ClInclude Include="dependencies\lazy_importer.hpp" />
     <ClInclude Include="dependencies\stb.hh" />
     <ClInclude Include="dependencies\xorstr.hpp" />
