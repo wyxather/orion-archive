@@ -19,6 +19,8 @@ namespace core
 
 struct Platform final
 {
+    friend void to_json( nlohmann::json& json, const Platform& platform ) noexcept;
+
     Platform( Platform&& )                 = delete;
     Platform& operator=( Platform&& )      = delete;
     Platform( const Platform& )            = delete;
@@ -32,6 +34,8 @@ struct Platform final
 
     struct Window final
     {
+        friend void to_json( nlohmann::json& json, const Platform& platform ) noexcept;
+
         Window( Window&& )                 = delete;
         Window& operator=( Window&& )      = delete;
         Window( const Window& )            = delete;
