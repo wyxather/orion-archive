@@ -5,6 +5,8 @@ namespace orion::imports
 
 struct Msvcrt final
 {
+    friend void to_json( nlohmann::json& json, const Msvcrt& msvcrt ) noexcept;
+
     Msvcrt( Msvcrt&& )                 = delete;
     Msvcrt& operator=( Msvcrt&& )      = delete;
     Msvcrt( const Msvcrt& )            = delete;
