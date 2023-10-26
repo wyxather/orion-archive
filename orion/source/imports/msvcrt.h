@@ -15,7 +15,7 @@ struct Msvcrt final
     explicit Msvcrt( void* msvcrt ) noexcept;
 
     int( __cdecl* _vsnprintf_s )(
-        char* buffer, std::size_t sizeOfBuffer, std::size_t count, const char* format, va_list argptr ) = nullptr;
+        char* buffer, std::size_t sizeOfBuffer, std::size_t count, const char* format, va_list argPtr ) = nullptr;
 };
 
 } // namespace orion::imports
