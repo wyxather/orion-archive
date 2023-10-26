@@ -44,7 +44,7 @@ struct Platform final
         explicit Window() noexcept;
 
         void hook() const noexcept;
-        void unhook( const imports::User32& user32 ) const noexcept;
+        void unhook() const noexcept;
 
       private:
         static BOOL CALLBACK    enumWindowsProc( HWND window, Window& self ) noexcept;

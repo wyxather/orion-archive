@@ -6,7 +6,7 @@ EXTERN_C BOOL WINAPI _CRT_INIT( HMODULE, DWORD, LPVOID );
 
 void orion::Application::exit() noexcept
 {
-    context.getPlatform().window.unhook( context.getUser32() );
+    context.getPlatform().window.unhook();
 
     const auto& kernel32     = context.getKernel32();
     const auto  threadHandle = kernel32.createThread(
