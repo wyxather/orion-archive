@@ -21,6 +21,7 @@ class Application final
     Application( const Application& )            = delete;
     Application& operator=( const Application& ) = delete;
 
+    static void setup() noexcept;
     static void exit() noexcept;
 
     class Unload final

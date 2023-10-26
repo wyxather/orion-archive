@@ -4,6 +4,10 @@
 
 EXTERN_C BOOL WINAPI _CRT_INIT( HMODULE, DWORD, LPVOID );
 
+void orion::Application::setup() noexcept
+{
+}
+
 void orion::Application::exit() noexcept
 {
     context.getPlatform().window.unhook();
