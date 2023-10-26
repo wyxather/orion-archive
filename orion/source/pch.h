@@ -1,6 +1,8 @@
 #ifndef PCH_H
 #define PCH_H
 
+#include <d3d9.h>
+
 #include <array>
 #include <cassert>
 #include <cstddef>
