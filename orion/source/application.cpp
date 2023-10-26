@@ -6,6 +6,7 @@ EXTERN_C BOOL WINAPI _CRT_INIT( HMODULE, DWORD, LPVOID );
 
 void orion::Application::setup() noexcept
 {
+    context.renderer->hook();
 }
 
 void orion::Application::exit() noexcept
