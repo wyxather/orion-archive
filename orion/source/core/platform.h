@@ -19,6 +19,9 @@ namespace core
 
 struct Platform final
 {
+    friend Application;
+    friend Main;
+
     friend void to_json( nlohmann::json& json, const Platform& platform ) noexcept;
 
     Platform( Platform&& )                 = delete;
@@ -29,9 +32,6 @@ struct Platform final
     explicit Platform( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept;
 
   private:
-    friend Application;
-    friend Main;
-
     struct Window final
     {
         friend void to_json( nlohmann::json& json, const Platform& platform ) noexcept;
