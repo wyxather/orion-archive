@@ -5,6 +5,11 @@ orion::core::Platform::Platform( const imports::Kernel32& kernel32, const import
 {
 }
 
+HWND orion::core::Platform::getWindowHandle() const noexcept
+{
+    return window.getHandle();
+}
+
 orion::core::Platform::Window::Window() noexcept
 {
     context.getUser32().enumWindows( reinterpret_cast<WNDENUMPROC>( enumWindowsProc ),

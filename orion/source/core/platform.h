@@ -31,6 +31,8 @@ struct Platform final
 
     explicit Platform( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept;
 
+    _NODISCARD HWND getWindowHandle() const noexcept;
+
   private:
     struct Window final
     {
