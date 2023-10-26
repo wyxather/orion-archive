@@ -81,7 +81,7 @@ struct Console final
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
-                               console.format( buffer.data(),
+                               Console::format( buffer.data(),
                                                sizeof( buffer ),
                                                buffer.size(),
                                                xorarr_( format ),
@@ -102,7 +102,7 @@ struct Console final
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
-                               console.format( buffer.data(),
+                               Console::format( buffer.data(),
                                                sizeof( buffer ),
                                                buffer.size(),
                                                xorarr_( format ),
@@ -123,7 +123,7 @@ struct Console final
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
-                               console.format( buffer.data(),
+                               Console::format( buffer.data(),
                                                sizeof( buffer ),
                                                buffer.size(),
                                                xorarr_( format ),
@@ -144,7 +144,7 @@ struct Console final
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
-                               console.format( buffer.data(),
+                               Console::format( buffer.data(),
                                                sizeof( buffer ),
                                                buffer.size(),
                                                xorarr_( format ),
@@ -165,7 +165,7 @@ struct Console final
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
-                               console.format( buffer.data(),
+                               Console::format( buffer.data(),
                                                sizeof( buffer ),
                                                buffer.size(),
                                                xorarr_( format ),
