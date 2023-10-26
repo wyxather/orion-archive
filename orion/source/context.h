@@ -9,8 +9,14 @@
 namespace orion
 {
 
+class Application;
+class Main;
+
 struct Context final
 {
+    friend Application;
+    friend Main;
+
     Context()                            = default;
     Context( Context&& )                 = delete;
     Context& operator=( Context&& )      = delete;
@@ -50,8 +56,6 @@ struct Context final
     }
 
   private:
-    friend class Main;
-
     utilities::Option<const HMODULE>           handle;
     utilities::Option<const imports::Kernel32> kernel32;
     utilities::Option<const imports::Msvcrt>   msvcrt;
