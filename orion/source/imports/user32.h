@@ -15,6 +15,7 @@ struct User32 final
     explicit User32( void* user32 ) noexcept;
 
     decltype( &CallWindowProc )           callWindowProc           = nullptr;
+    decltype( &DefWindowProcA )           defWindowProcA           = nullptr;
     decltype( &EnumWindows )              enumWindows              = nullptr;
     decltype( &GetClassNameA )            getClassNameA            = nullptr;
     decltype( &GetWindowLongPtr )         getWindowLongPtr         = nullptr;
