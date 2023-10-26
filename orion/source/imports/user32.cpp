@@ -16,6 +16,7 @@ orion::imports::User32::User32( void* const user32 ) noexcept
     messageBoxA              = LI_FUNC( MessageBoxA )::in( user32 );
     registerClassExA         = LI_FUNC( RegisterClassExA )::in( user32 );
     setWindowLongPtr         = LI_FUNC( SetWindowLongPtr )::in( user32 );
+    unregisterClassA         = LI_FUNC( UnregisterClassA )::in( user32 );
 }
 
 void orion::imports::to_json( nlohmann::json& json, const User32& user32 ) noexcept
@@ -35,5 +36,6 @@ void orion::imports::to_json( nlohmann::json& json, const User32& user32 ) noexc
         { xorstr_( "messageBoxA" ), reinterpret_cast<std::uintptr_t>( user32.messageBoxA ) },
         { xorstr_( "registerClassExA" ), reinterpret_cast<std::uintptr_t>( user32.registerClassExA ) },
         { xorstr_( "setWindowLongPtr" ), reinterpret_cast<std::uintptr_t>( user32.setWindowLongPtr ) },
+        { xorstr_( "unregisterClassA" ), reinterpret_cast<std::uintptr_t>( user32.unregisterClassA ) },
     };
 }

@@ -28,6 +28,7 @@ struct User32 final
     decltype( &MessageBoxA )              messageBoxA              = nullptr;
     decltype( &RegisterClassExA )         registerClassExA         = nullptr;
     decltype( &SetWindowLongPtr )         setWindowLongPtr         = nullptr;
+    decltype( &UnregisterClassA )         unregisterClassA         = nullptr;
 };
 
 } // namespace orion::imports
