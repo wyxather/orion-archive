@@ -2,6 +2,7 @@
 #define PCH_H
 
 #include <d3d9.h>
+#include <wrl/client.h>
 
 #include <array>
 #include <cassert>
