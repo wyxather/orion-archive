@@ -23,6 +23,7 @@ struct Kernel32 final
     decltype( &GetCurrentProcessId )      getCurrentProcessId      = nullptr;
     decltype( &GetDateFormatA )           getDateFormatA           = nullptr;
     decltype( &GetLocalTime )             getLocalTime             = nullptr;
+    decltype( &GetModuleHandleA )         getModuleHandleA         = nullptr;
     decltype( &GetStdHandle )             getStdHandle             = nullptr;
     decltype( &GetTimeFormatA )           getTimeFormatA           = nullptr;
     decltype( &SetConsoleCtrlHandler )    setConsoleCtrlHandler    = nullptr;
