@@ -11,6 +11,7 @@ void orion::Application::setup() noexcept
 
 void orion::Application::exit() noexcept
 {
+    context.renderer->unhook();
     context.getPlatform().window.unhook();
 
     const auto& kernel32     = context.getKernel32();
