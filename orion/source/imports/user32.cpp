@@ -12,6 +12,7 @@ orion::imports::User32::User32( void* const user32 ) noexcept
     getWindowThreadProcessId = LI_FUNC( GetWindowThreadProcessId )::in( user32 );
     isWindowVisible          = LI_FUNC( IsWindowVisible )::in( user32 );
     messageBoxA              = LI_FUNC( MessageBoxA )::in( user32 );
+    registerClassExA         = LI_FUNC( RegisterClassExA )::in( user32 );
     setWindowLongPtr         = LI_FUNC( SetWindowLongPtr )::in( user32 );
 }
 
@@ -28,6 +29,7 @@ void orion::imports::to_json( nlohmann::json& json, const User32& user32 ) noexc
         { xorstr_( "getWindowThreadProcessId" ), reinterpret_cast<std::uintptr_t>( user32.getWindowThreadProcessId ) },
         { xorstr_( "isWindowVisible" ), reinterpret_cast<std::uintptr_t>( user32.isWindowVisible ) },
         { xorstr_( "messageBoxA" ), reinterpret_cast<std::uintptr_t>( user32.messageBoxA ) },
+        { xorstr_( "registerClassExA" ), reinterpret_cast<std::uintptr_t>( user32.registerClassExA ) },
         { xorstr_( "setWindowLongPtr" ), reinterpret_cast<std::uintptr_t>( user32.setWindowLongPtr ) },
     };
 }
