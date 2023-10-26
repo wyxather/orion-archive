@@ -3,6 +3,7 @@
 orion::imports::User32::User32( void* const user32 ) noexcept
 {
     callWindowProc           = LI_FUNC( CallWindowProc )::in( user32 );
+    createWindowExA          = LI_FUNC( CreateWindowExA )::in( user32 );
     defWindowProcA           = LI_FUNC( DefWindowProcA )::forwarded();
     enumWindows              = LI_FUNC( EnumWindows )::in( user32 );
     getClassNameA            = LI_FUNC( GetClassNameA )::in( user32 );
@@ -20,6 +21,7 @@ void orion::imports::to_json( nlohmann::json& json, const User32& user32 ) noexc
 {
     json = {
         { xorstr_( "callWindowProc" ), reinterpret_cast<std::uintptr_t>( user32.callWindowProc ) },
+        { xorstr_( "createWindowExA" ), reinterpret_cast<std::uintptr_t>( user32.createWindowExA ) },
         { xorstr_( "defWindowProcA" ), reinterpret_cast<std::uintptr_t>( user32.defWindowProcA ) },
         { xorstr_( "enumWindows" ), reinterpret_cast<std::uintptr_t>( user32.enumWindows ) },
         { xorstr_( "getClassNameA" ), reinterpret_cast<std::uintptr_t>( user32.getClassNameA ) },
