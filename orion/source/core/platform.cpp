@@ -21,6 +21,11 @@ void orion::core::Platform::Window::unhook() const noexcept
     context.getUser32().setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( originalProcedure ) );
 }
 
+HWND orion::core::Platform::Window::getHandle() const noexcept
+{
+    return handle;
+}
+
 LRESULT orion::core::Platform::Window::callOriginalProcedure( const HWND   window,
                                                               const UINT   message,
                                                               const WPARAM wParam,

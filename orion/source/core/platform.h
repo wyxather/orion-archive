@@ -46,6 +46,8 @@ struct Platform final
         void hook() const noexcept;
         void unhook() const noexcept;
 
+        _NODISCARD HWND getHandle() const noexcept;
+
       private:
         static BOOL CALLBACK    enumWindowsProc( HWND window, Window& self ) noexcept;
         static LRESULT CALLBACK procedure( HWND window, UINT message, WPARAM wParam, LPARAM lParam ) noexcept;
