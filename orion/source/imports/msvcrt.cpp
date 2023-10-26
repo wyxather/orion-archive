@@ -2,8 +2,7 @@
 
 orion::imports::Msvcrt::Msvcrt( void* const msvcrt ) noexcept
 {
-    using Fn     = decltype( _vsnprintf_s );
-    _vsnprintf_s = LI_FUNC( _vsnprintf_s )::in<Fn>( msvcrt );
+    _vsnprintf_s = LI_FUNC( _vsnprintf_s )::in<decltype( _vsnprintf_s )>( msvcrt );
 }
 
 void orion::imports::to_json( nlohmann::json& json, const Msvcrt& msvcrt ) noexcept
