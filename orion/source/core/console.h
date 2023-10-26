@@ -92,7 +92,7 @@ struct Console final
         template<stb::fixed_string format = "%s\n", typename... Args>
         static constexpr void debug( Args&&... args ) noexcept
         {
-            if constexpr ( mode <= Mode::Trace )
+            if constexpr ( mode <= Mode::Debug )
             {
                 std::array<char, 512> buffer;
                 const auto&           console = getConsole();
@@ -113,7 +113,7 @@ struct Console final
         template<stb::fixed_string format = "%s\n", typename... Args>
         static constexpr void info( Args&&... args ) noexcept
         {
-            if constexpr ( mode <= Mode::Trace )
+            if constexpr ( mode <= Mode::Info )
             {
                 std::array<char, 512> buffer;
                 const auto&           console = getConsole();
@@ -134,7 +134,7 @@ struct Console final
         template<stb::fixed_string format = "%s\n", typename... Args>
         static constexpr void warn( Args&&... args ) noexcept
         {
-            if constexpr ( mode <= Mode::Trace )
+            if constexpr ( mode <= Mode::Warn )
             {
                 std::array<char, 512> buffer;
                 const auto&           console = getConsole();
@@ -155,7 +155,7 @@ struct Console final
         template<stb::fixed_string format = "%s\n", typename... Args>
         static constexpr void error( Args&&... args ) noexcept
         {
-            if constexpr ( mode <= Mode::Trace )
+            if constexpr ( mode <= Mode::Error )
             {
                 std::array<char, 512> buffer;
                 const auto&           console = getConsole();
