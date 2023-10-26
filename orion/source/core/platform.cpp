@@ -11,9 +11,9 @@ orion::core::Platform::Window::Window() noexcept
                                      reinterpret_cast<LPARAM>( this ) );
 }
 
-void orion::core::Platform::Window::hook( const imports::User32& user32 ) const noexcept
+void orion::core::Platform::Window::hook() const noexcept
 {
-    user32.setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( &procedure ) );
+    context.getUser32().setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( &procedure ) );
 }
 
 void orion::core::Platform::Window::unhook( const imports::User32& user32 ) const noexcept
