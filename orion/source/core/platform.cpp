@@ -2,13 +2,13 @@
 #include "source/context.h"
 
 orion::core::Platform::Platform( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept
-    : window( kernel32, user32 )
 {
 }
 
-orion::core::Platform::Window::Window( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept
+orion::core::Platform::Window::Window() noexcept
 {
-    user32.enumWindows( reinterpret_cast<WNDENUMPROC>( enumWindowsProc ), reinterpret_cast<LPARAM>( this ) );
+    context.getUser32().enumWindows( reinterpret_cast<WNDENUMPROC>( enumWindowsProc ),
+                                     reinterpret_cast<LPARAM>( this ) );
 }
 
 void orion::core::Platform::Window::hook( const imports::User32& user32 ) const noexcept

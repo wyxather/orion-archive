@@ -41,7 +41,7 @@ struct Platform final
         Window( const Window& )            = delete;
         Window& operator=( const Window& ) = delete;
 
-        explicit Window( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept;
+        explicit Window() noexcept;
 
         void hook( const imports::User32& user32 ) const noexcept;
         void unhook( const imports::User32& user32 ) const noexcept;
