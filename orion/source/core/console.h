@@ -68,108 +68,118 @@ struct Console final
         }
 
       public:
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%s\n", std::size_t bufferSize = 512, typename... Args>
         static constexpr void trace( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Trace )
             {
-                std::array<char, 512> buffer;
-                const auto&           console = getConsole();
-                console.printPrefix( buffer,
+                std::array<char, bufferSize> buffer;
+                const auto&                  console = getConsole();
+                console.printPrefix( buffer.data(),
+                                     sizeof( buffer ),
+                                     buffer.size(),
                                      xorstr_( "TRACE" ),
                                      FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
                                Console::format( buffer.data(),
-                                               sizeof( buffer ),
-                                               buffer.size(),
-                                               xorarr_( format ),
-                                               std::forward<Args>( args )... ) );
+                                                sizeof( buffer ),
+                                                buffer.size(),
+                                                xorarr_( format ),
+                                                std::forward<Args>( args )... ) );
             }
         }
 
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%s\n", std::size_t bufferSize = 512, typename... Args>
         static constexpr void debug( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Debug )
             {
-                std::array<char, 512> buffer;
-                const auto&           console = getConsole();
-                console.printPrefix( buffer,
+                std::array<char, bufferSize> buffer;
+                const auto&                  console = getConsole();
+                console.printPrefix( buffer.data(),
+                                     sizeof( buffer ),
+                                     buffer.size(),
                                      xorstr_( "DEBUG" ),
                                      FOREGROUND_BLUE | FOREGROUND_INTENSITY,
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
                                Console::format( buffer.data(),
-                                               sizeof( buffer ),
-                                               buffer.size(),
-                                               xorarr_( format ),
-                                               std::forward<Args>( args )... ) );
+                                                sizeof( buffer ),
+                                                buffer.size(),
+                                                xorarr_( format ),
+                                                std::forward<Args>( args )... ) );
             }
         }
 
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%s\n", std::size_t bufferSize = 512, typename... Args>
         static constexpr void info( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Info )
             {
-                std::array<char, 512> buffer;
-                const auto&           console = getConsole();
-                console.printPrefix( buffer,
+                std::array<char, bufferSize> buffer;
+                const auto&                  console = getConsole();
+                console.printPrefix( buffer.data(),
+                                     sizeof( buffer ),
+                                     buffer.size(),
                                      xorstr_( "INFO" ),
                                      FOREGROUND_GREEN | FOREGROUND_INTENSITY,
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
                                Console::format( buffer.data(),
-                                               sizeof( buffer ),
-                                               buffer.size(),
-                                               xorarr_( format ),
-                                               std::forward<Args>( args )... ) );
+                                                sizeof( buffer ),
+                                                buffer.size(),
+                                                xorarr_( format ),
+                                                std::forward<Args>( args )... ) );
             }
         }
 
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%s\n", std::size_t bufferSize = 512, typename... Args>
         static constexpr void warn( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Warn )
             {
-                std::array<char, 512> buffer;
-                const auto&           console = getConsole();
-                console.printPrefix( buffer,
+                std::array<char, bufferSize> buffer;
+                const auto&                  console = getConsole();
+                console.printPrefix( buffer.data(),
+                                     sizeof( buffer ),
+                                     buffer.size(),
                                      xorstr_( "WARN" ),
                                      FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY,
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
                                Console::format( buffer.data(),
-                                               sizeof( buffer ),
-                                               buffer.size(),
-                                               xorarr_( format ),
-                                               std::forward<Args>( args )... ) );
+                                                sizeof( buffer ),
+                                                buffer.size(),
+                                                xorarr_( format ),
+                                                std::forward<Args>( args )... ) );
             }
         }
 
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%s\n", std::size_t bufferSize = 512, typename... Args>
         static constexpr void error( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Error )
             {
-                std::array<char, 512> buffer;
-                const auto&           console = getConsole();
-                console.printPrefix( buffer,
+                std::array<char, bufferSize> buffer;
+                const auto&                  console = getConsole();
+                console.printPrefix( buffer.data(),
+                                     sizeof( buffer ),
+                                     buffer.size(),
                                      xorstr_( "ERROR" ),
                                      FOREGROUND_RED | FOREGROUND_INTENSITY,
                                      xorarr_( stb::consteval_value<parseFilePath()>::value ),
                                      line );
                 console.print( buffer.data(),
                                Console::format( buffer.data(),
-                                               sizeof( buffer ),
-                                               buffer.size(),
-                                               xorarr_( format ),
-                                               std::forward<Args>( args )... ) );
+                                                sizeof( buffer ),
+                                                buffer.size(),
+                                                xorarr_( format ),
+                                                std::forward<Args>( args )... ) );
             }
         }
     };
@@ -185,11 +195,13 @@ struct Console final
     _NODISCARD static std::array<char, 9>  getTimeFormat( const SYSTEMTIME& time ) noexcept;
 
     void print( const char* str, DWORD strLen ) const noexcept;
-    void printPrefix( std::array<char, 512>& buffer,
-                      const char*            mode,
-                      WORD                   color,
-                      const char*            fileName,
-                      std::size_t            line ) const noexcept;
+    void printPrefix( char*       buffer,
+                      std::size_t bufferSizeInBytes,
+                      std::size_t maxNumChars,
+                      const char* mode,
+                      WORD        color,
+                      const char* fileName,
+                      std::size_t line ) const noexcept;
     void setTextOutputColor( WORD color ) const noexcept;
 
     HANDLE stdOutputHandle = nullptr;

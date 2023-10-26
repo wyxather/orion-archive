@@ -38,28 +38,29 @@ BOOL WINAPI orion::core::Console::ctrlHandler( const DWORD ctrlType ) noexcept
     }
 }
 
-void orion::core::Console::printPrefix( std::array<char, 512>& buffer,
-                                        const char* const      mode,
-                                        const WORD             color,
-                                        const char* const      fileName,
-                                        const std::size_t      line ) const noexcept
+void orion::core::Console::printPrefix( char* const       buffer,
+                                        const std::size_t bufferSizeInBytes,
+                                        const std::size_t maxNumChars,
+                                        const char* const mode,
+                                        const WORD        color,
+                                        const char* const fileName,
+                                        const std::size_t line ) const noexcept
 {
     const auto localTime  = getLocalTime();
     const auto dateFormat = getDateFormat( localTime );
     const auto timeFormat = getTimeFormat( localTime );
-    print( buffer.data(),
-           format( buffer.data(),
-                   sizeof( buffer ),
-                   buffer.size(),
+    print( buffer,
+           format( buffer,
+                   bufferSizeInBytes,
+                   maxNumChars,
                    xorstr_( "[%s %s.%03d " ),
                    dateFormat.data(),
                    timeFormat.data(),
                    localTime.wMilliseconds ) );
     setTextOutputColor( color );
-    print( buffer.data(), format( buffer.data(), sizeof( buffer ), buffer.size(), xorstr_( "%-6s" ), mode ) );
+    print( buffer, format( buffer, bufferSizeInBytes, maxNumChars, xorstr_( "%-6s" ), mode ) );
     setTextOutputColor( FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED );
-    print( buffer.data(),
-           format( buffer.data(), sizeof( buffer ), buffer.size(), xorstr_( "%s:%zu] " ), fileName, line ) );
+    print( buffer, format( buffer, bufferSizeInBytes, maxNumChars, xorstr_( "%s:%zu] " ), fileName, line ) );
 }
 
 int orion::core::Console::format( char* const       buffer,
