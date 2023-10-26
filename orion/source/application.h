@@ -23,20 +23,20 @@ class Application final
 
     static void setup() noexcept;
     static void exit() noexcept;
+};
 
-    class Unload final
-    {
-        friend Application;
+class Unload final
+{
+    friend Application;
 
-        Unload()                           = delete;
-        ~Unload()                          = delete;
-        Unload( Unload&& )                 = delete;
-        Unload& operator=( Unload&& )      = delete;
-        Unload( const Unload& )            = delete;
-        Unload& operator=( const Unload& ) = delete;
+    Unload()                           = delete;
+    ~Unload()                          = delete;
+    Unload( Unload&& )                 = delete;
+    Unload& operator=( Unload&& )      = delete;
+    Unload( const Unload& )            = delete;
+    Unload& operator=( const Unload& ) = delete;
 
-        [[noreturn]] static void WINAPI unload( LPVOID ) noexcept;
-    };
+    [[noreturn]] static void WINAPI unload( LPVOID ) noexcept;
 };
 
 } // namespace orion
