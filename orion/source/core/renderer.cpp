@@ -87,6 +87,10 @@ void orion::core::Renderer::hook() noexcept
     }
 }
 
+void orion::core::Renderer::unhook() noexcept
+{
+}
+
 int orion::core::Renderer::getUserInput( const char* text, const char* caption ) noexcept
 {
     return context.getUser32().messageBoxA(

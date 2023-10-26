@@ -37,6 +37,7 @@ struct Renderer final
                        const Platform&          platform ) noexcept;
 
     void hook() noexcept;
+    void unhook() noexcept;
 
   private:
     _NODISCARD static int getUserInput( const char* text, const char* caption ) noexcept;
