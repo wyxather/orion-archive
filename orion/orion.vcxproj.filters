@@ -60,6 +60,9 @@
     <ClInclude Include="dependencies\json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp">
