@@ -2,6 +2,7 @@
 
 #include "source/core/console.h"
 #include "source/core/platform.h"
+#include "source/core/renderer.h"
 #include "source/imports/kernel32.h"
 #include "source/imports/msvcrt.h"
 #include "source/imports/user32.h"
@@ -55,6 +56,11 @@ struct Context final
         return *platform;
     }
 
+    _NODISCARD constexpr auto& getRenderer() const noexcept
+    {
+        return *renderer;
+    }
+
   private:
     utilities::Option<const HMODULE>           handle;
     utilities::Option<const imports::Kernel32> kernel32;
@@ -62,6 +68,7 @@ struct Context final
     utilities::Option<const imports::User32>   user32;
     utilities::Option<const core::Console>     console;
     utilities::Option<const core::Platform>    platform;
+    utilities::Option<core::Renderer>          renderer;
 };
 
 constinit inline Context context;
