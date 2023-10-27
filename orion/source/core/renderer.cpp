@@ -4,7 +4,7 @@ orion::core::Renderer::Renderer( const imports::Kernel32& kernel32,
                                  const imports::User32&   user32,
                                  const Platform&          platform ) noexcept
 {
-    if ( handle = LI_MOD( "d3d11.dll" )::get<decltype( handle )>() )
+    if ( handle = LI_MOD( "d3d11.dll" )::get<decltype( handle )>(); handle != nullptr )
     {
         switch ( getUserInput( xorstr_( "DirectX11" ), xorstr_( "Renderer" ) ) )
         {
@@ -17,7 +17,7 @@ orion::core::Renderer::Renderer( const imports::Kernel32& kernel32,
             break;
         }
     }
-    if ( handle = LI_MOD( "d3d9.dll" )::get<decltype( handle )>() )
+    if ( handle = LI_MOD( "d3d9.dll" )::get<decltype( handle )>(); handle != nullptr )
     {
         switch ( getUserInput( xorstr_( "DirectX9" ), xorstr_( "Renderer" ) ) )
         {
