@@ -4,7 +4,7 @@ orion::imports::User32::User32( void* const user32 ) noexcept
 {
     callWindowProc           = LI_FUNC( CallWindowProc )::in( user32 );
     createWindowExA          = LI_FUNC( CreateWindowExA )::in( user32 );
-    defWindowProcA           = LI_FUNC( DefWindowProcA )::forwarded();
+    defWindowProcA           = LI_FUNC( DefWindowProcA )::in( user32 );
     destroyWindow            = LI_FUNC( DestroyWindow )::forwarded();
     enumWindows              = LI_FUNC( EnumWindows )::in( user32 );
     getClassNameA            = LI_FUNC( GetClassNameA )::in( user32 );
