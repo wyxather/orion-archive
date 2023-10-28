@@ -57,26 +57,26 @@ int orion::core::Renderer::getUserInput( const char* text, const char* caption )
 void orion::core::Renderer::hookDirect3D9() noexcept
 {
     const WindowClass windowClass;
-    if ( !windowClass.isRegistered() )
+    if ( !windowClass.isRegistered() ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to register window class." ) );
         return;
     }
     const Window window( windowClass );
-    if ( !window.isCreated() )
+    if ( !window.isCreated() ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create window." ) );
         return;
     }
     const auto direct3DCreate9 =
         LI_FUNC( "Direct3DCreate9" )::in_safe<LPDIRECT3D9( WINAPI* )( std::uint32_t )>( handle );
-    if ( direct3DCreate9 == nullptr )
+    if ( direct3DCreate9 == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find Direct3DCreate9." ) );
         return;
     }
     const Microsoft::WRL::ComPtr<IDirect3D9> direct3d9 = direct3DCreate9( D3D_SDK_VERSION );
-    if ( direct3d9.Get() == nullptr )
+    if ( direct3d9.Get() == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirect3D9." ) );
         return;
@@ -103,7 +103,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
                                   window.handle,
                                   D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT,
                                   &params,
-                                  device.GetAddressOf() ) != D3D_OK )
+                                  device.GetAddressOf() ) != D3D_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirect3DDevice9." ) );
         return;
@@ -139,7 +139,7 @@ orion::core::Renderer::WindowClass::WindowClass() noexcept
 
 orion::core::Renderer::WindowClass::~WindowClass() noexcept
 {
-    if ( isRegistered() )
+    if ( isRegistered() ) [[likely]]
     {
         context.getUser32().unregisterClassA( value.lpszClassName, value.hInstance );
     }
@@ -168,7 +168,7 @@ orion::core::Renderer::Window::Window( const WindowClass& windowClass ) noexcept
 
 orion::core::Renderer::Window::~Window() noexcept
 {
-    if ( isCreated() )
+    if ( isCreated() ) [[likely]]
     {
         context.getUser32().destroyWindow( handle );
     }
