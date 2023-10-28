@@ -18,11 +18,12 @@ struct Context final
     friend Application;
     friend Main;
 
-    Context()                            = default;
     Context( Context&& )                 = delete;
     Context& operator=( Context&& )      = delete;
     Context( const Context& )            = delete;
     Context& operator=( const Context& ) = delete;
+
+    constexpr explicit Context() noexcept = default;
 
     ~Context() noexcept;
 
