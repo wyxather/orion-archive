@@ -1,6 +1,6 @@
 #include "source/context.h"
 
-orion::Context::~Context()
+orion::Context::~Context() noexcept
 {
     renderer.reset();
     platform.reset();

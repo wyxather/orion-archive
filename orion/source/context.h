@@ -24,7 +24,7 @@ struct Context final
     Context( const Context& )            = delete;
     Context& operator=( const Context& ) = delete;
 
-    ~Context();
+    ~Context() noexcept;
 
     _NODISCARD constexpr auto getHandle() const noexcept
     {
