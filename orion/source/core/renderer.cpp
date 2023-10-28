@@ -34,6 +34,28 @@ orion::core::Renderer::Renderer( const imports::Kernel32& kernel32,
 
 void orion::core::Renderer::hook() noexcept
 {
+    switch ( type )
+    {
+    case Type::Direct3D9:
+        hookDirect3D9();
+        break;
+    default:
+        break;
+    }
+}
+
+void orion::core::Renderer::unhook() noexcept
+{
+}
+
+int orion::core::Renderer::getUserInput( const char* text, const char* caption ) noexcept
+{
+    return context.getUser32().messageBoxA(
+        context.getPlatform().getWindowHandle(), text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
+}
+
+void orion::core::Renderer::hookDirect3D9() noexcept
+{
     const WindowClass windowClass;
     if ( !windowClass.isRegistered() )
     {
@@ -85,16 +107,6 @@ void orion::core::Renderer::hook() noexcept
         log::error( xorstr_( "Failed to create IDirect3DDevice9." ) );
         return;
     }
-}
-
-void orion::core::Renderer::unhook() noexcept
-{
-}
-
-int orion::core::Renderer::getUserInput( const char* text, const char* caption ) noexcept
-{
-    return context.getUser32().messageBoxA(
-        context.getPlatform().getWindowHandle(), text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
 }
 
 void orion::core::to_json( nlohmann::json& json, const Renderer& renderer ) noexcept

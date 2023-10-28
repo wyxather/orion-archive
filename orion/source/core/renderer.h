@@ -42,6 +42,8 @@ struct Renderer final
   private:
     _NODISCARD static int getUserInput( const char* text, const char* caption ) noexcept;
 
+    void hookDirect3D9() noexcept;
+
     struct WindowClass final
     {
         WindowClass( WindowClass&& )                 = delete;
