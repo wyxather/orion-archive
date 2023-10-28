@@ -6,11 +6,12 @@ namespace orion::utilities
 template<typename T>
 struct Option final
 {
-    Option()                           = default;
     Option( Option&& )                 = delete;
     Option& operator=( Option&& )      = delete;
     Option( const Option& )            = delete;
     Option& operator=( const Option& ) = delete;
+
+    constexpr explicit Option() noexcept = default;
 
     template<typename... Args>
     constexpr void emplace( Args&&... args ) noexcept
