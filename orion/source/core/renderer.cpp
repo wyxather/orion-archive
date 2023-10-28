@@ -99,6 +99,10 @@ int orion::core::Renderer::getUserInput( const char* text, const char* caption )
 
 void orion::core::to_json( nlohmann::json& json, const Renderer& renderer ) noexcept
 {
+    json = {
+        { xorstr_( "type" ), renderer.type },
+        { xorstr_( "handle" ), reinterpret_cast<std::uintptr_t>( renderer.handle ) },
+    };
 }
 
 orion::core::Renderer::WindowClass::WindowClass() noexcept
