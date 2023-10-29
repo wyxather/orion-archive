@@ -216,7 +216,10 @@ orion::core::Renderer::WindowClass::~WindowClass() noexcept
 {
     if ( isRegistered() ) [[likely]]
     {
-        context.getUser32().unregisterClassA( value.lpszClassName, value.hInstance );
+        if ( context.getUser32().unregisterClassA( value.lpszClassName, value.hInstance ) == 0 ) [[unlikely]]
+        {
+            log::error( xorstr_( "Failed to unregister window class." ) );
+        }
     }
 }
 
@@ -245,7 +248,10 @@ orion::core::Renderer::Window::~Window() noexcept
 {
     if ( isCreated() ) [[likely]]
     {
-        context.getUser32().destroyWindow( handle );
+        if ( context.getUser32().destroyWindow( handle ) == 0 ) [[unlikely]]
+        {
+            log::error( xorstr_( "Failed to destroy window." ) );
+        }
     }
 }
 
