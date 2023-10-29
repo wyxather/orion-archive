@@ -36,6 +36,9 @@ void orion::core::Renderer::hook() noexcept
 {
     switch ( type )
     {
+    case Type::Direct3D11:
+        hookDirect3D11();
+        break;
     case Type::Direct3D9:
         hookDirect3D9();
         break;
@@ -106,6 +109,79 @@ void orion::core::Renderer::hookDirect3D9() noexcept
                                   device.GetAddressOf() ) != D3D_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirect3DDevice9." ) );
+        return;
+    }
+}
+
+void orion::core::Renderer::hookDirect3D11() noexcept
+{
+    const WindowClass windowClass;
+    if ( !windowClass.isRegistered() ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to register window class." ) );
+        return;
+    }
+    const Window window( windowClass );
+    if ( !window.isCreated() ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to create window." ) );
+        return;
+    }
+    const auto d3D11CreateDeviceAndSwapChain =
+        LI_FUNC( D3D11CreateDeviceAndSwapChain )::in_safe<HRESULT( WINAPI* )( IDXGIAdapter*,
+                                                                              D3D_DRIVER_TYPE,
+                                                                              HMODULE,
+                                                                              UINT,
+                                                                              const D3D_FEATURE_LEVEL*,
+                                                                              UINT,
+                                                                              UINT,
+                                                                              const DXGI_SWAP_CHAIN_DESC*,
+                                                                              IDXGISwapChain**,
+                                                                              ID3D11Device**,
+                                                                              D3D_FEATURE_LEVEL*,
+                                                                              ID3D11DeviceContext** )>( handle );
+    if ( d3D11CreateDeviceAndSwapChain == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find D3D11CreateDeviceAndSwapChain." ) );
+        return;
+    }
+    D3D_FEATURE_LEVEL          d3DFeatureLevel;
+    const DXGI_SWAP_CHAIN_DESC dXGISwapChainDesc {
+        DXGI_MODE_DESC {
+            100,
+            100,
+            DXGI_RATIONAL { 60, 1 },
+            DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM,
+            DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,
+            DXGI_MODE_SCALING::DXGI_MODE_SCALING_UNSPECIFIED,
+        },
+        DXGI_SAMPLE_DESC { 1, 0 },
+        DXGI_USAGE_RENDER_TARGET_OUTPUT,
+        1,
+        window.handle,
+        TRUE,
+        DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD,
+        DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH,
+    };
+    Microsoft::WRL::ComPtr<IDXGISwapChain>      dXGISwapChain;
+    Microsoft::WRL::ComPtr<ID3D11Device>        d3D11Device;
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3D11DeviceContext;
+    if ( d3D11CreateDeviceAndSwapChain( nullptr,
+                                        D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
+                                        nullptr,
+                                        0,
+                                        std::array<D3D_FEATURE_LEVEL, 2> { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_10_1,
+                                                                           D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0 }
+                                            .data(),
+                                        2,
+                                        D3D11_SDK_VERSION,
+                                        &dXGISwapChainDesc,
+                                        dXGISwapChain.GetAddressOf(),
+                                        d3D11Device.GetAddressOf(),
+                                        &d3DFeatureLevel,
+                                        d3D11DeviceContext.GetAddressOf() ) != S_OK ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to create ID3D11Device & IDXGISwapChain." ) );
         return;
     }
 }
