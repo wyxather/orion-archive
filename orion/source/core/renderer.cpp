@@ -198,7 +198,7 @@ orion::core::Renderer::WindowClass::WindowClass() noexcept
     :  value {
           sizeof( value ),
           CS_HREDRAW | CS_VREDRAW,
-          context.getUser32().defWindowProcA,
+          context.getNtdll().ntdllDefWindowProc_A,
           0,
           0,
           context.getKernel32().getModuleHandleA( nullptr ),
