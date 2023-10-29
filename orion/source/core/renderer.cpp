@@ -231,7 +231,7 @@ bool orion::core::Renderer::WindowClass::isRegistered() const noexcept
 
 orion::core::Renderer::Window::Window( const WindowClass& windowClass ) noexcept
     : handle { context.getUser32().createWindowExA( 0,
-                                                    windowClass.value.lpszClassName,
+                                                    reinterpret_cast<LPCSTR>( LOWORD( windowClass.atom ) ),
                                                     xorstr_( "     " ),
                                                     WS_OVERLAPPEDWINDOW,
                                                     0,
