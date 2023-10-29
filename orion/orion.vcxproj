@@ -227,6 +227,7 @@
     <ClCompile Include="source\dllmain.cpp" />
     <ClCompile Include="source\imports\kernel32.cpp" />
     <ClCompile Include="source\imports\msvcrt.cpp" />
+    <ClCompile Include="source\imports\ntdll.cpp" />
     <ClCompile Include="source\imports\user32.cpp" />
     <ClCompile Include="source\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
