@@ -216,7 +216,8 @@ orion::core::Renderer::WindowClass::~WindowClass() noexcept
 {
     if ( isRegistered() ) [[likely]]
     {
-        if ( context.getUser32().unregisterClassA( value.lpszClassName, value.hInstance ) == 0 ) [[unlikely]]
+        if ( context.getUser32().unregisterClassA( reinterpret_cast<LPCSTR>( LOWORD( atom ) ), value.hInstance ) == 0 )
+            [[unlikely]]
         {
             log::error( xorstr_( "Failed to unregister window class." ) );
         }
