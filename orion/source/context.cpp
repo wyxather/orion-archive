@@ -6,6 +6,7 @@ orion::Context::~Context() noexcept
     platform.reset();
     console.reset();
     user32.reset();
+    ntdll.reset();
     msvcrt.reset();
     kernel32.reset();
     handle.reset();
