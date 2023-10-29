@@ -71,8 +71,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         log::error( xorstr_( "Failed to create window." ) );
         return;
     }
-    const auto direct3DCreate9 =
-        LI_FUNC( "Direct3DCreate9" )::in_safe<LPDIRECT3D9( WINAPI* )( std::uint32_t )>( handle );
+    const auto direct3DCreate9 = LI_FUNC( Direct3DCreate9 )::in_safe<LPDIRECT3D9( WINAPI* )( std::uint32_t )>( handle );
     if ( direct3DCreate9 == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find Direct3DCreate9." ) );
