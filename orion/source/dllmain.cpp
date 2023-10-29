@@ -23,6 +23,6 @@ void orion::Main::onAttach( const HMODULE moduleHandle ) noexcept
     context.user32.emplace( LI_MOD( "user32.dll" )::get() );
     context.console.emplace( context.getKernel32(), context.getMsvcrt(), context.getUser32() );
     context.platform.emplace( context.getKernel32(), context.getUser32() );
-    context.renderer.emplace( context.getKernel32(), context.getUser32(), context.getPlatform() );
+    context.renderer.emplace( context.getKernel32(), context.getNtdll(), context.getUser32(), context.getPlatform() );
     context.platform->window.hook();
 }

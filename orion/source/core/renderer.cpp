@@ -1,6 +1,7 @@
 #include "source/context.h"
 
 orion::core::Renderer::Renderer( const imports::Kernel32& kernel32,
+                                 const imports::Ntdll&    ntdll,
                                  const imports::User32&   user32,
                                  const Platform&          platform ) noexcept
 {

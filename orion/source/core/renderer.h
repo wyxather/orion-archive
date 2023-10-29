@@ -7,6 +7,7 @@ namespace imports
 {
 
 struct Kernel32;
+struct Ntdll;
 struct User32;
 
 } // namespace imports
@@ -33,6 +34,7 @@ struct Renderer final
     Renderer& operator=( const Renderer& ) = delete;
 
     explicit Renderer( const imports::Kernel32& kernel32,
+                       const imports::Ntdll&    ntdll,
                        const imports::User32&   user32,
                        const Platform&          platform ) noexcept;
 
