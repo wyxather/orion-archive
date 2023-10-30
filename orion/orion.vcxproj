@@ -223,6 +223,7 @@
     <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\context.cpp" />
     <ClCompile Include="source\core\console.cpp" />
+    <ClCompile Include="source\core\input.cpp" />
     <ClCompile Include="source\core\platform.cpp" />
     <ClCompile Include="source\core\renderer.cpp" />
     <ClCompile Include="source\dllmain.cpp" />
