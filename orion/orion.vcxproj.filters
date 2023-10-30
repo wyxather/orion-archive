@@ -66,6 +66,9 @@
     <ClInclude Include="source\imports\ntdll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp">
