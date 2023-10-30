@@ -12,6 +12,7 @@ void orion::Application::setup() noexcept
 
 void orion::Application::exit() noexcept
 {
+    context.input->unhook();
     context.renderer->unhook();
     context.getPlatform().window.unhook();
 
