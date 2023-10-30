@@ -15,8 +15,6 @@ struct User32;
 namespace core
 {
 
-struct Platform;
-
 struct Renderer final
 {
     enum class Type
@@ -35,8 +33,7 @@ struct Renderer final
 
     explicit Renderer( const imports::Kernel32& kernel32,
                        const imports::Ntdll&    ntdll,
-                       const imports::User32&   user32,
-                       const Platform&          platform ) noexcept;
+                       const imports::User32&   user32 ) noexcept;
 
     void hook() noexcept;
     void unhook() noexcept;

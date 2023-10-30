@@ -1,6 +1,6 @@
 #include "source/context.h"
 
-orion::core::Input::Input( const HMODULE orionHandle, const imports::User32& user32, const Platform& platform ) noexcept
+orion::core::Input::Input( const HMODULE orionHandle, const imports::User32& user32 ) noexcept
 {
     if ( handle = LI_MOD( "dinput8.dll" )::safe<decltype( handle )>(); handle != nullptr )
     {
@@ -35,8 +35,7 @@ void orion::core::Input::unhook() noexcept
 
 int orion::core::Input::getUserInput( const char* text, const char* caption ) noexcept
 {
-    return context.getUser32().messageBoxA(
-        context.getPlatform().getWindowHandle(), text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
+    return context.getUser32().messageBoxA( nullptr, text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
 }
 
 void orion::core::Input::hookDirectInput8() noexcept

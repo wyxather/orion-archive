@@ -5,11 +5,6 @@ orion::core::Platform::Platform( const imports::Kernel32& kernel32, const import
 {
 }
 
-HWND orion::core::Platform::getWindowHandle() const noexcept
-{
-    return window.getHandle();
-}
-
 orion::core::Platform::Window::Window() noexcept
 {
     context.getUser32().enumWindows( reinterpret_cast<WNDENUMPROC>( enumWindowsProc ),
@@ -24,11 +19,6 @@ void orion::core::Platform::Window::hook() const noexcept
 void orion::core::Platform::Window::unhook() const noexcept
 {
     context.getUser32().setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( originalProcedure ) );
-}
-
-HWND orion::core::Platform::Window::getHandle() const noexcept
-{
-    return handle;
 }
 
 LRESULT orion::core::Platform::Window::callOriginalProcedure( const HWND   window,
@@ -55,7 +45,7 @@ BOOL orion::core::Platform::Window::enumWindowsProc( const HWND window, Window& 
     {
         return TRUE;
     }
-    switch ( getUserInput( window, className.data(), windowText.data() ) )
+    switch ( getUserInput( className.data(), windowText.data() ) )
     {
     case IDYES:
         self.handle            = window;
@@ -95,11 +85,9 @@ std::array<char, 257> orion::core::Platform::Window::getClassName( const HWND wi
     return className;
 }
 
-int orion::core::Platform::Window::getUserInput( const HWND        window,
-                                                 const char* const className,
-                                                 const char* const windowText ) noexcept
+int orion::core::Platform::Window::getUserInput( const char* const className, const char* const windowText ) noexcept
 {
-    return context.getUser32().messageBoxA( window, windowText, className, MB_YESNOCANCEL | MB_ICONQUESTION );
+    return context.getUser32().messageBoxA( nullptr, windowText, className, MB_YESNOCANCEL | MB_ICONQUESTION );
 }
 
 DWORD orion::core::Platform::Window::getThreadProcessId( const HWND window ) noexcept

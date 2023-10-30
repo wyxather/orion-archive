@@ -2,8 +2,7 @@
 
 orion::core::Renderer::Renderer( const imports::Kernel32& kernel32,
                                  const imports::Ntdll&    ntdll,
-                                 const imports::User32&   user32,
-                                 const Platform&          platform ) noexcept
+                                 const imports::User32&   user32 ) noexcept
 {
     if ( handle = LI_MOD( "d3d11.dll" )::safe<decltype( handle )>(); handle != nullptr )
     {
@@ -54,8 +53,7 @@ void orion::core::Renderer::unhook() noexcept
 
 int orion::core::Renderer::getUserInput( const char* text, const char* caption ) noexcept
 {
-    return context.getUser32().messageBoxA(
-        context.getPlatform().getWindowHandle(), text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
+    return context.getUser32().messageBoxA( nullptr, text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
 }
 
 void orion::core::Renderer::hookDirect3D9() noexcept
