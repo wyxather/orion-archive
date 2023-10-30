@@ -1,6 +1,7 @@
 #pragma once
 
 #include "source/core/console.h"
+#include "source/core/input.h"
 #include "source/core/platform.h"
 #include "source/core/renderer.h"
 #include "source/imports/kernel32.h"
@@ -68,6 +69,11 @@ struct Context final
         return *renderer;
     }
 
+    _NODISCARD constexpr auto& getInput() const noexcept
+    {
+        return *input;
+    }
+
   private:
     utilities::Option<const HMODULE>           handle;
     utilities::Option<const imports::Kernel32> kernel32;
@@ -77,6 +83,7 @@ struct Context final
     utilities::Option<const core::Console>     console;
     utilities::Option<const core::Platform>    platform;
     utilities::Option<core::Renderer>          renderer;
+    utilities::Option<core::Input>             input;
 };
 
 constinit inline Context context;
