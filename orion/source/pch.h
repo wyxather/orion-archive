@@ -1,6 +1,8 @@
 #ifndef PCH_H
 #define PCH_H
 
+#include <initguid.h>
+//
 #include <d3d11.h>
 #include <d3d9.h>
 #include <dinput.h>
