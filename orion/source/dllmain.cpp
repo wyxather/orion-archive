@@ -24,5 +24,6 @@ void orion::Main::onAttach( const HMODULE moduleHandle ) noexcept
     context.console.emplace( context.getKernel32(), context.getMsvcrt(), context.getUser32() );
     context.platform.emplace( context.getKernel32(), context.getUser32() );
     context.renderer.emplace( context.getKernel32(), context.getNtdll(), context.getUser32(), context.getPlatform() );
+    context.input.emplace( context.getHandle(), context.getUser32(), context.getPlatform() );
     context.platform->window.hook();
 }
