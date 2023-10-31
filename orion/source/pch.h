@@ -13,7 +13,6 @@
 #include <cstddef>
 #include <numbers>
 #include <source_location>
-#include <utility>
 #include <vector>
 
 #define JSON_NO_IO
