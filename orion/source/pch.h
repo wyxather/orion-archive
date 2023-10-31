@@ -11,7 +11,6 @@
 #include <cassert>
 #include <numbers>
 #include <source_location>
-#include <vector>
 
 #define JSON_NO_IO
 #define JSON_NOEXCEPTION
