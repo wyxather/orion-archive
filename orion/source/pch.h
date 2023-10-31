@@ -22,6 +22,7 @@
 #define LI_FUNC_( name ) ::li::detail::lazy_function<LAZY_IMPORTER_KHASH( #name ), decltype( &name )>
 #define LI_FUNC( name )  LI_FUNC_( name )
 
+#define STB_OMIT_TESTS
 #include "dependencies/stb.hh"
 
 #define JM_XORSTR_DISABLE_AVX_INTRINSICS
