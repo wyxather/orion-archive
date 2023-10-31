@@ -10,7 +10,6 @@
 
 #include <array>
 #include <cassert>
-#include <cstddef>
 #include <numbers>
 #include <source_location>
 #include <vector>
