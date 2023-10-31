@@ -8,7 +8,6 @@
 #include <dinput.h>
 #include <wrl/client.h>
 
-#include <cassert>
 #include <numbers>
 #include <source_location>
 
