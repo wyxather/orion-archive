@@ -1,6 +1,7 @@
 #ifndef PCH_H
 #define PCH_H
 
+#ifdef __cplusplus
 #include <initguid.h>
 //
 #include <d3d11.h>
@@ -40,5 +41,6 @@
 #include "source/framework.h"
 #include "source/utilities/math.h"
 #include "source/utilities/option.h"
+#endif
 
 #endif
