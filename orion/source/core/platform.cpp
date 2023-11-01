@@ -21,14 +21,6 @@ void orion::core::Platform::Window::unhook() const noexcept
     context.getUser32().setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( originalProcedure ) );
 }
 
-LRESULT orion::core::Platform::Window::callOriginalProcedure( const HWND   window,
-                                                              const UINT   message,
-                                                              const WPARAM wParam,
-                                                              const LPARAM lParam ) const noexcept
-{
-    return context.getUser32().callWindowProc( originalProcedure, window, message, wParam, lParam );
-}
-
 BOOL orion::core::Platform::Window::enumWindowsProc( const HWND window, Window& self ) noexcept
 {
     if ( !isEqualToCurrentProcessId( getThreadProcessId( window ) ) || !isVisible( window ) )
@@ -64,6 +56,8 @@ LRESULT orion::core::Platform::Window::procedure( const HWND   window,
                                                   const WPARAM wParam,
                                                   const LPARAM lParam ) noexcept
 {
+    const auto callWindowProc    = context.getUser32().callWindowProc;
+    const auto originalProcedure = context.getPlatform().window.originalProcedure;
     if ( message == WM_KEYUP )
     {
         switch ( wParam )
@@ -75,7 +69,7 @@ LRESULT orion::core::Platform::Window::procedure( const HWND   window,
             break;
         }
     }
-    return context.getPlatform().window.callOriginalProcedure( window, message, wParam, lParam );
+    return callWindowProc( originalProcedure, window, message, wParam, lParam );
 }
 
 std::array<char, 257> orion::core::Platform::Window::getClassName( const HWND window ) noexcept

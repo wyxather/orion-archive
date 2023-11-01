@@ -60,11 +60,6 @@ struct Platform final
         _NODISCARD static bool                  isEqualToCurrentProcessId( DWORD processId ) noexcept;
         _NODISCARD static bool                  isConsole( const char* className ) noexcept;
 
-        _NODISCARD LRESULT callOriginalProcedure( HWND   window,
-                                                  UINT   message,
-                                                  WPARAM wParam,
-                                                  LPARAM lParam ) const noexcept;
-
         HWND    handle            = nullptr;
         WNDPROC originalProcedure = nullptr;
     };
