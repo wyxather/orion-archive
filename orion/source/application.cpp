@@ -17,6 +17,8 @@ void orion::Application::exit( const bool shouldUnload ) noexcept
     context.input->unhook();
     context.renderer->unhook();
     context.getPlatform().window.unhook();
+    [[maybe_unused]] const auto minhookUninitialized = ( MH_Uninitialize() == MH_OK );
+    assert( minhookUninitialized );
     if ( shouldUnload )
     {
         const auto& kernel32     = context.getKernel32();
