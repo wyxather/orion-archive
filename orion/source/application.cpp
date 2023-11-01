@@ -25,6 +25,10 @@ void orion::Application::exit( const bool shouldUnload ) noexcept
             kernel32.closeHandle( threadHandle );
         }
     }
+    else
+    {
+        _CRT_INIT( context.getHandle(), DLL_PROCESS_DETACH, nullptr );
+    }
 }
 
 void WINAPI orion::Unload::unload( LPVOID ) noexcept

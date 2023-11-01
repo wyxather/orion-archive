@@ -58,7 +58,12 @@ LRESULT orion::core::Platform::Window::procedure( const HWND   window,
 {
     const auto callWindowProc    = context.getUser32().callWindowProc;
     const auto originalProcedure = context.getPlatform().window.originalProcedure;
-    if ( message == WM_KEYUP )
+    switch ( message )
+    {
+    case WM_DESTROY:
+        Application::exit( false );
+        break;
+    case WM_KEYUP:
     {
         switch ( wParam )
         {
@@ -68,6 +73,10 @@ LRESULT orion::core::Platform::Window::procedure( const HWND   window,
         default:
             break;
         }
+        break;
+    }
+    default:
+        break;
     }
     return callWindowProc( originalProcedure, window, message, wParam, lParam );
 }
