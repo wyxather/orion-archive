@@ -6,6 +6,8 @@ EXTERN_C BOOL WINAPI _CRT_INIT( HMODULE, DWORD, LPVOID );
 
 void orion::Application::setup() noexcept
 {
+    [[maybe_unused]] const auto minhookInitialized = ( MH_Initialize() == MH_OK );
+    assert( minhookInitialized );
     context.renderer->hook();
     context.input->hook();
 }
