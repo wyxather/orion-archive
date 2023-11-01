@@ -22,7 +22,7 @@ class Application final
     Application& operator=( const Application& ) = delete;
 
     static void setup() noexcept;
-    static void exit() noexcept;
+    static void exit( bool shouldUnload ) noexcept;
 };
 
 class Unload final

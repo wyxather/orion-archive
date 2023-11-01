@@ -69,7 +69,7 @@ LRESULT orion::core::Platform::Window::procedure( const HWND   window,
         switch ( wParam )
         {
         case VK_END:
-            Application::exit();
+            Application::exit( true );
             break;
         default:
             break;

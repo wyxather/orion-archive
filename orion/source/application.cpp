@@ -10,18 +10,20 @@ void orion::Application::setup() noexcept
     context.input->hook();
 }
 
-void orion::Application::exit() noexcept
+void orion::Application::exit( const bool shouldUnload ) noexcept
 {
     context.input->unhook();
     context.renderer->unhook();
     context.getPlatform().window.unhook();
-
-    const auto& kernel32     = context.getKernel32();
-    const auto  threadHandle = kernel32.createThread(
-        nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>( Unload::unload ), nullptr, 0, nullptr );
-    if ( threadHandle != nullptr )
+    if ( shouldUnload )
     {
-        kernel32.closeHandle( threadHandle );
+        const auto& kernel32     = context.getKernel32();
+        const auto  threadHandle = kernel32.createThread(
+            nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>( Unload::unload ), nullptr, 0, nullptr );
+        if ( threadHandle != nullptr )
+        {
+            kernel32.closeHandle( threadHandle );
+        }
     }
 }
 
