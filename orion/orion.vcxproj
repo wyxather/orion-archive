@@ -221,6 +221,7 @@
     <ClInclude Include="source\dllmain.h" />
     <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\hooks\hooks.h" />
+    <ClInclude Include="source\hooks\ret_spoof.h" />
     <ClInclude Include="source\imports\kernel32.h" />
     <ClInclude Include="source\imports\msvcrt.h" />
     <ClInclude Include="source\imports\ntdll.h" />

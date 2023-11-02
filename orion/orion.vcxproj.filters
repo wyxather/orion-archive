@@ -99,6 +99,9 @@
     <ClInclude Include="source\hooks\hooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\hooks\ret_spoof.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp">
