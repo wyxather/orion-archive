@@ -149,5 +149,8 @@
     <ClCompile Include="dependencies\minhook\src\trampoline.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\pch-c.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
