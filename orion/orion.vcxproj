@@ -220,6 +220,7 @@
     <ClInclude Include="source\core\renderer.h" />
     <ClInclude Include="source\dllmain.h" />
     <ClInclude Include="source\framework.h" />
+    <ClInclude Include="source\hooks\hooks.h" />
     <ClInclude Include="source\imports\kernel32.h" />
     <ClInclude Include="source\imports\msvcrt.h" />
     <ClInclude Include="source\imports\ntdll.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="source\core\platform.cpp" />
     <ClCompile Include="source\core\renderer.cpp" />
     <ClCompile Include="source\dllmain.cpp" />
+    <ClCompile Include="source\hooks\hooks.cpp" />
     <ClCompile Include="source\imports\kernel32.cpp" />
     <ClCompile Include="source\imports\msvcrt.cpp" />
     <ClCompile Include="source\imports\ntdll.cpp" />
