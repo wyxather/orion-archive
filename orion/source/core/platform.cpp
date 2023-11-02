@@ -119,17 +119,17 @@ int orion::core::Platform::Window::getTextLength( const HWND window ) noexcept
 
 bool orion::core::Platform::Window::isConsole( const char* const className ) noexcept
 {
-    return strcmp( xorstr_( "ConsoleWindowClass" ), className ) == 0;
+    return ( strcmp( xorstr_( "ConsoleWindowClass" ), className ) == 0 );
 }
 
 bool orion::core::Platform::Window::isEqualToCurrentProcessId( const DWORD processId ) noexcept
 {
-    return context.getKernel32().getCurrentProcessId() == processId;
+    return ( context.getKernel32().getCurrentProcessId() == processId );
 }
 
 bool orion::core::Platform::Window::isVisible( const HWND window ) noexcept
 {
-    return context.getUser32().isWindowVisible( window ) != FALSE;
+    return ( context.getUser32().isWindowVisible( window ) != FALSE );
 }
 
 void orion::core::to_json( nlohmann::json& json, const Platform& platform ) noexcept
