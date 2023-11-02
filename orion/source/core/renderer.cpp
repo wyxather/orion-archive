@@ -225,7 +225,7 @@ orion::core::Renderer::WindowClass::~WindowClass() noexcept
 
 bool orion::core::Renderer::WindowClass::isRegistered() const noexcept
 {
-    return atom != 0;
+    return ( atom != 0 );
 }
 
 orion::core::Renderer::Window::Window( const WindowClass& windowClass ) noexcept
@@ -257,5 +257,5 @@ orion::core::Renderer::Window::~Window() noexcept
 
 bool orion::core::Renderer::Window::isCreated() const noexcept
 {
-    return handle != nullptr;
+    return ( handle != nullptr );
 }
