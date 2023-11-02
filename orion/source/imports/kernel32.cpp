@@ -17,6 +17,7 @@ orion::imports::Kernel32::Kernel32( void* const kernel32 ) noexcept
     setConsoleCtrlHandler    = LI_FUNC( SetConsoleCtrlHandler )::in( kernel32 );
     setConsoleTextAttribute  = LI_FUNC( SetConsoleTextAttribute )::in( kernel32 );
     sleep                    = LI_FUNC( Sleep )::in( kernel32 );
+    virtualQuery             = LI_FUNC( VirtualQuery )::in( kernel32 );
     writeConsoleA            = LI_FUNC( WriteConsoleA )::in( kernel32 );
 }
 
@@ -39,6 +40,7 @@ void orion::imports::to_json( nlohmann::json& json, const Kernel32& kernel32 ) n
         { xorstr_( "setConsoleCtrlHandler" ), reinterpret_cast<std::uintptr_t>( kernel32.setConsoleCtrlHandler ) },
         { xorstr_( "setConsoleTextAttribute" ), reinterpret_cast<std::uintptr_t>( kernel32.setConsoleTextAttribute ) },
         { xorstr_( "sleep" ), reinterpret_cast<std::uintptr_t>( kernel32.sleep ) },
+        { xorstr_( "virtualQuery" ), reinterpret_cast<std::uintptr_t>( kernel32.virtualQuery ) },
         { xorstr_( "writeConsoleA" ), reinterpret_cast<std::uintptr_t>( kernel32.writeConsoleA ) },
     };
 }

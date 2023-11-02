@@ -29,6 +29,7 @@ struct Kernel32 final
     decltype( &SetConsoleCtrlHandler )    setConsoleCtrlHandler    = nullptr;
     decltype( &SetConsoleTextAttribute )  setConsoleTextAttribute  = nullptr;
     decltype( &Sleep )                    sleep                    = nullptr;
+    decltype( &VirtualQuery )             virtualQuery             = nullptr;
     decltype( &WriteConsoleA )            writeConsoleA            = nullptr;
 };
 
