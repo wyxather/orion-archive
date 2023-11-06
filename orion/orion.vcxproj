@@ -229,6 +229,7 @@
     <ClInclude Include="source\imports\user32.h" />
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\utilities\math.h" />
+    <ClInclude Include="source\utilities\memory.h" />
     <ClInclude Include="source\utilities\option.h" />
   </ItemGroup>
   <ItemGroup>
