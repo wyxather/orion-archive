@@ -42,6 +42,7 @@
 
 #include "source/framework.h"
 #include "source/utilities/math.h"
+#include "source/utilities/memory.h"
 #include "source/utilities/option.h"
 #endif
 
