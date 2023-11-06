@@ -291,6 +291,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)-c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="source\utilities\memory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\hooks\ret_spoof.asm">
