@@ -10,6 +10,8 @@ void orion::Application::setup() noexcept
     assert( minhookInitialized );
     context.renderer->hook();
     context.input->hook();
+    [[maybe_unused]] const auto minhookEnabled = ( MH_EnableHook( MH_ALL_HOOKS ) == MH_OK );
+    assert( minhookEnabled );
 }
 
 void orion::Application::exit( const bool shouldUnload ) noexcept
