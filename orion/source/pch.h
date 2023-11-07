@@ -44,6 +44,7 @@
 #include "source/utilities/math.h"
 #include "source/utilities/memory.h"
 #include "source/utilities/option.h"
+#include "source/utilities/string.h"
 #endif
 
 #endif
