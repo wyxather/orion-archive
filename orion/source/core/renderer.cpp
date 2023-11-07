@@ -34,28 +34,38 @@ orion::core::Renderer::Renderer( const imports::Kernel32& kernel32,
 
 void orion::core::Renderer::hook() noexcept
 {
-    switch ( type )
-    {
-    case Type::Direct3D11:
-        hookDirect3D11();
-        break;
-    case Type::Direct3D9:
 #ifndef _WIN64
         if ( handle = LI_MOD( "rtsshooks.dll" )::safe<HMODULE>(); handle != nullptr )
 #else
         if ( handle = LI_MOD( "rtsshooks64.dll" )::safe<HMODULE>(); handle != nullptr )
 #endif
         {
+        switch ( type )
+        {
+        case Type::Direct3D11:
+            hookDirect3D11RTTS();
+            break;
+        case Type::Direct3D9:
             hookDirect3D9RTSS();
+            break;
+        default:
+            break;
         }
+    }
         else
         {
+        switch ( type )
+        {
+        case Type::Direct3D11:
+            hookDirect3D11();
+            break;
+        case Type::Direct3D9:
         hookDirect3D9();
-        }
         break;
     default:
         break;
     }
+}
 }
 
 void orion::core::Renderer::unhook() noexcept
@@ -226,6 +236,25 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         log::error( xorstr_( "Failed to create ID3D11Device & IDXGISwapChain." ) );
         return;
     }
+}
+
+void orion::core::Renderer::hookDirect3D11RTTS() noexcept
+{
+    const auto moduleBytes = utilities::Memory::getModuleBytes( context.getKernel32(), handle );
+#ifndef _WIN64
+    const auto dXGISwapChainPresentDetour =
+        utilities::Memory::Pattern<"81 EC 40 01 00 00 A1 ?? ?? ?? ?? 33 C4 89 84 24 3C 01 00 00 53 56 57">::find(
+            moduleBytes );
+    const auto dXGISwapChainResizeBuffersDetour =
+        utilities::Memory::Pattern<"81 EC 40 01 00 00 A1 ?? ?? ?? ?? 33 C4 89 84 24 3C 01 00 00 56">::find(
+            moduleBytes );
+#else
+    const auto dXGISwapChainPresentDetour =
+        utilities::Memory::Pattern<"40 53 56 57 48 81 EC 90 01 00 00 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 80 01 "
+                                   "00 00 48 8B F9 48 8D 0D ?? ?? ?? ?? 41">::find( moduleBytes );
+    const auto dXGISwapChainResizeBuffersDetour =
+        utilities::Memory::Pattern<"40 53 55 56 57 41 54 41 55 48 81 EC 98">::find( moduleBytes );
+#endif
 }
 
 void orion::core::to_json( nlohmann::json& json, const Renderer& renderer ) noexcept
