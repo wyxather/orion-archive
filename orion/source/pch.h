@@ -41,6 +41,7 @@
 #define xorarr_( arr ) xorarr( arr ).crypt_get()
 
 #include "source/framework.h"
+#include "source/hooks/minhook.h"
 #include "source/utilities/math.h"
 #include "source/utilities/memory.h"
 #include "source/utilities/option.h"
