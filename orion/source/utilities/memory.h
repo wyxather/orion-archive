@@ -31,6 +31,10 @@ class Memory final
     static std::span<const std::uint8_t> getModuleBytes( const imports::Kernel32& kernel32,
                                                          HMODULE                  moduleHandle ) noexcept;
 
+    static std::size_t calcVmtLength( const imports::Kernel32& kernel32, const void* const vmtAddress ) noexcept;
+    static std::size_t calcVmtLength( const imports::Kernel32& kernel32,
+                                      const void* const* const classAddress ) noexcept;
+
     template<stb::fixed_string str>
     class Pattern final
     {
