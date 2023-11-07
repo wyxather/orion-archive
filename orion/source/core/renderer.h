@@ -41,6 +41,26 @@ struct Renderer final
   private:
     _NODISCARD static int getUserInput( const char* text, const char* caption ) noexcept;
 
+    static HRESULT STDMETHODCALLTYPE direct3DDevice9Reset(
+        CONST LPDIRECT3DDEVICE9 device, CONST D3DPRESENT_PARAMETERS* CONST presentationParameters ) noexcept;
+
+    static HRESULT STDMETHODCALLTYPE direct3DDevice9Present( CONST LPDIRECT3DDEVICE9 device,
+                                                             CONST LPRECT            sourceRect,
+                                                             CONST LPRECT            destRect,
+                                                             CONST HWND              destWindowOverride,
+                                                             CONST LPRGNDATA         dirtyRegion ) noexcept;
+
+    static HRESULT STDMETHODCALLTYPE dXGISwapChainPresent( CONST IDXGISwapChain* CONST swapChain,
+                                                           CONST UINT                  syncInterval,
+                                                           CONST UINT                  flags ) noexcept;
+
+    static HRESULT STDMETHODCALLTYPE dXGISwapChainResizeBuffers( CONST IDXGISwapChain* CONST swapChain,
+                                                                 CONST UINT                  bufferCount,
+                                                                 CONST UINT                  width,
+                                                                 CONST UINT                  height,
+                                                                 CONST DXGI_FORMAT           newFormat,
+                                                                 CONST UINT                  swapChainFlags ) noexcept;
+
     void hookDirect3D9() noexcept;
     void hookDirect3D9RTSS() noexcept;
     void hookDirect3D11() noexcept;
@@ -79,8 +99,9 @@ struct Renderer final
         const HWND handle;
     };
 
-    HMODULE handle = nullptr;
-    Type    type   = Type::Undefined;
+    HMODULE                              handle = nullptr;
+    Type                                 type   = Type::Undefined;
+    utilities::Option<hooks::MinHook<2>> hooks;
 };
 
 } // namespace core

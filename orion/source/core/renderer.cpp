@@ -35,11 +35,11 @@ orion::core::Renderer::Renderer( const imports::Kernel32& kernel32,
 void orion::core::Renderer::hook() noexcept
 {
 #ifndef _WIN64
-        if ( handle = LI_MOD( "rtsshooks.dll" )::safe<HMODULE>(); handle != nullptr )
+    if ( handle = LI_MOD( "rtsshooks.dll" )::safe<HMODULE>(); handle != nullptr )
 #else
-        if ( handle = LI_MOD( "rtsshooks64.dll" )::safe<HMODULE>(); handle != nullptr )
+    if ( handle = LI_MOD( "rtsshooks64.dll" )::safe<HMODULE>(); handle != nullptr )
 #endif
-        {
+    {
         switch ( type )
         {
         case Type::Direct3D11:
@@ -52,20 +52,20 @@ void orion::core::Renderer::hook() noexcept
             break;
         }
     }
-        else
-        {
+    else
+    {
         switch ( type )
         {
         case Type::Direct3D11:
             hookDirect3D11();
             break;
         case Type::Direct3D9:
-        hookDirect3D9();
-        break;
-    default:
-        break;
+            hookDirect3D9();
+            break;
+        default:
+            break;
+        }
     }
-}
 }
 
 void orion::core::Renderer::unhook() noexcept
@@ -75,6 +75,40 @@ void orion::core::Renderer::unhook() noexcept
 int orion::core::Renderer::getUserInput( const char* text, const char* caption ) noexcept
 {
     return context.getUser32().messageBoxA( nullptr, text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
+}
+
+HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Reset(
+    CONST LPDIRECT3DDEVICE9 device, CONST D3DPRESENT_PARAMETERS* CONST presentationParameters ) noexcept
+{
+    return context.getRenderer().hooks->stdcall<0, HRESULT>( device, presentationParameters );
+}
+
+HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST LPDIRECT3DDEVICE9 device,
+                                                                         CONST LPRECT            sourceRect,
+                                                                         CONST LPRECT            destRect,
+                                                                         CONST HWND              destWindowOverride,
+                                                                         CONST LPRGNDATA         dirtyRegion ) noexcept
+{
+    return context.getRenderer().hooks->stdcall<1, HRESULT>(
+        device, sourceRect, destRect, destWindowOverride, dirtyRegion );
+}
+
+HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainPresent( CONST IDXGISwapChain* CONST swapChain,
+                                                                       CONST UINT                  syncInterval,
+                                                                       CONST UINT                  flags ) noexcept
+{
+    return context.getRenderer().hooks->stdcall<0, HRESULT>( swapChain, syncInterval, flags );
+}
+
+HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainResizeBuffers( CONST IDXGISwapChain* CONST swapChain,
+                                                                             CONST UINT                  bufferCount,
+                                                                             CONST UINT                  width,
+                                                                             CONST UINT                  height,
+                                                                             CONST DXGI_FORMAT           newFormat,
+                                                                             CONST UINT swapChainFlags ) noexcept
+{
+    return context.getRenderer().hooks->stdcall<1, HRESULT>(
+        swapChain, bufferCount, width, height, newFormat, swapChainFlags );
 }
 
 void orion::core::Renderer::hookDirect3D9() noexcept
@@ -130,39 +164,34 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         log::error( xorstr_( "Failed to create IDirect3DDevice9." ) );
         return;
     }
+    const auto gadget =
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
+    const auto virtualMethod = *reinterpret_cast<void***>( device.Get() );
+    hooks.emplace( reinterpret_cast<std::uintptr_t>( gadget ) );
+    hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset );
+    hooks->hookAt( 1, virtualMethod[17], &direct3DDevice9Present );
 }
 
 void orion::core::Renderer::hookDirect3D9RTSS() noexcept
 {
     const auto moduleBytes = utilities::Memory::getModuleBytes( context.getKernel32(), handle );
 #ifndef _WIN64
-    const auto direct3DDevice9ResetDetour = utilities::Memory::Pattern<
-        "56 68 ?? ?? ?? ?? E8 ?? ?? ?? ?? 8B 74 24 0C 83 C4 04 85 C0 74 25 83 3D ?? ?? ?? ?? ?? 74 13 6A 00 6A 01 68 "
-        "?? ?? ?? ?? B9 ?? ?? ?? ?? E8 ?? ?? ?? ?? 56 E8 ?? ?? ?? ?? 83 C4 04 8B 44 24 0C 50 56 FF 15 ?? ?? ?? ?? 5E "
-        "C2 08 00 ?? ?? ?? ?? ?? 9C 60 F0 0F BA 2D ?? ?? ?? ?? ?? 73 24 FF 15 ?? ?? ?? ?? 05 88 13 00 00 8B C8 F0 0F "
-        "BA 2D ?? ?? ?? ?? ?? 73 0C 51 FF 15 ?? ?? ?? ?? 59 3B C1 72 E9 8B EC 83 C5 28 03 2D ?? ?? ?? ?? 89 2D ?? ?? "
-        "?? ?? 8B 45 FC A3 ?? ?? ?? ?? B8 ?? ?? ?? ?? 89 45 FC BE ?? ?? ?? ?? 8B 3D ?? ?? ?? ?? B9 05 00 00 00 F3 A4 "
-        "FF 15 ?? ?? ?? ?? 61 9D FF 25 ?? ?? ?? ?? 9C 60 A3 ?? ?? ?? ?? F7 05 ?? ?? ?? ?? ?? ?? ?? ?? 75 18 FF 15 ?? "
-        "?? ?? ?? BE ?? ?? ?? ?? 8B 3D ?? ?? ?? ?? B9 05 00 00 00 F3 A4 61 9D C7 05 ?? ?? ?? ?? ?? ?? ?? ?? FF 25 ?? "
-        "?? ?? ?? CC 83">::find( moduleBytes );
-    const auto direct3DDevice9PresentDetour = utilities::Memory::Pattern<
-        "56 68 ? ? ? ? E8 ? ? ? ? 8B 74 24 0C 83 C4 04 85 C0 74 25 83 3D ? ? ? ? ? 74 13 6A 00 6A 01 "
-        "68 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 56 E8 ? ? ? ? 83 C4 04 8B 44 24 18 8B 4C 24 14 8B 54 24 "
-        "10 50 8B 44 24 10 51 52 50 56 FF 15 ? ? ? ? 68 ? ? ? ? 8B F0 E8 ? ? ? ? 83 C4 04 85 C0 74 09 "
-        "56 E8 ? ? ? ? 83 C4 04 8B C6 5E C2 14 00 ? ? ? ? ? ? ? ? 83 EC 24 57 8D 44 24 10 50 FF 15 ? "
-        "? ? ? 8D 4C 24 20 51 FF 15 ? ? ? ? 33 FF 39 3D ? ? ? ? 75 19 E8 ? ? ? ? E8 ? ? ? ? C7 "
-        "05 ? ? ? ? ? ? ? ? 5F 83 C4 24 C3 8B 0D ? ? ? ? 83 F9 FF 75 0B E8 ? ? ? ? 8B 0D ? ? ? "
-        "? A1 ? ? ? ? 3B C7 74 2B 83 F9 FF 74 26 8B D1 69 D2 10 30 00 00 F6 84 02 B0 91 24 00 01 74 14 89 3D "
-        "? ? ? ? FF 40 20 8B 0D ? ? ? ? A1 ? ? ? ? 55 8B 6C 24 30 56 33 F6 3B C7 74 5E">::find( moduleBytes );
+    const auto direct3DDevice9ResetDetour =
+        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( moduleBytes );
+    const auto direct3DDevice9PresentDetour =
+        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 78 D6 45 13 00">::find( moduleBytes );
 #else
     const auto direct3DDevice9ResetDetour = utilities::Memory::Pattern<
-        "48 89 5C 24 08 57 48 83 EC 20 48 8B D9 48 8D 0D ? ? ? ? 48 8B FA E8 ? ? ? ? 85 C0 74 2B 83 3D ? ? "
-        "? ? ? 74 1A 45 33 C9 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? 45 8D 41 01 E8 ? ? ? ? 48 8B CB E8 ? "
-        "? ? ? 48 8B D7 48 8B CB 48 8B 5C 24 30 48 83 C4 20 5F 48 FF 25 ? ? ? ? ? ? ? ? ? ? ? ? ? ? "
-        "? ? ? ? 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57">::find( moduleBytes );
+        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 F0 0F BA 2D E7 D9 45 03 00 48 8B DA">::
+        find( moduleBytes );
     const auto direct3DDevice9PresentDetour = utilities::Memory::Pattern<
-        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 30 48 8B D9 48 8D 0D D2">::find( moduleBytes );
+        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 55 41 56 48 "
+        "83 EC 30 F0 0F BA 2D DD D9 45 03 00 49 8B E9 4D 8B E0 4C 8B EA">::find( moduleBytes );
 #endif
+    const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
+    hooks.emplace( reinterpret_cast<std::uintptr_t>( gadget ) );
+    hooks->hookAt( 0, direct3DDevice9ResetDetour, &direct3DDevice9Reset );
+    hooks->hookAt( 1, direct3DDevice9PresentDetour, &direct3DDevice9Present );
 }
 
 void orion::core::Renderer::hookDirect3D11() noexcept
@@ -236,25 +265,35 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         log::error( xorstr_( "Failed to create ID3D11Device & IDXGISwapChain." ) );
         return;
     }
+    const auto gadget =
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
+    const auto virtualMethod = *reinterpret_cast<void***>( dXGISwapChain.Get() );
+    hooks.emplace( reinterpret_cast<std::uintptr_t>( gadget ) );
+    hooks->hookAt( 0, virtualMethod[8], &dXGISwapChainPresent );
+    hooks->hookAt( 1, virtualMethod[13], &dXGISwapChainResizeBuffers );
 }
 
 void orion::core::Renderer::hookDirect3D11RTTS() noexcept
 {
     const auto moduleBytes = utilities::Memory::getModuleBytes( context.getKernel32(), handle );
 #ifndef _WIN64
-    const auto dXGISwapChainPresentDetour =
-        utilities::Memory::Pattern<"81 EC 40 01 00 00 A1 ?? ?? ?? ?? 33 C4 89 84 24 3C 01 00 00 53 56 57">::find(
-            moduleBytes );
+    const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
+        "81 EC 40 01 00 00 A1 B0 70 0A 10 33 C4 89 84 24 3C 01 00 00 53 56 57 8B BC 24 50 01 00 00 68 C0">::
+        find( moduleBytes );
     const auto dXGISwapChainResizeBuffersDetour =
-        utilities::Memory::Pattern<"81 EC 40 01 00 00 A1 ?? ?? ?? ?? 33 C4 89 84 24 3C 01 00 00 56">::find(
-            moduleBytes );
+        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 00 DD 45 13 00 73 24 FF 15 68">::find( moduleBytes );
 #else
-    const auto dXGISwapChainPresentDetour =
-        utilities::Memory::Pattern<"40 53 56 57 48 81 EC 90 01 00 00 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 80 01 "
-                                   "00 00 48 8B F9 48 8D 0D ?? ?? ?? ?? 41">::find( moduleBytes );
-    const auto dXGISwapChainResizeBuffersDetour =
-        utilities::Memory::Pattern<"40 53 55 56 57 41 54 41 55 48 81 EC 98">::find( moduleBytes );
+    const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
+        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 48 83 EC 20 F0 0F BA 2D B1 D6">::
+        find( moduleBytes );
+    const auto dXGISwapChainResizeBuffersDetour = utilities::Memory::Pattern<
+        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC "
+        "30 F0 0F BA 2D AF D3 45 03 00 4D 8B E1 4D 8B E8 4C 8B F2 4C 8B">::find( moduleBytes );
 #endif
+    const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
+    hooks.emplace( reinterpret_cast<std::uintptr_t>( gadget ) );
+    hooks->hookAt( 0, dXGISwapChainPresentDetour, &dXGISwapChainPresent );
+    hooks->hookAt( 1, dXGISwapChainResizeBuffersDetour, &dXGISwapChainResizeBuffers );
 }
 
 void orion::core::to_json( nlohmann::json& json, const Renderer& renderer ) noexcept
