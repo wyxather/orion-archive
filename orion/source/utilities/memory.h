@@ -55,7 +55,7 @@ class Memory final
         }
 
       public:
-        _NODISCARD static constexpr const PatternType* find( const std::span<const std::uint8_t>& bytes ) noexcept
+        _NODISCARD static constexpr std::uint8_t* find( const std::span<const std::uint8_t>& bytes ) noexcept
         {
             auto value = xorarr( stb::consteval_value<PatternBuilder::build<str>::value>::value );
 
@@ -88,7 +88,7 @@ class Memory final
                                       patternWithoutFirstAndLastChar );
                          match )
                     {
-                        return &bytes[index + bitPos];
+                        return const_cast<std::uint8_t*>( &bytes[index + bitPos] );
                     }
                     mask = mask & ( mask - 1 );
                 }
