@@ -99,9 +99,9 @@ struct Renderer final
         const HWND handle;
     };
 
-    HMODULE                              handle = nullptr;
-    Type                                 type   = Type::Undefined;
-    utilities::Option<hooks::MinHook<2>> hooks;
+    HMODULE                                     handle = nullptr;
+    Type                                        type   = Type::Undefined;
+    utilities::Option<hooks::MinHook<2>, false> hooks;
 };
 
 } // namespace core

@@ -3,7 +3,7 @@
 namespace orion::utilities
 {
 
-template<typename T>
+template<typename T, bool ClearTrace = true>
 struct Option final
 {
     Option( Option&& )                 = delete;
@@ -30,7 +30,10 @@ struct Option final
         {
             reinterpret_cast<T*>( value.data() )->~T();
         }
-        value.fill( decltype( value )::value_type() );
+        if constexpr ( ClearTrace )
+        {
+            value.fill( decltype( value )::value_type() );
+        }
 #ifndef NDEBUG
         hasValue = false;
 #endif
