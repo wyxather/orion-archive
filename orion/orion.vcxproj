@@ -231,6 +231,7 @@
     <ClInclude Include="source\utilities\math.h" />
     <ClInclude Include="source\utilities\memory.h" />
     <ClInclude Include="source\utilities\option.h" />
+    <ClInclude Include="source\utilities\string.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\minhook\src\buffer.c">
