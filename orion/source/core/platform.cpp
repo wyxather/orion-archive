@@ -119,7 +119,7 @@ int orion::core::Platform::Window::getTextLength( const HWND window ) noexcept
 
 bool orion::core::Platform::Window::isConsole( const char* const className ) noexcept
 {
-    return ( strcmp( xorstr_( "ConsoleWindowClass" ), className ) == 0 );
+    return ( utilities::String::strcmp( xorstr_( "ConsoleWindowClass" ), className ) == 0 );
 }
 
 bool orion::core::Platform::Window::isEqualToCurrentProcessId( const DWORD processId ) noexcept
