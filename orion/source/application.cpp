@@ -6,20 +6,26 @@ EXTERN_C BOOL WINAPI _CRT_INIT( HMODULE, DWORD, LPVOID );
 
 void orion::Application::setup() noexcept
 {
-    [[maybe_unused]] const auto minhookInitialized = ( MH_Initialize() == MH_OK );
-    assert( minhookInitialized );
+    if ( MH_Initialize() != MH_OK ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to initialize MinHook." ) );
+    }
     context.renderer->hook();
     context.input->hook();
-    [[maybe_unused]] const auto minhookEnabled = ( MH_EnableHook( MH_ALL_HOOKS ) == MH_OK );
-    assert( minhookEnabled );
+    if ( MH_EnableHook( MH_ALL_HOOKS ) != MH_OK ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to enable MinHook." ) );
+    }
 }
 
 void orion::Application::exit( const bool shouldUnload ) noexcept
 {
     context.input->unhook();
     context.renderer->unhook();
-    [[maybe_unused]] const auto minhookUninitialized = ( MH_Uninitialize() == MH_OK );
-    assert( minhookUninitialized );
+    if ( MH_Uninitialize() != MH_OK ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to uninitialize MinHook." ) );
+    }
     context.getPlatform().window.unhook();
     if ( shouldUnload )
     {
