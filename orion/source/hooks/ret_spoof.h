@@ -128,7 +128,7 @@ class RetSpoof final
 namespace detail
 {
 
-EXTERN_C LPVOID __cdecl retSpoof();
+EXTERN_C LPVOID retSpoof();
 
 }
 
@@ -144,8 +144,7 @@ class RetSpoof final
     template<typename ReturnType, typename... Args>
     _NODISCARD static constexpr ReturnType invoker( const std::uintptr_t retSpoofAddress, Args... args ) noexcept
     {
-        using Fn            = ReturnType( __cdecl* )( Args... );
-        const auto retSpoof = reinterpret_cast<Fn>( retSpoofAddress );
+        const auto retSpoof = reinterpret_cast<ReturnType ( * )( Args... )>( retSpoofAddress );
         return retSpoof( args... );
     }
 
