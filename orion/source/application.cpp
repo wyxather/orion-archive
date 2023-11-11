@@ -20,12 +20,12 @@ void orion::Application::setup() noexcept
 
 void orion::Application::exit( const bool shouldUnload ) noexcept
 {
-    context.input->unhook();
-    context.renderer->unhook();
     if ( MH_Uninitialize() != MH_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to uninitialize MinHook." ) );
     }
+    context.input->unhook();
+    context.renderer->unhook();
     context.getPlatform().window.unhook();
     if ( shouldUnload )
     {
