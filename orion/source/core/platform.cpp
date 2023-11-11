@@ -21,7 +21,7 @@ void orion::core::Platform::Window::unhook() const noexcept
     context.getUser32().setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( originalProcedure ) );
 }
 
-BOOL orion::core::Platform::Window::enumWindowsProc( const HWND window, Window& self ) noexcept
+BOOL CALLBACK orion::core::Platform::Window::enumWindowsProc( const HWND window, Window& self ) noexcept
 {
     if ( !isEqualToCurrentProcessId( getThreadProcessId( window ) ) || !isVisible( window ) )
     {
