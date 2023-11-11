@@ -51,7 +51,7 @@ BOOL CALLBACK orion::core::Platform::Window::enumWindowsProc( const HWND window,
     return FALSE;
 }
 
-LRESULT orion::core::Platform::Window::procedure( const HWND   window,
+LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
                                                   const UINT   message,
                                                   const WPARAM wParam,
                                                   const LPARAM lParam ) noexcept
