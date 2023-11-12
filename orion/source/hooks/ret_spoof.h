@@ -8,28 +8,14 @@ namespace orion::hooks
 namespace detail
 {
 
-struct RetSpoofContext final
-{
-    RetSpoofContext( RetSpoofContext&& )                 = delete;
-    RetSpoofContext& operator=( RetSpoofContext&& )      = delete;
-    RetSpoofContext( const RetSpoofContext& )            = delete;
-    RetSpoofContext& operator=( const RetSpoofContext& ) = delete;
-
-    constexpr explicit RetSpoofContext() noexcept = default;
-
-    std::uintptr_t ebxBackup;
-    std::uintptr_t addressToJumpToInGadget;
-    std::uintptr_t invokerReturnAddress;
-};
-
 template<typename ReturnType, typename... Args>
 _NODISCARD static __declspec( naked ) constexpr ReturnType
-    __fastcall invokeFastcall( const std::uintptr_t   ecx,
-                               const std::uintptr_t   edx,
-                               const std::uintptr_t   functionAddress,
-                               const RetSpoofContext& retSpoofContext,
-                               const std::uintptr_t   gadgetAddress,
-                               Args... args ) noexcept
+    __fastcall invokeFastcall( [[maybe_unused]] const void* const ecx,
+                               [[maybe_unused]] const void* const edx,
+                               [[maybe_unused]] const void* const functionAddress,
+                               [[maybe_unused]] const void* const retSpoofContext,
+                               [[maybe_unused]] const void* const gadgetAddress,
+                               [[maybe_unused]] Args... args ) noexcept
 {
     __asm
     {
@@ -49,10 +35,11 @@ _NODISCARD static __declspec( naked ) constexpr ReturnType
 }
 
 template<typename ReturnType, typename... Args>
-_NODISCARD static __declspec( naked ) constexpr ReturnType __cdecl invokeCdecl( const std::uintptr_t   functionAddress,
-                                                                                const RetSpoofContext& retSpoofContext,
-                                                                                const std::uintptr_t   gadgetAddress,
-                                                                                Args... args ) noexcept
+_NODISCARD static __declspec( naked ) constexpr ReturnType
+    __cdecl invokeCdecl( [[maybe_unused]] const void* const functionAddress,
+                         [[maybe_unused]] const void* const retSpoofContext,
+                         [[maybe_unused]] const void* const gadgetAddress,
+                         [[maybe_unused]] Args... args ) noexcept
 {
     __asm
     {
@@ -83,43 +70,57 @@ class RetSpoof final
     RetSpoof( const RetSpoof& )            = delete;
     RetSpoof& operator=( const RetSpoof& ) = delete;
 
+    struct Context final
+    {
+        Context( Context&& )                 = delete;
+        Context& operator=( Context&& )      = delete;
+        Context( const Context& )            = delete;
+        Context& operator=( const Context& ) = delete;
+
+        constexpr explicit Context() noexcept = default;
+
+        const void* ebxBackup;
+        const void* addressToJumpToInGadget;
+        const void* invokerReturnAddress;
+    };
+
   public:
     template<typename ReturnType, typename... Args>
-    _NODISCARD static constexpr ReturnType fastcall( const std::uintptr_t ecx,
-                                                     const std::uintptr_t edx,
-                                                     const std::uintptr_t functionAddress,
-                                                     const std::uintptr_t gadgetAddress,
+    _NODISCARD static constexpr ReturnType fastcall( const void* const functionAddress,
+                                                     const void* const gadgetAddress,
+                                                     const void* const ecx,
+                                                     const void* const edx,
                                                      Args... args ) noexcept
     {
-        detail::RetSpoofContext context;
+        Context context;
         return detail::invokeFastcall<ReturnType, Args...>(
-            ecx, edx, functionAddress, context, gadgetAddress, args... );
+            ecx, edx, functionAddress, &context, gadgetAddress, args... );
     }
 
     template<typename ReturnType, typename... Args>
-    _NODISCARD static constexpr ReturnType thiscall( const std::uintptr_t ecx,
-                                                     const std::uintptr_t functionAddress,
-                                                     const std::uintptr_t gadgetAddress,
+    _NODISCARD static constexpr ReturnType thiscall( const void* const functionAddress,
+                                                     const void* const gadgetAddress,
+                                                     const void* const ecx,
                                                      Args... args ) noexcept
     {
-        return fastcall<ReturnType, Args...>( ecx, 0, functionAddress, gadgetAddress, args... );
+        return fastcall<ReturnType, Args...>( functionAddress, gadgetAddress, ecx, nullptr, args... );
     }
 
     template<typename ReturnType, typename... Args>
-    _NODISCARD static constexpr ReturnType stdcall( const std::uintptr_t functionAddress,
-                                                    const std::uintptr_t gadgetAddress,
+    _NODISCARD static constexpr ReturnType stdcall( const void* const functionAddress,
+                                                    const void* const gadgetAddress,
                                                     Args... args ) noexcept
     {
-        return thiscall<ReturnType, Args...>( 0, functionAddress, gadgetAddress, args... );
+        return thiscall<ReturnType, Args...>( functionAddress, gadgetAddress, nullptr, args... );
     }
 
     template<typename ReturnType, typename... Args>
-    _NODISCARD static constexpr ReturnType cdeclcall( const std::uintptr_t functionAddress,
-                                                      const std::uintptr_t gadgetAddress,
+    _NODISCARD static constexpr ReturnType cdeclcall( const void* const functionAddress,
+                                                      const void* const gadgetAddress,
                                                       Args... args ) noexcept
     {
-        detail::RetSpoofContext context;
-        return detail::invokeCdecl<ReturnType, Args...>( functionAddress, context, gadgetAddress, args... );
+        Context context;
+        return detail::invokeCdecl<ReturnType, Args...>( functionAddress, &context, gadgetAddress, args... );
     }
 };
 
@@ -142,9 +143,9 @@ class RetSpoof final
     RetSpoof& operator=( const RetSpoof& ) = delete;
 
     template<typename ReturnType, typename... Args>
-    _NODISCARD static constexpr ReturnType invoker( const std::uintptr_t retSpoofAddress, Args... args ) noexcept
+    _NODISCARD static constexpr ReturnType invoker( const void* const retSpoofAddress, Args... args ) noexcept
     {
-        const auto retSpoof = reinterpret_cast<ReturnType ( * )( Args... )>( retSpoofAddress );
+        const auto retSpoof = static_cast<ReturnType ( * )( Args... )>( retSpoofAddress );
         return retSpoof( args... );
     }
 
@@ -155,14 +156,14 @@ class RetSpoof final
         Context( const Context& )            = delete;
         Context& operator=( const Context& ) = delete;
 
-        constexpr explicit Context( const std::uintptr_t gadgetAddress, const std::uintptr_t functionAddress ) noexcept
+        constexpr explicit Context( const void* const gadgetAddress, const void* const functionAddress ) noexcept
             : gadgetAddress { gadgetAddress }, functionAddress { functionAddress }
         {
         }
 
-        const std::uintptr_t gadgetAddress;
-        const std::uintptr_t functionAddress;
-        std::uintptr_t       rbxBackup;
+        const void* const gadgetAddress;
+        const void* const functionAddress;
+        const void*       rbxBackup;
     };
 
     template<std::size_t size, typename>
@@ -181,22 +182,16 @@ class RetSpoof final
                  typename ThirdArg,
                  typename FourthArg,
                  typename... Args>
-        _NODISCARD static constexpr ReturnType call( const std::uintptr_t retSpoofAddress,
-                                                     const Context&       context,
-                                                     FirstArg             firstArg,
-                                                     SecondArg            secondArg,
-                                                     ThirdArg             thirdArg,
-                                                     FourthArg            fourthArg,
+        _NODISCARD static constexpr ReturnType call( const void* const retSpoofAddress,
+                                                     const Context&    retSpoofContext,
+                                                     FirstArg          firstArg,
+                                                     SecondArg         secondArg,
+                                                     ThirdArg          thirdArg,
+                                                     FourthArg         fourthArg,
                                                      Args... args ) noexcept
         {
-            return invoker<ReturnType,
-                           FirstArg,
-                           SecondArg,
-                           ThirdArg,
-                           FourthArg,
-                           const Context&,
-                           const std::uintptr_t,
-                           Args...>( retSpoofAddress, firstArg, secondArg, thirdArg, fourthArg, context, 0, args... );
+            return invoker<ReturnType, FirstArg, SecondArg, ThirdArg, FourthArg, const Context&, const void*, Args...>(
+                retSpoofAddress, firstArg, secondArg, thirdArg, fourthArg, retSpoofContext, nullptr, args... );
         }
     };
 
@@ -211,32 +206,61 @@ class RetSpoof final
         ArgumentRemapper& operator=( const ArgumentRemapper& ) = delete;
 
         template<typename ReturnType,
-                 typename FirstArg  = const std::uintptr_t,
-                 typename SecondArg = const std::uintptr_t,
-                 typename ThirdArg  = const std::uintptr_t,
-                 typename FourthArg = const std::uintptr_t>
-        _NODISCARD static constexpr ReturnType call( const std::uintptr_t retSpoofAddress,
-                                                     const Context&       context,
-                                                     FirstArg             firstArg  = {},
-                                                     SecondArg            secondArg = {},
-                                                     ThirdArg             thirdArg  = {},
-                                                     FourthArg            fourthArg = {} ) noexcept
+                 typename FirstArg  = const void*,
+                 typename SecondArg = const void*,
+                 typename ThirdArg  = const void*,
+                 typename FourthArg = const void*>
+        _NODISCARD static constexpr ReturnType call( const void* const retSpoofAddress,
+                                                     const Context&    retSpoofContext,
+                                                     FirstArg          firstArg  = nullptr,
+                                                     SecondArg         secondArg = nullptr,
+                                                     ThirdArg          thirdArg  = nullptr,
+                                                     FourthArg         fourthArg = nullptr ) noexcept
         {
-            return invoker<ReturnType, FirstArg, SecondArg, ThirdArg, FourthArg, const Context&, const std::uintptr_t>(
-                retSpoofAddress, firstArg, secondArg, thirdArg, fourthArg, context, 0 );
+            return invoker<ReturnType, FirstArg, SecondArg, ThirdArg, FourthArg, const Context&, const void*>(
+                retSpoofAddress, firstArg, secondArg, thirdArg, fourthArg, retSpoofContext, nullptr );
         }
     };
 
   public:
     template<typename ReturnType, typename... Args>
-    _NODISCARD static constexpr ReturnType call( ReturnType           ( *const functionAddress )( Args... ),
-                                                 const std::uintptr_t gadgetAddress,
-                                                 Args... args ) noexcept
+    _NODISCARD static constexpr ReturnType fastcall( const void* const functionAddress,
+                                                     const void* const gadgetAddress,
+                                                     Args... args ) noexcept
     {
-        const Context context { gadgetAddress, reinterpret_cast<std::uintptr_t>( functionAddress ) };
-        using ArgRemapper = ArgumentRemapper<sizeof...( Args ), void>;
-        return ArgRemapper::template call<ReturnType, Args...>(
-            reinterpret_cast<std::uintptr_t>( &detail::retSpoof ), context, args... );
+        const Context context { gadgetAddress, functionAddress };
+        return ArgumentRemapper<sizeof...( Args ), void>::template call<ReturnType, Args...>(
+            &detail::retSpoof, context, args... );
+    }
+
+    template<typename ReturnType, typename... Args>
+    _NODISCARD static constexpr ReturnType thiscall( const void* const functionAddress,
+                                                     const void* const gadgetAddress,
+                                                     Args... args ) noexcept
+    {
+        const Context context { gadgetAddress, functionAddress };
+        return ArgumentRemapper<sizeof...( Args ), void>::template call<ReturnType, Args...>(
+            &detail::retSpoof, context, args... );
+    }
+
+    template<typename ReturnType, typename... Args>
+    _NODISCARD static constexpr ReturnType stdcall( const void* const functionAddress,
+                                                    const void* const gadgetAddress,
+                                                    Args... args ) noexcept
+    {
+        const Context context { gadgetAddress, functionAddress };
+        return ArgumentRemapper<sizeof...( Args ), void>::template call<ReturnType, Args...>(
+            &detail::retSpoof, context, args... );
+    }
+
+    template<typename ReturnType, typename... Args>
+    _NODISCARD static constexpr ReturnType cdeclcall( const void* const functionAddress,
+                                                      const void* const gadgetAddress,
+                                                      Args... args ) noexcept
+    {
+        const Context context { gadgetAddress, functionAddress };
+        return ArgumentRemapper<sizeof...( Args ), void>::template call<ReturnType, Args...>(
+            &detail::retSpoof, context, args... );
     }
 };
 

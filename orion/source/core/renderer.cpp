@@ -167,7 +167,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
     const auto gadget =
         utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
     const auto virtualMethod = *reinterpret_cast<void***>( device.Get() );
-    hooks.emplace( reinterpret_cast<std::uintptr_t>( gadget ) );
+    hooks.emplace( gadget );
     hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset );
     hooks->hookAt( 1, virtualMethod[17], &direct3DDevice9Present );
 }
@@ -189,7 +189,7 @@ void orion::core::Renderer::hookDirect3D9RTSS() noexcept
         "83 EC 30 F0 0F BA 2D DD D9 45 03 00 49 8B E9 4D 8B E0 4C 8B EA">::find( moduleBytes );
 #endif
     const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
-    hooks.emplace( reinterpret_cast<std::uintptr_t>( gadget ) );
+    hooks.emplace( gadget );
     hooks->hookAt( 0, direct3DDevice9ResetDetour, &direct3DDevice9Reset );
     hooks->hookAt( 1, direct3DDevice9PresentDetour, &direct3DDevice9Present );
 }
@@ -268,7 +268,7 @@ void orion::core::Renderer::hookDirect3D11() noexcept
     const auto gadget =
         utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
     const auto virtualMethod = *reinterpret_cast<void***>( dXGISwapChain.Get() );
-    hooks.emplace( reinterpret_cast<std::uintptr_t>( gadget ) );
+    hooks.emplace( gadget );
     hooks->hookAt( 0, virtualMethod[8], &dXGISwapChainPresent );
     hooks->hookAt( 1, virtualMethod[13], &dXGISwapChainResizeBuffers );
 }
@@ -291,7 +291,7 @@ void orion::core::Renderer::hookDirect3D11RTTS() noexcept
         "30 F0 0F BA 2D AF D3 45 03 00 4D 8B E1 4D 8B E8 4C 8B F2 4C 8B">::find( moduleBytes );
 #endif
     const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
-    hooks.emplace( reinterpret_cast<std::uintptr_t>( gadget ) );
+    hooks.emplace( gadget );
     hooks->hookAt( 0, dXGISwapChainPresentDetour, &dXGISwapChainPresent );
     hooks->hookAt( 1, dXGISwapChainResizeBuffersDetour, &dXGISwapChainResizeBuffers );
 }

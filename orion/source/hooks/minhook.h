@@ -13,7 +13,7 @@ struct MinHook final
     MinHook( const MinHook& )            = delete;
     MinHook& operator=( const MinHook& ) = delete;
 
-    constexpr explicit MinHook( const std::uintptr_t gadget ) noexcept : gadget( gadget )
+    constexpr explicit MinHook( const void* const gadget ) noexcept : gadget { gadget }
     {
     }
 
@@ -24,7 +24,6 @@ struct MinHook final
         assert( minhookCreated );
     }
 
-#ifndef _WIN64
     template<std::size_t Index, typename ReturnType, typename... Args>
     _NODISCARD constexpr ReturnType cdeclcall( Args... args ) const noexcept
     {
@@ -40,54 +39,18 @@ struct MinHook final
     template<std::size_t Index, typename ReturnType, typename Self, typename... Args>
     _NODISCARD constexpr ReturnType thiscall( Self self, Args... args ) const noexcept
     {
-        return RetSpoof::thiscall<ReturnType>( self, originals[Index], gadget, args... );
+        return RetSpoof::thiscall<ReturnType>( originals[Index], gadget, self, args... );
     }
 
     template<std::size_t Index, typename ReturnType, typename Self, typename Garbage, typename... Args>
     _NODISCARD constexpr ReturnType fastcall( Self self, Garbage garbage, Args... args ) const noexcept
     {
-        return RetSpoof::fastcall<ReturnType>( self, garbage, originals[Index], gadget, args... );
+        return RetSpoof::fastcall<ReturnType>( originals[Index], gadget, self, garbage, args... );
     }
-#else
-    template<std::size_t Index, typename ReturnType, typename... Args>
-    _NODISCARD constexpr ReturnType cdeclcall( Args... args ) const noexcept
-    {
-        const auto fn = reinterpret_cast<ReturnType ( * )( Args... )>( originals[Index] );
-        return RetSpoof::call( fn, gadget, args... );
-    }
-
-    template<std::size_t Index, typename ReturnType, typename... Args>
-    _NODISCARD constexpr ReturnType stdcall( Args... args ) const noexcept
-    {
-        const auto fn = reinterpret_cast<ReturnType ( * )( Args... )>( originals[Index] );
-        return RetSpoof::call( fn, gadget, args... );
-    }
-
-    template<std::size_t Index, typename ReturnType, typename... Args>
-    _NODISCARD constexpr ReturnType thiscall( Args... args ) const noexcept
-    {
-        const auto fn = reinterpret_cast<ReturnType ( * )( Args... )>( originals[Index] );
-        return RetSpoof::call( fn, gadget, args... );
-    }
-
-    template<std::size_t Index, typename ReturnType, typename... Args>
-    _NODISCARD constexpr ReturnType fastcall( Args... args ) const noexcept
-    {
-        const auto fn = reinterpret_cast<ReturnType ( * )( Args... )>( originals[Index] );
-        return RetSpoof::call( fn, gadget, args... );
-    }
-
-    template<std::size_t Index, typename ReturnType, typename... Args>
-    _NODISCARD constexpr ReturnType vectorcall( Args... args ) const noexcept
-    {
-        const auto fn = reinterpret_cast<ReturnType ( * )( Args... )>( originals[Index] );
-        return RetSpoof::call( fn, gadget, args... );
-    }
-#endif
 
   private:
-    std::uintptr_t                   gadget;
-    std::array<std::uintptr_t, Size> originals;
+    const void*             gadget;
+    std::array<void*, Size> originals;
 };
 
 } // namespace orion::hooks
