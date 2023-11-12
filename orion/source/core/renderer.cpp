@@ -78,29 +78,29 @@ int orion::core::Renderer::getUserInput( const char* text, const char* caption )
 }
 
 HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Reset(
-    CONST LPDIRECT3DDEVICE9 device, CONST D3DPRESENT_PARAMETERS* CONST presentationParameters ) noexcept
+    CONST LPDIRECT3DDEVICE9 direct3DDevice9, CONST D3DPRESENT_PARAMETERS* CONST presentationParameters ) noexcept
 {
-    return context.getRenderer().hooks->stdcall<0, HRESULT>( device, presentationParameters );
+    return context.getRenderer().hooks->stdcall<0, HRESULT>( direct3DDevice9, presentationParameters );
 }
 
-HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST LPDIRECT3DDEVICE9 device,
+HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST LPDIRECT3DDEVICE9 direct3DDevice9,
                                                                          CONST LPRECT            sourceRect,
                                                                          CONST LPRECT            destRect,
                                                                          CONST HWND              destWindowOverride,
                                                                          CONST LPRGNDATA         dirtyRegion ) noexcept
 {
     return context.getRenderer().hooks->stdcall<1, HRESULT>(
-        device, sourceRect, destRect, destWindowOverride, dirtyRegion );
+        direct3DDevice9, sourceRect, destRect, destWindowOverride, dirtyRegion );
 }
 
-HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainPresent( CONST IDXGISwapChain* CONST swapChain,
+HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainPresent( CONST IDXGISwapChain* CONST dXGISwapChain,
                                                                        CONST UINT                  syncInterval,
                                                                        CONST UINT                  flags ) noexcept
 {
-    return context.getRenderer().hooks->stdcall<0, HRESULT>( swapChain, syncInterval, flags );
+    return context.getRenderer().hooks->stdcall<0, HRESULT>( dXGISwapChain, syncInterval, flags );
 }
 
-HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainResizeBuffers( CONST IDXGISwapChain* CONST swapChain,
+HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainResizeBuffers( CONST IDXGISwapChain* CONST dXGISwapChain,
                                                                              CONST UINT                  bufferCount,
                                                                              CONST UINT                  width,
                                                                              CONST UINT                  height,
@@ -108,7 +108,7 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainResizeBuffers( CON
                                                                              CONST UINT swapChainFlags ) noexcept
 {
     return context.getRenderer().hooks->stdcall<1, HRESULT>(
-        swapChain, bufferCount, width, height, newFormat, swapChainFlags );
+        dXGISwapChain, bufferCount, width, height, newFormat, swapChainFlags );
 }
 
 void orion::core::Renderer::hookDirect3D9() noexcept
@@ -137,7 +137,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         log::error( xorstr_( "Failed to create IDirect3D9." ) );
         return;
     }
-    D3DPRESENT_PARAMETERS params {
+    D3DPRESENT_PARAMETERS d3DPresentParameters {
         0,
         0,
         D3DFORMAT::D3DFMT_UNKNOWN,
@@ -153,13 +153,13 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         0,
         D3DPRESENT_INTERVAL_ONE,
     };
-    Microsoft::WRL::ComPtr<IDirect3DDevice9> device;
+    Microsoft::WRL::ComPtr<IDirect3DDevice9> direct3DDevice9;
     if ( direct3d9->CreateDevice( D3DADAPTER_DEFAULT,
                                   D3DDEVTYPE::D3DDEVTYPE_NULLREF,
                                   window.handle,
                                   D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT,
-                                  &params,
-                                  device.GetAddressOf() ) != D3D_OK ) [[unlikely]]
+                                  &d3DPresentParameters,
+                                  direct3DDevice9.GetAddressOf() ) != D3D_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirect3DDevice9." ) );
         return;
@@ -171,7 +171,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         log::error( xorstr_( "Failed to find gadget for IDirect3DDevice9." ) );
         return;
     }
-    const auto virtualMethod = *reinterpret_cast<void***>( device.Get() );
+    const auto virtualMethod = *reinterpret_cast<void***>( direct3DDevice9.Get() );
     hooks.emplace( gadget );
     if ( !hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset ) ) [[unlikely]]
     {
