@@ -166,6 +166,11 @@ void orion::core::Renderer::hookDirect3D9() noexcept
     }
     const auto gadget =
         utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
+    if ( gadget == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find gadget for IDirect3DDevice9." ) );
+        return;
+    }
     const auto virtualMethod = *reinterpret_cast<void***>( device.Get() );
     hooks.emplace( gadget );
     if ( !hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset ) ) [[unlikely]]
@@ -184,17 +189,35 @@ void orion::core::Renderer::hookDirect3D9RTSS() noexcept
 #ifndef _WIN64
     const auto direct3DDevice9ResetDetour =
         utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( moduleBytes );
-    const auto direct3DDevice9PresentDetour =
-        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 78 D6 45 13 00">::find( moduleBytes );
 #else
     const auto direct3DDevice9ResetDetour = utilities::Memory::Pattern<
         "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 F0 0F BA 2D E7 D9 45 03 00 48 8B DA">::
         find( moduleBytes );
+#endif
+    if ( direct3DDevice9ResetDetour == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find IDirect3DDevice9::Reset (Detour)." ) );
+        return;
+    }
+#ifndef _WIN64
+    const auto direct3DDevice9PresentDetour =
+        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 78 D6 45 13 00">::find( moduleBytes );
+#else
     const auto direct3DDevice9PresentDetour = utilities::Memory::Pattern<
         "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 55 41 56 48 "
         "83 EC 30 F0 0F BA 2D DD D9 45 03 00 49 8B E9 4D 8B E0 4C 8B EA">::find( moduleBytes );
 #endif
+    if ( direct3DDevice9PresentDetour == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find IDirect3DDevice9::Present (Detour)." ) );
+        return;
+    }
     const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
+    if ( gadget == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find gadget for IDirect3DDevice9 (Detour)." ) );
+        return;
+    }
     hooks.emplace( gadget );
     if ( !hooks->hookAt( 0, direct3DDevice9ResetDetour, &direct3DDevice9Reset ) ) [[unlikely]]
     {
@@ -279,6 +302,11 @@ void orion::core::Renderer::hookDirect3D11() noexcept
     }
     const auto gadget =
         utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
+    if ( gadget == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find gadget for IDXGISwapChain." ) );
+        return;
+    }
     const auto virtualMethod = *reinterpret_cast<void***>( dXGISwapChain.Get() );
     hooks.emplace( gadget );
     if ( !hooks->hookAt( 0, virtualMethod[8], &dXGISwapChainPresent ) ) [[unlikely]]
@@ -298,17 +326,35 @@ void orion::core::Renderer::hookDirect3D11RTTS() noexcept
     const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
         "81 EC 40 01 00 00 A1 B0 70 0A 10 33 C4 89 84 24 3C 01 00 00 53 56 57 8B BC 24 50 01 00 00 68 C0">::
         find( moduleBytes );
-    const auto dXGISwapChainResizeBuffersDetour =
-        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 00 DD 45 13 00 73 24 FF 15 68">::find( moduleBytes );
 #else
     const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
         "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 48 83 EC 20 F0 0F BA 2D B1 D6">::
         find( moduleBytes );
+#endif
+    if ( dXGISwapChainPresentDetour == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find IDXGISwapChain::Present (Detour)." ) );
+        return;
+    }
+#ifndef _WIN64
+    const auto dXGISwapChainResizeBuffersDetour =
+        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 00 DD 45 13 00 73 24 FF 15 68">::find( moduleBytes );
+#else
     const auto dXGISwapChainResizeBuffersDetour = utilities::Memory::Pattern<
         "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC "
         "30 F0 0F BA 2D AF D3 45 03 00 4D 8B E1 4D 8B E8 4C 8B F2 4C 8B">::find( moduleBytes );
 #endif
+    if ( dXGISwapChainResizeBuffersDetour == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find IDXGISwapChain::ResizeBuffers (Detour)." ) );
+        return;
+    }
     const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
+    if ( gadget == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find gadget for IDXGISwapChain (Detour)." ) );
+        return;
+    }
     hooks.emplace( gadget );
     if ( !hooks->hookAt( 0, dXGISwapChainPresentDetour, &dXGISwapChainPresent ) ) [[unlikely]]
     {
