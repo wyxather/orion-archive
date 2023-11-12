@@ -36,10 +36,21 @@ struct Input final
   private:
     _NODISCARD static int getUserInput( const char* text, const char* caption ) noexcept;
 
+    static HRESULT STDMETHODCALLTYPE directInputDevice8GetDeviceState( CONST LPDIRECTINPUTDEVICE8 directInputDevice8,
+                                                                       CONST DWORD                dataSizeInBytes,
+                                                                       CONST LPVOID               data ) noexcept;
+
+    static HRESULT STDMETHODCALLTYPE directInputDevice8GetDeviceData( CONST LPDIRECTINPUTDEVICE8 directInputDevice8,
+                                                                      CONST DWORD                dataSizeInBytes,
+                                                                      CONST LPDIDEVICEOBJECTDATA data,
+                                                                      CONST LPDWORD              dataCount,
+                                                                      CONST DWORD                dataFlags ) noexcept;
+
     void hookDirectInput8() noexcept;
 
-    HMODULE handle = nullptr;
-    Type    type   = Type::Undefined;
+    HMODULE                                     handle = nullptr;
+    Type                                        type   = Type::Undefined;
+    utilities::Option<hooks::MinHook<2>, false> hooks;
 };
 
 } // namespace core

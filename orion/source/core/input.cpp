@@ -38,6 +38,23 @@ int orion::core::Input::getUserInput( const char* text, const char* caption ) no
     return context.getUser32().messageBoxA( nullptr, text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
 }
 
+HRESULT STDMETHODCALLTYPE orion::core::Input::directInputDevice8GetDeviceState(
+    CONST LPDIRECTINPUTDEVICE8 directInputDevice8, CONST DWORD dataSizeInBytes, CONST LPVOID data ) noexcept
+{
+    return context.getInput().hooks->stdcall<0, HRESULT>( directInputDevice8, dataSizeInBytes, data );
+}
+
+HRESULT STDMETHODCALLTYPE
+    orion::core::Input::directInputDevice8GetDeviceData( CONST LPDIRECTINPUTDEVICE8 directInputDevice8,
+                                                         CONST DWORD                dataSizeInBytes,
+                                                         CONST LPDIDEVICEOBJECTDATA data,
+                                                         CONST LPDWORD              dataCount,
+                                                         CONST DWORD                dataFlags ) noexcept
+{
+    return context.getInput().hooks->stdcall<1, HRESULT>(
+        directInputDevice8, dataSizeInBytes, data, dataCount, dataFlags );
+}
+
 void orion::core::Input::hookDirectInput8() noexcept
 {
     const auto directInput8Create = LI_FUNC( DirectInput8Create )::in_safe<HRESULT( WINAPI* )(
@@ -60,6 +77,23 @@ void orion::core::Input::hookDirectInput8() noexcept
     {
         log::error( xorstr_( "Failed to create IDirectInputDevice8." ) );
         return;
+    }
+    const auto gadget =
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
+    if ( gadget == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find gadget for IDirectInputDevice8." ) );
+        return;
+    }
+    const auto virtualMethod = *reinterpret_cast<void***>( directInputDevice8.Get() );
+    hooks.emplace( gadget );
+    if ( !hooks->hookAt( 0, virtualMethod[9], &directInputDevice8GetDeviceState ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDirectInputDevice8::GetDeviceState." ) );
+    }
+    if ( !hooks->hookAt( 1, virtualMethod[10], &directInputDevice8GetDeviceData ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDirectInputDevice8::GetDeviceData." ) );
     }
 }
 
