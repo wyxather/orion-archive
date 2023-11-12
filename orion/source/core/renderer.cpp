@@ -168,8 +168,14 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
     const auto virtualMethod = *reinterpret_cast<void***>( device.Get() );
     hooks.emplace( gadget );
-    hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset );
-    hooks->hookAt( 1, virtualMethod[17], &direct3DDevice9Present );
+    if ( !hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDirect3DDevice9::Reset." ) );
+    }
+    if ( !hooks->hookAt( 1, virtualMethod[17], &direct3DDevice9Present ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDirect3DDevice9::Present." ) );
+    }
 }
 
 void orion::core::Renderer::hookDirect3D9RTSS() noexcept
@@ -190,8 +196,14 @@ void orion::core::Renderer::hookDirect3D9RTSS() noexcept
 #endif
     const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
     hooks.emplace( gadget );
-    hooks->hookAt( 0, direct3DDevice9ResetDetour, &direct3DDevice9Reset );
-    hooks->hookAt( 1, direct3DDevice9PresentDetour, &direct3DDevice9Present );
+    if ( !hooks->hookAt( 0, direct3DDevice9ResetDetour, &direct3DDevice9Reset ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDirect3DDevice9::Reset (Detour)." ) );
+    }
+    if ( !hooks->hookAt( 1, direct3DDevice9PresentDetour, &direct3DDevice9Present ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDirect3DDevice9::Present (Detour)." ) );
+    }
 }
 
 void orion::core::Renderer::hookDirect3D11() noexcept
@@ -269,8 +281,14 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
     const auto virtualMethod = *reinterpret_cast<void***>( dXGISwapChain.Get() );
     hooks.emplace( gadget );
-    hooks->hookAt( 0, virtualMethod[8], &dXGISwapChainPresent );
-    hooks->hookAt( 1, virtualMethod[13], &dXGISwapChainResizeBuffers );
+    if ( !hooks->hookAt( 0, virtualMethod[8], &dXGISwapChainPresent ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDXGISwapChain::Present." ) );
+    }
+    if ( !hooks->hookAt( 1, virtualMethod[13], &dXGISwapChainResizeBuffers ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDXGISwapChain::ResizeBuffers." ) );
+    }
 }
 
 void orion::core::Renderer::hookDirect3D11RTTS() noexcept
@@ -292,8 +310,14 @@ void orion::core::Renderer::hookDirect3D11RTTS() noexcept
 #endif
     const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
     hooks.emplace( gadget );
-    hooks->hookAt( 0, dXGISwapChainPresentDetour, &dXGISwapChainPresent );
-    hooks->hookAt( 1, dXGISwapChainResizeBuffersDetour, &dXGISwapChainResizeBuffers );
+    if ( !hooks->hookAt( 0, dXGISwapChainPresentDetour, &dXGISwapChainPresent ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDXGISwapChain::Present (Detour)." ) );
+    }
+    if ( !hooks->hookAt( 1, dXGISwapChainResizeBuffersDetour, &dXGISwapChainResizeBuffers ) ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to hook IDXGISwapChain::ResizeBuffers (Detour)." ) );
+    }
 }
 
 void orion::core::to_json( nlohmann::json& json, const Renderer& renderer ) noexcept

@@ -17,11 +17,9 @@ struct MinHook final
     {
     }
 
-    constexpr void hookAt( const std::size_t index, void* const target, void* const function ) noexcept
+    _NODISCARD constexpr bool hookAt( const std::size_t index, void* const target, void* const function ) noexcept
     {
-        [[maybe_unused]] const auto minhookCreated =
-            ( MH_CreateHook( target, function, reinterpret_cast<void**>( &( originals[index] ) ) ) == MH_OK );
-        assert( minhookCreated );
+        return ( MH_CreateHook( target, function, reinterpret_cast<void**>( &originals[index] ) ) == MH_OK );
     }
 
     template<std::size_t Index, typename ReturnType, typename... Args>
