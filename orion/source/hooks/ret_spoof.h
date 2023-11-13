@@ -19,13 +19,13 @@ _NODISCARD static __declspec( naked ) constexpr ReturnType
 {
     __asm
     {
-                mov eax, [esp+8] // load a pointer to context into eax.
+                mov eax, [esp+8] // load a pointer to retSpoofContext into eax.
                 mov [eax], ebx // save ebx in retSpoofContext.ebxBackup.
                 lea ebx, returnHereFromGadget // load the address of the label we want the gadget to jump to.
                 mov [eax+4], ebx // save the address of 'returnHereFromGadget' in retSpoofContext.addressToJumpToInGadget.
                 pop dword ptr [eax+8] // pop return address from stack into retSpoofContext.invokerReturnAddress.
                 lea ebx, [eax+4] // load the address of retSpoofContext.addressToJumpToInGadget to ebx.
-                ret 4   // pop 'functionAddress' from stack and jump to it, skip 'context' on stack; esp will point to the
+                ret 4   // pop 'functionAddress' from stack and jump to it, skip 'retSpoofContext' on stack; esp will point to the
       // spoofed return address (gadgetAddress).
              returnHereFromGadget:
                 push [ebx+4] // restore retSpoofContext.invokerReturnAddress as a return address.
@@ -43,13 +43,13 @@ _NODISCARD static __declspec( naked ) constexpr ReturnType
 {
     __asm
     {
-                mov eax, [esp+8] // load a pointer to context into eax.
+                mov eax, [esp+8] // load a pointer to retSpoofContext into eax.
                 mov [eax], ebx // save ebx in retSpoofContext.ebxBackup.
                 lea ebx, returnHereFromGadget // load the address of the label we want the gadget to jump to.
                 mov [eax+4], ebx // save the address of 'returnHereFromGadget' in retSpoofContext.addressToJumpToInGadget.
                 pop dword ptr [eax+8] // pop return address from stack into retSpoofContext.invokerReturnAddress.
                 lea ebx, [eax+4] // load the address of retSpoofContext.invokerReturnAddress to ebx.
-                ret 4   // pop 'functionAddress' from stack and jump to it, skip 'context' on stack; esp will point to the
+                ret 4   // pop 'functionAddress' from stack and jump to it, skip 'retSpoofContext' on stack; esp will point to the
       // spoofed return address (gadgetAddress).
              returnHereFromGadget:
                 sub esp, 12
@@ -92,9 +92,9 @@ class RetSpoof final
                                                      const void* const edx,
                                                      Args... args ) noexcept
     {
-        Context context;
+        Context retSpoofContext;
         return detail::invokeFastcall<ReturnType, Args...>(
-            ecx, edx, functionAddress, &context, gadgetAddress, args... );
+            ecx, edx, functionAddress, &retSpoofContext, gadgetAddress, args... );
     }
 
     template<typename ReturnType, typename... Args>
@@ -119,8 +119,8 @@ class RetSpoof final
                                                       const void* const gadgetAddress,
                                                       Args... args ) noexcept
     {
-        Context context;
-        return detail::invokeCdecl<ReturnType, Args...>( functionAddress, &context, gadgetAddress, args... );
+        Context retSpoofContext;
+        return detail::invokeCdecl<ReturnType, Args...>( functionAddress, &retSpoofContext, gadgetAddress, args... );
     }
 };
 
@@ -228,9 +228,9 @@ class RetSpoof final
                                                      const void* const gadgetAddress,
                                                      Args... args ) noexcept
     {
-        const Context context { gadgetAddress, functionAddress };
+        const Context retSpoofContext { gadgetAddress, functionAddress };
         return ArgumentRemapper<sizeof...( Args ), void>::template call<ReturnType, Args...>(
-            &detail::retSpoof, context, args... );
+            std::addressof( detail::retSpoof ), retSpoofContext, args... );
     }
 
     template<typename ReturnType, typename... Args>
@@ -238,9 +238,9 @@ class RetSpoof final
                                                      const void* const gadgetAddress,
                                                      Args... args ) noexcept
     {
-        const Context context { gadgetAddress, functionAddress };
+        const Context retSpoofContext { gadgetAddress, functionAddress };
         return ArgumentRemapper<sizeof...( Args ), void>::template call<ReturnType, Args...>(
-            &detail::retSpoof, context, args... );
+            std::addressof( detail::retSpoof ), retSpoofContext, args... );
     }
 
     template<typename ReturnType, typename... Args>
@@ -248,9 +248,9 @@ class RetSpoof final
                                                     const void* const gadgetAddress,
                                                     Args... args ) noexcept
     {
-        const Context context { gadgetAddress, functionAddress };
+        const Context retSpoofContext { gadgetAddress, functionAddress };
         return ArgumentRemapper<sizeof...( Args ), void>::template call<ReturnType, Args...>(
-            &detail::retSpoof, context, args... );
+            std::addressof( detail::retSpoof ), retSpoofContext, args... );
     }
 
     template<typename ReturnType, typename... Args>
@@ -258,9 +258,9 @@ class RetSpoof final
                                                       const void* const gadgetAddress,
                                                       Args... args ) noexcept
     {
-        const Context context { gadgetAddress, functionAddress };
+        const Context retSpoofContext { gadgetAddress, functionAddress };
         return ArgumentRemapper<sizeof...( Args ), void>::template call<ReturnType, Args...>(
-            &detail::retSpoof, context, args... );
+            std::addressof( detail::retSpoof ), retSpoofContext, args... );
     }
 };
 
