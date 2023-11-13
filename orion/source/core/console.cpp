@@ -41,7 +41,7 @@ BOOL WINAPI orion::core::Console::ctrlHandler( const DWORD ctrlType ) noexcept
 void orion::core::Console::printPrefix( char* const       buffer,
                                         const std::size_t bufferSizeInBytes,
                                         const std::size_t maxNumChars,
-                                        const char* const mode,
+                                        const char* const modeName,
                                         const WORD        color,
                                         const char* const fileName,
                                         const std::size_t line ) const noexcept
@@ -58,7 +58,7 @@ void orion::core::Console::printPrefix( char* const       buffer,
                    timeFormat.data(),
                    localTime.wMilliseconds ) );
     setTextOutputColor( color );
-    print( buffer, format( buffer, bufferSizeInBytes, maxNumChars, xorstr_( "%-6s" ), mode ) );
+    print( buffer, format( buffer, bufferSizeInBytes, maxNumChars, xorstr_( "%-6s" ), modeName ) );
     setTextOutputColor( FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED );
     print( buffer, format( buffer, bufferSizeInBytes, maxNumChars, xorstr_( "%s:%zu] " ), fileName, line ) );
 }
