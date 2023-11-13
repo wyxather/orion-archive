@@ -22,7 +22,7 @@ class Memory final
     Memory( const Memory& )            = delete;
     Memory& operator=( const Memory& ) = delete;
 
-    static constexpr std::uint8_t PATTERN_MASKED = '\xCD';
+    static constexpr auto PATTERN_MASKED = static_cast<std::uint8_t>( '\xCD' );
 
     using PatternType    = std::uint8_t;
     using PatternBuilder = stb::basic_hex_string_array_conversion<' ', '?', PatternType, PATTERN_MASKED>;
