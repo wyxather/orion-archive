@@ -1,7 +1,8 @@
 #include "source/application.h"
 #include "source/context.h"
 
-orion::core::Platform::Platform( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept
+orion::core::Platform::Platform( [[maybe_unused]] const imports::Kernel32& kernel32,
+                                 [[maybe_unused]] const imports::User32&   user32 ) noexcept
 {
 }
 

@@ -1,6 +1,7 @@
 #include "source/context.h"
 
-orion::core::Input::Input( const HMODULE orionHandle, const imports::User32& user32 ) noexcept
+orion::core::Input::Input( [[maybe_unused]] const HMODULE          orionHandle,
+                           [[maybe_unused]] const imports::User32& user32 ) noexcept
 {
     if ( handle = LI_MOD( "dinput8.dll" )::safe<decltype( handle )>(); handle != nullptr )
     {

@@ -1,8 +1,8 @@
 #include "source/context.h"
 
-orion::core::Renderer::Renderer( const imports::Kernel32& kernel32,
-                                 const imports::Ntdll&    ntdll,
-                                 const imports::User32&   user32 ) noexcept
+orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Kernel32& kernel32,
+                                 [[maybe_unused]] const imports::Ntdll&    ntdll,
+                                 [[maybe_unused]] const imports::User32&   user32 ) noexcept
 {
     if ( handle = LI_MOD( "d3d11.dll" )::safe<decltype( handle )>(); handle != nullptr )
     {
