@@ -1,6 +1,6 @@
 #pragma once
 
-BOOL APIENTRY DllEntryPoint( HMODULE moduleHandle, DWORD reason, LPVOID reserved );
+BOOL APIENTRY DllEntryPoint( HMODULE moduleHandle, DWORD reasonForCall, LPVOID reserved );
 
 namespace orion
 {

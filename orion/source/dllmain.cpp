@@ -4,10 +4,10 @@
 
 EXTERN_C BOOL WINAPI _CRT_INIT( HMODULE, DWORD, LPVOID );
 
-BOOL APIENTRY DllEntryPoint( const HMODULE moduleHandle, const DWORD reason, const LPVOID reserved )
+BOOL APIENTRY DllEntryPoint( const HMODULE moduleHandle, const DWORD reasonForCall, const LPVOID reserved )
 {
-    const auto crtInitResult = _CRT_INIT( moduleHandle, reason, reserved );
-    if ( reason == DLL_PROCESS_ATTACH )
+    const auto crtInitResult = _CRT_INIT( moduleHandle, reasonForCall, reserved );
+    if ( ( reasonForCall == DLL_PROCESS_ATTACH ) && ( crtInitResult == TRUE ) )
     {
         orion::Main::onAttach( moduleHandle );
     }
