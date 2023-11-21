@@ -108,6 +108,11 @@ class Memory final
             }
             return nullptr;
         }
+
+        _NODISCARD static constexpr std::uint8_t* find( const li::detail::unsafe_module_enumerator enumerator ) noexcept
+        {
+            return find( getModuleBytes( enumerator ) );
+        }
     };
 };
 
