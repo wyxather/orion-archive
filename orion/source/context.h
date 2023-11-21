@@ -29,50 +29,15 @@ struct Context final
 
     ~Context() noexcept;
 
-    _NODISCARD constexpr auto getHandle() const noexcept
-    {
-        return *handle;
-    }
-
-    _NODISCARD constexpr auto& getKernel32() const noexcept
-    {
-        return *kernel32;
-    }
-
-    _NODISCARD constexpr auto& getMsvcrt() const noexcept
-    {
-        return *msvcrt;
-    }
-
-    _NODISCARD constexpr auto& getNtdll() const noexcept
-    {
-        return *ntdll;
-    }
-
-    _NODISCARD constexpr auto& getUser32() const noexcept
-    {
-        return *user32;
-    }
-
-    _NODISCARD constexpr auto& getConsole() const noexcept
-    {
-        return *console;
-    }
-
-    _NODISCARD constexpr auto& getPlatform() const noexcept
-    {
-        return *platform;
-    }
-
-    _NODISCARD constexpr auto& getRenderer() const noexcept
-    {
-        return *renderer;
-    }
-
-    _NODISCARD constexpr auto& getInput() const noexcept
-    {
-        return *input;
-    }
+    _NODISCARD HMODULE getHandle() const noexcept;
+    _NODISCARD const imports::Kernel32& getKernel32() const noexcept;
+    _NODISCARD const imports::Msvcrt& getMsvcrt() const noexcept;
+    _NODISCARD const imports::Ntdll& getNtdll() const noexcept;
+    _NODISCARD const imports::User32& getUser32() const noexcept;
+    _NODISCARD const core::Console& getConsole() const noexcept;
+    _NODISCARD const core::Platform& getPlatform() const noexcept;
+    _NODISCARD const core::Renderer& getRenderer() const noexcept;
+    _NODISCARD const core::Input& getInput() const noexcept;
 
   private:
     utilities::Option<const HMODULE>           handle;
