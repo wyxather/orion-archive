@@ -43,7 +43,7 @@ void orion::Application::exit( const bool shouldUnload ) noexcept
     }
 }
 
-void WINAPI orion::Unload::unload( LPVOID ) noexcept
+void WINAPI orion::Application::Unload::unload( LPVOID ) noexcept
 {
     const auto& kernel32 = context.getKernel32();
     kernel32.sleep( 100 );
