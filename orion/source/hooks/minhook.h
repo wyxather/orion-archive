@@ -47,7 +47,7 @@ struct MinHook final
     }
 
   private:
-    const void*             gadget;
+    const void* const       gadget;
     std::array<void*, Size> originals;
 };
 
