@@ -31,6 +31,15 @@ class Memory final
     static std::span<const std::uint8_t> getModuleBytes( const imports::Kernel32& kernel32,
                                                          HMODULE                  moduleHandle ) noexcept;
 
+    static std::span<const std::uint8_t> getModuleBytes(
+        const li::detail::unsafe_module_enumerator enumerator ) noexcept
+    {
+        return std::span<const std::uint8_t>(
+            reinterpret_cast<const std::uint8_t*>( enumerator.value->DllBase ),
+            reinterpret_cast<const std::uint8_t*>( reinterpret_cast<const std::byte*>( enumerator.value->DllBase ) +
+                                                   enumerator.value->SizeOfImage ) );
+    }
+
     static std::size_t calcVmtLength( const imports::Kernel32& kernel32, const void* const vmtAddress ) noexcept;
     static std::size_t calcVmtLength( const imports::Kernel32& kernel32,
                                       const void* const* const classAddress ) noexcept;
