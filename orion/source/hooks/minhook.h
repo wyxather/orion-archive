@@ -1,6 +1,6 @@
 #pragma once
 
-#include "source/hooks/ret_spoof.h"
+#include "source/utilities/ret_spoof.h"
 
 namespace orion::hooks
 {
@@ -25,25 +25,25 @@ struct MinHook final
     template<std::size_t Index, typename ReturnType, typename... Args>
     _NODISCARD constexpr ReturnType cdeclcall( Args... args ) const noexcept
     {
-        return RetSpoof::cdeclcall<ReturnType>( originals[Index], gadget, args... );
+        return utilities::RetSpoof::cdeclcall<ReturnType>( originals[Index], gadget, args... );
     }
 
     template<std::size_t Index, typename ReturnType, typename... Args>
     _NODISCARD constexpr ReturnType stdcall( Args... args ) const noexcept
     {
-        return RetSpoof::stdcall<ReturnType>( originals[Index], gadget, args... );
+        return utilities::RetSpoof::stdcall<ReturnType>( originals[Index], gadget, args... );
     }
 
     template<std::size_t Index, typename ReturnType, typename Self, typename... Args>
     _NODISCARD constexpr ReturnType thiscall( Self self, Args... args ) const noexcept
     {
-        return RetSpoof::thiscall<ReturnType>( originals[Index], gadget, self, args... );
+        return utilities::RetSpoof::thiscall<ReturnType>( originals[Index], gadget, self, args... );
     }
 
     template<std::size_t Index, typename ReturnType, typename Self, typename Garbage, typename... Args>
     _NODISCARD constexpr ReturnType fastcall( Self self, Garbage garbage, Args... args ) const noexcept
     {
-        return RetSpoof::fastcall<ReturnType>( originals[Index], gadget, self, garbage, args... );
+        return utilities::RetSpoof::fastcall<ReturnType>( originals[Index], gadget, self, garbage, args... );
     }
 
   private:

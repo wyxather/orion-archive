@@ -1,6 +1,6 @@
 #pragma once
 
-namespace orion::hooks
+namespace orion::utilities
 {
 
 #ifndef _WIN64
@@ -266,4 +266,4 @@ class RetSpoof final
 
 #endif
 
-} // namespace orion::hooks
+} // namespace orion::utilities

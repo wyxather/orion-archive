@@ -96,7 +96,7 @@
     <ClInclude Include="dependencies\minhook\src\trampoline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\hooks\ret_spoof.h">
+    <ClInclude Include="source\utilities\ret_spoof.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\utilities\memory.h">
@@ -169,7 +169,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="source\hooks\ret_spoof.asm">
+    <MASM Include="source\utilities\ret_spoof.asm">
       <Filter>Source Files</Filter>
     </MASM>
   </ItemGroup>
