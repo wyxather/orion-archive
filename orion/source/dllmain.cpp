@@ -17,9 +17,9 @@ BOOL APIENTRY DllEntryPoint( const HMODULE moduleHandle, const DWORD reasonForCa
 void orion::Main::onAttach( const HMODULE moduleHandle ) noexcept
 {
     context.handle.emplace( moduleHandle );
+    context.ntdll.emplace( LI_MOD( "ntdll.dll" )::get() );
     context.kernel32.emplace( LI_MOD( "kernel32.dll" )::get() );
     context.msvcrt.emplace( LI_MOD( "msvcrt.dll" )::get() );
-    context.ntdll.emplace( LI_MOD( "ntdll.dll" )::get() );
     context.user32.emplace( LI_MOD( "user32.dll" )::get() );
     context.console.emplace( context.getKernel32(), context.getMsvcrt(), context.getUser32() );
     context.platform.emplace( context.getKernel32(), context.getUser32() );

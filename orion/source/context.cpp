@@ -7,15 +7,20 @@ orion::Context::~Context() noexcept
     platform.reset();
     console.reset();
     user32.reset();
-    ntdll.reset();
     msvcrt.reset();
     kernel32.reset();
+    ntdll.reset();
     handle.reset();
 }
 
 HMODULE orion::Context::getHandle() const noexcept
 {
     return *handle;
+}
+
+const orion::imports::Ntdll& orion::Context::getNtdll() const noexcept
+{
+    return *ntdll;
 }
 
 const orion::imports::Kernel32& orion::Context::getKernel32() const noexcept
@@ -26,11 +31,6 @@ const orion::imports::Kernel32& orion::Context::getKernel32() const noexcept
 const orion::imports::Msvcrt& orion::Context::getMsvcrt() const noexcept
 {
     return *msvcrt;
-}
-
-const orion::imports::Ntdll& orion::Context::getNtdll() const noexcept
-{
-    return *ntdll;
 }
 
 const orion::imports::User32& orion::Context::getUser32() const noexcept

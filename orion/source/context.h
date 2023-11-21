@@ -30,9 +30,9 @@ struct Context final
     ~Context() noexcept;
 
     _NODISCARD HMODULE getHandle() const noexcept;
+    _NODISCARD const imports::Ntdll& getNtdll() const noexcept;
     _NODISCARD const imports::Kernel32& getKernel32() const noexcept;
     _NODISCARD const imports::Msvcrt& getMsvcrt() const noexcept;
-    _NODISCARD const imports::Ntdll& getNtdll() const noexcept;
     _NODISCARD const imports::User32& getUser32() const noexcept;
     _NODISCARD const core::Console& getConsole() const noexcept;
     _NODISCARD const core::Platform& getPlatform() const noexcept;
@@ -41,9 +41,9 @@ struct Context final
 
   private:
     utilities::Option<const HMODULE>           handle;
+    utilities::Option<const imports::Ntdll>    ntdll;
     utilities::Option<const imports::Kernel32> kernel32;
     utilities::Option<const imports::Msvcrt>   msvcrt;
-    utilities::Option<const imports::Ntdll>    ntdll;
     utilities::Option<const imports::User32>   user32;
     utilities::Option<const core::Console>     console;
     utilities::Option<const core::Platform>    platform;
