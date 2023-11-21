@@ -4,7 +4,8 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Kernel32& kerne
                                  [[maybe_unused]] const imports::Ntdll&    ntdll,
                                  [[maybe_unused]] const imports::User32&   user32 ) noexcept
 {
-    if ( handle = LI_MOD( "d3d11.dll" )::safe<decltype( handle )>(); handle != nullptr )
+    enumerator = LI_MOD( "d3d11.dll" )::enumerator<decltype( enumerator )>();
+    if ( LI_MOD( "d3d11.dll" )::in( enumerator.value ) != nullptr )
     {
         switch ( getUserInput( xorstr_( "DirectX11" ), xorstr_( "Renderer" ) ) )
         {
@@ -17,7 +18,8 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Kernel32& kerne
             break;
         }
     }
-    if ( handle = LI_MOD( "d3d9.dll" )::safe<decltype( handle )>(); handle != nullptr )
+    enumerator = LI_MOD( "d3d9.dll" )::enumerator<decltype( enumerator )>();
+    if ( LI_MOD( "d3d9.dll" )::in( enumerator.value ) != nullptr )
     {
         switch ( getUserInput( xorstr_( "DirectX9" ), xorstr_( "Renderer" ) ) )
         {
@@ -35,9 +37,11 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Kernel32& kerne
 void orion::core::Renderer::hook() noexcept
 {
 #ifndef _WIN64
-    if ( handle = LI_MOD( "rtsshooks.dll" )::safe<HMODULE>(); handle != nullptr )
+    enumerator = LI_MOD( "rtsshooks.dll" )::enumerator<decltype( enumerator )>();
+    if ( LI_MOD( "rtsshooks.dll" )::in( enumerator.value ) != nullptr )
 #else
-    if ( handle = LI_MOD( "rtsshooks64.dll" )::safe<HMODULE>(); handle != nullptr )
+    enumerator = LI_MOD( "rtsshooks64.dll" )::enumerator<decltype( enumerator )>();
+    if ( LI_MOD( "rtsshooks64.dll" )::in( enumerator.value ) != nullptr )
 #endif
     {
         switch ( type )
@@ -125,7 +129,8 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         log::error( xorstr_( "Failed to create window." ) );
         return;
     }
-    const auto direct3DCreate9 = LI_FUNC( Direct3DCreate9 )::in_safe<LPDIRECT3D9( WINAPI* )( std::uint32_t )>( handle );
+    const auto direct3DCreate9 =
+        LI_FUNC( Direct3DCreate9 )::in_safe<LPDIRECT3D9( WINAPI* )( std::uint32_t )>( enumerator.value->DllBase );
     if ( direct3DCreate9 == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find Direct3DCreate9." ) );
@@ -165,7 +170,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         return;
     }
     const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( enumerator.value ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for IDirect3DDevice9." ) );
@@ -185,7 +190,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
 
 void orion::core::Renderer::hookDirect3D9RTSS() noexcept
 {
-    const auto moduleBytes = utilities::Memory::getModuleBytes( context.getKernel32(), handle );
+    const auto moduleBytes = utilities::Memory::getModuleBytes( enumerator.value );
 #ifndef _WIN64
     const auto direct3DDevice9ResetDetour =
         utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( moduleBytes );
@@ -255,7 +260,8 @@ void orion::core::Renderer::hookDirect3D11() noexcept
                                                                               IDXGISwapChain**,
                                                                               ID3D11Device**,
                                                                               D3D_FEATURE_LEVEL*,
-                                                                              ID3D11DeviceContext** )>( handle );
+                                                                              ID3D11DeviceContext** )>(
+            enumerator.value->DllBase );
     if ( d3D11CreateDeviceAndSwapChain == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find D3D11CreateDeviceAndSwapChain." ) );
@@ -301,7 +307,7 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         return;
     }
     const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( enumerator.value ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for IDXGISwapChain." ) );
@@ -321,7 +327,7 @@ void orion::core::Renderer::hookDirect3D11() noexcept
 
 void orion::core::Renderer::hookDirect3D11RTTS() noexcept
 {
-    const auto moduleBytes = utilities::Memory::getModuleBytes( context.getKernel32(), handle );
+    const auto moduleBytes = utilities::Memory::getModuleBytes( enumerator.value );
 #ifndef _WIN64
     const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
         "81 EC 40 01 00 00 A1 B0 70 0A 10 33 C4 89 84 24 3C 01 00 00 53 56 57 8B BC 24 50 01 00 00 68 C0">::
@@ -370,7 +376,7 @@ void orion::core::to_json( nlohmann::json& json, const Renderer& renderer ) noex
 {
     json = {
         { xorstr_( "type" ), renderer.type },
-        { xorstr_( "handle" ), reinterpret_cast<std::uintptr_t>( renderer.handle ) },
+        { xorstr_( "enumerator" ), reinterpret_cast<std::uintptr_t>( renderer.enumerator.value->DllBase ) },
     };
 }
 

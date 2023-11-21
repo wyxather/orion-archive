@@ -99,8 +99,8 @@ struct Renderer final
         const HWND handle;
     };
 
-    HMODULE                                     handle = nullptr;
-    Type                                        type   = Type::Undefined;
+    li::detail::safe_module_enumerator          enumerator;
+    Type                                        type = Type::Undefined;
     utilities::Option<hooks::MinHook<2>, false> hooks;
 };
 

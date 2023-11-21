@@ -3,7 +3,8 @@
 orion::core::Input::Input( [[maybe_unused]] const HMODULE          orionHandle,
                            [[maybe_unused]] const imports::User32& user32 ) noexcept
 {
-    if ( handle = LI_MOD( "dinput8.dll" )::safe<decltype( handle )>(); handle != nullptr )
+    enumerator = LI_MOD( "dinput8.dll" )::enumerator<decltype( enumerator )>();
+    if ( LI_MOD( "dinput8.dll" )::in( enumerator.value ) != nullptr )
     {
         switch ( getUserInput( xorstr_( "DirectInput8" ), xorstr_( "Input" ) ) )
         {
@@ -59,7 +60,7 @@ HRESULT STDMETHODCALLTYPE
 void orion::core::Input::hookDirectInput8() noexcept
 {
     const auto directInput8Create = LI_FUNC( DirectInput8Create )::in_safe<HRESULT( WINAPI* )(
-        HINSTANCE, DWORD, REFIID, LPDIRECTINPUT8*, LPUNKNOWN )>( handle );
+        HINSTANCE, DWORD, REFIID, LPDIRECTINPUT8*, LPUNKNOWN )>( enumerator.value->DllBase );
     if ( directInput8Create == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find DirectInput8Create." ) );
@@ -80,7 +81,7 @@ void orion::core::Input::hookDirectInput8() noexcept
         return;
     }
     const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( context.getKernel32(), handle ) );
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( enumerator.value ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for IDirectInputDevice8." ) );
@@ -102,6 +103,6 @@ void orion::core::to_json( nlohmann::json& json, const Input& input ) noexcept
 {
     json = {
         { xorstr_( "type" ), input.type },
-        { xorstr_( "handle" ), reinterpret_cast<std::uintptr_t>( input.handle ) },
+        { xorstr_( "enumerator" ), reinterpret_cast<std::uintptr_t>( input.enumerator.value->DllBase ) },
     };
 }

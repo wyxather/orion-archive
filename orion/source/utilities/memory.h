@@ -28,9 +28,6 @@ class Memory final
     using PatternBuilder = stb::basic_hex_string_array_conversion<' ', '?', PatternType, PATTERN_MASKED>;
 
   public:
-    static std::span<const std::uint8_t> getModuleBytes( const imports::Kernel32& kernel32,
-                                                         HMODULE                  moduleHandle ) noexcept;
-
     static std::span<const std::uint8_t> getModuleBytes(
         const li::detail::win::LDR_DATA_TABLE_ENTRY_T* const ldr ) noexcept
     {
