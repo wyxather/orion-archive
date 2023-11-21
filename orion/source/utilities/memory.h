@@ -32,10 +32,9 @@ class Memory final
                                                          HMODULE                  moduleHandle ) noexcept;
 
     static std::span<const std::uint8_t> getModuleBytes(
-        const li::detail::unsafe_module_enumerator enumerator ) noexcept
+        const li::detail::win::LDR_DATA_TABLE_ENTRY_T* const ldr ) noexcept
     {
-        return std::span<const std::uint8_t>( reinterpret_cast<const std::uint8_t*>( enumerator.value->DllBase ),
-                                              enumerator.value->SizeOfImage );
+        return std::span<const std::uint8_t>( reinterpret_cast<const std::uint8_t*>( ldr->DllBase ), ldr->SizeOfImage );
     }
 
     static std::size_t calcVmtLength( const imports::Kernel32& kernel32, const void* const vmtAddress ) noexcept;
