@@ -528,6 +528,17 @@ namespace li { namespace detail {
             return {};
         }
 
+        template<class Enum = unsafe_module_enumerator>
+        LAZY_IMPORTER_FORCEINLINE static Enum enumerator() noexcept
+        {
+            Enum e;
+            do {
+                if(hash(e.value->BaseDllName, get_offset(OHP)) == get_hash(OHP))
+                    return e;
+            } while(e.next());
+            return {};
+        }
+
         template<class T = void*, class Ldr>
         LAZY_IMPORTER_FORCEINLINE static T in(Ldr ldr) noexcept
         {
