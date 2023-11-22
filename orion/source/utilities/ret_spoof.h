@@ -157,6 +157,8 @@ class RetSpoof final
 template<typename ReturnType, typename Self, typename Garbage, typename... Args>
 struct RetSpoofInvoker<ReturnType( __fastcall* )( Self, Garbage, Args... )> final : public RetSpoofInvokerBase
 {
+    using RetSpoofInvokerBase::RetSpoofInvokerBase;
+
     _NODISCARD constexpr ReturnType operator()( const void* const gadgetAddress,
                                                 Self              self,
                                                 Garbage           garbage,
@@ -177,6 +179,8 @@ struct RetSpoofInvoker<ReturnType( __fastcall* )( Self, Garbage, Args... )> fina
 template<typename ReturnType, typename Self, typename... Args>
 struct RetSpoofInvoker<ReturnType( __thiscall* )( Self, Args... )> final : public RetSpoofInvokerBase
 {
+    using RetSpoofInvokerBase::RetSpoofInvokerBase;
+
     _NODISCARD constexpr ReturnType operator()( const void* const gadgetAddress,
                                                 Self              self,
                                                 Args... args ) const noexcept
@@ -193,6 +197,8 @@ struct RetSpoofInvoker<ReturnType( __thiscall* )( Self, Args... )> final : publi
 template<typename ReturnType, typename... Args>
 struct RetSpoofInvoker<ReturnType( __stdcall* )( Args... )> final : public RetSpoofInvokerBase
 {
+    using RetSpoofInvokerBase::RetSpoofInvokerBase;
+
     _NODISCARD constexpr ReturnType operator()( const void* const gadgetAddress, Args... args ) const noexcept
     {
         return RetSpoof::stdcall<ReturnType, Args...>( functionAddress, gadgetAddress, args... );
@@ -207,6 +213,8 @@ struct RetSpoofInvoker<ReturnType( __stdcall* )( Args... )> final : public RetSp
 template<typename ReturnType, typename... Args>
 struct RetSpoofInvoker<ReturnType( __cdecl* )( Args... )> final : public RetSpoofInvokerBase
 {
+    using RetSpoofInvokerBase::RetSpoofInvokerBase;
+
     _NODISCARD constexpr ReturnType operator()( const void* const gadgetAddress, Args... args ) const noexcept
     {
         return RetSpoof::cdeclcall<ReturnType, Args...>( functionAddress, gadgetAddress, args... );
@@ -361,6 +369,8 @@ class RetSpoof final
 template<typename ReturnType, typename... Args>
 struct RetSpoofInvoker<ReturnType ( * )( Args... )> final : public RetSpoofInvokerBase
 {
+    using RetSpoofInvokerBase::RetSpoofInvokerBase;
+
     _NODISCARD constexpr ReturnType operator()( const void* const gadgetAddress, Args... args ) const noexcept
     {
         return RetSpoof::fastcall<ReturnType, Args...>( functionAddress, gadgetAddress, args... );

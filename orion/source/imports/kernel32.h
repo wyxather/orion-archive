@@ -12,25 +12,25 @@ struct Kernel32 final
     Kernel32( const Kernel32& )            = delete;
     Kernel32& operator=( const Kernel32& ) = delete;
 
-    explicit Kernel32( void* kernel32 ) noexcept;
+    explicit Kernel32( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& kernel32 ) noexcept;
 
-    decltype( &AllocConsole )             allocConsole             = nullptr;
-    decltype( &CloseHandle )              closeHandle              = nullptr;
-    decltype( &CreateThread )             createThread             = nullptr;
-    decltype( &FreeConsole )              freeConsole              = nullptr;
-    decltype( &FreeLibraryAndExitThread ) freeLibraryAndExitThread = nullptr;
-    decltype( &GetConsoleWindow )         getConsoleWindow         = nullptr;
-    decltype( &GetCurrentProcessId )      getCurrentProcessId      = nullptr;
-    decltype( &GetDateFormatA )           getDateFormatA           = nullptr;
-    decltype( &GetLocalTime )             getLocalTime             = nullptr;
-    decltype( &GetModuleHandleA )         getModuleHandleA         = nullptr;
-    decltype( &GetStdHandle )             getStdHandle             = nullptr;
-    decltype( &GetTimeFormatA )           getTimeFormatA           = nullptr;
-    decltype( &SetConsoleCtrlHandler )    setConsoleCtrlHandler    = nullptr;
-    decltype( &SetConsoleTextAttribute )  setConsoleTextAttribute  = nullptr;
-    decltype( &Sleep )                    sleep                    = nullptr;
-    decltype( &VirtualQuery )             virtualQuery             = nullptr;
-    decltype( &WriteConsoleA )            writeConsoleA            = nullptr;
+    utilities::RetSpoofInvoker<decltype( &AllocConsole )>             allocConsole;
+    utilities::RetSpoofInvoker<decltype( &CloseHandle )>              closeHandle;
+    utilities::RetSpoofInvoker<decltype( &CreateThread )>             createThread;
+    utilities::RetSpoofInvoker<decltype( &FreeConsole )>              freeConsole;
+    utilities::RetSpoofInvoker<decltype( &FreeLibraryAndExitThread )> freeLibraryAndExitThread;
+    utilities::RetSpoofInvoker<decltype( &GetConsoleWindow )>         getConsoleWindow;
+    utilities::RetSpoofInvoker<decltype( &GetCurrentProcessId )>      getCurrentProcessId;
+    utilities::RetSpoofInvoker<decltype( &GetDateFormatA )>           getDateFormatA;
+    utilities::RetSpoofInvoker<decltype( &GetLocalTime )>             getLocalTime;
+    utilities::RetSpoofInvoker<decltype( &GetModuleHandleA )>         getModuleHandleA;
+    utilities::RetSpoofInvoker<decltype( &GetStdHandle )>             getStdHandle;
+    utilities::RetSpoofInvoker<decltype( &GetTimeFormatA )>           getTimeFormatA;
+    utilities::RetSpoofInvoker<decltype( &SetConsoleCtrlHandler )>    setConsoleCtrlHandler;
+    utilities::RetSpoofInvoker<decltype( &SetConsoleTextAttribute )>  setConsoleTextAttribute;
+    utilities::RetSpoofInvoker<decltype( &Sleep )>                    sleep;
+    utilities::RetSpoofInvoker<decltype( &VirtualQuery )>             virtualQuery;
+    utilities::RetSpoofInvoker<decltype( &WriteConsoleA )>            writeConsoleA;
 };
 
 } // namespace orion::imports

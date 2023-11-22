@@ -1,29 +1,32 @@
 #include "source/context.h"
 
-orion::core::Console::Console( const imports::Kernel32&                kernel32,
+orion::core::Console::Console( const imports::Ntdll&                   ntdll,
+                               const imports::Kernel32&                kernel32,
                                [[maybe_unused]] const imports::Msvcrt& msvcrt,
                                const imports::User32&                  user32 ) noexcept
 {
-    kernel32.allocConsole();
-    kernel32.setConsoleCtrlHandler( ctrlHandler, TRUE );
-    stdOutputHandle   = kernel32.getStdHandle( STD_OUTPUT_HANDLE );
-    const auto window = kernel32.getConsoleWindow();
+    std::ignore       = kernel32.allocConsole( ntdll.gadgetAddress );
+    std::ignore       = kernel32.setConsoleCtrlHandler( ntdll.gadgetAddress, ctrlHandler, TRUE );
+    stdOutputHandle   = kernel32.getStdHandle( ntdll.gadgetAddress, STD_OUTPUT_HANDLE );
+    const auto window = kernel32.getConsoleWindow( ntdll.gadgetAddress );
     user32.setWindowLongPtr( window, GWL_STYLE, user32.getWindowLongPtr( window, GWL_STYLE ) & ~WS_SYSMENU );
 }
 
 orion::core::Console::~Console() noexcept
 {
-    context.getKernel32().freeConsole();
+    std::ignore = context.getKernel32().freeConsole( context.getNtdll().gadgetAddress );
 }
 
 void orion::core::Console::print( const char* const str, const DWORD strLen ) const noexcept
 {
-    context.getKernel32().writeConsoleA( stdOutputHandle, str, strLen, nullptr, nullptr );
+    std::ignore = context.getKernel32().writeConsoleA(
+        context.getNtdll().gadgetAddress, stdOutputHandle, str, strLen, nullptr, nullptr );
 }
 
 void orion::core::Console::setTextOutputColor( const WORD color ) const noexcept
 {
-    context.getKernel32().setConsoleTextAttribute( stdOutputHandle, color );
+    std::ignore =
+        context.getKernel32().setConsoleTextAttribute( context.getNtdll().gadgetAddress, stdOutputHandle, color );
 }
 
 BOOL WINAPI orion::core::Console::ctrlHandler( const DWORD ctrlType ) noexcept
@@ -85,31 +88,33 @@ const orion::core::Console& orion::core::Console::getConsole() noexcept
 std::array<char, 12> orion::core::Console::getDateFormat( const SYSTEMTIME& time ) noexcept
 {
     std::array<char, 12> dateFormat;
-    context.getKernel32().getDateFormatA( LOCALE_USER_DEFAULT,
-                                          0,
-                                          &time,
-                                          xorstr_( "yyyy-MMM-dd" ),
-                                          dateFormat.data(),
-                                          static_cast<int>( dateFormat.size() ) );
+    std::ignore = context.getKernel32().getDateFormatA( context.getNtdll().gadgetAddress,
+                                                        LOCALE_USER_DEFAULT,
+                                                        0,
+                                                        &time,
+                                                        xorstr_( "yyyy-MMM-dd" ),
+                                                        dateFormat.data(),
+                                                        static_cast<int>( dateFormat.size() ) );
     return dateFormat;
 }
 
 SYSTEMTIME orion::core::Console::getLocalTime() noexcept
 {
     SYSTEMTIME localTime;
-    context.getKernel32().getLocalTime( &localTime );
+    context.getKernel32().getLocalTime( context.getNtdll().gadgetAddress, &localTime );
     return localTime;
 }
 
 std::array<char, 9> orion::core::Console::getTimeFormat( const SYSTEMTIME& time ) noexcept
 {
     std::array<char, 9> timeFormat;
-    context.getKernel32().getTimeFormatA( LOCALE_NAME_USER_DEFAULT,
-                                          0,
-                                          &time,
-                                          xorstr_( "HH':'mm':'ss" ),
-                                          timeFormat.data(),
-                                          static_cast<int>( timeFormat.size() ) );
+    std::ignore = context.getKernel32().getTimeFormatA( context.getNtdll().gadgetAddress,
+                                                        LOCALE_NAME_USER_DEFAULT,
+                                                        0,
+                                                        &time,
+                                                        xorstr_( "HH':'mm':'ss" ),
+                                                        timeFormat.data(),
+                                                        static_cast<int>( timeFormat.size() ) );
     return timeFormat;
 }
 

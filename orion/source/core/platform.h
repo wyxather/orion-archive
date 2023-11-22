@@ -9,6 +9,7 @@ class Main;
 namespace imports
 {
 
+struct Ntdll;
 struct Kernel32;
 struct User32;
 
@@ -29,7 +30,9 @@ struct Platform final
     Platform( const Platform& )            = delete;
     Platform& operator=( const Platform& ) = delete;
 
-    explicit Platform( const imports::Kernel32& kernel32, const imports::User32& user32 ) noexcept;
+    explicit Platform( const imports::Ntdll&    ntdll,
+                       const imports::Kernel32& kernel32,
+                       const imports::User32&   user32 ) noexcept;
 
   private:
     struct Window final

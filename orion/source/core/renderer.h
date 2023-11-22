@@ -6,8 +6,8 @@ namespace orion
 namespace imports
 {
 
-struct Kernel32;
 struct Ntdll;
+struct Kernel32;
 struct User32;
 
 } // namespace imports
@@ -31,8 +31,8 @@ struct Renderer final
     Renderer( const Renderer& )            = delete;
     Renderer& operator=( const Renderer& ) = delete;
 
-    explicit Renderer( const imports::Kernel32& kernel32,
-                       const imports::Ntdll&    ntdll,
+    explicit Renderer( const imports::Ntdll&    ntdll,
+                       const imports::Kernel32& kernel32,
                        const imports::User32&   user32 ) noexcept;
 
     void hook() noexcept;
@@ -99,8 +99,8 @@ struct Renderer final
         const HWND handle;
     };
 
-    li::detail::safe_module_enumerator          enumerator;
-    Type                                        type = Type::Undefined;
+    li::detail::safe_module_enumerator              enumerator;
+    Type                                            type = Type::Undefined;
     utilities::Option<utilities::MinHook<2>, false> hooks;
 };
 

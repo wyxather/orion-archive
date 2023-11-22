@@ -30,11 +30,16 @@ void orion::Application::exit( const bool shouldUnload ) noexcept
     if ( shouldUnload )
     {
         const auto& kernel32     = context.getKernel32();
-        const auto  threadHandle = kernel32.createThread(
-            nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>( Unload::unload ), nullptr, 0, nullptr );
+        const auto  threadHandle = kernel32.createThread( context.getNtdll().gadgetAddress,
+                                                         nullptr,
+                                                         0,
+                                                         reinterpret_cast<LPTHREAD_START_ROUTINE>( Unload::unload ),
+                                                         nullptr,
+                                                         0,
+                                                         nullptr );
         if ( threadHandle != nullptr )
         {
-            kernel32.closeHandle( threadHandle );
+            std::ignore = kernel32.closeHandle( context.getNtdll().gadgetAddress, threadHandle );
         }
     }
     else
@@ -45,10 +50,11 @@ void orion::Application::exit( const bool shouldUnload ) noexcept
 
 void WINAPI orion::Application::Unload::unload( LPVOID ) noexcept
 {
-    const auto& kernel32 = context.getKernel32();
-    kernel32.sleep( 100 );
+    const auto& kernel32      = context.getKernel32();
+    const auto  gadgetAddress = context.getNtdll().gadgetAddress;
+    kernel32.sleep( gadgetAddress, 100 );
     const auto orionHandle              = context.getHandle();
     const auto freeLibraryAndExitThread = kernel32.freeLibraryAndExitThread;
     _CRT_INIT( orionHandle, DLL_PROCESS_DETACH, nullptr );
-    freeLibraryAndExitThread( orionHandle, EXIT_SUCCESS );
+    freeLibraryAndExitThread( gadgetAddress, orionHandle, EXIT_SUCCESS );
 }

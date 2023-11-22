@@ -18,12 +18,12 @@ void orion::Main::onAttach( const HMODULE moduleHandle ) noexcept
 {
     context.handle.emplace( moduleHandle );
     context.ntdll.emplace( *LI_MOD( "ntdll.dll" )::enumerator().value );
-    context.kernel32.emplace( LI_MOD( "kernel32.dll" )::get() );
+    context.kernel32.emplace( *LI_MOD( "kernel32.dll" )::enumerator().value );
     context.msvcrt.emplace( LI_MOD( "msvcrt.dll" )::get() );
     context.user32.emplace( LI_MOD( "user32.dll" )::get() );
-    context.console.emplace( context.getKernel32(), context.getMsvcrt(), context.getUser32() );
-    context.platform.emplace( context.getKernel32(), context.getUser32() );
-    context.renderer.emplace( context.getKernel32(), context.getNtdll(), context.getUser32() );
+    context.console.emplace( context.getNtdll(), context.getKernel32(), context.getMsvcrt(), context.getUser32() );
+    context.platform.emplace( context.getNtdll(), context.getKernel32(), context.getUser32() );
+    context.renderer.emplace( context.getNtdll(), context.getKernel32(), context.getUser32() );
     context.input.emplace( context.getHandle(), context.getUser32() );
     context.platform->window.hook();
 }

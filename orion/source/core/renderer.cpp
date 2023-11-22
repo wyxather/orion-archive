@@ -1,7 +1,7 @@
 #include "source/context.h"
 
-orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Kernel32& kernel32,
-                                 [[maybe_unused]] const imports::Ntdll&    ntdll,
+orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Ntdll&    ntdll,
+                                 [[maybe_unused]] const imports::Kernel32& kernel32,
                                  [[maybe_unused]] const imports::User32&   user32 ) noexcept
 {
     enumerator = LI_MOD( "d3d11.dll" )::enumerator();
@@ -387,7 +387,7 @@ orion::core::Renderer::WindowClass::WindowClass() noexcept
           context.getNtdll().ntdllDefWindowProc_A,
           0,
           0,
-          context.getKernel32().getModuleHandleA( nullptr ),
+          context.getKernel32().getModuleHandleA( context.getNtdll().gadgetAddress, nullptr ),
           nullptr,
           nullptr,
           nullptr,

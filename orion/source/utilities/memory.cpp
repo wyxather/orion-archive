@@ -1,6 +1,8 @@
 #include "source/imports/kernel32.h"
+#include "source/imports/ntdll.h"
 
-std::size_t orion::utilities::Memory::calcVmtLength( const imports::Kernel32& kernel32,
+std::size_t orion::utilities::Memory::calcVmtLength( const imports::Ntdll&    ntdll,
+                                                     const imports::Kernel32& kernel32,
                                                      const void* const        vmtAddress ) noexcept
 {
     constexpr decltype( MEMORY_BASIC_INFORMATION::Protect ) MEMORY_PROTECTION_FLAGS =
@@ -10,7 +12,8 @@ std::size_t orion::utilities::Memory::calcVmtLength( const imports::Kernel32& ke
     do
     {
         const auto virtualMethod = static_cast<void* const*>( vmtAddress )[length];
-        if ( const auto numBytes = kernel32.virtualQuery( virtualMethod, &memoryBasicInfo, sizeof( memoryBasicInfo ) );
+        if ( const auto numBytes = kernel32.virtualQuery(
+                 ntdll.gadgetAddress, virtualMethod, &memoryBasicInfo, sizeof( memoryBasicInfo ) );
              ( numBytes == 0 ) || ( ( memoryBasicInfo.Protect & MEMORY_PROTECTION_FLAGS ) == 0 ) )
         {
             break;
@@ -20,8 +23,9 @@ std::size_t orion::utilities::Memory::calcVmtLength( const imports::Kernel32& ke
     return length;
 }
 
-std::size_t orion::utilities::Memory::calcVmtLength( const imports::Kernel32& kernel32,
+std::size_t orion::utilities::Memory::calcVmtLength( const imports::Ntdll&    ntdll,
+                                                     const imports::Kernel32& kernel32,
                                                      const void* const* const classAddress ) noexcept
 {
-    return calcVmtLength( kernel32, *classAddress );
+    return calcVmtLength( ntdll, kernel32, *classAddress );
 }

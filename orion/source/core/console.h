@@ -8,6 +8,7 @@ namespace orion
 namespace imports
 {
 
+struct Ntdll;
 struct Kernel32;
 struct Msvcrt;
 struct User32;
@@ -26,7 +27,8 @@ struct Console final
     Console( const Console& )            = delete;
     Console& operator=( const Console& ) = delete;
 
-    explicit Console( const imports::Kernel32& kernel32,
+    explicit Console( const imports::Ntdll&    ntdll,
+                      const imports::Kernel32& kernel32,
                       const imports::Msvcrt&   msvcrt,
                       const imports::User32&   user32 ) noexcept;
 

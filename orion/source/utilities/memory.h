@@ -6,9 +6,10 @@ namespace orion
 namespace imports
 {
 
+struct Ntdll;
 struct Kernel32;
 
-}
+} // namespace imports
 
 namespace utilities
 {
@@ -34,9 +35,11 @@ class Memory final
         return std::span<const std::uint8_t>( reinterpret_cast<const std::uint8_t*>( ldr.DllBase ), ldr.SizeOfImage );
     }
 
-    _NODISCARD static std::size_t calcVmtLength( const imports::Kernel32& kernel32,
+    _NODISCARD static std::size_t calcVmtLength( const imports::Ntdll&    ntdll,
+                                                 const imports::Kernel32& kernel32,
                                                  const void* const        vmtAddress ) noexcept;
-    _NODISCARD static std::size_t calcVmtLength( const imports::Kernel32& kernel32,
+    _NODISCARD static std::size_t calcVmtLength( const imports::Ntdll&    ntdll,
+                                                 const imports::Kernel32& kernel32,
                                                  const void* const* const classAddress ) noexcept;
 
     template<stb::fixed_string str>

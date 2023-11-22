@@ -1,7 +1,8 @@
 #include "source/application.h"
 #include "source/context.h"
 
-orion::core::Platform::Platform( [[maybe_unused]] const imports::Kernel32& kernel32,
+orion::core::Platform::Platform( [[maybe_unused]] const imports::Ntdll&    ntdll,
+                                 [[maybe_unused]] const imports::Kernel32& kernel32,
                                  [[maybe_unused]] const imports::User32&   user32 ) noexcept
 {
 }
@@ -130,7 +131,7 @@ bool orion::core::Platform::Window::isConsole( const char* const className ) noe
 
 bool orion::core::Platform::Window::isEqualToCurrentProcessId( const DWORD processId ) noexcept
 {
-    return ( context.getKernel32().getCurrentProcessId() == processId );
+    return ( context.getKernel32().getCurrentProcessId( context.getNtdll().gadgetAddress ) == processId );
 }
 
 bool orion::core::Platform::Window::isVisible( const HWND window ) noexcept
