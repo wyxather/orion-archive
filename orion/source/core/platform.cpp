@@ -53,10 +53,15 @@ BOOL CALLBACK orion::core::Platform::Window::enumWindowsProc( const HWND window,
 }
 
 LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
-                                                  const UINT   message,
-                                                  const WPARAM wParam,
-                                                  const LPARAM lParam ) noexcept
+                                                           const UINT   message,
+                                                           const WPARAM wParam,
+                                                           const LPARAM lParam ) noexcept
 {
+    [[maybe_unused]] static const auto once = []() noexcept
+    {
+        Application::setup();
+        return false;
+    }();
     const auto callWindowProc    = context.getUser32().callWindowProc;
     const auto originalProcedure = context.getPlatform().window.originalProcedure;
     switch ( message )
