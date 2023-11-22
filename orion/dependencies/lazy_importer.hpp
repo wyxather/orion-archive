@@ -528,10 +528,9 @@ namespace li { namespace detail {
             return {};
         }
 
-        template<class Enum = unsafe_module_enumerator>
-        LAZY_IMPORTER_FORCEINLINE static Enum enumerator() noexcept
+        LAZY_IMPORTER_FORCEINLINE static safe_module_enumerator enumerator() noexcept
         {
-            Enum e;
+            safe_module_enumerator e;
             do {
                 if(hash(e.value->BaseDllName, get_offset(OHP)) == get_hash(OHP))
                     return e;

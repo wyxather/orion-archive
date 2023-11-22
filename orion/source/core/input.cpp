@@ -3,8 +3,8 @@
 orion::core::Input::Input( [[maybe_unused]] const HMODULE          orionHandle,
                            [[maybe_unused]] const imports::User32& user32 ) noexcept
 {
-    enumerator = LI_MOD( "dinput8.dll" )::enumerator<decltype( enumerator )>();
-    if ( LI_MOD( "dinput8.dll" )::in( enumerator.value ) != nullptr )
+    enumerator = LI_MOD( "dinput8.dll" )::enumerator();
+    if ( ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
     {
         switch ( getUserInput( xorstr_( "DirectInput8" ), xorstr_( "Input" ) ) )
         {

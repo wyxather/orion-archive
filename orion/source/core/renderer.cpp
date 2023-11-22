@@ -4,8 +4,8 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Kernel32& kerne
                                  [[maybe_unused]] const imports::Ntdll&    ntdll,
                                  [[maybe_unused]] const imports::User32&   user32 ) noexcept
 {
-    enumerator = LI_MOD( "d3d11.dll" )::enumerator<decltype( enumerator )>();
-    if ( LI_MOD( "d3d11.dll" )::in( enumerator.value ) != nullptr )
+    enumerator = LI_MOD( "d3d11.dll" )::enumerator();
+    if ( ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
     {
         switch ( getUserInput( xorstr_( "DirectX11" ), xorstr_( "Renderer" ) ) )
         {
@@ -18,8 +18,8 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Kernel32& kerne
             break;
         }
     }
-    enumerator = LI_MOD( "d3d9.dll" )::enumerator<decltype( enumerator )>();
-    if ( LI_MOD( "d3d9.dll" )::in( enumerator.value ) != nullptr )
+    enumerator = LI_MOD( "d3d9.dll" )::enumerator();
+    if ( ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
     {
         switch ( getUserInput( xorstr_( "DirectX9" ), xorstr_( "Renderer" ) ) )
         {
@@ -37,11 +37,11 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Kernel32& kerne
 void orion::core::Renderer::hook() noexcept
 {
 #ifndef _WIN64
-    enumerator = LI_MOD( "rtsshooks.dll" )::enumerator<decltype( enumerator )>();
-    if ( LI_MOD( "rtsshooks.dll" )::in( enumerator.value ) != nullptr )
+    enumerator = LI_MOD( "rtsshooks.dll" )::enumerator();
+    if ( ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
 #else
-    enumerator = LI_MOD( "rtsshooks64.dll" )::enumerator<decltype( enumerator )>();
-    if ( LI_MOD( "rtsshooks64.dll" )::in( enumerator.value ) != nullptr )
+    enumerator = LI_MOD( "rtsshooks64.dll" )::enumerator();
+    if ( ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
 #endif
     {
         switch ( type )
