@@ -18,7 +18,8 @@ struct RetSpoofInvokerBase
     constexpr RetSpoofInvokerBase( const RetSpoofInvokerBase& ) noexcept            = default;
     constexpr RetSpoofInvokerBase& operator=( const RetSpoofInvokerBase& ) noexcept = default;
 
-    constexpr RetSpoofInvokerBase( const void* const functionAddress ) noexcept : functionAddress { functionAddress }
+    constexpr explicit( false ) RetSpoofInvokerBase( const void* const functionAddress ) noexcept
+        : functionAddress { functionAddress }
     {
     }
 
