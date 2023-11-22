@@ -1,7 +1,5 @@
 #pragma once
 
-#include "source/utilities/ret_spoof.h"
-
 namespace orion::utilities
 {
 
