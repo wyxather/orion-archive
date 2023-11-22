@@ -24,7 +24,6 @@ struct Kernel32 final
     decltype( &GetDateFormatA )           getDateFormatA           = nullptr;
     decltype( &GetLocalTime )             getLocalTime             = nullptr;
     decltype( &GetModuleHandleA )         getModuleHandleA         = nullptr;
-    decltype( &GetModuleInformation )     getModuleInformation     = nullptr;
     decltype( &GetStdHandle )             getStdHandle             = nullptr;
     decltype( &GetTimeFormatA )           getTimeFormatA           = nullptr;
     decltype( &SetConsoleCtrlHandler )    setConsoleCtrlHandler    = nullptr;
