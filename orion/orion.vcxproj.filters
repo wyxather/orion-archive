@@ -105,7 +105,7 @@
     <ClInclude Include="source\utilities\string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\hooks\minhook.h">
+    <ClInclude Include="source\utilities\minhook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

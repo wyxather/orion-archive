@@ -50,7 +50,7 @@ struct Input final
 
     li::detail::safe_module_enumerator          enumerator;
     Type                                        type = Type::Undefined;
-    utilities::Option<hooks::MinHook<2>, false> hooks;
+    utilities::Option<utilities::MinHook<2>, false> hooks;
 };
 
 } // namespace core

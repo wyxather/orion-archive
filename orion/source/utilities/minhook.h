@@ -2,7 +2,7 @@
 
 #include "source/utilities/ret_spoof.h"
 
-namespace orion::hooks
+namespace orion::utilities
 {
 
 template<std::size_t Size>
@@ -51,4 +51,4 @@ struct MinHook final
     std::array<void*, Size> originals;
 };
 
-} // namespace orion::hooks
+} // namespace orion::utilities
