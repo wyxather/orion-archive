@@ -21,32 +21,36 @@ struct MinHook final
     }
 
     template<std::size_t Index, typename ReturnType, typename... Args>
-    _NODISCARD constexpr ReturnType cdeclcall( Args... args ) const noexcept
+    _NODISCARD constexpr ReturnType fastcall( Args... args ) const noexcept
     {
-        return utilities::RetSpoof::cdeclcall<ReturnType>( originals[Index], gadget, args... );
+        utilities::RetSpoofInvoker<ReturnType( __fastcall* )( Args... )> invoker { originals[Index] };
+        return invoker( gadget, args... );
+    }
+
+    template<std::size_t Index, typename ReturnType, typename... Args>
+    _NODISCARD constexpr ReturnType thiscall( Args... args ) const noexcept
+    {
+        utilities::RetSpoofInvoker<ReturnType( __thiscall* )( Args... )> invoker { originals[Index] };
+        return invoker( gadget, args... );
     }
 
     template<std::size_t Index, typename ReturnType, typename... Args>
     _NODISCARD constexpr ReturnType stdcall( Args... args ) const noexcept
     {
-        return utilities::RetSpoof::stdcall<ReturnType>( originals[Index], gadget, args... );
+        utilities::RetSpoofInvoker<ReturnType( __stdcall* )( Args... )> invoker { originals[Index] };
+        return invoker( gadget, args... );
     }
 
-    template<std::size_t Index, typename ReturnType, typename Self, typename... Args>
-    _NODISCARD constexpr ReturnType thiscall( Self self, Args... args ) const noexcept
+    template<std::size_t Index, typename ReturnType, typename... Args>
+    _NODISCARD constexpr ReturnType cdeclcall( Args... args ) const noexcept
     {
-        return utilities::RetSpoof::thiscall<ReturnType>( originals[Index], gadget, self, args... );
-    }
-
-    template<std::size_t Index, typename ReturnType, typename Self, typename Garbage, typename... Args>
-    _NODISCARD constexpr ReturnType fastcall( Self self, Garbage garbage, Args... args ) const noexcept
-    {
-        return utilities::RetSpoof::fastcall<ReturnType>( originals[Index], gadget, self, garbage, args... );
+        utilities::RetSpoofInvoker<ReturnType( __cdecl* )( Args... )> invoker { originals[Index] };
+        return invoker( gadget, args... );
     }
 
   private:
     const void* const       gadget;
-    std::array<void*, Size> originals;
+    std::array<void*, Size> originals {};
 };
 
 } // namespace orion::utilities
