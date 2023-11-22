@@ -12,8 +12,9 @@ struct Ntdll final
     Ntdll( const Ntdll& )            = delete;
     Ntdll& operator=( const Ntdll& ) = delete;
 
-    explicit Ntdll( void* ntdll ) noexcept;
+    explicit Ntdll( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& ntdll ) noexcept;
 
+    const void* gadgetAddress                                                                          = nullptr;
     LRESULT( WINAPI* ntdllDefWindowProc_A )( HWND window, UINT message, WPARAM wParam, LPARAM lParam ) = nullptr;
 };
 
