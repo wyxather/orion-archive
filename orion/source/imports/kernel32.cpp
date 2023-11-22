@@ -8,7 +8,6 @@ orion::imports::Kernel32::Kernel32( void* const kernel32 ) noexcept
     freeConsole              = LI_FUNC( FreeConsole )::in( kernel32 );
     freeLibraryAndExitThread = LI_FUNC( FreeLibraryAndExitThread )::in( kernel32 );
     getConsoleWindow         = LI_FUNC( GetConsoleWindow )::in( kernel32 );
-    getCurrentProcess        = LI_FUNC( GetCurrentProcess )::in( kernel32 );
     getCurrentProcessId      = LI_FUNC( GetCurrentProcessId )::in( kernel32 );
     getDateFormatA           = LI_FUNC( GetDateFormatA )::in( kernel32 );
     getLocalTime             = LI_FUNC( GetLocalTime )::in( kernel32 );
@@ -33,7 +32,6 @@ void orion::imports::to_json( nlohmann::json& json, const Kernel32& kernel32 ) n
         { xorstr_( "freeLibraryAndExitThread" ),
           reinterpret_cast<std::uintptr_t>( kernel32.freeLibraryAndExitThread ) },
         { xorstr_( "getConsoleWindow" ), reinterpret_cast<std::uintptr_t>( kernel32.getConsoleWindow ) },
-        { xorstr_( "getCurrentProcess" ), reinterpret_cast<std::uintptr_t>( kernel32.getCurrentProcess ) },
         { xorstr_( "getCurrentProcessId" ), reinterpret_cast<std::uintptr_t>( kernel32.getCurrentProcessId ) },
         { xorstr_( "getDateFormatA" ), reinterpret_cast<std::uintptr_t>( kernel32.getDateFormatA ) },
         { xorstr_( "getLocalTime" ), reinterpret_cast<std::uintptr_t>( kernel32.getLocalTime ) },
