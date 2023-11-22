@@ -170,7 +170,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         return;
     }
     const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( enumerator.value ) );
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for IDirect3DDevice9." ) );
@@ -190,7 +190,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
 
 void orion::core::Renderer::hookDirect3D9RTSS() noexcept
 {
-    const auto moduleBytes = utilities::Memory::getModuleBytes( enumerator.value );
+    const auto moduleBytes = utilities::Memory::getModuleBytes( *enumerator.value );
 #ifndef _WIN64
     const auto direct3DDevice9ResetDetour =
         utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( moduleBytes );
@@ -307,7 +307,7 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         return;
     }
     const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( enumerator.value ) );
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for IDXGISwapChain." ) );
@@ -327,7 +327,7 @@ void orion::core::Renderer::hookDirect3D11() noexcept
 
 void orion::core::Renderer::hookDirect3D11RTTS() noexcept
 {
-    const auto moduleBytes = utilities::Memory::getModuleBytes( enumerator.value );
+    const auto moduleBytes = utilities::Memory::getModuleBytes( *enumerator.value );
 #ifndef _WIN64
     const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
         "81 EC 40 01 00 00 A1 B0 70 0A 10 33 C4 89 84 24 3C 01 00 00 53 56 57 8B BC 24 50 01 00 00 68 C0">::

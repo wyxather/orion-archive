@@ -28,15 +28,16 @@ class Memory final
     using PatternBuilder = stb::basic_hex_string_array_conversion<' ', '?', PatternType, PATTERN_MASKED>;
 
   public:
-    static std::span<const std::uint8_t> getModuleBytes(
-        const li::detail::win::LDR_DATA_TABLE_ENTRY_T* const ldr ) noexcept
+    _NODISCARD static std::span<const std::uint8_t> getModuleBytes(
+        const li::detail::win::LDR_DATA_TABLE_ENTRY_T& ldr ) noexcept
     {
-        return std::span<const std::uint8_t>( reinterpret_cast<const std::uint8_t*>( ldr->DllBase ), ldr->SizeOfImage );
+        return std::span<const std::uint8_t>( reinterpret_cast<const std::uint8_t*>( ldr.DllBase ), ldr.SizeOfImage );
     }
 
-    static std::size_t calcVmtLength( const imports::Kernel32& kernel32, const void* const vmtAddress ) noexcept;
-    static std::size_t calcVmtLength( const imports::Kernel32& kernel32,
-                                      const void* const* const classAddress ) noexcept;
+    _NODISCARD static std::size_t calcVmtLength( const imports::Kernel32& kernel32,
+                                                 const void* const        vmtAddress ) noexcept;
+    _NODISCARD static std::size_t calcVmtLength( const imports::Kernel32& kernel32,
+                                                 const void* const* const classAddress ) noexcept;
 
     template<stb::fixed_string str>
     class Pattern final
@@ -103,9 +104,9 @@ class Memory final
             return nullptr;
         }
 
-        _NODISCARD static constexpr std::uint8_t* find( const li::detail::unsafe_module_enumerator enumerator ) noexcept
+        _NODISCARD static constexpr std::uint8_t* find( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& ldr ) noexcept
         {
-            return find( getModuleBytes( enumerator ) );
+            return find( getModuleBytes( ldr ) );
         }
     };
 };

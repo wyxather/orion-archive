@@ -81,7 +81,7 @@ void orion::core::Input::hookDirectInput8() noexcept
         return;
     }
     const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( enumerator.value ) );
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for IDirectInputDevice8." ) );
