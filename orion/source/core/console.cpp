@@ -74,8 +74,8 @@ int orion::core::Console::format( char* const       buffer,
 {
     va_list args;
     va_start( args, format );
-    const auto numCharsWritten =
-        context.getMsvcrt()._vsnprintf_s( buffer, bufferSizeInBytes, maxNumChars, format, args );
+    const auto numCharsWritten = context.getMsvcrt()._vsnprintf_s(
+        context.getNtdll().gadgetAddress, buffer, bufferSizeInBytes, maxNumChars, format, args );
     va_end( args );
     return numCharsWritten;
 }

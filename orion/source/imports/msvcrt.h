@@ -12,10 +12,11 @@ struct Msvcrt final
     Msvcrt( const Msvcrt& )            = delete;
     Msvcrt& operator=( const Msvcrt& ) = delete;
 
-    explicit Msvcrt( void* msvcrt ) noexcept;
+    explicit Msvcrt( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& msvcrt ) noexcept;
 
-    int( __cdecl* _vsnprintf_s )(
-        char* buffer, std::size_t sizeOfBuffer, std::size_t count, const char* format, va_list argPtr ) = nullptr;
+    utilities::RetSpoofInvoker<int( __cdecl* )(
+        char* buffer, std::size_t sizeOfBuffer, std::size_t count, const char* format, va_list argPtr )>
+        _vsnprintf_s;
 };
 
 } // namespace orion::imports
