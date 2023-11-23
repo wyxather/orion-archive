@@ -9,18 +9,21 @@ orion::core::Platform::Platform( [[maybe_unused]] const imports::Ntdll&    ntdll
 
 orion::core::Platform::Window::Window() noexcept
 {
-    context.getUser32().enumWindows( reinterpret_cast<WNDENUMPROC>( enumWindowsProc ),
-                                     reinterpret_cast<LPARAM>( this ) );
+    std::ignore = context.getUser32().enumWindows( context.getNtdll().gadgetAddress,
+                                                   reinterpret_cast<WNDENUMPROC>( enumWindowsProc ),
+                                                   reinterpret_cast<LPARAM>( this ) );
 }
 
 void orion::core::Platform::Window::hook() const noexcept
 {
-    context.getUser32().setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( &procedure ) );
+    std::ignore = context.getUser32().setWindowLongPtr(
+        context.getNtdll().gadgetAddress, handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( &procedure ) );
 }
 
 void orion::core::Platform::Window::unhook() const noexcept
 {
-    context.getUser32().setWindowLongPtr( handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( originalProcedure ) );
+    std::ignore = context.getUser32().setWindowLongPtr(
+        context.getNtdll().gadgetAddress, handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( originalProcedure ) );
 }
 
 BOOL CALLBACK orion::core::Platform::Window::enumWindowsProc( const HWND window, Window& self ) noexcept
@@ -64,6 +67,7 @@ LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
         return false;
     }();
     const auto callWindowProc    = context.getUser32().callWindowProc;
+    const auto gadgetAddress     = context.getNtdll().gadgetAddress;
     const auto originalProcedure = context.getPlatform().window.originalProcedure;
     switch ( message )
     {
@@ -85,43 +89,48 @@ LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
     default:
         break;
     }
-    return callWindowProc( originalProcedure, window, message, wParam, lParam );
+    return callWindowProc( gadgetAddress, originalProcedure, window, message, wParam, lParam );
 }
 
 std::array<char, 257> orion::core::Platform::Window::getClassName( const HWND window ) noexcept
 {
     std::array<char, 257> className;
-    context.getUser32().getClassNameA( window, className.data(), static_cast<int>( className.size() ) );
+    std::ignore = context.getUser32().getClassNameA(
+        context.getNtdll().gadgetAddress, window, className.data(), static_cast<int>( className.size() ) );
     return className;
 }
 
 int orion::core::Platform::Window::getUserInput( const char* const className, const char* const windowText ) noexcept
 {
-    return context.getUser32().messageBoxA( nullptr, windowText, className, MB_YESNOCANCEL | MB_ICONQUESTION );
+    return context.getUser32().messageBoxA(
+        context.getNtdll().gadgetAddress, nullptr, windowText, className, MB_YESNOCANCEL | MB_ICONQUESTION );
 }
 
 DWORD orion::core::Platform::Window::getThreadProcessId( const HWND window ) noexcept
 {
     DWORD threadProcessId;
-    context.getUser32().getWindowThreadProcessId( window, &threadProcessId );
+    std::ignore =
+        context.getUser32().getWindowThreadProcessId( context.getNtdll().gadgetAddress, window, &threadProcessId );
     return threadProcessId;
 }
 
 WNDPROC orion::core::Platform::Window::getProcedure( const HWND window ) noexcept
 {
-    return reinterpret_cast<WNDPROC>( context.getUser32().getWindowLongPtr( window, GWLP_WNDPROC ) );
+    return reinterpret_cast<WNDPROC>(
+        context.getUser32().getWindowLongPtr( context.getNtdll().gadgetAddress, window, GWLP_WNDPROC ) );
 }
 
 std::vector<char> orion::core::Platform::Window::getText( const HWND window ) noexcept
 {
     std::vector<char> windowText( getTextLength( window ) );
-    context.getUser32().getWindowTextA( window, windowText.data(), static_cast<int>( windowText.size() ) );
+    std::ignore = context.getUser32().getWindowTextA(
+        context.getNtdll().gadgetAddress, window, windowText.data(), static_cast<int>( windowText.size() ) );
     return windowText;
 }
 
 int orion::core::Platform::Window::getTextLength( const HWND window ) noexcept
 {
-    return context.getUser32().getWindowTextLengthA( window );
+    return context.getUser32().getWindowTextLengthA( context.getNtdll().gadgetAddress, window );
 }
 
 bool orion::core::Platform::Window::isConsole( const char* const className ) noexcept
@@ -136,7 +145,7 @@ bool orion::core::Platform::Window::isEqualToCurrentProcessId( const DWORD proce
 
 bool orion::core::Platform::Window::isVisible( const HWND window ) noexcept
 {
-    return ( context.getUser32().isWindowVisible( window ) != FALSE );
+    return ( context.getUser32().isWindowVisible( context.getNtdll().gadgetAddress, window ) != FALSE );
 }
 
 void orion::core::to_json( nlohmann::json& json, const Platform& platform ) noexcept

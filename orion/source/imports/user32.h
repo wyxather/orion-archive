@@ -12,22 +12,22 @@ struct User32 final
     User32( const User32& )            = delete;
     User32& operator=( const User32& ) = delete;
 
-    explicit User32( void* user32 ) noexcept;
+    explicit User32( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& user32 ) noexcept;
 
-    decltype( &CallWindowProc )           callWindowProc           = nullptr;
-    decltype( &CreateWindowExA )          createWindowExA          = nullptr;
-    decltype( &DestroyWindow )            destroyWindow            = nullptr;
-    decltype( &EnumWindows )              enumWindows              = nullptr;
-    decltype( &GetClassNameA )            getClassNameA            = nullptr;
-    decltype( &GetWindowLongPtr )         getWindowLongPtr         = nullptr;
-    decltype( &GetWindowTextA )           getWindowTextA           = nullptr;
-    decltype( &GetWindowTextLengthA )     getWindowTextLengthA     = nullptr;
-    decltype( &GetWindowThreadProcessId ) getWindowThreadProcessId = nullptr;
-    decltype( &IsWindowVisible )          isWindowVisible          = nullptr;
-    decltype( &MessageBoxA )              messageBoxA              = nullptr;
-    decltype( &RegisterClassExA )         registerClassExA         = nullptr;
-    decltype( &SetWindowLongPtr )         setWindowLongPtr         = nullptr;
-    decltype( &UnregisterClassA )         unregisterClassA         = nullptr;
+    utilities::RetSpoofInvoker<decltype( &CallWindowProc )>           callWindowProc;
+    utilities::RetSpoofInvoker<decltype( &CreateWindowExA )>          createWindowExA;
+    utilities::RetSpoofInvoker<decltype( &DestroyWindow )>            destroyWindow;
+    utilities::RetSpoofInvoker<decltype( &EnumWindows )>              enumWindows;
+    utilities::RetSpoofInvoker<decltype( &GetClassNameA )>            getClassNameA;
+    utilities::RetSpoofInvoker<decltype( &GetWindowLongPtr )>         getWindowLongPtr;
+    utilities::RetSpoofInvoker<decltype( &GetWindowTextA )>           getWindowTextA;
+    utilities::RetSpoofInvoker<decltype( &GetWindowTextLengthA )>     getWindowTextLengthA;
+    utilities::RetSpoofInvoker<decltype( &GetWindowThreadProcessId )> getWindowThreadProcessId;
+    utilities::RetSpoofInvoker<decltype( &IsWindowVisible )>          isWindowVisible;
+    utilities::RetSpoofInvoker<decltype( &MessageBoxA )>              messageBoxA;
+    utilities::RetSpoofInvoker<decltype( &RegisterClassExA )>         registerClassExA;
+    utilities::RetSpoofInvoker<decltype( &SetWindowLongPtr )>         setWindowLongPtr;
+    utilities::RetSpoofInvoker<decltype( &UnregisterClassA )>         unregisterClassA;
 };
 
 } // namespace orion::imports

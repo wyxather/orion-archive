@@ -6,9 +6,10 @@ namespace orion
 namespace imports
 {
 
+struct Ntdll;
 struct User32;
 
-}
+} // namespace imports
 
 namespace core
 {
@@ -28,7 +29,7 @@ struct Input final
     Input( const Input& )            = delete;
     Input& operator=( const Input& ) = delete;
 
-    explicit Input( const HMODULE orionHandle, const imports::User32& user32 ) noexcept;
+    explicit Input( const HMODULE orionHandle, const imports::Ntdll& ntdll, const imports::User32& user32 ) noexcept;
 
     void hook() noexcept;
     void unhook() noexcept;
@@ -48,8 +49,8 @@ struct Input final
 
     void hookDirectInput8() noexcept;
 
-    li::detail::safe_module_enumerator          enumerator;
-    Type                                        type = Type::Undefined;
+    li::detail::safe_module_enumerator              enumerator;
+    Type                                            type = Type::Undefined;
     utilities::Option<utilities::MinHook<2>, false> hooks;
 };
 

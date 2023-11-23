@@ -78,7 +78,8 @@ void orion::core::Renderer::unhook() noexcept
 
 int orion::core::Renderer::getUserInput( const char* text, const char* caption ) noexcept
 {
-    return context.getUser32().messageBoxA( nullptr, text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
+    return context.getUser32().messageBoxA(
+        context.getNtdll().gadgetAddress, nullptr, text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
 }
 
 HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Reset(
@@ -395,7 +396,7 @@ orion::core::Renderer::WindowClass::WindowClass() noexcept
           xorstr_( "     " ),
           nullptr,
       },
-      atom( context.getUser32().registerClassExA( &value ) )
+      atom( context.getUser32().registerClassExA( context.getNtdll().gadgetAddress, &value ) )
 {
 }
 
@@ -403,7 +404,8 @@ orion::core::Renderer::WindowClass::~WindowClass() noexcept
 {
     if ( isRegistered() ) [[likely]]
     {
-        if ( context.getUser32().unregisterClassA( reinterpret_cast<LPCSTR>( LOWORD( atom ) ), value.hInstance ) == 0 )
+        if ( context.getUser32().unregisterClassA(
+                 context.getNtdll().gadgetAddress, reinterpret_cast<LPCSTR>( LOWORD( atom ) ), value.hInstance ) == 0 )
             [[unlikely]]
         {
             log::error( xorstr_( "Failed to unregister window class." ) );
@@ -417,7 +419,8 @@ bool orion::core::Renderer::WindowClass::isRegistered() const noexcept
 }
 
 orion::core::Renderer::Window::Window( const WindowClass& windowClass ) noexcept
-    : handle { context.getUser32().createWindowExA( 0,
+    : handle { context.getUser32().createWindowExA( context.getNtdll().gadgetAddress,
+                                                    0,
                                                     reinterpret_cast<LPCSTR>( LOWORD( windowClass.atom ) ),
                                                     nullptr,
                                                     WS_OVERLAPPEDWINDOW,
@@ -436,7 +439,7 @@ orion::core::Renderer::Window::~Window() noexcept
 {
     if ( isCreated() ) [[likely]]
     {
-        if ( context.getUser32().destroyWindow( handle ) == 0 ) [[unlikely]]
+        if ( context.getUser32().destroyWindow( context.getNtdll().gadgetAddress, handle ) == 0 ) [[unlikely]]
         {
             log::error( xorstr_( "Failed to destroy window." ) );
         }
