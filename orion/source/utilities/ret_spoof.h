@@ -23,6 +23,11 @@ struct RetSpoofInvokerBase
     {
     }
 
+    _NODISCARD constexpr bool operator==( const void* const otherFunctionAddress ) const noexcept
+    {
+        return ( functionAddress == otherFunctionAddress );
+    }
+
   protected:
     const void* functionAddress = nullptr;
 };
