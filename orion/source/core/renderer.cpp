@@ -251,23 +251,18 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         log::error( xorstr_( "Failed to create window." ) );
         return;
     }
-    const auto d3D11CreateDeviceAndSwapChain =
-        LI_FUNC( D3D11CreateDeviceAndSwapChain )::in_safe<HRESULT( WINAPI* )( IDXGIAdapter*,
-                                                                              D3D_DRIVER_TYPE,
-                                                                              HMODULE,
-                                                                              UINT,
-                                                                              const D3D_FEATURE_LEVEL*,
-                                                                              UINT,
-                                                                              UINT,
-                                                                              const DXGI_SWAP_CHAIN_DESC*,
-                                                                              IDXGISwapChain**,
-                                                                              ID3D11Device**,
-                                                                              D3D_FEATURE_LEVEL*,
-                                                                              ID3D11DeviceContext** )>(
-            enumerator.value->DllBase );
+    const auto d3D11CreateDeviceAndSwapChain = LI_FUNC( D3D11CreateDeviceAndSwapChain )::in_safe<
+        utilities::RetSpoofInvoker<decltype( &D3D11CreateDeviceAndSwapChain )>>( enumerator.value->DllBase );
     if ( d3D11CreateDeviceAndSwapChain == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find D3D11CreateDeviceAndSwapChain." ) );
+        return;
+    }
+    const auto gadget =
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
+    if ( gadget == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find gadget for DirectX11." ) );
         return;
     }
     D3D_FEATURE_LEVEL          d3DFeatureLevel;
@@ -291,7 +286,8 @@ void orion::core::Renderer::hookDirect3D11() noexcept
     Microsoft::WRL::ComPtr<IDXGISwapChain>      dXGISwapChain;
     Microsoft::WRL::ComPtr<ID3D11Device>        d3D11Device;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3D11DeviceContext;
-    if ( d3D11CreateDeviceAndSwapChain( nullptr,
+    if ( d3D11CreateDeviceAndSwapChain( gadget,
+                                        nullptr,
                                         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
                                         nullptr,
                                         0,
@@ -307,13 +303,6 @@ void orion::core::Renderer::hookDirect3D11() noexcept
                                         d3D11DeviceContext.GetAddressOf() ) != S_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create ID3D11Device & IDXGISwapChain." ) );
-        return;
-    }
-    const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
-    if ( gadget == nullptr ) [[unlikely]]
-    {
-        log::error( xorstr_( "Failed to find gadget for IDXGISwapChain." ) );
         return;
     }
     const auto virtualMethod = *reinterpret_cast<void***>( dXGISwapChain.Get() );
