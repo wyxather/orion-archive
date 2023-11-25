@@ -132,13 +132,21 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         return;
     }
     const auto direct3DCreate9 =
-        LI_FUNC( Direct3DCreate9 )::in_safe<LPDIRECT3D9( WINAPI* )( std::uint32_t )>( enumerator.value->DllBase );
+        LI_FUNC( Direct3DCreate9 )::in_safe<utilities::RetSpoofInvoker<decltype( &Direct3DCreate9 )>>(
+            enumerator.value->DllBase );
     if ( direct3DCreate9 == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find Direct3DCreate9." ) );
         return;
     }
-    const Microsoft::WRL::ComPtr<IDirect3D9> direct3d9 = direct3DCreate9( D3D_SDK_VERSION );
+    const auto gadget =
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
+    if ( gadget == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find gadget for DirectX9." ) );
+        return;
+    }
+    const Microsoft::WRL::ComPtr<IDirect3D9> direct3d9 = direct3DCreate9( gadget, D3D_SDK_VERSION );
     if ( direct3d9.Get() == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirect3D9." ) );
@@ -169,13 +177,6 @@ void orion::core::Renderer::hookDirect3D9() noexcept
                                   direct3DDevice9.GetAddressOf() ) != D3D_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirect3DDevice9." ) );
-        return;
-    }
-    const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
-    if ( gadget == nullptr ) [[unlikely]]
-    {
-        log::error( xorstr_( "Failed to find gadget for IDirect3DDevice9." ) );
         return;
     }
     const auto virtualMethod = *reinterpret_cast<void***>( direct3DDevice9.Get() );
