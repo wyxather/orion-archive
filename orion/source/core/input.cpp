@@ -61,17 +61,28 @@ HRESULT STDMETHODCALLTYPE
 
 void orion::core::Input::hookDirectInput8() noexcept
 {
-    const auto directInput8Create = LI_FUNC( DirectInput8Create )::in_safe<HRESULT( WINAPI* )(
-        HINSTANCE, DWORD, REFIID, LPDIRECTINPUT8*, LPUNKNOWN )>( enumerator.value->DllBase );
+    const auto gadget =
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
+    if ( gadget == nullptr ) [[unlikely]]
+    {
+        log::error( xorstr_( "Failed to find gadget for DirectInput8." ) );
+        return;
+    }
+    const auto directInput8Create =
+        LI_FUNC( DirectInput8Create )::in_safe<utilities::RetSpoofInvoker<decltype( &DirectInput8Create )>>(
+            enumerator.value->DllBase );
     if ( directInput8Create == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find DirectInput8Create." ) );
         return;
     }
     Microsoft::WRL::ComPtr<IDirectInput8> directInput8;
-    if ( directInput8Create(
-             context.getHandle(), DIRECTINPUT_VERSION, IID_IDirectInput8, directInput8.GetAddressOf(), nullptr ) !=
-         DI_OK ) [[unlikely]]
+    if ( directInput8Create( gadget,
+                             context.getHandle(),
+                             DIRECTINPUT_VERSION,
+                             IID_IDirectInput8,
+                             reinterpret_cast<LPVOID*>( directInput8.GetAddressOf() ),
+                             nullptr ) != DI_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirectInput8." ) );
         return;
@@ -80,13 +91,6 @@ void orion::core::Input::hookDirectInput8() noexcept
     if ( directInput8->CreateDevice( GUID_SysMouse, directInputDevice8.GetAddressOf(), nullptr ) != DI_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirectInputDevice8." ) );
-        return;
-    }
-    const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
-    if ( gadget == nullptr ) [[unlikely]]
-    {
-        log::error( xorstr_( "Failed to find gadget for IDirectInputDevice8." ) );
         return;
     }
     const auto virtualMethod = *reinterpret_cast<void***>( directInputDevice8.Get() );
