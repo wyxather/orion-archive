@@ -37,13 +37,14 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Ntdll&    ntdll
 void orion::core::Renderer::hook() noexcept
 {
 #ifndef _WIN64
-    enumerator = LI_MOD( "rtsshooks.dll" )::enumerator();
-    if ( ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
+    const auto customEnumerator = LI_MOD( "rtsshooks.dll" )::enumerator();
+    if ( ( customEnumerator.value != customEnumerator.head ) && ( customEnumerator.value->DllBase != nullptr ) )
 #else
-    enumerator = LI_MOD( "rtsshooks64.dll" )::enumerator();
-    if ( ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
+    const auto customEnumerator = LI_MOD( "rtsshooks64.dll" )::enumerator();
+    if ( ( customEnumerator.value != customEnumerator.head ) && ( customEnumerator.value->DllBase != nullptr ) )
 #endif
     {
+        enumerator = customEnumerator;
         switch ( type )
         {
         case Type::Direct3D11:
