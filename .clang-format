@@ -51,7 +51,7 @@ CompactNamespaces: false
 Cpp11BracedListStyle: false
 EmptyLineBeforeAccessModifier: LogicalBlock
 FixNamespaceComments: true
-IncludeBlocks: Regroup
+IncludeBlocks:  Preserve
 IncludeCategories: 
   - Regex: '^<ext/.*\.h>'
     Priority: 2
