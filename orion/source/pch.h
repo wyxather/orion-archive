@@ -22,6 +22,20 @@
 #endif
 
 #ifdef __cplusplus
+#define IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
+#ifdef NDEBUG
+#define IMGUI_DISABLE_DEMO_WINDOWS
+#define IMGUI_DISABLE_DEBUG_TOOLS
+#endif
+#define IMGUI_DISABLE_WIN32_FUNCTIONS
+#define IMGUI_DISABLE_FILE_FUNCTIONS
+#define IMGUI_USE_BGRA_PACKED_COLOR
+#include "dependencies/imgui/imgui.h"
+#include "dependencies/imgui/imgui_internal.h"
+#endif
+
+#ifdef __cplusplus
 #define JSON_NO_IO
 #define JSON_NOEXCEPTION
 #include "dependencies/json.hpp"
