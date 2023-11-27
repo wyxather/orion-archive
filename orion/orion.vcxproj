@@ -230,7 +230,6 @@
     <ClInclude Include="source\core\platform.h" />
     <ClInclude Include="source\core\renderer.h" />
     <ClInclude Include="source\dllmain.h" />
-    <ClInclude Include="source\framework.h" />
     <ClInclude Include="source\utilities\minhook.h" />
     <ClInclude Include="source\utilities\ret_spoof.h" />
     <ClInclude Include="source\imports\kernel32.h" />

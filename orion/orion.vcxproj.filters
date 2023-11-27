@@ -27,9 +27,6 @@
     <ClInclude Include="source\dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\imports\kernel32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
