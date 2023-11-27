@@ -17,13 +17,6 @@ namespace core
 
 struct Renderer final
 {
-    enum class Type
-    {
-        Undefined,
-        Direct3D9,
-        Direct3D11,
-    };
-
     friend void to_json( nlohmann::json& json, const Renderer& renderer ) noexcept;
 
     Renderer( Renderer&& )                 = delete;
@@ -61,10 +54,11 @@ struct Renderer final
                                                                  CONST DXGI_FORMAT           newFormat,
                                                                  CONST UINT                  swapChainFlags ) noexcept;
 
-    void hookDirect3D9() noexcept;
-    void hookDirect3D9RTSS() noexcept;
-    void hookDirect3D11() noexcept;
-    void hookDirect3D11RTTS() noexcept;
+    _NODISCARD bool hookRTTS() noexcept;
+    void            hookDirect3D9() noexcept;
+    void            hookDirect3D9RTSS() noexcept;
+    void            hookDirect3D11() noexcept;
+    void            hookDirect3D11RTTS() noexcept;
 
     struct WindowClass final
     {
@@ -99,8 +93,7 @@ struct Renderer final
         const HWND handle;
     };
 
-    li::detail::safe_module_enumerator              enumerator;
-    Type                                            type = Type::Undefined;
+    const li::detail::win::LDR_DATA_TABLE_ENTRY_T*  ldrDataTableEntry = nullptr;
     utilities::Option<utilities::MinHook<2>, false> hooks;
 };
 
