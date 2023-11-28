@@ -109,5 +109,6 @@ void orion::core::to_json( nlohmann::json& json, const Input& input ) noexcept
 {
     json = {
         { xorstr_( "ldrDataTableEntry" ), reinterpret_cast<std::uintptr_t>( input.ldrDataTableEntry ) },
+        { xorstr_( "hooks" ), input.hooks },
     };
 }

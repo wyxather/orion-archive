@@ -6,6 +6,15 @@ namespace orion::utilities
 template<std::size_t Size>
 struct MinHook final
 {
+    friend constexpr void to_json( nlohmann::json& json, const MinHook<Size>& minhook ) noexcept
+    {
+        json = {
+            { xorstr_( "gadget" ), reinterpret_cast<std::uintptr_t>( minhook.gadget ) },
+            { xorstr_( "originals" ),
+              *reinterpret_cast<const std::array<std::uintptr_t, Size>*>( &minhook.originals ) },
+        };
+    }
+
     MinHook( MinHook&& )                 = delete;
     MinHook& operator=( MinHook&& )      = delete;
     MinHook( const MinHook& )            = delete;

@@ -6,6 +6,13 @@ namespace orion::utilities
 template<typename T, bool ClearTrace = true>
 struct Option final
 {
+    friend constexpr void to_json( nlohmann::json& json, const Option<T, ClearTrace>& option ) noexcept
+    {
+        json = {
+            { xorstr_( "value" ), *reinterpret_cast<const T*>( option.value.data() ) },
+        };
+    }
+
     Option( Option&& )                 = delete;
     Option& operator=( Option&& )      = delete;
     Option( const Option& )            = delete;

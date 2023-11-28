@@ -37,7 +37,13 @@ struct Platform final
   private:
     struct Window final
     {
-        friend void to_json( nlohmann::json& json, const Platform& platform ) noexcept;
+        friend void to_json( nlohmann::json& json, const Window& window ) noexcept
+        {
+            json = {
+                { xorstr_( "handle" ), reinterpret_cast<std::uintptr_t>( window.handle ) },
+                { xorstr_( "originalProcedure" ), reinterpret_cast<std::uintptr_t>( window.originalProcedure ) },
+            };
+        }
 
         Window( Window&& )                 = delete;
         Window& operator=( Window&& )      = delete;

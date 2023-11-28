@@ -151,10 +151,6 @@ bool orion::core::Platform::Window::isVisible( const HWND window ) noexcept
 void orion::core::to_json( nlohmann::json& json, const Platform& platform ) noexcept
 {
     json = {
-        { xorstr_( "window" ),
-          {
-              { xorstr_( "handle" ), reinterpret_cast<std::uintptr_t>( platform.window.handle ) },
-              { xorstr_( "originalProcedure" ), reinterpret_cast<std::uintptr_t>( platform.window.originalProcedure ) },
-          } },
+        { xorstr_( "window" ), platform.window },
     };
 }

@@ -374,6 +374,7 @@ void orion::core::to_json( nlohmann::json& json, const Renderer& renderer ) noex
 {
     json = {
         { xorstr_( "ldrDataTableEntry" ), reinterpret_cast<std::uintptr_t>( renderer.ldrDataTableEntry ) },
+        { xorstr_( "hooks" ), renderer.hooks },
     };
 }
 
