@@ -49,8 +49,7 @@ struct Input final
 
     void hookDirectInput8() noexcept;
 
-    li::detail::safe_module_enumerator              enumerator;
-    Type                                            type = Type::Undefined;
+    const li::detail::win::LDR_DATA_TABLE_ENTRY_T*  ldrDataTableEntry = nullptr;
     utilities::Option<utilities::MinHook<2>, false> hooks;
 };
 

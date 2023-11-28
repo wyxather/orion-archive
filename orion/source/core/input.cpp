@@ -4,13 +4,13 @@ orion::core::Input::Input( [[maybe_unused]] const HMODULE          orionHandle,
                            [[maybe_unused]] const imports::Ntdll&  ntdll,
                            [[maybe_unused]] const imports::User32& user32 ) noexcept
 {
-    enumerator = LI_MOD( "dinput8.dll" )::enumerator();
+    const auto enumerator = LI_MOD( "dinput8.dll" )::enumerator();
     if ( ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
     {
         switch ( getUserInput( xorstr_( "DirectInput8" ), xorstr_( "Input" ) ) )
         {
         case IDYES:
-            type = Type::DirectInput8;
+            ldrDataTableEntry = enumerator.value;
             [[fallthrough]];
         case IDCANCEL:
             return;
@@ -22,13 +22,13 @@ orion::core::Input::Input( [[maybe_unused]] const HMODULE          orionHandle,
 
 void orion::core::Input::hook() noexcept
 {
-    switch ( type )
+    if ( ldrDataTableEntry == nullptr )
     {
-    case Type::DirectInput8:
-        hookDirectInput8();
-        break;
-    default:
-        break;
+        return;
+    }
+    if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"dinput8.dll" ) ) == 0 )
+    {
+        return hookDirectInput8();
     }
 }
 
@@ -62,7 +62,7 @@ HRESULT STDMETHODCALLTYPE
 void orion::core::Input::hookDirectInput8() noexcept
 {
     const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *enumerator.value ) );
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldrDataTableEntry ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for DirectInput8." ) );
@@ -70,7 +70,7 @@ void orion::core::Input::hookDirectInput8() noexcept
     }
     const auto directInput8Create =
         LI_FUNC( DirectInput8Create )::in_safe<utilities::RetSpoofInvoker<decltype( &DirectInput8Create )>>(
-            enumerator.value->DllBase );
+            ldrDataTableEntry->DllBase );
     if ( directInput8Create == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find DirectInput8Create." ) );
@@ -108,7 +108,6 @@ void orion::core::Input::hookDirectInput8() noexcept
 void orion::core::to_json( nlohmann::json& json, const Input& input ) noexcept
 {
     json = {
-        { xorstr_( "type" ), input.type },
-        { xorstr_( "enumerator" ), reinterpret_cast<std::uintptr_t>( input.enumerator.value->DllBase ) },
+        { xorstr_( "ldrDataTableEntry" ), reinterpret_cast<std::uintptr_t>( input.ldrDataTableEntry ) },
     };
 }
