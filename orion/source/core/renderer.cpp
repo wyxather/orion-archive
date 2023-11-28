@@ -44,13 +44,13 @@ void orion::core::Renderer::hook() noexcept
     {
         return;
     }
-    if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, std::array<wchar_t, 10> { L"d3d11.dll" }.data() ) == 0 )
+    if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"d3d11.dll" ) ) == 0 )
     {
-        hookDirect3D11();
+        return hookDirect3D11();
     }
-    else if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, std::array<wchar_t, 10> { L"d3d9.dll" }.data() ) == 0 )
+    if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"d3d9.dll" ) ) == 0 )
     {
-        hookDirect3D9();
+        return hookDirect3D9();
     }
 }
 
@@ -108,13 +108,12 @@ bool orion::core::Renderer::hookRTTS() noexcept
          ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
 #endif
     {
-        if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, std::array<wchar_t, 10> { L"d3d11.dll" }.data() ) == 0 )
+        if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"d3d11.dll" ) ) == 0 )
         {
             ldrDataTableEntry = enumerator.value;
             hookDirect3D11RTTS();
         }
-        else if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, std::array<wchar_t, 10> { L"d3d9.dll" }.data() ) ==
-                  0 )
+        else if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"d3d9.dll" ) ) == 0 )
         {
             ldrDataTableEntry = enumerator.value;
             hookDirect3D9RTSS();
