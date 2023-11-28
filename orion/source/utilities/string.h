@@ -15,11 +15,9 @@ class String final
   public:
     _NODISCARD static std::size_t strlen( const char* const str ) noexcept
     {
-        const auto zeros = _mm_setzero_si128();
-
+        const auto  zeros = _mm_setzero_si128();
         std::size_t result {};
-
-        for ( auto mem = reinterpret_cast<const __m128i*>( str );; ++mem, result += static_cast<std::size_t>( 16 ) )
+        for ( auto mem = reinterpret_cast<const __m128i*>( str );; ++mem, result += sizeof( __m128i ) )
         {
             constexpr auto mode = ( _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_LEAST_SIGNIFICANT );
             const auto     data = _mm_loadu_si128( mem );
@@ -44,17 +42,13 @@ class String final
         {
             constexpr auto mode =
                 ( _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT );
-
             const auto a = _mm_loadu_si128( ptr1 );
             const auto b = _mm_loadu_si128( ptr2 );
-
             if ( _mm_cmpistrc( a, b, mode ) != 0 )
             {
                 const auto index = _mm_cmpistri( a, b, mode );
-
-                const auto b1 = ( reinterpret_cast<const std::uint8_t*>( ptr1 ) )[index];
-                const auto b2 = ( reinterpret_cast<const std::uint8_t*>( ptr2 ) )[index];
-
+                const auto b1    = ( reinterpret_cast<const std::uint8_t*>( ptr1 ) )[index];
+                const auto b2    = ( reinterpret_cast<const std::uint8_t*>( ptr2 ) )[index];
                 if ( b1 < b2 )
                 {
                     return -1;
@@ -68,7 +62,7 @@ class String final
                     return 0;
                 }
             }
-            else if ( _mm_cmpistrz( a, b, mode ) )
+            else if ( _mm_cmpistrz( a, b, mode ) != 0 )
             {
                 break;
             }
