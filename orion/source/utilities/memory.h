@@ -112,6 +112,50 @@ class Memory final
             return find( getModuleBytes( ldr ) );
         }
     };
+
+    _NODISCARD static constexpr int memcmp( void* const s1, void* const s2, std::size_t n ) noexcept
+    {
+        if ( ( n == 0 ) || ( s1 == s2 ) )
+        {
+            return 0;
+        }
+        auto ptr1 = reinterpret_cast<__m128i*>( s1 );
+        auto ptr2 = reinterpret_cast<__m128i*>( s2 );
+        for ( ;; ++ptr1, ++ptr2 )
+        {
+            constexpr auto mode =
+                ( _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_EACH | _SIDD_NEGATIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT );
+            const auto a = _mm_loadu_si128( ptr1 );
+            const auto b = _mm_loadu_si128( ptr2 );
+            if ( _mm_cmpestrc( a, static_cast<int>( n ), b, static_cast<int>( n ), mode ) != 0 )
+            {
+                const auto index = _mm_cmpestri( a, static_cast<int>( n ), b, static_cast<int>( n ), mode );
+                const auto b1    = ( reinterpret_cast<std::uint8_t*>( ptr1 ) )[index];
+                const auto b2    = ( reinterpret_cast<std::uint8_t*>( ptr2 ) )[index];
+                if ( b1 < b2 )
+                {
+                    return -1;
+                }
+                else if ( b1 > b2 )
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            if ( n > 16 )
+            {
+                n -= 16;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return 0;
+    }
 };
 
 } // namespace utilities
