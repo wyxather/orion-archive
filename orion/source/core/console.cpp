@@ -21,12 +21,6 @@ orion::core::Console::~Console() noexcept
     std::ignore = context.getKernel32().freeConsole( context.getNtdll().gadgetAddress );
 }
 
-void orion::core::Console::print( const char* const str, const DWORD strLen ) const noexcept
-{
-    std::ignore = context.getKernel32().writeConsoleA(
-        context.getNtdll().gadgetAddress, stdOutputHandle, str, strLen, nullptr, nullptr );
-}
-
 void orion::core::Console::setTextOutputColor( const WORD color ) const noexcept
 {
     std::ignore =
@@ -45,43 +39,43 @@ BOOL WINAPI orion::core::Console::ctrlHandler( const DWORD ctrlType ) noexcept
     }
 }
 
-void orion::core::Console::printPrefix( char* const       buffer,
-                                        const std::size_t bufferSizeInBytes,
-                                        const std::size_t maxNumChars,
-                                        const char* const modeName,
-                                        const WORD        color,
-                                        const char* const fileName,
-                                        const std::size_t line ) const noexcept
+void orion::core::Console::printFormat( std::pair<std::unique_ptr<char[]>, std::size_t>& buffer,
+                                        const char* const                                format,
+                                        ... ) const noexcept
+{
+    va_list args;
+    va_start( args, format );
+    const auto length = context.getMsvcrt()._vscprintf( context.getMsvcrt().gadgetAddress, format, args );
+    if ( buffer.second < static_cast<std::size_t>( length ) + 1 )
+    {
+        buffer.first  = std::make_unique<char[]>( static_cast<std::size_t>( length ) + 1 );
+        buffer.second = length + 1;
+    }
+    std::ignore = context.getMsvcrt()._vsnprintf_s(
+        context.getMsvcrt().gadgetAddress, buffer.first.get(), length + 1, length, format, args );
+    va_end( args );
+    std::ignore = context.getKernel32().writeConsoleA( context.getNtdll().gadgetAddress,
+                                                       stdOutputHandle,
+                                                       buffer.first.get(),
+                                                       static_cast<DWORD>( length ),
+                                                       nullptr,
+                                                       nullptr );
+}
+
+void orion::core::Console::printPrefix( std::pair<std::unique_ptr<char[]>, std::size_t>& buffer,
+                                        const char* const                                modeName,
+                                        const WORD                                       color,
+                                        const char* const                                fileName,
+                                        const std::size_t                                line ) const noexcept
 {
     const auto localTime  = getLocalTime();
     const auto dateFormat = getDateFormat( localTime );
     const auto timeFormat = getTimeFormat( localTime );
-    print( buffer,
-           format( buffer,
-                   bufferSizeInBytes,
-                   maxNumChars,
-                   xorstr_( "[%s %s.%03d " ),
-                   dateFormat.data(),
-                   timeFormat.data(),
-                   localTime.wMilliseconds ) );
+    printFormat( buffer, xorstr_( "[%s %s.%03d " ), dateFormat.data(), timeFormat.data(), localTime.wMilliseconds );
     setTextOutputColor( color );
-    print( buffer, format( buffer, bufferSizeInBytes, maxNumChars, xorstr_( "%-6s" ), modeName ) );
+    printFormat( buffer, xorstr_( "%-6s" ), modeName );
     setTextOutputColor( FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED );
-    print( buffer, format( buffer, bufferSizeInBytes, maxNumChars, xorstr_( "%s:%zu] " ), fileName, line ) );
-}
-
-int orion::core::Console::format( char* const       buffer,
-                                  const std::size_t bufferSizeInBytes,
-                                  const std::size_t maxNumChars,
-                                  const char* const format,
-                                  ... ) noexcept
-{
-    va_list args;
-    va_start( args, format );
-    const auto numCharsWritten = context.getMsvcrt()._vsnprintf_s(
-        context.getMsvcrt().gadgetAddress, buffer, bufferSizeInBytes, maxNumChars, format, args );
-    va_end( args );
-    return numCharsWritten;
+    printFormat( buffer, xorstr_( "%s:%zu] " ), fileName, line );
 }
 
 const orion::core::Console& orion::core::Console::getConsole() noexcept
