@@ -70,7 +70,7 @@ struct Console final
         }
 
       public:
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%.75s\n", typename... Args>
         static constexpr void trace( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Trace )
@@ -86,7 +86,7 @@ struct Console final
             }
         }
 
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%.75s\n", typename... Args>
         static constexpr void debug( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Debug )
@@ -102,7 +102,7 @@ struct Console final
             }
         }
 
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%.75s\n", typename... Args>
         static constexpr void info( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Info )
@@ -118,7 +118,7 @@ struct Console final
             }
         }
 
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%.75s\n", typename... Args>
         static constexpr void warn( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Warn )
@@ -134,7 +134,7 @@ struct Console final
             }
         }
 
-        template<stb::fixed_string format = "%s\n", typename... Args>
+        template<stb::fixed_string format = "%.75s\n", typename... Args>
         static constexpr void error( Args&&... args ) noexcept
         {
             if constexpr ( mode <= Mode::Error )
