@@ -14,6 +14,7 @@ struct User32 final
 
     explicit User32( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& user32 ) noexcept;
 
+    const void*                                                       gadgetAddress = nullptr;
     utilities::RetSpoofInvoker<decltype( &CallWindowProc )>           callWindowProc;
     utilities::RetSpoofInvoker<decltype( &CreateWindowExA )>          createWindowExA;
     utilities::RetSpoofInvoker<decltype( &DestroyWindow )>            destroyWindow;

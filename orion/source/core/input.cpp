@@ -1,7 +1,6 @@
 #include "source/context.h"
 
 orion::core::Input::Input( [[maybe_unused]] const HMODULE          orionHandle,
-                           [[maybe_unused]] const imports::Ntdll&  ntdll,
                            [[maybe_unused]] const imports::User32& user32 ) noexcept
 {
     const auto enumerator = LI_MOD( "dinput8.dll" )::enumerator();
@@ -39,7 +38,7 @@ void orion::core::Input::unhook() noexcept
 int orion::core::Input::getUserInput( const char* text, const char* caption ) noexcept
 {
     return context.getUser32().messageBoxA(
-        context.getNtdll().gadgetAddress, nullptr, text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
+        context.getUser32().gadgetAddress, nullptr, text, caption, MB_YESNOCANCEL | MB_ICONQUESTION );
 }
 
 HRESULT STDMETHODCALLTYPE orion::core::Input::directInputDevice8GetDeviceState(

@@ -2,8 +2,7 @@
 
 orion::imports::Ntdll::Ntdll( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& ntdll ) noexcept
 {
-    gadgetAddress = utilities::Memory::Pattern<"FF 23">::find( ntdll );
-
+    gadgetAddress        = utilities::Memory::Pattern<"FF 23">::find( ntdll );
     ntdllDefWindowProc_A = LI_FUNC( ntdllDefWindowProc_A )::in<decltype( ntdllDefWindowProc_A )>( ntdll.DllBase );
 }
 

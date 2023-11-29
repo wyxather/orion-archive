@@ -10,10 +10,10 @@ orion::core::Console::Console( const imports::Ntdll&                   ntdll,
     stdOutputHandle   = kernel32.getStdHandle( ntdll.gadgetAddress, STD_OUTPUT_HANDLE );
     const auto window = kernel32.getConsoleWindow( ntdll.gadgetAddress );
     std::ignore =
-        user32.setWindowLongPtr( ntdll.gadgetAddress,
+        user32.setWindowLongPtr( user32.gadgetAddress,
                                  window,
                                  GWL_STYLE,
-                                 user32.getWindowLongPtr( ntdll.gadgetAddress, window, GWL_STYLE ) & ~WS_SYSMENU );
+                                 user32.getWindowLongPtr( user32.gadgetAddress, window, GWL_STYLE ) & ~WS_SYSMENU );
 }
 
 orion::core::Console::~Console() noexcept

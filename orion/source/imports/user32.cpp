@@ -2,6 +2,7 @@
 
 orion::imports::User32::User32( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& user32 ) noexcept
 {
+    gadgetAddress            = utilities::Memory::Pattern<"FF 23">::find( user32 );
     callWindowProc           = LI_FUNC( CallWindowProc )::in( user32.DllBase );
     createWindowExA          = LI_FUNC( CreateWindowExA )::in( user32.DllBase );
     destroyWindow            = LI_FUNC( DestroyWindow )::in( user32.DllBase );
@@ -21,6 +22,7 @@ orion::imports::User32::User32( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& u
 void orion::imports::to_json( nlohmann::json& json, const User32& user32 ) noexcept
 {
     json = {
+        { xorstr_( "gadgetAddress" ), reinterpret_cast<std::uintptr_t>( user32.gadgetAddress ) },
         { xorstr_( "callWindowProc" ), user32.callWindowProc },
         { xorstr_( "createWindowExA" ), user32.createWindowExA },
         { xorstr_( "destroyWindow" ), user32.destroyWindow },
