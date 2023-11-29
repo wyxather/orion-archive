@@ -64,6 +64,9 @@ LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
 {
     if ( ImGui::GetCurrentContext() == nullptr ) [[unlikely]]
     {
+        ImGui::SetAllocatorFunctions( utilities::Memory::alloc,
+                                      utilities::Memory::free,
+                                      context.getKernel32().getProcessHeap( context.getNtdll().gadgetAddress ) );
         ImGui::CreateContext();
         Application::setup();
     }

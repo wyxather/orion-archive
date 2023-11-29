@@ -15,7 +15,7 @@ struct Msvcrt final
     explicit Msvcrt( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& msvcrt ) noexcept;
 
     const void* gadgetAddress = nullptr;
-    utilities::RetSpoofInvoker<int( __cdecl* )(
+    utilities::RetSpoofInvoker<int( __CRTDECL* )(
         char* buffer, std::size_t sizeOfBuffer, std::size_t count, const char* format, va_list argPtr )>
         _vsnprintf_s;
 };

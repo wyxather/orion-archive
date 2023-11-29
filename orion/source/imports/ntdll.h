@@ -14,8 +14,10 @@ struct Ntdll final
 
     explicit Ntdll( const li::detail::win::LDR_DATA_TABLE_ENTRY_T& ntdll ) noexcept;
 
-    const void* gadgetAddress                                                                          = nullptr;
-    LRESULT( WINAPI* ntdllDefWindowProc_A )( HWND window, UINT message, WPARAM wParam, LPARAM lParam ) = nullptr;
+    const void*                                        gadgetAddress        = nullptr;
+    decltype( &DefWindowProcA )                        ntdllDefWindowProc_A = nullptr;
+    utilities::RetSpoofInvoker<decltype( &HeapAlloc )> rtlAllocateHeap;
+    utilities::RetSpoofInvoker<decltype( &HeapFree )>  rtlFreeHeap;
 };
 
 } // namespace orion::imports

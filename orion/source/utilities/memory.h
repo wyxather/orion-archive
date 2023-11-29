@@ -29,6 +29,9 @@ class Memory final
     using PatternBuilder = stb::basic_hex_string_array_conversion<' ', '?', PatternType, PATTERN_MASKED>;
 
   public:
+    _NODISCARD static void* alloc( std::size_t size, void* processHeap ) noexcept;
+    static void             free( void* ptr, void* processHeap ) noexcept;
+
     _NODISCARD static std::span<const std::uint8_t> getModuleBytes(
         const li::detail::win::LDR_DATA_TABLE_ENTRY_T& ldr ) noexcept
     {

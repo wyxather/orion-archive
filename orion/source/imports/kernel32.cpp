@@ -12,6 +12,7 @@ orion::imports::Kernel32::Kernel32( const li::detail::win::LDR_DATA_TABLE_ENTRY_
     getDateFormatA           = LI_FUNC( GetDateFormatA )::in( kernel32.DllBase );
     getLocalTime             = LI_FUNC( GetLocalTime )::in( kernel32.DllBase );
     getModuleHandleA         = LI_FUNC( GetModuleHandleA )::in( kernel32.DllBase );
+    getProcessHeap           = LI_FUNC( GetProcessHeap )::in( kernel32.DllBase );
     getStdHandle             = LI_FUNC( GetStdHandle )::in( kernel32.DllBase );
     getTimeFormatA           = LI_FUNC( GetTimeFormatA )::in( kernel32.DllBase );
     setConsoleCtrlHandler    = LI_FUNC( SetConsoleCtrlHandler )::in( kernel32.DllBase );
@@ -34,6 +35,7 @@ void orion::imports::to_json( nlohmann::json& json, const Kernel32& kernel32 ) n
         { xorstr_( "getDateFormatA" ), kernel32.getDateFormatA },
         { xorstr_( "getLocalTime" ), kernel32.getLocalTime },
         { xorstr_( "getModuleHandleA" ), kernel32.getModuleHandleA },
+        { xorstr_( "getProcessHeap" ), kernel32.getProcessHeap },
         { xorstr_( "getStdHandle" ), kernel32.getStdHandle },
         { xorstr_( "getTimeFormatA" ), kernel32.getTimeFormatA },
         { xorstr_( "setConsoleCtrlHandler" ), kernel32.setConsoleCtrlHandler },

@@ -24,6 +24,7 @@ struct Kernel32 final
     utilities::RetSpoofInvoker<decltype( &GetDateFormatA )>           getDateFormatA;
     utilities::RetSpoofInvoker<decltype( &GetLocalTime )>             getLocalTime;
     utilities::RetSpoofInvoker<decltype( &GetModuleHandleA )>         getModuleHandleA;
+    utilities::RetSpoofInvoker<decltype( &GetProcessHeap )>           getProcessHeap;
     utilities::RetSpoofInvoker<decltype( &GetStdHandle )>             getStdHandle;
     utilities::RetSpoofInvoker<decltype( &GetTimeFormatA )>           getTimeFormatA;
     utilities::RetSpoofInvoker<decltype( &SetConsoleCtrlHandler )>    setConsoleCtrlHandler;
