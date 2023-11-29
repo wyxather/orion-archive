@@ -24,6 +24,7 @@ void orion::core::Platform::Window::unhook() const noexcept
 {
     std::ignore = context.getUser32().setWindowLongPtr(
         context.getNtdll().gadgetAddress, handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( originalProcedure ) );
+    ImGui::DestroyContext();
 }
 
 BOOL CALLBACK orion::core::Platform::Window::enumWindowsProc( const HWND window, Window& self ) noexcept
@@ -61,11 +62,11 @@ LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
                                                            const WPARAM wParam,
                                                            const LPARAM lParam ) noexcept
 {
-    [[maybe_unused]] static const auto once = []() noexcept
+    if ( ImGui::GetCurrentContext() == nullptr ) [[unlikely]]
     {
+        ImGui::CreateContext();
         Application::setup();
-        return false;
-    }();
+    }
     const auto callWindowProc    = context.getUser32().callWindowProc;
     const auto gadgetAddress     = context.getNtdll().gadgetAddress;
     const auto originalProcedure = context.getPlatform().window.originalProcedure;
