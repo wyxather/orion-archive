@@ -52,7 +52,7 @@ void orion::core::Console::printFormat( std::pair<std::unique_ptr<char[]>, std::
         buffer.second = length + 1;
     }
     std::ignore = context.getMsvcrt()._vsnprintf_s(
-        context.getMsvcrt().gadgetAddress, buffer.first.get(), length + 1, length, format, args );
+        context.getMsvcrt().gadgetAddress, buffer.first.get(), buffer.second, length, format, args );
     va_end( args );
     std::ignore = context.getKernel32().writeConsoleA( context.getNtdll().gadgetAddress,
                                                        stdOutputHandle,
