@@ -1,5 +1,8 @@
+#include "dependencies/imgui/imgui_impl_win32.h"
 #include "source/application.h"
 #include "source/context.h"
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler( HWND, UINT, WPARAM, LPARAM );
 
 orion::core::Platform::Platform( [[maybe_unused]] const imports::Ntdll&    ntdll,
                                  [[maybe_unused]] const imports::Kernel32& kernel32,
@@ -24,6 +27,7 @@ void orion::core::Platform::Window::unhook() const noexcept
 {
     std::ignore = context.getUser32().setWindowLongPtr(
         context.getUser32().gadgetAddress, handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( originalProcedure ) );
+    ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 }
 
@@ -68,7 +72,12 @@ LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
                                       utilities::Memory::free,
                                       context.getKernel32().getProcessHeap( context.getNtdll().gadgetAddress ) );
         ImGui::CreateContext();
+        ImGui_ImplWin32_Init( window );
         Application::setup();
+    }
+    if ( ImGui_ImplWin32_WndProcHandler( window, message, wParam, lParam ) != LRESULT() ) [[unlikely]]
+    {
+        return TRUE;
     }
     const auto callWindowProc    = context.getUser32().callWindowProc;
     const auto gadgetAddress     = context.getUser32().gadgetAddress;
