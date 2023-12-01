@@ -31,6 +31,7 @@
 #define IMGUI_DISABLE_WIN32_FUNCTIONS
 #define IMGUI_DISABLE_FILE_FUNCTIONS
 #define IMGUI_USE_BGRA_PACKED_COLOR
+#define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
 #include "dependencies/imgui/imgui.h"
 #include "dependencies/imgui/imgui_internal.h"
 #endif
