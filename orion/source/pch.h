@@ -30,6 +30,12 @@
 #endif
 #define IMGUI_DISABLE_WIN32_FUNCTIONS
 #define IMGUI_DISABLE_FILE_FUNCTIONS
+#define IM_STRV_CLASS_EXTRA                                                                                            \
+    constexpr explicit ImStrv( const char* const str, const std::size_t size ) noexcept                                \
+    {                                                                                                                  \
+        Begin = str;                                                                                                   \
+        End   = str + size;                                                                                            \
+    }
 #define IMGUI_USE_BGRA_PACKED_COLOR
 #define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
 #include "dependencies/imgui/imgui.h"
