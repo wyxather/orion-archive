@@ -352,9 +352,7 @@ bool orion::core::Renderer::hookDirect3D11RTTS() noexcept
     }
     const auto rttsBytes = utilities::Memory::getModuleBytes( *rttsEnumerator.value );
 #ifndef _WIN64
-    const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
-        "81 EC 40 01 00 00 A1 B0 70 0A 10 33 C4 89 84 24 3C 01 00 00 53 56 57 8B BC 24 50 01 00 00 68 C0">::
-        find( rttsBytes );
+    const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 38">::find( rttsBytes );
 #else
     const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
         "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 48 83 EC 20 F0 0F BA 2D B1 D6">::
@@ -366,8 +364,7 @@ bool orion::core::Renderer::hookDirect3D11RTTS() noexcept
         return false;
     }
 #ifndef _WIN64
-    const auto dXGISwapChainResizeBuffersDetour =
-        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 00 DD 45 13 00 73 24 FF 15 68">::find( rttsBytes );
+    const auto dXGISwapChainResizeBuffersDetour = utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 00">::find( rttsBytes );
 #else
     const auto dXGISwapChainResizeBuffersDetour =
         utilities::Memory::Pattern<"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC "
