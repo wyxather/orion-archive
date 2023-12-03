@@ -1,3 +1,4 @@
+#include "dependencies/imgui/imgui_impl_dx9.h"
 #include "source/context.h"
 
 orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Ntdll&    ntdll,
@@ -56,6 +57,15 @@ void orion::core::Renderer::hook() noexcept
 
 void orion::core::Renderer::unhook() noexcept
 {
+    const auto backendRendererName = ImGui::GetIO().BackendRendererName;
+    if ( backendRendererName == nullptr )
+    {
+        return;
+    }
+    if ( utilities::String::strcmp( xorstr_( "imgui_impl_dx9" ), backendRendererName ) == 0 )
+    {
+        ImGui_ImplDX9_Shutdown();
+    }
 }
 
 int orion::core::Renderer::getUserInput( const char* text, const char* caption ) noexcept
@@ -67,7 +77,14 @@ int orion::core::Renderer::getUserInput( const char* text, const char* caption )
 HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Reset(
     CONST LPDIRECT3DDEVICE9 direct3DDevice9, CONST D3DPRESENT_PARAMETERS* CONST presentationParameters ) noexcept
 {
-    return context.getRenderer().hooks->stdcall<0, HRESULT>( direct3DDevice9, presentationParameters );
+    if ( ImGui::GetIO().BackendRendererUserData == nullptr ) [[unlikely]]
+    {
+        return context.getRenderer().hooks->stdcall<0, HRESULT>( direct3DDevice9, presentationParameters );
+    }
+    ImGui_ImplDX9_InvalidateDeviceObjects();
+    const auto result = context.getRenderer().hooks->stdcall<0, HRESULT>( direct3DDevice9, presentationParameters );
+    ImGui_ImplDX9_CreateDeviceObjects();
+    return result;
 }
 
 HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST LPDIRECT3DDEVICE9 direct3DDevice9,
@@ -76,6 +93,21 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST L
                                                                          CONST HWND              destWindowOverride,
                                                                          CONST LPRGNDATA         dirtyRegion ) noexcept
 {
+    if ( ImGui::GetIO().BackendRendererUserData == nullptr ) [[unlikely]]
+    {
+        ImGui_ImplDX9_Init( direct3DDevice9 );
+    }
+    ImGui_ImplDX9_NewFrame();
+    Platform::newFrame();
+    ImGui::NewFrame();
+    ImGui::ShowDemoWindow();
+    ImGui::EndFrame();
+    if ( direct3DDevice9->BeginScene() == D3D_OK ) [[likely]]
+    {
+        ImGui::Render();
+        ImGui_ImplDX9_RenderDrawData( ImGui::GetDrawData() );
+        direct3DDevice9->EndScene();
+    }
     return context.getRenderer().hooks->stdcall<1, HRESULT>(
         direct3DDevice9, sourceRect, destRect, destWindowOverride, dirtyRegion );
 }

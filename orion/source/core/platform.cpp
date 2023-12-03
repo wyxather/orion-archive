@@ -10,6 +10,11 @@ orion::core::Platform::Platform( [[maybe_unused]] const imports::Ntdll&    ntdll
 {
 }
 
+void orion::core::Platform::newFrame() noexcept
+{
+    return ImGui_ImplWin32_NewFrame();
+}
+
 orion::core::Platform::Window::Window() noexcept
 {
     std::ignore = context.getUser32().enumWindows( context.getUser32().gadgetAddress,

@@ -34,6 +34,8 @@ struct Platform final
                        const imports::Kernel32& kernel32,
                        const imports::User32&   user32 ) noexcept;
 
+    static void newFrame() noexcept;
+
   private:
     struct Window final
     {
