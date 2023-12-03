@@ -82,6 +82,13 @@ LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
     const auto callWindowProc    = context.getUser32().callWindowProc;
     const auto gadgetAddress     = context.getUser32().gadgetAddress;
     const auto originalProcedure = context.getPlatform().window.originalProcedure;
+#if NDEBUG
+    if ( utilities::Memory::isBeingDebugged() ) [[unlikely]]
+    {
+        Application::exit( true );
+        return callWindowProc( gadgetAddress, originalProcedure, window, message, wParam, lParam );
+    }
+#endif
     switch ( message )
     {
     case WM_DESTROY:
