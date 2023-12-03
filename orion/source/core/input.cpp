@@ -9,7 +9,7 @@ orion::core::Input::Input( [[maybe_unused]] const HMODULE          orionHandle,
         switch ( getUserInput( xorstr_( "DirectInput8" ), xorstr_( "Input" ) ) )
         {
         case IDYES:
-            ldrDataTableEntry = enumerator.value;
+            ldr = enumerator.value;
             [[fallthrough]];
         case IDCANCEL:
             return;
@@ -21,11 +21,11 @@ orion::core::Input::Input( [[maybe_unused]] const HMODULE          orionHandle,
 
 void orion::core::Input::hook() noexcept
 {
-    if ( ldrDataTableEntry == nullptr )
+    if ( ldr == nullptr )
     {
         return;
     }
-    if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"dinput8.dll" ) ) == 0 )
+    if ( _wcsicmp( ldr->BaseDllName.Buffer, xorstr_( L"dinput8.dll" ) ) == 0 )
     {
         return hookDirectInput8();
     }
@@ -61,7 +61,7 @@ HRESULT STDMETHODCALLTYPE
 void orion::core::Input::hookDirectInput8() noexcept
 {
     const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldrDataTableEntry ) );
+        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldr ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for DirectInput8." ) );
@@ -69,7 +69,7 @@ void orion::core::Input::hookDirectInput8() noexcept
     }
     const auto directInput8Create =
         LI_FUNC( DirectInput8Create )::in_safe<utilities::RetSpoofInvoker<decltype( &DirectInput8Create )>>(
-            ldrDataTableEntry->DllBase );
+            ldr->DllBase );
     if ( directInput8Create == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find DirectInput8Create." ) );
@@ -107,7 +107,7 @@ void orion::core::Input::hookDirectInput8() noexcept
 void orion::core::to_json( nlohmann::json& json, const Input& input ) noexcept
 {
     json = {
-        { xorstr_( "ldrDataTableEntry" ), reinterpret_cast<std::uintptr_t>( input.ldrDataTableEntry ) },
+        { xorstr_( "ldr" ), reinterpret_cast<std::uintptr_t>( input.ldr ) },
         { xorstr_( "hooks" ), input.hooks },
     };
 }

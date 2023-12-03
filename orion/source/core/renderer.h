@@ -54,11 +54,10 @@ struct Renderer final
                                                                  CONST DXGI_FORMAT           newFormat,
                                                                  CONST UINT                  swapChainFlags ) noexcept;
 
-    _NODISCARD bool hookRTTS() noexcept;
     void            hookDirect3D9() noexcept;
-    void            hookDirect3D9RTSS() noexcept;
+    _NODISCARD bool hookDirect3D9RTSS() noexcept;
     void            hookDirect3D11() noexcept;
-    void            hookDirect3D11RTTS() noexcept;
+    _NODISCARD bool hookDirect3D11RTTS() noexcept;
 
     struct WindowClass final
     {
@@ -93,7 +92,7 @@ struct Renderer final
         const HWND handle;
     };
 
-    const li::detail::win::LDR_DATA_TABLE_ENTRY_T*  ldrDataTableEntry = nullptr;
+    const li::detail::win::LDR_DATA_TABLE_ENTRY_T*  ldr = nullptr;
     utilities::Option<utilities::MinHook<2>, false> hooks;
 };
 

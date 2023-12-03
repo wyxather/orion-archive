@@ -11,7 +11,7 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Ntdll&    ntdll
         switch ( getUserInput( xorstr_( "DirectX11" ), xorstr_( "Renderer" ) ) )
         {
         case IDYES:
-            ldrDataTableEntry = enumerator.value;
+            ldr = enumerator.value;
             [[fallthrough]];
         case IDCANCEL:
             return;
@@ -25,7 +25,7 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Ntdll&    ntdll
         switch ( getUserInput( xorstr_( "DirectX9" ), xorstr_( "Renderer" ) ) )
         {
         case IDYES:
-            ldrDataTableEntry = enumerator.value;
+            ldr = enumerator.value;
             [[fallthrough]];
         case IDCANCEL:
             return;
@@ -37,19 +37,15 @@ orion::core::Renderer::Renderer( [[maybe_unused]] const imports::Ntdll&    ntdll
 
 void orion::core::Renderer::hook() noexcept
 {
-    if ( ldrDataTableEntry == nullptr )
+    if ( ldr == nullptr )
     {
         return;
     }
-    if ( hookRTTS() )
-    {
-        return;
-    }
-    if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"d3d11.dll" ) ) == 0 )
+    if ( _wcsicmp( ldr->BaseDllName.Buffer, xorstr_( L"d3d11.dll" ) ) == 0 )
     {
         return hookDirect3D11();
     }
-    if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"d3d9.dll" ) ) == 0 )
+    if ( _wcsicmp( ldr->BaseDllName.Buffer, xorstr_( L"d3d9.dll" ) ) == 0 )
     {
         return hookDirect3D9();
     }
@@ -130,31 +126,6 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainResizeBuffers( CON
         dXGISwapChain, bufferCount, width, height, newFormat, swapChainFlags );
 }
 
-bool orion::core::Renderer::hookRTTS() noexcept
-{
-#ifndef _WIN64
-    if ( const auto enumerator = LI_MOD( "rtsshooks.dll" )::enumerator();
-         ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
-#else
-    if ( const auto enumerator = LI_MOD( "rtsshooks64.dll" )::enumerator();
-         ( enumerator.value != enumerator.head ) && ( enumerator.value->DllBase != nullptr ) )
-#endif
-    {
-        if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"d3d11.dll" ) ) == 0 )
-        {
-            ldrDataTableEntry = enumerator.value;
-            hookDirect3D11RTTS();
-        }
-        else if ( _wcsicmp( ldrDataTableEntry->BaseDllName.Buffer, xorstr_( L"d3d9.dll" ) ) == 0 )
-        {
-            ldrDataTableEntry = enumerator.value;
-            hookDirect3D9RTSS();
-        }
-        return true;
-    }
-    return false;
-}
-
 void orion::core::Renderer::hookDirect3D9() noexcept
 {
     const WindowClass windowClass;
@@ -169,23 +140,21 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         log::error( xorstr_( "Failed to create window." ) );
         return;
     }
-    const auto direct3DCreate9 =
-        LI_FUNC( Direct3DCreate9 )::in_safe<utilities::RetSpoofInvoker<decltype( &Direct3DCreate9 )>>(
-            ldrDataTableEntry->DllBase );
+    const utilities::RetSpoofInvoker<decltype( &Direct3DCreate9 )> direct3DCreate9 =
+        LI_FUNC( Direct3DCreate9 )::in_safe( ldr->DllBase );
     if ( direct3DCreate9 == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find Direct3DCreate9." ) );
         return;
     }
-    const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldrDataTableEntry ) );
-    if ( gadget == nullptr ) [[unlikely]]
+    const auto direct3D9Gadget = utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldr ) );
+    if ( direct3D9Gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for DirectX9." ) );
         return;
     }
-    const Microsoft::WRL::ComPtr<IDirect3D9> direct3d9 = direct3DCreate9( gadget, D3D_SDK_VERSION );
-    if ( direct3d9.Get() == nullptr ) [[unlikely]]
+    const Microsoft::WRL::ComPtr<IDirect3D9> direct3D9 = direct3DCreate9( direct3D9Gadget, D3D_SDK_VERSION );
+    if ( direct3D9.Get() == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirect3D9." ) );
         return;
@@ -207,7 +176,7 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         D3DPRESENT_INTERVAL_ONE,
     };
     Microsoft::WRL::ComPtr<IDirect3DDevice9> direct3DDevice9;
-    if ( direct3d9->CreateDevice( D3DADAPTER_DEFAULT,
+    if ( direct3D9->CreateDevice( D3DADAPTER_DEFAULT,
                                   D3DDEVTYPE::D3DDEVTYPE_NULLREF,
                                   window.handle,
                                   D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT,
@@ -217,54 +186,66 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         log::error( xorstr_( "Failed to create IDirect3DDevice9." ) );
         return;
     }
-    const auto virtualMethod = *reinterpret_cast<void***>( direct3DDevice9.Get() );
-    hooks.emplace( gadget );
-    if ( !hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset ) ) [[unlikely]]
+    if ( !hookDirect3D9RTSS() )
     {
-        log::error( xorstr_( "Failed to hook IDirect3DDevice9::Reset." ) );
-    }
-    if ( !hooks->hookAt( 1, virtualMethod[17], &direct3DDevice9Present ) ) [[unlikely]]
-    {
-        log::error( xorstr_( "Failed to hook IDirect3DDevice9::Present." ) );
+        const auto virtualMethod = *reinterpret_cast<void***>( direct3DDevice9.Get() );
+        hooks.emplace( direct3D9Gadget );
+        if ( !hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset ) ) [[unlikely]]
+        {
+            log::error( xorstr_( "Failed to hook IDirect3DDevice9::Reset." ) );
+        }
+        if ( !hooks->hookAt( 1, virtualMethod[17], &direct3DDevice9Present ) ) [[unlikely]]
+        {
+            log::error( xorstr_( "Failed to hook IDirect3DDevice9::Present." ) );
+        }
     }
 }
 
-void orion::core::Renderer::hookDirect3D9RTSS() noexcept
+bool orion::core::Renderer::hookDirect3D9RTSS() noexcept
 {
-    const auto moduleBytes = utilities::Memory::getModuleBytes( *ldrDataTableEntry );
+#ifndef _WIN64
+    const auto rttsEnumerator = LI_MOD( "rtsshooks.dll" )::enumerator();
+#else
+    const auto rttsEnumerator = LI_MOD( "rtsshooks64.dll" )::enumerator();
+#endif
+    if ( ( rttsEnumerator.value == rttsEnumerator.head ) || ( rttsEnumerator.value->DllBase == nullptr ) )
+    {
+        return false;
+    }
+    const auto rttsBytes = utilities::Memory::getModuleBytes( *rttsEnumerator.value );
 #ifndef _WIN64
     const auto direct3DDevice9ResetDetour =
-        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( moduleBytes );
+        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( rttsBytes );
 #else
     const auto direct3DDevice9ResetDetour = utilities::Memory::Pattern<
         "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 F0 0F BA 2D E7 D9 45 03 00 48 8B DA">::
-        find( moduleBytes );
+        find( rttsBytes );
 #endif
     if ( direct3DDevice9ResetDetour == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find IDirect3DDevice9::Reset (Detour)." ) );
-        return;
+        return false;
     }
 #ifndef _WIN64
     const auto direct3DDevice9PresentDetour =
-        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 78 D6 45 13 00">::find( moduleBytes );
+        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 78 D6 45 13 00">::find( rttsBytes );
 #else
-    const auto direct3DDevice9PresentDetour = utilities::Memory::Pattern<
-        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 55 41 56 48 "
-        "83 EC 30 F0 0F BA 2D DD D9 45 03 00 49 8B E9 4D 8B E0 4C 8B EA">::find( moduleBytes );
+    const auto direct3DDevice9PresentDetour =
+        utilities::Memory::Pattern<"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 55 41 56 48 "
+                                   "83 EC 30 F0 0F BA 2D DD D9 45 03 00 49 8B E9 4D 8B E0 4C 8B EA">::find( rttsBytes );
 #endif
     if ( direct3DDevice9PresentDetour == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find IDirect3DDevice9::Present (Detour)." ) );
-        return;
+        return false;
     }
-    const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
-    if ( gadget == nullptr ) [[unlikely]]
+    const auto rttsGadget = utilities::Memory::Pattern<"FF 23">::find( rttsBytes );
+    if ( rttsGadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for IDirect3DDevice9 (Detour)." ) );
-        return;
+        return false;
     }
-    hooks.emplace( gadget );
+    hooks.emplace( rttsGadget );
     if ( !hooks->hookAt( 0, direct3DDevice9ResetDetour, &direct3DDevice9Reset ) ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to hook IDirect3DDevice9::Reset (Detour)." ) );
@@ -273,6 +254,7 @@ void orion::core::Renderer::hookDirect3D9RTSS() noexcept
     {
         log::error( xorstr_( "Failed to hook IDirect3DDevice9::Present (Detour)." ) );
     }
+    return true;
 }
 
 void orion::core::Renderer::hookDirect3D11() noexcept
@@ -290,15 +272,14 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         return;
     }
     const auto d3D11CreateDeviceAndSwapChain = LI_FUNC( D3D11CreateDeviceAndSwapChain )::in_safe<
-        utilities::RetSpoofInvoker<decltype( &D3D11CreateDeviceAndSwapChain )>>( ldrDataTableEntry->DllBase );
+        utilities::RetSpoofInvoker<decltype( &D3D11CreateDeviceAndSwapChain )>>( ldr->DllBase );
     if ( d3D11CreateDeviceAndSwapChain == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find D3D11CreateDeviceAndSwapChain." ) );
         return;
     }
-    const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldrDataTableEntry ) );
-    if ( gadget == nullptr ) [[unlikely]]
+    const auto direct3D11 = utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldr ) );
+    if ( direct3D11 == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for DirectX11." ) );
         return;
@@ -324,7 +305,7 @@ void orion::core::Renderer::hookDirect3D11() noexcept
     Microsoft::WRL::ComPtr<IDXGISwapChain>      dXGISwapChain;
     Microsoft::WRL::ComPtr<ID3D11Device>        d3D11Device;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3D11DeviceContext;
-    if ( d3D11CreateDeviceAndSwapChain( gadget,
+    if ( d3D11CreateDeviceAndSwapChain( direct3D11,
                                         nullptr,
                                         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
                                         nullptr,
@@ -343,55 +324,67 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         log::error( xorstr_( "Failed to create ID3D11Device & IDXGISwapChain." ) );
         return;
     }
-    const auto virtualMethod = *reinterpret_cast<void***>( dXGISwapChain.Get() );
-    hooks.emplace( gadget );
-    if ( !hooks->hookAt( 0, virtualMethod[8], &dXGISwapChainPresent ) ) [[unlikely]]
+    if ( !hookDirect3D11RTTS() )
     {
-        log::error( xorstr_( "Failed to hook IDXGISwapChain::Present." ) );
-    }
-    if ( !hooks->hookAt( 1, virtualMethod[13], &dXGISwapChainResizeBuffers ) ) [[unlikely]]
-    {
-        log::error( xorstr_( "Failed to hook IDXGISwapChain::ResizeBuffers." ) );
+        const auto virtualMethod = *reinterpret_cast<void***>( dXGISwapChain.Get() );
+        hooks.emplace( direct3D11 );
+        if ( !hooks->hookAt( 0, virtualMethod[8], &dXGISwapChainPresent ) ) [[unlikely]]
+        {
+            log::error( xorstr_( "Failed to hook IDXGISwapChain::Present." ) );
+        }
+        if ( !hooks->hookAt( 1, virtualMethod[13], &dXGISwapChainResizeBuffers ) ) [[unlikely]]
+        {
+            log::error( xorstr_( "Failed to hook IDXGISwapChain::ResizeBuffers." ) );
+        }
     }
 }
 
-void orion::core::Renderer::hookDirect3D11RTTS() noexcept
+bool orion::core::Renderer::hookDirect3D11RTTS() noexcept
 {
-    const auto moduleBytes = utilities::Memory::getModuleBytes( *ldrDataTableEntry );
+#ifndef _WIN64
+    const auto rttsEnumerator = LI_MOD( "rtsshooks.dll" )::enumerator();
+#else
+    const auto rttsEnumerator = LI_MOD( "rtsshooks64.dll" )::enumerator();
+#endif
+    if ( ( rttsEnumerator.value == rttsEnumerator.head ) || ( rttsEnumerator.value->DllBase == nullptr ) )
+    {
+        return false;
+    }
+    const auto rttsBytes = utilities::Memory::getModuleBytes( *rttsEnumerator.value );
 #ifndef _WIN64
     const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
         "81 EC 40 01 00 00 A1 B0 70 0A 10 33 C4 89 84 24 3C 01 00 00 53 56 57 8B BC 24 50 01 00 00 68 C0">::
-        find( moduleBytes );
+        find( rttsBytes );
 #else
     const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
         "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 48 83 EC 20 F0 0F BA 2D B1 D6">::
-        find( moduleBytes );
+        find( rttsBytes );
 #endif
     if ( dXGISwapChainPresentDetour == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find IDXGISwapChain::Present (Detour)." ) );
-        return;
+        return false;
     }
 #ifndef _WIN64
     const auto dXGISwapChainResizeBuffersDetour =
-        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 00 DD 45 13 00 73 24 FF 15 68">::find( moduleBytes );
+        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 00 DD 45 13 00 73 24 FF 15 68">::find( rttsBytes );
 #else
-    const auto dXGISwapChainResizeBuffersDetour = utilities::Memory::Pattern<
-        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC "
-        "30 F0 0F BA 2D AF D3 45 03 00 4D 8B E1 4D 8B E8 4C 8B F2 4C 8B">::find( moduleBytes );
+    const auto dXGISwapChainResizeBuffersDetour =
+        utilities::Memory::Pattern<"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC "
+                                   "30 F0 0F BA 2D AF D3 45 03 00 4D 8B E1 4D 8B E8 4C 8B F2 4C 8B">::find( rttsBytes );
 #endif
     if ( dXGISwapChainResizeBuffersDetour == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find IDXGISwapChain::ResizeBuffers (Detour)." ) );
-        return;
+        return false;
     }
-    const auto gadget = utilities::Memory::Pattern<"FF 23">::find( moduleBytes );
-    if ( gadget == nullptr ) [[unlikely]]
+    const auto rttsGadget = utilities::Memory::Pattern<"FF 23">::find( rttsBytes );
+    if ( rttsGadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for IDXGISwapChain (Detour)." ) );
-        return;
+        return false;
     }
-    hooks.emplace( gadget );
+    hooks.emplace( rttsGadget );
     if ( !hooks->hookAt( 0, dXGISwapChainPresentDetour, &dXGISwapChainPresent ) ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to hook IDXGISwapChain::Present (Detour)." ) );
@@ -400,12 +393,13 @@ void orion::core::Renderer::hookDirect3D11RTTS() noexcept
     {
         log::error( xorstr_( "Failed to hook IDXGISwapChain::ResizeBuffers (Detour)." ) );
     }
+    return true;
 }
 
 void orion::core::to_json( nlohmann::json& json, const Renderer& renderer ) noexcept
 {
     json = {
-        { xorstr_( "ldrDataTableEntry" ), reinterpret_cast<std::uintptr_t>( renderer.ldrDataTableEntry ) },
+        { xorstr_( "ldr" ), reinterpret_cast<std::uintptr_t>( renderer.ldr ) },
         { xorstr_( "hooks" ), renderer.hooks },
     };
 }

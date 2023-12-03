@@ -48,7 +48,7 @@ struct Input final
 
     void hookDirectInput8() noexcept;
 
-    const li::detail::win::LDR_DATA_TABLE_ENTRY_T*  ldrDataTableEntry = nullptr;
+    const li::detail::win::LDR_DATA_TABLE_ENTRY_T*  ldr = nullptr;
     utilities::Option<utilities::MinHook<2>, false> hooks;
 };
 
