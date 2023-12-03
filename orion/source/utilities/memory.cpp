@@ -46,11 +46,6 @@ void orion::utilities::Memory::free( void* const ptr, void* const processHeap ) 
     std::ignore = orion::context.getNtdll().rtlFreeHeap( orion::context.getNtdll().gadgetAddress, processHeap, 0, ptr );
 }
 
-bool orion::utilities::Memory::isBeingDebugged() noexcept
-{
-    return ( li::detail::peb()->BeingDebugged != 0 );
-}
-
 std::size_t orion::utilities::Memory::calcVmtLength( const imports::Ntdll&    ntdll,
                                                      const imports::Kernel32& kernel32,
                                                      const void* const        vmtAddress ) noexcept

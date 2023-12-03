@@ -32,7 +32,10 @@ class Memory final
     _NODISCARD static void* alloc( std::size_t size, void* processHeap ) noexcept;
     static void             free( void* ptr, void* processHeap ) noexcept;
 
-    _NODISCARD static bool isBeingDebugged() noexcept;
+    _NODISCARD static bool isBeingDebugged() noexcept
+    {
+        return ( li::detail::peb()->BeingDebugged != 0 );
+    }
 
     _NODISCARD static std::span<const std::uint8_t> getModuleBytes(
         const li::detail::win::LDR_DATA_TABLE_ENTRY_T& ldr ) noexcept
