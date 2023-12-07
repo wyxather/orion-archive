@@ -32,6 +32,7 @@
 #define IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS
 #define IMGUI_DISABLE_WIN32_FUNCTIONS
 #define IMGUI_DISABLE_FILE_FUNCTIONS
+#define IMGUI_DISABLE_DEFAULT_ALLOCATORS
 #define IM_STRV_CLASS_EXTRA                                                                                            \
     constexpr explicit ImStrv( const char* const str, const std::size_t size ) noexcept                                \
     {                                                                                                                  \
