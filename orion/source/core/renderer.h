@@ -43,9 +43,9 @@ struct Renderer final
                                                              CONST HWND              destWindowOverride,
                                                              CONST LPRGNDATA         dirtyRegion ) noexcept;
 
-    static HRESULT STDMETHODCALLTYPE dXGISwapChainPresent( CONST IDXGISwapChain* CONST dXGISwapChain,
-                                                           CONST UINT                  syncInterval,
-                                                           CONST UINT                  flags ) noexcept;
+    static HRESULT STDMETHODCALLTYPE dXGISwapChainPresent( IDXGISwapChain* CONST dXGISwapChain,
+                                                           CONST UINT            syncInterval,
+                                                           CONST UINT            flags ) noexcept;
 
     static HRESULT STDMETHODCALLTYPE dXGISwapChainResizeBuffers( CONST IDXGISwapChain* CONST dXGISwapChain,
                                                                  CONST UINT                  bufferCount,

@@ -1,3 +1,4 @@
+#include "dependencies/imgui/imgui_impl_dx11.h"
 #include "dependencies/imgui/imgui_impl_dx9.h"
 #include "source/context.h"
 
@@ -58,7 +59,11 @@ void orion::core::Renderer::unhook() noexcept
     {
         return;
     }
-    if ( utilities::String::strcmp( xorstr_( "imgui_impl_dx9" ), backendRendererName ) == 0 )
+    if ( utilities::String::strcmp( xorstr_( "imgui_impl_dx11" ), backendRendererName ) == 0 )
+    {
+        ImGui_ImplDX11_Shutdown();
+    }
+    else if ( utilities::String::strcmp( xorstr_( "imgui_impl_dx9" ), backendRendererName ) == 0 )
     {
         ImGui_ImplDX9_Shutdown();
     }
@@ -108,10 +113,27 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST L
         direct3DDevice9, sourceRect, destRect, destWindowOverride, dirtyRegion );
 }
 
-HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainPresent( CONST IDXGISwapChain* CONST dXGISwapChain,
-                                                                       CONST UINT                  syncInterval,
-                                                                       CONST UINT                  flags ) noexcept
+HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainPresent( IDXGISwapChain* CONST dXGISwapChain,
+                                                                       CONST UINT            syncInterval,
+                                                                       CONST UINT            flags ) noexcept
 {
+    if ( ImGui::GetIO().BackendRendererUserData == nullptr ) [[unlikely]]
+    {
+        if ( Microsoft::WRL::ComPtr<ID3D11Device> d3D11Device;
+             dXGISwapChain->GetDevice( IID_ID3D11Device, reinterpret_cast<void**>( d3D11Device.GetAddressOf() ) ) ==
+             S_OK ) [[likely]]
+        {
+            Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3D11DeviceContext;
+            d3D11Device->GetImmediateContext( d3D11DeviceContext.GetAddressOf() );
+            ImGui_ImplDX11_Init( d3D11Device.Get(), d3D11DeviceContext.Get() );
+        }
+    }
+    ImGui_ImplDX11_NewFrame();
+    Platform::newFrame();
+    ImGui::NewFrame();
+    ImGui::ShowDemoWindow();
+    ImGui::Render();
+    ImGui_ImplDX11_RenderDrawData( ImGui::GetDrawData() );
     return context.getRenderer().hooks->stdcall<0, HRESULT>( dXGISwapChain, syncInterval, flags );
 }
 
