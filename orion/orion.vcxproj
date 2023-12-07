@@ -142,7 +142,7 @@
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;kernel32.lib;user32.lib;gdi32.lib;dwmapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;kernel32.lib;user32.lib;gdi32.lib;dwmapi.lib;d3dcompiler.lib</AdditionalDependencies>
       <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
   </ItemDefinitionGroup>
@@ -200,7 +200,7 @@
       <EnableUAC>false</EnableUAC>
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;kernel32.lib;user32.lib;gdi32.lib;dwmapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;kernel32.lib;user32.lib;gdi32.lib;dwmapi.lib;d3dcompiler.lib</AdditionalDependencies>
       <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
   </ItemDefinitionGroup>
