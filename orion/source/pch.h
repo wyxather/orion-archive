@@ -28,6 +28,7 @@
 #define IMGUI_DISABLE_DEMO_WINDOWS
 #define IMGUI_DISABLE_DEBUG_TOOLS
 #endif
+#define IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS
 #define IMGUI_DISABLE_WIN32_FUNCTIONS
 #define IMGUI_DISABLE_FILE_FUNCTIONS
 #define IM_STRV_CLASS_EXTRA                                                                                            \
