@@ -147,7 +147,7 @@ WNDPROC orion::core::Platform::Window::getProcedure( const HWND window ) noexcep
 
 std::vector<char> orion::core::Platform::Window::getText( const HWND window ) noexcept
 {
-    std::vector<char> windowText( getTextLength( window ) );
+    std::vector<char> windowText( getTextLength( window ) + 1 );
     std::ignore = context.getUser32().getWindowTextA(
         context.getUser32().gadgetAddress, window, windowText.data(), static_cast<int>( windowText.size() ) );
     return windowText;
