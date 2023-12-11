@@ -38,6 +38,13 @@
     {                                                                                                                  \
         Begin = str;                                                                                                   \
         End   = str + size;                                                                                            \
+    }                                                                                                                  \
+                                                                                                                       \
+    template<typename XorStr>                                                                                          \
+    constexpr explicit ImStrv( XorStr&& xorStr ) noexcept                                                              \
+    {                                                                                                                  \
+        Begin = xorStr.crypt_get();                                                                                    \
+        End   = Begin + xorStr.size();                                                                                 \
     }
 #define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
 #include "dependencies/imgui/imgui.h"
