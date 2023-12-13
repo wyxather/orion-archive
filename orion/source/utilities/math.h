@@ -10,7 +10,7 @@ _NODISCARD constexpr T easeInSine( const T x ) noexcept
 }
 
 template<std::floating_point T>
-_NODISCARD constexpr T easOutSine( const T x ) noexcept
+_NODISCARD constexpr T easeOutSine( const T x ) noexcept
 {
     return std::sin( x * std::numbers::pi_v<T> * static_cast<T>( 0.5 ) );
 }
