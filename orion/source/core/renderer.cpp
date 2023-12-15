@@ -88,6 +88,345 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Reset(
     return result;
 }
 
+namespace orion
+{
+
+void beginCustomImguiWidgets() noexcept
+{
+    ImGui::PushStyleVar( ImGuiStyleVar_PopupRounding, 6.0f );
+    ImGui::PushStyleVar( ImGuiStyleVar_FramePadding, ImVec2( 20.0f, 20.0f ) );
+    ImGui::PushStyleVar( ImGuiStyleVar_FrameRounding, 6.0 );
+    ImGui::PushStyleVar( ImGuiStyleVar_FrameBorderSize, 1.0 );
+    ImGui::PushStyleVar( ImGuiStyleVar_ItemInnerSpacing, ImVec2( 20.0f, 4.0f ) );
+    ImGui::PushStyleVar( ImGuiStyleVar_GrabMinSize, 14.0f );
+
+    ImGui::PushStyleColor( ImGuiCol_PopupBg, IM_COL32( 55, 54, 54, 238 ) );
+    ImGui::PushStyleColor( ImGuiCol_Border, IM_COL32( 56, 56, 56, 221 ) );
+    ImGui::PushStyleColor( ImGuiCol_FrameBg, IM_COL32( 50, 51, 52, 138 ) );
+    ImGui::PushStyleColor( ImGuiCol_FrameBgActive, IM_COL32( 83, 83, 83, 179 ) );
+    ImGui::PushStyleColor( ImGuiCol_FrameBgHovered, IM_COL32( 68, 68, 69, 171 ) );
+    ImGui::PushStyleColor( ImGuiCol_CheckMark, IM_COL32( 62, 171, 238, 255 ) );
+    ImGui::PushStyleColor( ImGuiCol_SliderGrab, IM_COL32( 74, 74, 74, 255 ) );
+    ImGui::PushStyleColor( ImGuiCol_SliderGrabActive, IM_COL32( 32, 192, 255, 255 ) );
+    ImGui::PushStyleColor( ImGuiCol_Text, IM_COL32( 230, 230, 230, 255 ) );
+    ImGui::PushStyleColor( ImGuiCol_TextDisabled, IM_COL32( 161, 161, 161, 255 ) );
+
+    // style.WindowRounding = 6.0f;
+
+    // style.Colors[ImGuiCol_::ImGuiCol_Button] = ImColor();
+    // style.Colors[ImGuiCol_::ImGuiCol_ButtonActive] = ImColor( 37, 186, 255, 255 );
+
+    // style.Colors[ImGuiCol_::ImGuiCol_Separator]       = ImColor( 255, 255, 255, 255 );
+    // style.Colors[ImGuiCol_::ImGuiCol_SeparatorActive] = ImColor( 37, 186, 255, 255 );
+}
+
+void endCustomImGuiWidgets() noexcept
+{
+    ImGui::PopStyleVar( 6 );
+    ImGui::PopStyleColor( 10 );
+}
+
+/// <summary>
+/// Can't be used with ImGui::SameLine() as it use the whole column width.
+/// </summary>
+/// <param name="label"></param>
+/// <param name="value"></param>
+void button( const ImStrv label, bool& value ) noexcept
+{
+    struct Animation final
+    {
+        Animation( Animation&& )                 = delete;
+        Animation& operator=( Animation&& )      = delete;
+        Animation( const Animation& )            = delete;
+        Animation& operator=( const Animation& ) = delete;
+
+        constexpr explicit Animation() noexcept = default;
+
+        float  toggleCirclePos = 0.0f;
+        ImVec4 itemRectColor;
+    };
+
+    static std::map<ImGuiID, Animation> animations;
+
+    const auto& imgui  = *ImGui::GetCurrentContext();
+    auto&       window = *ImGui::GetCurrentWindow();
+    if ( window.SkipItems )
+    {
+        return;
+    }
+
+    const auto& style    = ImGui::GetStyle();
+    const auto  textSize = ImGui::CalcTextSize( label );
+
+    const ImVec2 toggleSize( 40.0f, 20.0f );
+
+    const auto columnWidth  = ImGui::GetColumnWidth();
+    const auto columnHeight = style.FramePadding.y + toggleSize.y + style.FramePadding.y;
+
+    const auto frameHeight = ImGui::GetFrameHeight();
+    const auto frameWidth =
+        style.FramePadding.x + textSize.x + style.ItemInnerSpacing.x + toggleSize.x + style.FramePadding.x;
+
+    const auto   itemId  = window.GetID( &value );
+    const auto   itemPos = ImGui::GetCursorScreenPos();
+    const ImVec2 itemSize( ( frameWidth < columnWidth ) ? columnWidth : frameWidth,
+                           ( frameHeight < columnHeight ) ? columnHeight : frameHeight );
+    const ImRect itemRect( itemPos, itemPos + itemSize );
+    ImGui::ItemSize( itemSize );
+    if ( !ImGui::ItemAdd( itemRect, itemId ) )
+    {
+        return;
+    }
+
+    bool isItemHovered;
+    if ( bool isItemHeld;
+         ImGui::ButtonBehavior( itemRect, itemId, &isItemHovered, &isItemHeld, ImGuiButtonFlags_PressedOnClick ) )
+    {
+        value = !value;
+        ImGui::MarkItemEdited( itemId );
+    }
+
+    auto& animation           = animations[itemId];
+    animation.toggleCirclePos = ImLerp( animation.toggleCirclePos, value ? 1.0f : 0.0f, imgui.IO.DeltaTime * 2.0f );
+    if ( ( imgui.LastActiveId == itemId ) && ( imgui.LastActiveIdTimer < 0.3f ) )
+    {
+        animation.itemRectColor =
+            ImLerp( animation.itemRectColor, style.Colors[ImGuiCol_FrameBgActive], imgui.IO.DeltaTime * 4.0f );
+    }
+    else
+    {
+        animation.itemRectColor =
+            ImLerp( animation.itemRectColor,
+                    isItemHovered ? style.Colors[ImGuiCol_FrameBgHovered] : style.Colors[ImGuiCol_FrameBg],
+                    imgui.IO.DeltaTime * 4.0f );
+    }
+
+    const auto     itemRectCenterPos = itemRect.GetCenter();
+    const ImVec2   togglePos( itemRect.Max.x - style.FramePadding.x - toggleSize.x,
+                            itemRectCenterPos.y - toggleSize.y * 0.5f );
+    const ImRect   toggleRect( togglePos, togglePos + toggleSize );
+    const auto     toggleRectCenterPos = toggleRect.GetCenter();
+    constexpr auto toggleRectRounding  = 12.0f;
+
+    const auto   toggleCircleRadius = toggleSize.y * 0.5f;
+    const ImVec2 toggleCirclePos( ImLerp( toggleRect.Min.x + toggleCircleRadius,
+                                          toggleRect.Max.x - toggleCircleRadius,
+                                          value ? utilities::math::easeOutBounce( animation.toggleCirclePos )
+                                                : utilities::math::easeInBounce( animation.toggleCirclePos ) ),
+                                  toggleRectCenterPos.y );
+
+    const ImVec2 textPos( itemRect.Min.x + style.FramePadding.x, itemRectCenterPos.y - textSize.y * 0.5f );
+
+    const auto itemRectColor   = ImGui::GetColorU32( animation.itemRectColor );
+    const auto toggleRectColor = value ? ImGui::GetColorU32( ImGuiCol_CheckMark ) : ImU32();
+    const auto textColor       = ImGui::GetColorU32( ImGuiCol_Text );
+    const auto circleColor =
+        !value ? ImGui::GetColorU32( ImGuiCol_TextDisabled ) : ImGui::GetColorU32( ImGuiCol_SliderGrab );
+    const auto toggleBorderColor = !value ? circleColor : ImU32();
+
+    auto& drawList = *window.DrawList;
+    ImGui::RenderFrame( itemRect.Min, itemRect.Max, itemRectColor, true, style.FrameRounding );
+    drawList.AddRectFilled( toggleRect.Min, toggleRect.Max, toggleRectColor, toggleRectRounding );
+    drawList.AddRect( toggleRect.Min,
+                      toggleRect.Max,
+                      toggleBorderColor,
+                      toggleRectRounding,
+                      ImDrawFlags_None,
+                      style.FrameBorderSize );
+    drawList.AddCircleFilled( toggleCirclePos, toggleCircleRadius - 4.0f, circleColor );
+    drawList.AddText( imgui.Font, imgui.FontSize, textPos, textColor, label );
+}
+
+/// <summary>
+/// Can't be used with ImGui::SameLine() as it use the whole column width.
+/// </summary>
+/// <param name="label"></param>
+/// <param name="value"></param>
+void slider( const ImStrv        label,
+             const ImGuiDataType valueType,
+             void* const         value,
+             const void* const   min,
+             const void* const   max,
+             const char* const   format ) noexcept
+{
+    constexpr auto grabSizeOriginal = 0.6f;
+
+    struct Animation final
+    {
+        Animation( Animation&& )                 = delete;
+        Animation& operator=( Animation&& )      = delete;
+        Animation( const Animation& )            = delete;
+        Animation& operator=( const Animation& ) = delete;
+
+        constexpr explicit Animation() noexcept = default;
+
+        ImVec4 itemRectColor;
+        float  grabPos;
+        float  grabSize  = grabSizeOriginal;
+        float  grabTimer = 1.0f;
+    };
+
+    static std::map<ImGuiID, Animation> animations;
+
+    const auto& imgui  = *ImGui::GetCurrentContext();
+    auto&       window = *ImGui::GetCurrentWindow();
+    if ( window.SkipItems )
+    {
+        return;
+    }
+
+    const auto& style    = ImGui::GetStyle();
+    const auto  textSize = ImGui::CalcTextSize( label );
+
+    const ImVec2 sliderMinSize( 100.0f, 20.0f );
+
+    const auto columnWidth  = ImGui::GetColumnWidth();
+    const auto columnHeight = style.FramePadding.y + sliderMinSize.y + style.FramePadding.y;
+
+    const auto frameHeight = ImGui::GetFrameHeight();
+    const auto frameWidth =
+        style.FramePadding.x + textSize.x + style.ItemInnerSpacing.x + sliderMinSize.x + style.FramePadding.x;
+
+    const ImVec2 sliderSize( ( frameWidth < columnWidth ) ? sliderMinSize.x + ( columnWidth - frameWidth ) * 0.25f
+                                                          : sliderMinSize.x,
+                             sliderMinSize.y );
+
+    const auto   itemId  = window.GetID( value );
+    const auto   itemPos = ImGui::GetCursorScreenPos();
+    const ImVec2 itemSize( ( frameWidth < columnWidth ) ? columnWidth : frameWidth,
+                           ( frameHeight < columnHeight ) ? columnHeight : frameHeight );
+    const ImRect itemRect( itemPos, itemPos + itemSize );
+    ImGui::ItemSize( itemSize );
+    if ( !ImGui::ItemAdd( itemRect, itemId ) )
+    {
+        return;
+    }
+
+    auto& animation = animations[itemId];
+
+    const auto   itemRectCenterPos = itemRect.GetCenter();
+    const ImVec2 sliderPos( itemRect.Max.x - style.FramePadding.x - sliderSize.x,
+                            itemRectCenterPos.y - sliderSize.y * 0.5f );
+    const ImRect sliderRect( sliderPos, sliderPos + sliderSize );
+    const auto   sliderRectCenter       = sliderRect.GetCenter();
+    const auto   sliderRectRenderHeight = 3.0f;
+
+    const auto isSliderHoverable = ImGui::ItemHoverable( sliderRect, itemId, imgui.LastItemData.InFlags );
+    if ( !isSliderHoverable )
+    {
+        ImGui::ItemHoverable( itemRect, itemId, imgui.LastItemData.InFlags );
+    }
+    else if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left, itemId ) )
+    {
+        ImGui::SetKeyOwner( ImGuiKey_MouseLeft, itemId );
+        ImGui::SetActiveID( itemId, &window );
+        ImGui::SetFocusID( itemId, &window );
+        ImGui::FocusWindow( &window );
+    }
+
+    const auto isItemHovered = ImGui::IsItemHovered();
+    animation.itemRectColor  = ImLerp( animation.itemRectColor,
+                                      ( imgui.ActiveId == itemId ) ? style.Colors[ImGuiCol_FrameBgActive]
+                                       : isItemHovered              ? style.Colors[ImGuiCol_FrameBgHovered]
+                                                                   : style.Colors[ImGuiCol_FrameBg],
+                                      imgui.IO.DeltaTime * 4.0f );
+
+    ImRect grabRect;
+    if ( ImGui::SliderBehavior(
+             sliderRect, itemId, valueType, value, min, max, format, ImGuiSliderFlags_NoInput, &grabRect ) )
+    {
+        ImGui::MarkItemEdited( itemId );
+    }
+    const auto grabRectWidth  = grabRect.GetWidth();
+    const auto grabRadius     = grabRectWidth * 0.5f;
+    const auto grabMin        = grabRect.Min.x - sliderRect.Min.x;
+    const auto grabMax        = sliderRect.Max.x - grabRectWidth - sliderRect.Min.x;
+    animation.grabPos         = ImLerp( animation.grabPos, grabMin / grabMax, imgui.IO.DeltaTime * 12.0f );
+    grabRect.Min.x            = ImLerp( sliderRect.Min.x, sliderRect.Max.x - grabRectWidth, animation.grabPos );
+    grabRect.Max.x            = ImLerp( sliderRect.Min.x + grabRectWidth, sliderRect.Max.x, animation.grabPos );
+    const auto grabRectCenter = grabRect.GetCenter();
+
+    const ImVec2 textPos( itemRect.Min.x + style.FramePadding.x, itemRectCenterPos.y - textSize.y * 0.5f );
+
+    const auto itemRectColor     = ImGui::GetColorU32( animation.itemRectColor );
+    const auto textColor         = ImGui::GetColorU32( ImGuiCol_Text );
+    const auto sliderRectColor   = ImGui::GetColorU32( ImGuiCol_TextDisabled );
+    const auto innerGrabColor    = ImGui::GetColorU32( ImGuiCol_SliderGrabActive );
+    const auto outerGrabColor    = ImGui::GetColorU32( ImGuiCol_SliderGrab );
+    const auto filledSliderColor = innerGrabColor;
+
+    float grabSize;
+    if ( imgui.ActiveId == itemId )
+    {
+        animation.grabSize  = ImLerp( animation.grabSize, 0.5f, imgui.IO.DeltaTime * 16.0f );
+        animation.grabTimer = 0.0f;
+        grabSize            = animation.grabSize;
+    }
+    else if ( isSliderHoverable && imgui.HoveredIdNotActiveTimer > 0.3f )
+    {
+        animation.grabSize = ImLerp( animation.grabSize, 0.9f, imgui.IO.DeltaTime * 16.0f );
+        grabSize           = animation.grabSize;
+    }
+    else
+    {
+        animation.grabSize  = ImLerp( animation.grabSize, grabSizeOriginal, imgui.IO.DeltaTime * 16.0f );
+        animation.grabTimer = ImLerp( animation.grabTimer, 1.0f, imgui.IO.DeltaTime );
+        grabSize            = 0.6f * utilities::math::easeOutElastic( animation.grabTimer );
+    }
+
+    auto& drawList = *window.DrawList;
+    ImGui::RenderFrame( itemRect.Min, itemRect.Max, itemRectColor, true, style.FrameRounding );
+    drawList.AddRectFilled( ImVec2( sliderRect.Min.x + grabRadius, sliderRectCenter.y - sliderRectRenderHeight * 0.5f ),
+                            ImVec2( sliderRect.Max.x - grabRadius, sliderRectCenter.y + sliderRectRenderHeight * 0.5f ),
+                            sliderRectColor,
+                            12.0f );
+    drawList.AddRectFilled( ImVec2( sliderRect.Min.x + grabRadius, sliderRectCenter.y - sliderRectRenderHeight * 0.5f ),
+                            ImVec2( grabRect.Min.x + grabRadius, sliderRectCenter.y + sliderRectRenderHeight * 0.5f ),
+                            filledSliderColor,
+                            12.0f );
+    drawList.AddCircleFilled( grabRectCenter, grabRadius * 1.4f, outerGrabColor );
+    drawList.AddCircleFilled( grabRectCenter, grabRadius * grabSize, innerGrabColor );
+    drawList.AddText( imgui.Font, imgui.FontSize, textPos, textColor, label );
+    if ( ( isSliderHoverable && ( imgui.HoveredIdTimer > 0.6f ) ) || ( imgui.ActiveId == itemId ) ||
+         ( ( imgui.LastActiveId == itemId ) && ( imgui.LastActiveIdTimer < 1.0f ) ) )
+    {
+        char        valueBuf[64];
+        const char* valueBufEnd =
+            valueBuf + ImGui::DataTypeFormatString( valueBuf, IM_ARRAYSIZE( valueBuf ), valueType, value, format );
+        const ImStrv valueText( valueBuf, valueBufEnd );
+        const auto   valueTextSize = ImGui::CalcTextSize( valueText );
+        const ImVec2 valueTextPos( grabRectCenter.x - valueTextSize.x * 0.5f,
+                                   grabRectCenter.y - valueTextSize.y - style.WindowPadding.y - 10.0f );
+        const ImRect valueTextRect( valueTextPos - style.WindowPadding,
+                                    valueTextPos + valueTextSize + style.WindowPadding );
+        ImGui::RenderFrame(
+            valueTextRect.Min, valueTextRect.Max, ImGui::GetColorU32( ImGuiCol_PopupBg ), true, style.PopupRounding );
+        drawList.AddText( imgui.Font, imgui.FontSize, valueTextPos, textColor, valueText );
+    }
+}
+
+/// <summary>
+/// Can't be used with ImGui::SameLine() as it use the whole column width.
+/// </summary>
+/// <param name="label"></param>
+/// <param name="value"></param>
+void slider( const ImStrv label, float& value, const float min, const float max, const char* const format ) noexcept
+{
+    return slider( label, ImGuiDataType_Float, &value, &min, &max, format );
+}
+
+/// <summary>
+/// Can't be used with ImGui::SameLine() as it use the whole column width.
+/// </summary>
+/// <param name="label"></param>
+/// <param name="value"></param>
+void slider( const ImStrv label, int& value, const int min, const int max, const char* const format ) noexcept
+{
+    return slider( label, ImGuiDataType_S32, &value, &min, &max, format );
+}
+
+} // namespace orion
+
 HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST LPDIRECT3DDEVICE9 direct3DDevice9,
                                                                          CONST LPRECT            sourceRect,
                                                                          CONST LPRECT            destRect,
@@ -102,6 +441,20 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST L
     Platform::newFrame();
     ImGui::NewFrame();
     ImGui::ShowDemoWindow();
+    if ( ImGui::Begin( ImStrv( xorstr( "Custom" ) ) ) )
+    {
+        static std::array<bool, 3> b {};
+        static int                 i {};
+        static float               f {};
+        beginCustomImguiWidgets();
+        button( ImStrv( xorstr( "Unlimited Health" ) ), b[0] );
+        button( ImStrv( xorstr( "Unlimited Stamina" ) ), b[1] );
+        button( ImStrv( xorstr( "Unlimited Armor" ) ), b[2] );
+        slider( ImStrv( xorstr( "Minimum Damage" ) ), i, 0, 100, xorstr_( "%d" ) );
+        slider( ImStrv( xorstr( "Maximum Range" ) ), f, 0.0f, 1000.0f, xorstr_( "%.3f" ) );
+        endCustomImGuiWidgets();
+    }
+    ImGui::End();
     ImGui::EndFrame();
     if ( direct3DDevice9->BeginScene() == D3D_OK ) [[likely]]
     {
