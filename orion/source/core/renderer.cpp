@@ -262,8 +262,8 @@ void slider( const ImStrv        label,
 
         ImVec4 itemRectColor;
         float  grabPos;
-        float  grabSize  = grabSizeOriginal;
-        float  grabTimer = 1.0f;
+        float  grabSize           = grabSizeOriginal;
+        float  grabNotActiveTimer = 1.0f;
     };
 
     static std::map<ImGuiID, Animation> animations;
@@ -328,7 +328,7 @@ void slider( const ImStrv        label,
     animation.itemRectColor  = ImLerp( animation.itemRectColor,
                                       ( imgui.ActiveId == itemId ) ? style.Colors[ImGuiCol_FrameBgActive]
                                        : isItemHovered              ? style.Colors[ImGuiCol_FrameBgHovered]
-                                                                   : style.Colors[ImGuiCol_FrameBg],
+                                                                    : style.Colors[ImGuiCol_FrameBg],
                                       imgui.IO.DeltaTime * 4.0f );
 
     ImRect grabRect;
@@ -358,9 +358,9 @@ void slider( const ImStrv        label,
     float grabSize;
     if ( imgui.ActiveId == itemId )
     {
-        animation.grabSize  = ImLerp( animation.grabSize, 0.5f, imgui.IO.DeltaTime * 16.0f );
-        animation.grabTimer = 0.0f;
-        grabSize            = animation.grabSize;
+        animation.grabSize           = ImLerp( animation.grabSize, 0.5f, imgui.IO.DeltaTime * 16.0f );
+        animation.grabNotActiveTimer = 0.0f;
+        grabSize                     = animation.grabSize;
     }
     else if ( isSliderHoverable && imgui.HoveredIdNotActiveTimer > 0.3f )
     {
@@ -369,9 +369,9 @@ void slider( const ImStrv        label,
     }
     else
     {
-        animation.grabSize  = ImLerp( animation.grabSize, grabSizeOriginal, imgui.IO.DeltaTime * 16.0f );
-        animation.grabTimer = ImLerp( animation.grabTimer, 1.0f, imgui.IO.DeltaTime );
-        grabSize            = 0.6f * utilities::math::easeOutElastic( animation.grabTimer );
+        animation.grabSize           = ImLerp( animation.grabSize, grabSizeOriginal, imgui.IO.DeltaTime * 16.0f );
+        animation.grabNotActiveTimer = ImLerp( animation.grabNotActiveTimer, 1.0f, imgui.IO.DeltaTime );
+        grabSize                     = 0.6f * utilities::math::easeOutElastic( animation.grabNotActiveTimer );
     }
 
     auto& drawList = *window.DrawList;
@@ -388,7 +388,7 @@ void slider( const ImStrv        label,
     drawList.AddCircleFilled( grabRectCenter, grabRadius * grabSize, innerGrabColor );
     drawList.AddText( imgui.Font, imgui.FontSize, textPos, textColor, label );
     if ( ( isSliderHoverable && ( imgui.HoveredIdTimer > 0.6f ) ) || ( imgui.ActiveId == itemId ) ||
-         ( ( imgui.LastActiveId == itemId ) && ( imgui.LastActiveIdTimer < 1.0f ) ) )
+         ( ( imgui.LastActiveId == itemId ) && ( animation.grabNotActiveTimer < 0.5f ) ) )
     {
         char        valueBuf[64];
         const char* valueBufEnd =
