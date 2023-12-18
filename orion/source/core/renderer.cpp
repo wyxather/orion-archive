@@ -287,7 +287,7 @@ void slider( const ImStrv        label,
     const auto frameWidth =
         style.FramePadding.x + textSize.x + style.ItemInnerSpacing.x + sliderMinSize.x + style.FramePadding.x;
 
-    const ImVec2 sliderSize( ( frameWidth < columnWidth ) ? sliderMinSize.x + ( columnWidth - frameWidth ) * 0.25f
+    const ImVec2 sliderSize( ( frameWidth < columnWidth ) ? sliderMinSize.x + ( columnWidth - frameWidth ) * 0.5f
                                                           : sliderMinSize.x,
                              sliderMinSize.y );
 
