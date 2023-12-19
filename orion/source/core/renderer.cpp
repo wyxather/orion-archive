@@ -100,6 +100,8 @@ void beginCustomImguiWidgets() noexcept
     ImGui::PushStyleVar( ImGuiStyleVar_ItemInnerSpacing, ImVec2( 20.0f, 4.0f ) );
     ImGui::PushStyleVar( ImGuiStyleVar_GrabMinSize, 14.0f );
 
+    ImGui::PushStyleColor( ImGuiCol_Text, IM_COL32( 230, 230, 230, 255 ) );
+    ImGui::PushStyleColor( ImGuiCol_TextDisabled, IM_COL32( 161, 161, 161, 255 ) );
     ImGui::PushStyleColor( ImGuiCol_PopupBg, IM_COL32( 55, 54, 54, 238 ) );
     ImGui::PushStyleColor( ImGuiCol_Border, IM_COL32( 56, 56, 56, 221 ) );
     ImGui::PushStyleColor( ImGuiCol_FrameBg, IM_COL32( 50, 51, 52, 138 ) );
@@ -108,22 +110,121 @@ void beginCustomImguiWidgets() noexcept
     ImGui::PushStyleColor( ImGuiCol_CheckMark, IM_COL32( 62, 171, 238, 255 ) );
     ImGui::PushStyleColor( ImGuiCol_SliderGrab, IM_COL32( 74, 74, 74, 255 ) );
     ImGui::PushStyleColor( ImGuiCol_SliderGrabActive, IM_COL32( 32, 192, 255, 255 ) );
-    ImGui::PushStyleColor( ImGuiCol_Text, IM_COL32( 230, 230, 230, 255 ) );
-    ImGui::PushStyleColor( ImGuiCol_TextDisabled, IM_COL32( 161, 161, 161, 255 ) );
-
-    // style.WindowRounding = 6.0f;
-
-    // style.Colors[ImGuiCol_::ImGuiCol_Button] = ImColor();
-    // style.Colors[ImGuiCol_::ImGuiCol_ButtonActive] = ImColor( 37, 186, 255, 255 );
-
-    // style.Colors[ImGuiCol_::ImGuiCol_Separator]       = ImColor( 255, 255, 255, 255 );
-    // style.Colors[ImGuiCol_::ImGuiCol_SeparatorActive] = ImColor( 37, 186, 255, 255 );
+    ImGui::PushStyleColor( ImGuiCol_Button, IM_COL32( 69, 69, 69, 102 ) );
+    ImGui::PushStyleColor( ImGuiCol_ButtonActive, IM_COL32( 38, 38, 38, 245 ) );
+    ImGui::PushStyleColor( ImGuiCol_ButtonHovered, IM_COL32( 75, 75, 75, 213 ) );
 }
 
 void endCustomImGuiWidgets() noexcept
 {
     ImGui::PopStyleVar( 6 );
-    ImGui::PopStyleColor( 10 );
+    ImGui::PopStyleColor( 13 );
+}
+
+/// <summary>
+/// Can't be used with ImGui::SameLine() as it use the whole column width.
+/// </summary>
+/// <param name="label"></param>
+/// <param name="value"></param>
+_NODISCARD bool button( const ImStrv label, const ImStrv buttonLabel ) noexcept
+{
+    struct Animation final
+    {
+        Animation( Animation&& )                 = delete;
+        Animation& operator=( Animation&& )      = delete;
+        Animation( const Animation& )            = delete;
+        Animation& operator=( const Animation& ) = delete;
+
+        constexpr explicit Animation() noexcept = default;
+
+        ImVec4 itemRectColor;
+        ImVec4 buttonRectColor;
+    };
+
+    static std::map<ImGuiID, Animation> animations;
+
+    const auto& imgui  = *ImGui::GetCurrentContext();
+    auto&       window = *ImGui::GetCurrentWindow();
+    if ( window.SkipItems )
+    {
+        return false;
+    }
+
+    const auto& style    = ImGui::GetStyle();
+    const auto  textSize = ImGui::CalcTextSize( label );
+
+    const ImVec2 buttonMinSize( 100.0f, 20.0f );
+
+    const auto columnWidth  = ImGui::GetColumnWidth();
+    const auto columnHeight = style.FramePadding.y + buttonMinSize.y + style.FramePadding.y;
+
+    const auto frameHeight = ImGui::GetFrameHeight();
+    const auto frameWidth =
+        style.FramePadding.x + textSize.x + style.ItemInnerSpacing.x + buttonMinSize.x + style.FramePadding.x;
+
+    const auto   itemId  = window.GetID( label );
+    const auto   itemPos = ImGui::GetCursorScreenPos();
+    const ImVec2 itemSize( ( frameWidth < columnWidth ) ? columnWidth : frameWidth,
+                           ( frameHeight < columnHeight ) ? columnHeight : frameHeight );
+    const ImRect itemRect( itemPos, itemPos + itemSize );
+    ImGui::ItemSize( itemSize );
+    if ( !ImGui::ItemAdd( itemRect, itemId ) )
+    {
+        return false;
+    }
+
+    const auto   itemRectCenterPos = itemRect.GetCenter();
+    const auto   buttonTextSize    = ImGui::CalcTextSize( buttonLabel );
+    const ImVec2 buttonSize( ( frameWidth < columnWidth ) ? buttonMinSize.x + ( columnWidth - frameWidth ) * 0.25f
+                                                          : buttonMinSize.x,
+                             columnHeight * 0.55f );
+    const ImVec2 buttonPos( itemRect.Max.x - style.FramePadding.x - buttonSize.x,
+                            itemRectCenterPos.y - buttonSize.y * 0.5f );
+    const ImRect buttonRect( buttonPos, buttonPos + buttonSize );
+
+    bool       isButtonHovered;
+    bool       isButtonHeld;
+    const auto isButtonPressed =
+        ImGui::ButtonBehavior( buttonRect, itemId, &isButtonHovered, &isButtonHeld, ImGuiButtonFlags_PressedOnClick );
+
+    auto& animation = animations[itemId];
+
+    const auto    isItemHovered = ImGui::IsItemHovered();
+    const ImVec4* frameBgColor;
+    const ImVec4* buttonColor;
+    if ( ( imgui.LastActiveId == itemId ) && ( imgui.LastActiveIdTimer < 0.3f ) )
+    {
+        frameBgColor = std::addressof( style.Colors[ImGuiCol_FrameBgActive] );
+        buttonColor  = std::addressof( style.Colors[ImGuiCol_ButtonActive] );
+    }
+    else if ( isItemHovered )
+    {
+        frameBgColor = std::addressof( style.Colors[ImGuiCol_FrameBgHovered] );
+        buttonColor  = std::addressof( style.Colors[ImGuiCol_ButtonHovered] );
+    }
+    else
+    {
+        frameBgColor = std::addressof( style.Colors[ImGuiCol_FrameBg] );
+        buttonColor  = std::addressof( style.Colors[ImGuiCol_Button] );
+    }
+    animation.itemRectColor   = ImLerp( animation.itemRectColor, *frameBgColor, imgui.IO.DeltaTime * 4.0f );
+    animation.buttonRectColor = ImLerp( animation.buttonRectColor, *buttonColor, imgui.IO.DeltaTime * 4.0f );
+
+    const auto itemRectColor   = ImGui::GetColorU32( animation.itemRectColor );
+    const auto buttonRectColor = ImGui::GetColorU32( animation.buttonRectColor );
+
+    ImGui::RenderFrame( itemRect.Min, itemRect.Max, itemRectColor, true, style.FrameRounding );
+    ImGui::RenderFrame( buttonRect.Min, buttonRect.Max, buttonRectColor, true, style.FrameRounding );
+    ImGui::RenderTextClipped( itemRect.Min + ImVec2( style.FramePadding.x, 0.0f ),
+                              itemRect.Max,
+                              label,
+                              &textSize,
+                              ImVec2( 0.0f, 0.5f ),
+                              &itemRect );
+    ImGui::RenderTextClipped(
+        buttonRect.Min, buttonRect.Max, buttonLabel, &buttonTextSize, style.ButtonTextAlign, &buttonRect );
+
+    return isButtonPressed;
 }
 
 /// <summary>
@@ -261,7 +362,7 @@ void slider( const ImStrv        label,
         constexpr explicit Animation() noexcept = default;
 
         ImVec4 itemRectColor;
-        float  grabPos;
+        float  grabPos            = 0.0f;
         float  grabSize           = grabSizeOriginal;
         float  grabNotActiveTimer = 1.0f;
     };
@@ -287,10 +388,6 @@ void slider( const ImStrv        label,
     const auto frameWidth =
         style.FramePadding.x + textSize.x + style.ItemInnerSpacing.x + sliderMinSize.x + style.FramePadding.x;
 
-    const ImVec2 sliderSize( ( frameWidth < columnWidth ) ? sliderMinSize.x + ( columnWidth - frameWidth ) * 0.5f
-                                                          : sliderMinSize.x,
-                             sliderMinSize.y );
-
     const auto   itemId  = window.GetID( value );
     const auto   itemPos = ImGui::GetCursorScreenPos();
     const ImVec2 itemSize( ( frameWidth < columnWidth ) ? columnWidth : frameWidth,
@@ -304,6 +401,9 @@ void slider( const ImStrv        label,
 
     auto& animation = animations[itemId];
 
+    const ImVec2 sliderSize( ( frameWidth < columnWidth ) ? sliderMinSize.x + ( columnWidth - frameWidth ) * 0.5f
+                                                          : sliderMinSize.x,
+                             sliderMinSize.y );
     const auto   itemRectCenterPos = itemRect.GetCenter();
     const ImVec2 sliderPos( itemRect.Max.x - style.FramePadding.x - sliderSize.x,
                             itemRectCenterPos.y - sliderSize.y * 0.5f );
@@ -447,6 +547,7 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST L
         static int                 i {};
         static float               f {};
         beginCustomImguiWidgets();
+        button( ImStrv( xorstr( "Crash Server" ) ), ImStrv( xorstr( "Execute Script" ) ) );
         button( ImStrv( xorstr( "Unlimited Health" ) ), b[0] );
         button( ImStrv( xorstr( "Unlimited Stamina" ) ), b[1] );
         button( ImStrv( xorstr( "Unlimited Armor" ) ), b[2] );
