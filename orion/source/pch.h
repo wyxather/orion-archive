@@ -8,9 +8,6 @@
 #include <Psapi.h>
 
 #include <initguid.h>
-#ifdef __cplusplus
-#include <wrl/client.h>
-#endif
 
 #include <d3d11.h>
 #include <d3d9.h>

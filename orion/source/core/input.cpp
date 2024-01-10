@@ -60,39 +60,38 @@ HRESULT STDMETHODCALLTYPE
 
 void orion::core::Input::hookDirectInput8() noexcept
 {
-    const auto gadget =
-        utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldr ) );
+    const auto gadget = utilities::Memory::Pattern<"FF 23">::find( utilities::Memory::getModuleBytes( *ldr ) );
     if ( gadget == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find gadget for DirectInput8." ) );
         return;
     }
-    const auto directInput8Create =
-        LI_FUNC( DirectInput8Create )::in_safe<utilities::RetSpoofInvoker<decltype( &DirectInput8Create )>>(
-            ldr->DllBase );
+    const auto directInput8Create = LI_FUNC(
+        DirectInput8Create )::in_safe<utilities::RetSpoofInvoker<decltype( &DirectInput8Create )>>( ldr->DllBase );
     if ( directInput8Create == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to find DirectInput8Create." ) );
         return;
     }
-    Microsoft::WRL::ComPtr<IDirectInput8> directInput8;
+    IDirectInput8* directInput8 {};
     if ( directInput8Create( gadget,
                              context.getHandle(),
                              DIRECTINPUT_VERSION,
                              IID_IDirectInput8,
-                             reinterpret_cast<LPVOID*>( directInput8.GetAddressOf() ),
+                             (LPVOID*)( &directInput8 ),
                              nullptr ) != DI_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirectInput8." ) );
         return;
     }
-    Microsoft::WRL::ComPtr<IDirectInputDevice8> directInputDevice8;
-    if ( directInput8->CreateDevice( GUID_SysMouse, directInputDevice8.GetAddressOf(), nullptr ) != DI_OK ) [[unlikely]]
+    IDirectInputDevice8* directInputDevice8;
+    if ( directInput8->CreateDevice( GUID_SysMouse, &directInputDevice8, nullptr ) != DI_OK ) [[unlikely]]
     {
+        directInput8->Release();
         log::error( xorstr_( "Failed to create IDirectInputDevice8." ) );
         return;
     }
-    const auto virtualMethod = *reinterpret_cast<void***>( directInputDevice8.Get() );
+    const auto virtualMethod = *(void***)( directInputDevice8 );
     hooks.emplace( gadget );
     if ( !hooks->hookAt( 0, virtualMethod[9], &directInputDevice8GetDeviceState ) ) [[unlikely]]
     {
@@ -102,6 +101,8 @@ void orion::core::Input::hookDirectInput8() noexcept
     {
         log::error( xorstr_( "Failed to hook IDirectInputDevice8::GetDeviceData." ) );
     }
+    directInputDevice8->Release();
+    directInput8->Release();
 }
 
 void orion::core::to_json( nlohmann::json& json, const Input& input ) noexcept

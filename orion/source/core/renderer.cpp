@@ -119,13 +119,14 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainPresent( IDXGISwap
 {
     if ( ImGui::GetIO().BackendRendererUserData == nullptr ) [[unlikely]]
     {
-        if ( Microsoft::WRL::ComPtr<ID3D11Device> d3D11Device;
-             dXGISwapChain->GetDevice( IID_ID3D11Device, reinterpret_cast<void**>( d3D11Device.GetAddressOf() ) ) ==
-             S_OK ) [[likely]]
+        if ( ID3D11Device * d3D11Device {};
+             dXGISwapChain->GetDevice( IID_ID3D11Device, (void**)( &d3D11Device ) ) == S_OK ) [[likely]]
         {
-            Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3D11DeviceContext;
-            d3D11Device->GetImmediateContext( d3D11DeviceContext.GetAddressOf() );
-            ImGui_ImplDX11_Init( d3D11Device.Get(), d3D11DeviceContext.Get() );
+            ID3D11DeviceContext* d3D11DeviceContext;
+            d3D11Device->GetImmediateContext( &d3D11DeviceContext );
+            ImGui_ImplDX11_Init( d3D11Device, d3D11DeviceContext );
+            d3D11DeviceContext->Release();
+            d3D11Device->Release();
         }
     }
     ImGui_ImplDX11_NewFrame();
@@ -175,8 +176,8 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         log::error( xorstr_( "Failed to find gadget for DirectX9." ) );
         return;
     }
-    const Microsoft::WRL::ComPtr<IDirect3D9> direct3D9 = direct3DCreate9( direct3D9Gadget, D3D_SDK_VERSION );
-    if ( direct3D9.Get() == nullptr ) [[unlikely]]
+    IDirect3D9* const direct3D9 = direct3DCreate9( direct3D9Gadget, D3D_SDK_VERSION );
+    if ( direct3D9 == nullptr ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create IDirect3D9." ) );
         return;
@@ -197,20 +198,21 @@ void orion::core::Renderer::hookDirect3D9() noexcept
         0,
         D3DPRESENT_INTERVAL_ONE,
     };
-    Microsoft::WRL::ComPtr<IDirect3DDevice9> direct3DDevice9;
+    IDirect3DDevice9* direct3DDevice9 {};
     if ( direct3D9->CreateDevice( D3DADAPTER_DEFAULT,
                                   D3DDEVTYPE::D3DDEVTYPE_NULLREF,
                                   window.handle,
                                   D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_DISABLE_DRIVER_MANAGEMENT,
                                   &d3DPresentParameters,
-                                  direct3DDevice9.GetAddressOf() ) != D3D_OK ) [[unlikely]]
+                                  &direct3DDevice9 ) != D3D_OK ) [[unlikely]]
     {
+        direct3D9->Release();
         log::error( xorstr_( "Failed to create IDirect3DDevice9." ) );
         return;
     }
     if ( !hookDirect3D9RTSS() )
     {
-        const auto virtualMethod = *reinterpret_cast<void***>( direct3DDevice9.Get() );
+        const auto virtualMethod = *(void***)( direct3DDevice9 );
         hooks.emplace( direct3D9Gadget );
         if ( !hooks->hookAt( 0, virtualMethod[16], &direct3DDevice9Reset ) ) [[unlikely]]
         {
@@ -221,6 +223,8 @@ void orion::core::Renderer::hookDirect3D9() noexcept
             log::error( xorstr_( "Failed to hook IDirect3DDevice9::Present." ) );
         }
     }
+    direct3DDevice9->Release();
+    direct3D9->Release();
 }
 
 bool orion::core::Renderer::hookDirect3D9RTSS() noexcept
@@ -324,9 +328,9 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD,
         DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH,
     };
-    Microsoft::WRL::ComPtr<IDXGISwapChain>      dXGISwapChain;
-    Microsoft::WRL::ComPtr<ID3D11Device>        d3D11Device;
-    Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3D11DeviceContext;
+    IDXGISwapChain*      dXGISwapChain {};
+    ID3D11Device*        d3D11Device {};
+    ID3D11DeviceContext* d3D11DeviceContext {};
     if ( d3D11CreateDeviceAndSwapChain( direct3D11,
                                         nullptr,
                                         D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
@@ -338,17 +342,17 @@ void orion::core::Renderer::hookDirect3D11() noexcept
                                         2,
                                         D3D11_SDK_VERSION,
                                         &dXGISwapChainDesc,
-                                        dXGISwapChain.GetAddressOf(),
-                                        d3D11Device.GetAddressOf(),
+                                        &dXGISwapChain,
+                                        &d3D11Device,
                                         &d3DFeatureLevel,
-                                        d3D11DeviceContext.GetAddressOf() ) != S_OK ) [[unlikely]]
+                                        &d3D11DeviceContext ) != S_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to create ID3D11Device & IDXGISwapChain." ) );
         return;
     }
     if ( !hookDirect3D11RTTS() )
     {
-        const auto virtualMethod = *reinterpret_cast<void***>( dXGISwapChain.Get() );
+        const auto virtualMethod = *(void***)( dXGISwapChain );
         hooks.emplace( direct3D11 );
         if ( !hooks->hookAt( 0, virtualMethod[8], &dXGISwapChainPresent ) ) [[unlikely]]
         {
@@ -359,6 +363,9 @@ void orion::core::Renderer::hookDirect3D11() noexcept
             log::error( xorstr_( "Failed to hook IDXGISwapChain::ResizeBuffers." ) );
         }
     }
+    d3D11DeviceContext->Release();
+    d3D11Device->Release();
+    dXGISwapChain->Release();
 }
 
 bool orion::core::Renderer::hookDirect3D11RTTS() noexcept
