@@ -221,4 +221,10 @@
       <Filter>Source Files</Filter>
     </MASM>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="source\resources\shaders\blur_x.hlsl" />
+    <FxCompile Include="source\resources\shaders\blur_y.hlsl" />
+    <FxCompile Include="source\resources\shaders\blur2_x.hlsl" />
+    <FxCompile Include="source\resources\shaders\blur2_y.hlsl" />
+  </ItemGroup>
 </Project>
