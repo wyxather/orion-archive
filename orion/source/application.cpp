@@ -6,6 +6,7 @@ EXTERN_C BOOL WINAPI _CRT_INIT( HMODULE, DWORD, LPVOID );
 
 void orion::Application::setup() noexcept
 {
+    context.gui.emplace( context.getPlatform(), *ImGui::GetCurrentContext() );
     if ( MH_Initialize() != MH_OK ) [[unlikely]]
     {
         log::error( xorstr_( "Failed to initialize MinHook." ) );
