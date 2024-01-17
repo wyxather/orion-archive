@@ -229,6 +229,7 @@
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\core\console.h" />
+    <ClInclude Include="source\core\gui.h" />
     <ClInclude Include="source\core\input.h" />
     <ClInclude Include="source\core\platform.h" />
     <ClInclude Include="source\core\renderer.h" />
