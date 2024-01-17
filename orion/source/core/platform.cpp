@@ -106,6 +106,9 @@ LRESULT CALLBACK orion::core::Platform::Window::procedure( const HWND   window,
         case VK_END:
             Application::exit( true );
             break;
+        case VK_INSERT:
+            context.getGui().toggleOpen();
+            break;
         default:
             break;
         }
