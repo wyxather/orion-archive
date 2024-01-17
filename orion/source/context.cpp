@@ -2,6 +2,7 @@
 
 orion::Context::~Context() noexcept
 {
+    gui.reset();
     input.reset();
     renderer.reset();
     platform.reset();
