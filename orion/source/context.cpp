@@ -57,3 +57,8 @@ const orion::core::Input& orion::Context::getInput() const noexcept
 {
     return *input;
 }
+
+orion::core::Gui& orion::Context::getGui() noexcept
+{
+    return *gui;
+}

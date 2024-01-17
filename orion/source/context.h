@@ -1,6 +1,7 @@
 #pragma once
 
 #include "source/core/console.h"
+#include "source/core/gui.h"
 #include "source/core/input.h"
 #include "source/core/platform.h"
 #include "source/core/renderer.h"
@@ -38,6 +39,7 @@ struct Context final
     _NODISCARD const core::Platform& getPlatform() const noexcept;
     _NODISCARD const core::Renderer& getRenderer() const noexcept;
     _NODISCARD const core::Input& getInput() const noexcept;
+    _NODISCARD core::Gui& getGui() noexcept;
 
   private:
     utilities::Option<const HMODULE>           handle;
@@ -49,6 +51,7 @@ struct Context final
     utilities::Option<const core::Platform>    platform;
     utilities::Option<core::Renderer>          renderer;
     utilities::Option<core::Input>             input;
+    utilities::Option<core::Gui>               gui;
 };
 
 constinit inline Context context;
