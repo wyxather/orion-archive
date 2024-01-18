@@ -63,11 +63,11 @@ void orion::core::to_json( nlohmann::json& json, const Gui& gui ) noexcept
     };
 }
 
-orion::core::Gui::Blur::Blur( IDirect3DDevice9& direct3DDevice9 ) noexcept : direct3DDevice9( direct3DDevice9 )
+orion::core::Gui::PostProcess::PostProcess( IDirect3DDevice9& direct3DDevice9 ) noexcept : direct3DDevice9( direct3DDevice9 )
 {
 }
 
-void orion::core::Gui::Blur::createDeviceObjects() noexcept
+void orion::core::Gui::PostProcess::createDeviceObjects() noexcept
 {
     direct3DDevice9.GetBackBuffer( 0, 0, D3DBACKBUFFER_TYPE_MONO, &backBuffer );
 
@@ -77,7 +77,7 @@ void orion::core::Gui::Blur::createDeviceObjects() noexcept
     direct3DDevice9.GetRenderTarget( 0, &originalRenderTarget );
 }
 
-void orion::core::Gui::Blur::invalidateDeviceObjects() noexcept
+void orion::core::Gui::PostProcess::invalidateDeviceObjects() noexcept
 {
     SAFERELEASE( backBuffer )
 
@@ -90,7 +90,7 @@ void orion::core::Gui::Blur::invalidateDeviceObjects() noexcept
     SAFERELEASE( originalRenderTarget )
 }
 
-void orion::core::Gui::Blur::draw( ImDrawList& drawList ) noexcept
+void orion::core::Gui::PostProcess::draw( ImDrawList& drawList ) noexcept
 {
     if ( D3DSURFACE_DESC backBufferDesc; backBuffer->GetDesc( &backBufferDesc ) == D3D_OK ) [[likely]]
     {
@@ -118,7 +118,7 @@ void orion::core::Gui::Blur::draw( ImDrawList& drawList ) noexcept
         }
     }
 
-    drawList.AddCallback( &beginBlur, this );
+    drawList.AddCallback( &begin, this );
     for ( auto i = 0; i < 8; ++i )
     {
         drawList.AddCallback( &firstPass, this );
@@ -126,7 +126,7 @@ void orion::core::Gui::Blur::draw( ImDrawList& drawList ) noexcept
         drawList.AddCallback( &secondPass, this );
         drawList.AddImage( texture, ImVec2(), textureSize );
     }
-    drawList.AddCallback( &endBlur, this );
+    drawList.AddCallback( &end, this );
     drawList.AddImageRounded( texture,
                               ImVec2(),
                               textureSize,
@@ -137,43 +137,52 @@ void orion::core::Gui::Blur::draw( ImDrawList& drawList ) noexcept
     drawList.AddCallback( ImDrawCallback_ResetRenderState, nullptr );
 }
 
-void orion::core::Gui::Blur::beginBlur( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
+void orion::core::Gui::PostProcess::begin( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
-    const auto& blur = *static_cast<Blur*>( cmd->UserCallbackData );
-    blur.direct3DDevice9.StretchRect( blur.backBuffer, nullptr, blur.textureSurface, nullptr, D3DTEXF_NONE );
-    blur.direct3DDevice9.SetRenderTarget( 0, blur.textureSurface );
+    const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
+    postProcess.direct3DDevice9.StretchRect( postProcess.backBuffer, nullptr, postProcess.textureSurface, nullptr, D3DTEXF_NONE );
+    postProcess.direct3DDevice9.SetRenderTarget( 0, postProcess.textureSurface );
 }
 
-void orion::core::Gui::Blur::firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
+void orion::core::Gui::PostProcess::firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
-    const auto& blur = *static_cast<Blur*>( cmd->UserCallbackData );
-    blur.direct3DDevice9.SetPixelShader( blur.pixelShaderX );
-    blur.direct3DDevice9.SetPixelShaderConstantF( 0, blur.pixeShaderConstX.data(), 1 );
+    const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
+    postProcess.direct3DDevice9.SetPixelShader( postProcess.pixelShaderX );
+    postProcess.direct3DDevice9.SetPixelShaderConstantF( 0, postProcess.pixeShaderConstX.data(), 1 );
 }
 
-void orion::core::Gui::Blur::secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
+void orion::core::Gui::PostProcess::secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
-    const auto& blur = *static_cast<Blur*>( cmd->UserCallbackData );
-    blur.direct3DDevice9.SetPixelShader( blur.pixelShaderY );
-    blur.direct3DDevice9.SetPixelShaderConstantF( 0, blur.pixeShaderConstY.data(), 1 );
+    const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
+    postProcess.direct3DDevice9.SetPixelShader( postProcess.pixelShaderY );
+    postProcess.direct3DDevice9.SetPixelShaderConstantF( 0, postProcess.pixeShaderConstY.data(), 1 );
 }
 
-void orion::core::Gui::Blur::endBlur( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
+void orion::core::Gui::PostProcess::end( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
-    const auto& blur = *static_cast<Blur*>( cmd->UserCallbackData );
-    blur.direct3DDevice9.SetRenderTarget( 0, blur.originalRenderTarget );
+    const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
+    postProcess.direct3DDevice9.SetRenderTarget( 0, postProcess.originalRenderTarget );
 }
 
-orion::core::Gui::Blur2::Blur2( IDXGISwapChain&      dXGISwapChain,
+orion::core::Gui::PostProcess2::PostProcess2( IDXGISwapChain&      dXGISwapChain,
                                 ID3D11Device&        d3D11Device,
                                 ID3D11DeviceContext& d3D11DeviceContext ) noexcept
     : dXGISwapChain( dXGISwapChain ), d3D11Device( d3D11Device ), d3D11DeviceContext( d3D11DeviceContext )
 {
 }
 
-void orion::core::Gui::Blur2::createDeviceObjects() noexcept
+void orion::core::Gui::PostProcess2::createDeviceObjects() noexcept
 {
-    dXGISwapChain.GetBuffer( 0, IID_ID3D11Texture2D, (void**)&backBuffer );
+    d3D11DeviceContext.OMGetRenderTargets( 1, &renderTarget, nullptr );
+    if ( renderTarget != nullptr )
+    {
+        renderTarget->GetResource( (ID3D11Resource**)( &backBuffer ) );
+    }
+    else
+    {
+        dXGISwapChain.GetBuffer( 0, IID_PPV_ARGS( &backBuffer ) );
+        d3D11Device.CreateRenderTargetView( backBuffer, nullptr, &renderTarget );
+    }
 
     d3D11Device.CreatePixelShader( blur2X, sizeof( blur2X ), nullptr, &pixelShaderX );
     d3D11Device.CreatePixelShader( blur2Y, sizeof( blur2Y ), nullptr, &pixelShaderY );
@@ -187,8 +196,9 @@ void orion::core::Gui::Blur2::createDeviceObjects() noexcept
     d3D11Device.CreateBuffer( &bufferDesc, nullptr, &pixelShaderConstY );
 }
 
-void orion::core::Gui::Blur2::invalidateDeviceObjects() noexcept
+void orion::core::Gui::PostProcess2::invalidateDeviceObjects() noexcept
 {
+    SAFERELEASE( renderTarget )
     SAFERELEASE( backBuffer )
 
     SAFERELEASE( pixelShaderX )
@@ -201,9 +211,14 @@ void orion::core::Gui::Blur2::invalidateDeviceObjects() noexcept
     SAFERELEASE( textureView )
 }
 
-void orion::core::Gui::Blur2::draw( ImDrawList& drawList ) noexcept
+void orion::core::Gui::PostProcess2::setRenderTarget() const noexcept
 {
-    D3D11_TEXTURE2D_DESC backBufferDesc;
+    return d3D11DeviceContext.OMSetRenderTargets( 1, &renderTarget, nullptr );
+}
+
+void orion::core::Gui::PostProcess2::draw( ImDrawList& drawList ) noexcept
+{
+    CD3D11_TEXTURE2D_DESC backBufferDesc;
     backBuffer->GetDesc( &backBufferDesc );
 
     if ( ( backBufferDesc.Width != static_cast<UINT>( textureSize.x ) ) ||
@@ -215,23 +230,10 @@ void orion::core::Gui::Blur2::draw( ImDrawList& drawList ) noexcept
         SAFERELEASE( texture )
         SAFERELEASE( textureView )
 
-        D3D11_TEXTURE2D_DESC textureDesc {};
-        textureDesc.Width            = backBufferDesc.Width;
-        textureDesc.Height           = backBufferDesc.Height;
-        textureDesc.MipLevels        = 1;
-        textureDesc.ArraySize        = 1;
-        textureDesc.Format           = DXGI_FORMAT_R8G8B8A8_UNORM;
-        textureDesc.SampleDesc.Count = 1;
-        textureDesc.Usage            = D3D11_USAGE_DEFAULT;
-        textureDesc.BindFlags        = D3D11_BIND_SHADER_RESOURCE;
-        textureDesc.CPUAccessFlags   = 0;
-        if ( d3D11Device.CreateTexture2D( &textureDesc, nullptr, &texture ) == S_OK ) [[likely]]
+        backBufferDesc.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
+        if ( d3D11Device.CreateTexture2D( &backBufferDesc, nullptr, &texture ) == S_OK ) [[likely]]
         {
-            D3D11_SHADER_RESOURCE_VIEW_DESC textureSRVDesc {};
-            textureSRVDesc.Format                    = DXGI_FORMAT_R8G8B8A8_UNORM;
-            textureSRVDesc.ViewDimension             = D3D11_SRV_DIMENSION_TEXTURE2D;
-            textureSRVDesc.Texture2D.MipLevels       = textureDesc.MipLevels;
-            textureSRVDesc.Texture2D.MostDetailedMip = 0;
+            CD3D11_SHADER_RESOURCE_VIEW_DESC textureSRVDesc( texture, D3D11_SRV_DIMENSION_TEXTURE2D );
             d3D11Device.CreateShaderResourceView( texture, &textureSRVDesc, &textureView );
         }
 
@@ -269,26 +271,20 @@ void orion::core::Gui::Blur2::draw( ImDrawList& drawList ) noexcept
     drawList.AddCallback( ImDrawCallback_ResetRenderState, nullptr );
 }
 
-void orion::core::Gui::Blur2::beginBlur( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
+void orion::core::Gui::PostProcess2::firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
-    const auto& blur = *static_cast<Blur2*>( cmd->UserCallbackData );
-    blur.d3D11DeviceContext.PSSetShaderResources( 0, 1, &blur.textureView );
+    const auto& postProcess = *static_cast<PostProcess2*>( cmd->UserCallbackData );
+    postProcess.d3D11DeviceContext.CopyResource( postProcess.texture, postProcess.backBuffer );
+    postProcess.d3D11DeviceContext.PSSetShader( postProcess.pixelShaderX, nullptr, 0 );
+    postProcess.d3D11DeviceContext.PSSetConstantBuffers( 0, 1, &postProcess.pixelShaderConstX );
 }
 
-void orion::core::Gui::Blur2::firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
+void orion::core::Gui::PostProcess2::secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
-    const auto& blur = *static_cast<Blur2*>( cmd->UserCallbackData );
-    blur.d3D11DeviceContext.CopyResource( blur.texture, blur.backBuffer );
-    blur.d3D11DeviceContext.PSSetShader( blur.pixelShaderX, nullptr, 0 );
-    blur.d3D11DeviceContext.PSSetConstantBuffers( 0, 1, &blur.pixelShaderConstX );
-}
-
-void orion::core::Gui::Blur2::secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
-{
-    const auto& blur = *static_cast<Blur2*>( cmd->UserCallbackData );
-    blur.d3D11DeviceContext.CopyResource( blur.texture, blur.backBuffer );
-    blur.d3D11DeviceContext.PSSetShader( blur.pixelShaderY, nullptr, 0 );
-    blur.d3D11DeviceContext.PSSetConstantBuffers( 0, 1, &blur.pixelShaderConstY );
+    const auto& postProcess = *static_cast<PostProcess2*>( cmd->UserCallbackData );
+    postProcess.d3D11DeviceContext.CopyResource( postProcess.texture, postProcess.backBuffer );
+    postProcess.d3D11DeviceContext.PSSetShader( postProcess.pixelShaderY, nullptr, 0 );
+    postProcess.d3D11DeviceContext.PSSetConstantBuffers( 0, 1, &postProcess.pixelShaderConstY );
 }
 
 #pragma pop_macro( "SAFE_RELEASE" )

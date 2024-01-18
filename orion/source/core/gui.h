@@ -7,14 +7,14 @@ struct Platform;
 
 struct Gui final
 {
-    struct Blur final
+    struct PostProcess final
     {
-        Blur( Blur&& )                 = delete;
-        Blur& operator=( Blur&& )      = delete;
-        Blur( const Blur& )            = delete;
-        Blur& operator=( const Blur& ) = delete;
+        PostProcess( PostProcess&& )                 = delete;
+        PostProcess& operator=( PostProcess&& )      = delete;
+        PostProcess( const PostProcess& )            = delete;
+        PostProcess& operator=( const PostProcess& ) = delete;
 
-        explicit Blur( IDirect3DDevice9& direct3DDevice9 ) noexcept;
+        explicit PostProcess( IDirect3DDevice9& direct3DDevice9 ) noexcept;
 
         void createDeviceObjects() noexcept;
         void invalidateDeviceObjects() noexcept;
@@ -22,10 +22,10 @@ struct Gui final
         void draw( ImDrawList& drawList ) noexcept;
 
       private:
-        static void beginBlur( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
+        static void begin( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
         static void firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
         static void secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
-        static void endBlur( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
+        static void end( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
 
         IDirect3DDevice9& direct3DDevice9;
 
@@ -44,24 +44,24 @@ struct Gui final
         LPDIRECT3DSURFACE9 originalRenderTarget = nullptr;
     };
 
-    struct Blur2 final
+    struct PostProcess2 final
     {
-        Blur2( Blur2&& )                 = delete;
-        Blur2& operator=( Blur2&& )      = delete;
-        Blur2( const Blur2& )            = delete;
-        Blur2& operator=( const Blur2& ) = delete;
+        PostProcess2( PostProcess2&& )                 = delete;
+        PostProcess2& operator=( PostProcess2&& )      = delete;
+        PostProcess2( const PostProcess2& )            = delete;
+        PostProcess2& operator=( const PostProcess2& ) = delete;
 
-        explicit Blur2( IDXGISwapChain&      dXGISwapChain,
-                        ID3D11Device&        d3D11Device,
-                        ID3D11DeviceContext& d3D11DeviceContext ) noexcept;
+        explicit PostProcess2( IDXGISwapChain&      dXGISwapChain,
+                               ID3D11Device&        d3D11Device,
+                               ID3D11DeviceContext& d3D11DeviceContext ) noexcept;
 
         void createDeviceObjects() noexcept;
         void invalidateDeviceObjects() noexcept;
 
+        void setRenderTarget() const noexcept;
         void draw( ImDrawList& drawList ) noexcept;
 
       private:
-        static void beginBlur( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
         static void firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
         static void secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
 
@@ -69,7 +69,8 @@ struct Gui final
         ID3D11Device&        d3D11Device;
         ID3D11DeviceContext& d3D11DeviceContext;
 
-        ID3D11Texture2D* backBuffer = nullptr;
+        ID3D11RenderTargetView* renderTarget = nullptr;
+        ID3D11Texture2D*        backBuffer   = nullptr;
 
         ID3D11PixelShader* pixelShaderX = nullptr;
         ID3D11PixelShader* pixelShaderY = nullptr;
@@ -91,7 +92,7 @@ struct Gui final
 
     explicit Gui( const Platform&, ImGuiContext& ) noexcept;
 
-    constexpr void draw( std::invocable auto postProcess ) const noexcept
+    constexpr void draw( std::invocable auto postProcessInvoker ) const noexcept
     {
         const auto&  style = ImGui::GetStyle();
         const ImVec2 windowSize( 802.0f, 658.0f );
@@ -104,7 +105,7 @@ struct Gui final
                                ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoNav |
                                ImGuiWindowFlags_NoSavedSettings ) ) [[likely]]
         {
-            std::invoke( postProcess );
+            std::invoke( postProcessInvoker );
 
             const ImVec2 watermarkSize( 192.0f, 61.0f );
             const ImVec2 tabsSize( watermarkSize.x, windowSize.y - watermarkSize.y - 2.0f );
@@ -187,20 +188,20 @@ struct Gui final
 
     void toggleOpen() noexcept;
 
-    _NODISCARD constexpr auto& getBlur() noexcept
+    _NODISCARD constexpr auto& getPostProcess() noexcept
     {
-        return blur;
+        return postProcess;
     }
 
-    _NODISCARD constexpr auto& getBlur2() noexcept
+    _NODISCARD constexpr auto& getPostProcess2() noexcept
     {
-        return blur2;
+        return postProcess2;
     }
 
   private:
-    bool                            open = true;
-    utilities::Option<Blur, false>  blur;
-    utilities::Option<Blur2, false> blur2;
+    bool                                   open = true;
+    utilities::Option<PostProcess, false>  postProcess;
+    utilities::Option<PostProcess2, false> postProcess2;
 };
 
 } // namespace orion::core

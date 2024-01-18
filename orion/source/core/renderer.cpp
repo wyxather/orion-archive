@@ -61,12 +61,12 @@ void orion::core::Renderer::unhook() noexcept
     }
     if ( utilities::String::strcmp( xorstr_( "imgui_impl_dx11" ), backendRendererName ) == 0 )
     {
-        context.getGui().getBlur2()->invalidateDeviceObjects();
+        context.getGui().getPostProcess2()->invalidateDeviceObjects();
         ImGui_ImplDX11_Shutdown();
     }
     else if ( utilities::String::strcmp( xorstr_( "imgui_impl_dx9" ), backendRendererName ) == 0 )
     {
-        context.getGui().getBlur()->invalidateDeviceObjects();
+        context.getGui().getPostProcess()->invalidateDeviceObjects();
         ImGui_ImplDX9_Shutdown();
     }
 }
@@ -84,11 +84,11 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Reset(
     {
         return context.getRenderer().hooks->stdcall<0, HRESULT>( direct3DDevice9, presentationParameters );
     }
-    context.getGui().getBlur()->invalidateDeviceObjects();
+    context.getGui().getPostProcess()->invalidateDeviceObjects();
     ImGui_ImplDX9_InvalidateDeviceObjects();
     const auto result = context.getRenderer().hooks->stdcall<0, HRESULT>( direct3DDevice9, presentationParameters );
     ImGui_ImplDX9_CreateDeviceObjects();
-    context.getGui().getBlur()->createDeviceObjects();
+    context.getGui().getPostProcess()->createDeviceObjects();
     return result;
 }
 
@@ -101,18 +101,18 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::direct3DDevice9Present( CONST L
     if ( ImGui::GetIO().BackendRendererUserData == nullptr ) [[unlikely]]
     {
         ImGui_ImplDX9_Init( direct3DDevice9 );
-        context.getGui().getBlur().emplace( *direct3DDevice9 );
-        context.getGui().getBlur()->createDeviceObjects();
+        context.getGui().getPostProcess().emplace( *direct3DDevice9 );
+        context.getGui().getPostProcess()->createDeviceObjects();
     }
     ImGui_ImplDX9_NewFrame();
     Platform::newFrame();
     ImGui::NewFrame();
-    ImGui::ShowDemoWindow();
     context.getGui().draw(
         []() noexcept
         {
-            context.getGui().getBlur()->draw( *ImGui::GetWindowDrawList() );
+            context.getGui().getPostProcess()->draw( *ImGui::GetWindowDrawList() );
         } );
+    ImGui::ShowDemoWindow();
     ImGui::EndFrame();
     if ( direct3DDevice9->BeginScene() == D3D_OK ) [[likely]]
     {
@@ -136,8 +136,8 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainPresent( IDXGISwap
             ID3D11DeviceContext* d3D11DeviceContext;
             d3D11Device->GetImmediateContext( &d3D11DeviceContext );
             ImGui_ImplDX11_Init( d3D11Device, d3D11DeviceContext );
-            context.getGui().getBlur2().emplace( *dXGISwapChain, *d3D11Device, *d3D11DeviceContext );
-            context.getGui().getBlur2()->createDeviceObjects();
+            context.getGui().getPostProcess2().emplace( *dXGISwapChain, *d3D11Device, *d3D11DeviceContext );
+            context.getGui().getPostProcess2()->createDeviceObjects();
             d3D11DeviceContext->Release();
             d3D11Device->Release();
         }
@@ -145,12 +145,13 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainPresent( IDXGISwap
     ImGui_ImplDX11_NewFrame();
     Platform::newFrame();
     ImGui::NewFrame();
-    ImGui::ShowDemoWindow();
+    context.getGui().getPostProcess2()->setRenderTarget();
     context.getGui().draw(
         []() noexcept
         {
-            context.getGui().getBlur2()->draw( *ImGui::GetWindowDrawList() );
+            context.getGui().getPostProcess2()->draw( *ImGui::GetWindowDrawList() );
         } );
+    ImGui::ShowDemoWindow();
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData( ImGui::GetDrawData() );
     return context.getRenderer().hooks->stdcall<0, HRESULT>( dXGISwapChain, syncInterval, flags );
@@ -168,12 +169,12 @@ HRESULT STDMETHODCALLTYPE orion::core::Renderer::dXGISwapChainResizeBuffers( CON
         return context.getRenderer().hooks->stdcall<1, HRESULT>(
             dXGISwapChain, bufferCount, width, height, newFormat, swapChainFlags );
     }
-    context.getGui().getBlur2()->invalidateDeviceObjects();
+    context.getGui().getPostProcess2()->invalidateDeviceObjects();
     ImGui_ImplDX11_InvalidateDeviceObjects();
     const auto result = context.getRenderer().hooks->stdcall<1, HRESULT>(
         dXGISwapChain, bufferCount, width, height, newFormat, swapChainFlags );
     ImGui_ImplDX11_CreateDeviceObjects();
-    context.getGui().getBlur2()->createDeviceObjects();
+    context.getGui().getPostProcess2()->createDeviceObjects();
     return result;
 }
 
