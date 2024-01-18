@@ -63,7 +63,8 @@ void orion::core::to_json( nlohmann::json& json, const Gui& gui ) noexcept
     };
 }
 
-orion::core::Gui::PostProcess::PostProcess( IDirect3DDevice9& direct3DDevice9 ) noexcept : direct3DDevice9( direct3DDevice9 )
+orion::core::Gui::PostProcess::PostProcess( IDirect3DDevice9& direct3DDevice9 ) noexcept
+    : direct3DDevice9( direct3DDevice9 )
 {
 }
 
@@ -75,6 +76,8 @@ void orion::core::Gui::PostProcess::createDeviceObjects() noexcept
     direct3DDevice9.CreatePixelShader( (const DWORD*)( blurY ), &pixelShaderY );
 
     direct3DDevice9.GetRenderTarget( 0, &originalRenderTarget );
+
+    textureSize = ImVec2();
 }
 
 void orion::core::Gui::PostProcess::invalidateDeviceObjects() noexcept
@@ -140,7 +143,8 @@ void orion::core::Gui::PostProcess::draw( ImDrawList& drawList ) noexcept
 void orion::core::Gui::PostProcess::begin( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
     const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
-    postProcess.direct3DDevice9.StretchRect( postProcess.backBuffer, nullptr, postProcess.textureSurface, nullptr, D3DTEXF_NONE );
+    postProcess.direct3DDevice9.StretchRect(
+        postProcess.backBuffer, nullptr, postProcess.textureSurface, nullptr, D3DTEXF_NONE );
     postProcess.direct3DDevice9.SetRenderTarget( 0, postProcess.textureSurface );
 }
 
@@ -165,8 +169,8 @@ void orion::core::Gui::PostProcess::end( const ImDrawList*, const ImDrawCmd* cmd
 }
 
 orion::core::Gui::PostProcess2::PostProcess2( IDXGISwapChain&      dXGISwapChain,
-                                ID3D11Device&        d3D11Device,
-                                ID3D11DeviceContext& d3D11DeviceContext ) noexcept
+                                              ID3D11Device&        d3D11Device,
+                                              ID3D11DeviceContext& d3D11DeviceContext ) noexcept
     : dXGISwapChain( dXGISwapChain ), d3D11Device( d3D11Device ), d3D11DeviceContext( d3D11DeviceContext )
 {
 }
@@ -194,6 +198,8 @@ void orion::core::Gui::PostProcess2::createDeviceObjects() noexcept
     bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     d3D11Device.CreateBuffer( &bufferDesc, nullptr, &pixelShaderConstX );
     d3D11Device.CreateBuffer( &bufferDesc, nullptr, &pixelShaderConstY );
+
+    textureSize = ImVec2();
 }
 
 void orion::core::Gui::PostProcess2::invalidateDeviceObjects() noexcept
