@@ -40,6 +40,7 @@ struct Gui final
         LPDIRECT3DTEXTURE9 texture        = nullptr;
         LPDIRECT3DSURFACE9 textureSurface = nullptr;
         ImVec2             textureSize;
+        RECT               textureRect;
 
         LPDIRECT3DSURFACE9 originalRenderTarget = nullptr;
     };
@@ -81,6 +82,7 @@ struct Gui final
         ID3D11Texture2D*          texture     = nullptr;
         ID3D11ShaderResourceView* textureView = nullptr;
         ImVec2                    textureSize;
+        CD3D11_BOX                textureBox;
     };
 
     friend void to_json( nlohmann::json& json, const Gui& gui ) noexcept;

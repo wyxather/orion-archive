@@ -121,6 +121,13 @@ void orion::core::Gui::PostProcess::draw( ImDrawList& drawList ) noexcept
         }
     }
 
+    const auto windowSize = ImGui::GetWindowSize();
+    const auto windowPos  = ImGui::GetWindowPos();
+    textureRect.left      = static_cast<UINT>( std::clamp( windowPos.x, 0.0f, textureSize.x ) );
+    textureRect.top       = static_cast<UINT>( std::clamp( windowPos.y, 0.0f, textureSize.y ) );
+    textureRect.right     = static_cast<UINT>( std::clamp( windowPos.x + windowSize.x, 0.0f, textureSize.x ) );
+    textureRect.bottom    = static_cast<UINT>( std::clamp( windowPos.y + windowSize.y, 0.0f, textureSize.y ) );
+
     drawList.AddCallback( &begin, this );
     for ( auto i = 0; i < 8; ++i )
     {
@@ -143,8 +150,11 @@ void orion::core::Gui::PostProcess::draw( ImDrawList& drawList ) noexcept
 void orion::core::Gui::PostProcess::begin( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
     const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
-    postProcess.direct3DDevice9.StretchRect(
-        postProcess.backBuffer, nullptr, postProcess.textureSurface, nullptr, D3DTEXF_NONE );
+    postProcess.direct3DDevice9.StretchRect( postProcess.backBuffer,
+                                             &postProcess.textureRect,
+                                             postProcess.textureSurface,
+                                             &postProcess.textureRect,
+                                             D3DTEXF_NONE );
     postProcess.direct3DDevice9.SetRenderTarget( 0, postProcess.textureSurface );
 }
 
@@ -173,6 +183,8 @@ orion::core::Gui::PostProcess2::PostProcess2( IDXGISwapChain&      dXGISwapChain
                                               ID3D11DeviceContext& d3D11DeviceContext ) noexcept
     : dXGISwapChain( dXGISwapChain ), d3D11Device( d3D11Device ), d3D11DeviceContext( d3D11DeviceContext )
 {
+    textureBox.front = 0;
+    textureBox.back  = 1;
 }
 
 void orion::core::Gui::PostProcess2::createDeviceObjects() noexcept
@@ -260,6 +272,13 @@ void orion::core::Gui::PostProcess2::draw( ImDrawList& drawList ) noexcept
         }
     }
 
+    const auto windowSize = ImGui::GetWindowSize();
+    const auto windowPos  = ImGui::GetWindowPos();
+    textureBox.left       = static_cast<UINT>( std::clamp( windowPos.x, 0.0f, textureSize.x ) );
+    textureBox.top        = static_cast<UINT>( std::clamp( windowPos.y, 0.0f, textureSize.y ) );
+    textureBox.right      = static_cast<UINT>( std::clamp( windowPos.x + windowSize.x, 0.0f, textureSize.x ) );
+    textureBox.bottom     = static_cast<UINT>( std::clamp( windowPos.y + windowSize.y, 0.0f, textureSize.y ) );
+
     for ( auto i = 0; i < 8; ++i )
     {
         drawList.AddCallback( &firstPass, this );
@@ -280,7 +299,14 @@ void orion::core::Gui::PostProcess2::draw( ImDrawList& drawList ) noexcept
 void orion::core::Gui::PostProcess2::firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
     const auto& postProcess = *static_cast<PostProcess2*>( cmd->UserCallbackData );
-    postProcess.d3D11DeviceContext.CopyResource( postProcess.texture, postProcess.backBuffer );
+    postProcess.d3D11DeviceContext.CopySubresourceRegion( postProcess.texture,
+                                                          0,
+                                                          postProcess.textureBox.left,
+                                                          postProcess.textureBox.top,
+                                                          postProcess.textureBox.front,
+                                                          postProcess.backBuffer,
+                                                          0,
+                                                          &postProcess.textureBox );
     postProcess.d3D11DeviceContext.PSSetShader( postProcess.pixelShaderX, nullptr, 0 );
     postProcess.d3D11DeviceContext.PSSetConstantBuffers( 0, 1, &postProcess.pixelShaderConstX );
 }
@@ -288,7 +314,14 @@ void orion::core::Gui::PostProcess2::firstPass( const ImDrawList*, const ImDrawC
 void orion::core::Gui::PostProcess2::secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
     const auto& postProcess = *static_cast<PostProcess2*>( cmd->UserCallbackData );
-    postProcess.d3D11DeviceContext.CopyResource( postProcess.texture, postProcess.backBuffer );
+    postProcess.d3D11DeviceContext.CopySubresourceRegion( postProcess.texture,
+                                                          0,
+                                                          postProcess.textureBox.left,
+                                                          postProcess.textureBox.top,
+                                                          postProcess.textureBox.front,
+                                                          postProcess.backBuffer,
+                                                          0,
+                                                          &postProcess.textureBox );
     postProcess.d3D11DeviceContext.PSSetShader( postProcess.pixelShaderY, nullptr, 0 );
     postProcess.d3D11DeviceContext.PSSetConstantBuffers( 0, 1, &postProcess.pixelShaderConstY );
 }
