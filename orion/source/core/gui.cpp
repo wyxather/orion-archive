@@ -121,13 +121,6 @@ void orion::core::Gui::PostProcess::draw( ImDrawList& drawList ) noexcept
         }
     }
 
-    const auto windowSize = ImGui::GetWindowSize();
-    const auto windowPos  = ImGui::GetWindowPos();
-    textureRect.left      = static_cast<UINT>( std::clamp( windowPos.x, 0.0f, textureSize.x ) );
-    textureRect.top       = static_cast<UINT>( std::clamp( windowPos.y, 0.0f, textureSize.y ) );
-    textureRect.right     = static_cast<UINT>( std::clamp( windowPos.x + windowSize.x, 0.0f, textureSize.x ) );
-    textureRect.bottom    = static_cast<UINT>( std::clamp( windowPos.y + windowSize.y, 0.0f, textureSize.y ) );
-
     drawList.AddCallback( &begin, this );
     for ( auto i = 0; i < 8; ++i )
     {
@@ -150,11 +143,8 @@ void orion::core::Gui::PostProcess::draw( ImDrawList& drawList ) noexcept
 void orion::core::Gui::PostProcess::begin( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
     const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
-    postProcess.direct3DDevice9.StretchRect( postProcess.backBuffer,
-                                             &postProcess.textureRect,
-                                             postProcess.textureSurface,
-                                             &postProcess.textureRect,
-                                             D3DTEXF_NONE );
+    postProcess.direct3DDevice9.StretchRect(
+        postProcess.backBuffer, nullptr, postProcess.textureSurface, nullptr, D3DTEXF_NONE );
     postProcess.direct3DDevice9.SetRenderTarget( 0, postProcess.textureSurface );
 }
 
@@ -279,6 +269,7 @@ void orion::core::Gui::PostProcess2::draw( ImDrawList& drawList ) noexcept
     textureBox.right      = static_cast<UINT>( std::clamp( windowPos.x + windowSize.x, 0.0f, textureSize.x ) );
     textureBox.bottom     = static_cast<UINT>( std::clamp( windowPos.y + windowSize.y, 0.0f, textureSize.y ) );
 
+    drawList.AddCallback( &begin, this );
     for ( auto i = 0; i < 8; ++i )
     {
         drawList.AddCallback( &firstPass, this );
@@ -294,6 +285,12 @@ void orion::core::Gui::PostProcess2::draw( ImDrawList& drawList ) noexcept
                               IM_COL32_WHITE,
                               ImGui::GetStyle().WindowRounding );
     drawList.AddCallback( ImDrawCallback_ResetRenderState, nullptr );
+}
+
+void orion::core::Gui::PostProcess2::begin( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
+{
+    const auto& postProcess = *static_cast<PostProcess2*>( cmd->UserCallbackData );
+    postProcess.d3D11DeviceContext.CopyResource( postProcess.texture, postProcess.backBuffer );
 }
 
 void orion::core::Gui::PostProcess2::firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept

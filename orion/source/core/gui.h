@@ -40,7 +40,6 @@ struct Gui final
         LPDIRECT3DTEXTURE9 texture        = nullptr;
         LPDIRECT3DSURFACE9 textureSurface = nullptr;
         ImVec2             textureSize;
-        RECT               textureRect;
 
         LPDIRECT3DSURFACE9 originalRenderTarget = nullptr;
     };
@@ -63,6 +62,7 @@ struct Gui final
         void draw( ImDrawList& drawList ) noexcept;
 
       private:
+        static void begin( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
         static void firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
         static void secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
 
