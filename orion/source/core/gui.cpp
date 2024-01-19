@@ -56,6 +56,21 @@ void orion::core::Gui::toggleOpen() noexcept
     open = !open;
 }
 
+bool orion::core::Gui::isOpen() const noexcept
+{
+    return open;
+}
+
+orion::utilities::Option<orion::core::Gui::PostProcess, false>& orion::core::Gui::getPostProcess() noexcept
+{
+    return postProcess;
+}
+
+orion::utilities::Option<orion::core::Gui::PostProcess2, false>& orion::core::Gui::getPostProcess2() noexcept
+{
+    return postProcess2;
+}
+
 void orion::core::to_json( nlohmann::json& json, const Gui& gui ) noexcept
 {
     json = {

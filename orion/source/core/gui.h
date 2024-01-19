@@ -96,6 +96,11 @@ struct Gui final
 
     constexpr void draw( std::invocable auto postProcessInvoker ) const noexcept
     {
+        if ( !isOpen() )
+        {
+            return;
+        }
+
         const auto&  style = ImGui::GetStyle();
         const ImVec2 windowSize( 802.0f, 658.0f );
 
@@ -188,17 +193,11 @@ struct Gui final
         ImGui::PopStyleVar();
     }
 
-    void toggleOpen() noexcept;
+    void               toggleOpen() noexcept;
+    [[nodiscard]] bool isOpen() const noexcept;
 
-    _NODISCARD constexpr auto& getPostProcess() noexcept
-    {
-        return postProcess;
-    }
-
-    _NODISCARD constexpr auto& getPostProcess2() noexcept
-    {
-        return postProcess2;
-    }
+    [[nodiscard]] utilities::Option<PostProcess, false>&  getPostProcess() noexcept;
+    [[nodiscard]] utilities::Option<PostProcess2, false>& getPostProcess2() noexcept;
 
   private:
     bool                                   open = true;
