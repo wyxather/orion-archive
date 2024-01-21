@@ -135,7 +135,7 @@ struct Gui final
                 ImGui::GetWindowDrawList()->AddText(
                     logoPos - ImVec2( 1.0f, 0.0f ), IM_COL32( 65, 186, 217, 255 ), ImStrv( logo.get(), logo.size() ) );
                 ImGui::GetWindowDrawList()->AddText(
-                    logoPos, IM_COL32( 253, 254, 255, 255 ), ImStrv( logo.get(), logo.size() ) );
+                    logoPos, IM_COL32( 240, 240, 240, 255 ), ImStrv( logo.get(), logo.size() ) );
                 ImGui::PopFont();
             }
             ImGui::EndChild();
