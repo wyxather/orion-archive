@@ -101,25 +101,24 @@ struct Gui final
             return;
         }
 
+        constexpr auto windowFlags =
+            ( ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse |
+              ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoSavedSettings );
         const auto&  style = ImGui::GetStyle();
-        const ImVec2 windowSize( 802.0f, 658.0f );
+        const ImVec2 windowSize( 820.0f, 586.0f );
 
         ImGui::SetNextWindowSize( windowSize );
         ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2() );
-        if ( ImGui::Begin( ImStrv( xorstr( "Window" ) ),
-                           nullptr,
-                           ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration |
-                               ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoNav |
-                               ImGuiWindowFlags_NoSavedSettings ) ) [[likely]]
+        if ( ImGui::Begin( ImStrv( xorstr( "Window" ) ), nullptr, windowFlags ) ) [[likely]]
         {
             std::invoke( postProcessInvoker );
 
-            const ImVec2 watermarkSize( 192.0f, 61.0f );
+            const ImVec2 watermarkSize( 191.0f, 60.0f );
             const ImVec2 tabsSize( watermarkSize.x, windowSize.y - watermarkSize.y - 2.0f );
+            const ImVec2 subTabsSize( 0.0f, 70.0f );
 
             ImGui::BeginGroup();
-            if ( ImGui::BeginChild(
-                     ImStrv( xorstr( "Tabs" ) ), tabsSize, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground ) )
+            if ( ImGui::BeginChild( ImStrv( xorstr( "Tabs" ) ), tabsSize, ImGuiChildFlags_None, windowFlags ) )
                 [[likely]]
             {
                 ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
@@ -136,10 +135,8 @@ struct Gui final
                                                        ImGui::GetColorU32( ImGuiCol_Border ) );
             ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() + ImVec2( 0.0f, 2.0f ) );
 
-            if ( ImGui::BeginChild( ImStrv( xorstr( "Watermark" ) ),
-                                    watermarkSize,
-                                    ImGuiChildFlags_None,
-                                    ImGuiWindowFlags_NoBackground ) ) [[likely]]
+            if ( ImGui::BeginChild(
+                     ImStrv( xorstr( "Watermark" ) ), watermarkSize, ImGuiChildFlags_None, windowFlags ) ) [[likely]]
             {
                 ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
                                                            ImGui::GetCursorScreenPos() + watermarkSize,
@@ -156,10 +153,8 @@ struct Gui final
                                                        ImGui::GetColorU32( ImGuiCol_Border ) );
 
             ImGui::BeginGroup();
-            if ( ImGui::BeginChild( ImStrv( xorstr( "Subtabs" ) ),
-                                    ImVec2( 0.0f, 71.0f ),
-                                    ImGuiChildFlags_None,
-                                    ImGuiWindowFlags_NoBackground ) ) [[likely]]
+            if ( ImGui::BeginChild( ImStrv( xorstr( "Subtabs" ) ), subTabsSize, ImGuiChildFlags_None, windowFlags ) )
+                [[likely]]
             {
                 ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
                                                            ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
