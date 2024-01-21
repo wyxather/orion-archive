@@ -56,7 +56,7 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     fonts.AddFontFromMemoryCompressedTTF(
         museo_sans_cyrl_500_compressed_data, ( museo_sans_cyrl_500_compressed_size / 4 ), 16.0f, &fontConfig );
     fonts.AddFontFromMemoryCompressedTTF(
-        museo_sans_cyrl_900_compressed_data, ( museo_sans_cyrl_900_compressed_size / 4 ), 30.0f );
+        museo_sans_cyrl_900_compressed_data, ( museo_sans_cyrl_900_compressed_size / 4 ), 31.0f );
     fonts.AddFontFromMemoryCompressedTTF(
         museo_sans_cyrl_700_compressed_data, ( museo_sans_cyrl_700_compressed_size / 4 ), 16.0f, &fontConfig );
     fonts.AddFontFromMemoryCompressedTTF(

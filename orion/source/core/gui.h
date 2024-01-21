@@ -126,6 +126,17 @@ struct Gui final
                                                            ImGui::GetColorU32( ImGuiCol_ChildBg, 0.85f ),
                                                            style.WindowRounding,
                                                            ImDrawFlags_RoundCornersTopLeft );
+                ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[1] );
+                auto       logo     = xorstr( "NEVERLOSE" );
+                const auto logoSize = ImGui::CalcTextSize( ImStrv( logo.crypt_get(), logo.size() ) );
+                const auto logoPos =
+                    ImGui::GetCursorScreenPos() +
+                    ImVec2( ( tabsSize.x - logoSize.x ) * 0.5f, ( subTabsSize.y - logoSize.y ) * 0.5f + 3.0f );
+                ImGui::GetWindowDrawList()->AddText(
+                    logoPos - ImVec2( 1.0f, 0.0f ), IM_COL32( 65, 186, 217, 255 ), ImStrv( logo.get(), logo.size() ) );
+                ImGui::GetWindowDrawList()->AddText(
+                    logoPos, IM_COL32( 253, 254, 255, 255 ), ImStrv( logo.get(), logo.size() ) );
+                ImGui::PopFont();
             }
             ImGui::EndChild();
 
