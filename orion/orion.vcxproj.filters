@@ -135,6 +135,18 @@
     <ClInclude Include="source\core\gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\resources\fonts\museo_sans_cyrl_300.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resources\fonts\museo_sans_cyrl_500.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resources\fonts\museo_sans_cyrl_700.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resources\fonts\museo_sans_cyrl_900.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp">
