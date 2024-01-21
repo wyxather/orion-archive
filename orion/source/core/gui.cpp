@@ -1,5 +1,10 @@
 #include "source/core/gui.h"
 
+#include "source/resources/fonts/museo_sans_cyrl_300.h"
+#include "source/resources/fonts/museo_sans_cyrl_500.h"
+#include "source/resources/fonts/museo_sans_cyrl_700.h"
+#include "source/resources/fonts/museo_sans_cyrl_900.h"
+
 #if _WIN64
 #if NDEBUG // WIN64 RELEASE
 #include "source/resources/shaders/output/Release/x64/blur2_x.h"
@@ -39,8 +44,23 @@
 
 orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& imguiContext ) noexcept
 {
+    ImFontConfig fontConfig;
+    fontConfig.OversampleH      = 1;
+    fontConfig.OversampleV      = 1;
+    fontConfig.FontBuilderFlags = 1;
+
     auto& imguiIO       = imguiContext.IO;
     imguiIO.IniFilename = nullptr;
+
+    auto& fonts = *imguiIO.Fonts;
+    fonts.AddFontFromMemoryCompressedTTF(
+        museo_sans_cyrl_500_compressed_data, ( museo_sans_cyrl_500_compressed_size / 4 ), 16.0f, &fontConfig );
+    fonts.AddFontFromMemoryCompressedTTF(
+        museo_sans_cyrl_900_compressed_data, ( museo_sans_cyrl_900_compressed_size / 4 ), 30.0f );
+    fonts.AddFontFromMemoryCompressedTTF(
+        museo_sans_cyrl_700_compressed_data, ( museo_sans_cyrl_700_compressed_size / 4 ), 16.0f, &fontConfig );
+    fonts.AddFontFromMemoryCompressedTTF(
+        museo_sans_cyrl_500_compressed_data, ( museo_sans_cyrl_500_compressed_size / 4 ), 11.0f, &fontConfig );
 
     auto& style            = imguiContext.Style;
     style.WindowRounding   = 10.0f;
