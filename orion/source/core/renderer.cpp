@@ -269,8 +269,16 @@ bool orion::core::Renderer::hookDirect3D9RTSS() noexcept
     }
     const auto rttsBytes = utilities::Memory::getModuleBytes( *rttsEnumerator.value );
 #ifndef _WIN64
-    const auto direct3DDevice9ResetDetour =
-        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( rttsBytes );
+    auto direct3DDevice9ResetDetour = utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( rttsBytes );
+    if ( direct3DDevice9ResetDetour == nullptr )
+    {
+        direct3DDevice9ResetDetour =
+            utilities::Memory::Pattern<"68 ?? ?? ?? ?? 50 57 E8 ?? ?? ?? ?? 83 C4 24 83 3D">::find( rttsBytes );
+        if ( direct3DDevice9ResetDetour != nullptr ) [[unlikely]]
+        {
+            direct3DDevice9ResetDetour = *(std::uint8_t**)( ( std::uintptr_t )( direct3DDevice9ResetDetour ) + 1 );
+        }
+    }
 #else
     const auto direct3DDevice9ResetDetour = utilities::Memory::Pattern<
         "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 F0 0F BA 2D E7 D9 45 03 00 48 8B DA">::
@@ -282,8 +290,21 @@ bool orion::core::Renderer::hookDirect3D9RTSS() noexcept
         return false;
     }
 #ifndef _WIN64
-    const auto direct3DDevice9PresentDetour =
+    auto direct3DDevice9PresentDetour =
         utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 78 D6 45 13 00">::find( rttsBytes );
+    if ( direct3DDevice9PresentDetour == nullptr )
+    {
+        direct3DDevice9PresentDetour = utilities::Memory::Pattern<
+            "68 ?? ?? ?? ?? 50 57 E8 ?? ?? ?? ?? 83 C4 24 85 C0 74 10 83 3D ?? ?? ?? ?? ?? BD 01 00 00 00 74 02 8B DD "
+            "83 3D ?? ?? ?? ?? ?? 74 34 A1 ?? ?? ?? ?? 85 C0 74 2B 8B 0D ?? ?? ?? ?? 68 ?? ?? ?? ?? 51 56 68 ?? ?? ?? "
+            "?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 50 57 E8 ?? ?? ?? ?? 83 C4 24 A1 ?? ?? ?? ?? 85 C0 74 2B "
+            "8B 15 ?? ?? ?? ?? 68 ?? ?? ?? ?? 52 56 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 50 57 "
+            "E8 ?? ?? ?? ?? 83 C4 24 83 3D">::find( rttsBytes );
+        if ( direct3DDevice9PresentDetour != nullptr ) [[unlikely]]
+        {
+            direct3DDevice9PresentDetour = *(std::uint8_t**)( ( std::uintptr_t )( direct3DDevice9PresentDetour ) + 1 );
+        }
+    }
 #else
     const auto direct3DDevice9PresentDetour =
         utilities::Memory::Pattern<"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 55 41 56 48 "
