@@ -20,12 +20,15 @@ struct User32 final
     utilities::RetSpoofInvoker<decltype( &DestroyWindow )>            destroyWindow;
     utilities::RetSpoofInvoker<decltype( &EnumWindows )>              enumWindows;
     utilities::RetSpoofInvoker<decltype( &GetClassNameA )>            getClassNameA;
+    utilities::RetSpoofInvoker<decltype( &GetCursorPos )>             getCursorPos;
+    utilities::RetSpoofInvoker<decltype( &GetSystemMetrics )>         getSystemMetrics;
     utilities::RetSpoofInvoker<decltype( &GetWindowLongPtr )>         getWindowLongPtr;
     utilities::RetSpoofInvoker<decltype( &GetWindowTextA )>           getWindowTextA;
     utilities::RetSpoofInvoker<decltype( &GetWindowTextLengthA )>     getWindowTextLengthA;
     utilities::RetSpoofInvoker<decltype( &GetWindowThreadProcessId )> getWindowThreadProcessId;
     utilities::RetSpoofInvoker<decltype( &IsWindowVisible )>          isWindowVisible;
     utilities::RetSpoofInvoker<decltype( &MessageBoxA )>              messageBoxA;
+    utilities::RetSpoofInvoker<decltype( &PostMessage )>              postMessage;
     utilities::RetSpoofInvoker<decltype( &RegisterClassExA )>         registerClassExA;
     utilities::RetSpoofInvoker<decltype( &SetWindowLongPtr )>         setWindowLongPtr;
     utilities::RetSpoofInvoker<decltype( &UnregisterClassA )>         unregisterClassA;

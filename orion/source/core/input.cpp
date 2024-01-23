@@ -44,7 +44,233 @@ int orion::core::Input::getUserInput( const char* text, const char* caption ) no
 HRESULT STDMETHODCALLTYPE orion::core::Input::directInputDevice8GetDeviceState(
     CONST LPDIRECTINPUTDEVICE8 directInputDevice8, CONST DWORD dataSizeInBytes, CONST LPVOID data ) noexcept
 {
-    return context.getInput().hooks->stdcall<0, HRESULT>( directInputDevice8, dataSizeInBytes, data );
+    const auto result = context.getInput().hooks->stdcall<0, HRESULT>( directInputDevice8, dataSizeInBytes, data );
+    if ( result != DI_OK ) [[unlikely]]
+    {
+        return result;
+    }
+    if ( !context.getGui().isOpen() ) [[likely]]
+    {
+        return result;
+    }
+
+    switch ( dataSizeInBytes )
+    {
+    case sizeof( DIMOUSESTATE ):
+    {
+        DIMOUSESTATE& mouseState( *LPDIMOUSESTATE( data ) );
+
+        const auto isButtonSwapped =
+            ( context.getUser32().getSystemMetrics( context.getUser32().gadgetAddress, SM_SWAPBUTTON ) != 0 );
+
+        for ( const auto [buttonIndex, isButtonDown] : mouseState.rgbButtons | std::views::enumerate )
+        {
+            if ( buttonIndex > ImGuiMouseButton_Right )
+            {
+                break;
+            }
+
+            ImGuiMouseButton mouseButton;
+            if ( isButtonSwapped )
+            {
+                if ( buttonIndex == ImGuiMouseButton_Left )
+                {
+                    mouseButton = ImGuiMouseButton_Right;
+                }
+                else if ( buttonIndex == ImGuiMouseButton_Right )
+                {
+                    mouseButton = ImGuiMouseButton_Left;
+                }
+                else
+                {
+                    mouseButton = buttonIndex;
+                }
+            }
+            else
+            {
+                mouseButton = buttonIndex;
+            }
+
+            const auto isMouseDown = ( isButtonDown & 0x80 );
+            isButtonDown &= ~0x80;
+
+            if ( isMouseDown )
+            {
+                if ( !ImGui::IsMouseDown( mouseButton ) )
+                {
+                    UINT   msg;
+                    WPARAM wParam;
+                    switch ( mouseButton )
+                    {
+                    case ImGuiMouseButton_Left:
+                        msg    = WM_LBUTTONDOWN;
+                        wParam = VK_LBUTTON;
+                        break;
+                    case ImGuiMouseButton_Right:
+                        msg    = WM_RBUTTONDOWN;
+                        wParam = VK_RBUTTON;
+                        break;
+                    default:
+                        msg    = {};
+                        wParam = {};
+                        break;
+                    }
+
+                    POINT point;
+                    std::ignore = context.getUser32().getCursorPos( context.getUser32().gadgetAddress, &point );
+
+                    std::ignore = context.getUser32().postMessage( context.getUser32().gadgetAddress,
+                                                                   context.getPlatform().getWindow().getHandle(),
+                                                                   msg,
+                                                                   wParam,
+                                                                   MAKELPARAM( point.x, point.y ) );
+                }
+            }
+            else
+            {
+                if ( ImGui::IsMouseDown( mouseButton ) && !ImGui::IsMouseReleased( mouseButton ) )
+                {
+                    UINT   msg;
+                    WPARAM wParam;
+                    switch ( mouseButton )
+                    {
+                    case ImGuiMouseButton_Left:
+                        msg    = WM_LBUTTONUP;
+                        wParam = VK_LBUTTON;
+                        break;
+                    case ImGuiMouseButton_Right:
+                        msg    = WM_RBUTTONUP;
+                        wParam = VK_RBUTTON;
+                        break;
+                    default:
+                        msg    = {};
+                        wParam = {};
+                        break;
+                    }
+
+                    POINT point;
+                    std::ignore = context.getUser32().getCursorPos( context.getUser32().gadgetAddress, &point );
+
+                    std::ignore = context.getUser32().postMessage( context.getUser32().gadgetAddress,
+                                                                   context.getPlatform().getWindow().getHandle(),
+                                                                   msg,
+                                                                   wParam,
+                                                                   MAKELPARAM( point.x, point.y ) );
+                }
+            }
+        }
+        break;
+    }
+    case sizeof( DIMOUSESTATE2 ):
+    {
+        DIMOUSESTATE2& mouseState( *LPDIMOUSESTATE2( data ) );
+
+        const auto isButtonSwapped =
+            ( context.getUser32().getSystemMetrics( context.getUser32().gadgetAddress, SM_SWAPBUTTON ) != 0 );
+
+        for ( const auto [buttonIndex, isButtonDown] : mouseState.rgbButtons | std::views::enumerate )
+        {
+            if ( buttonIndex > ImGuiMouseButton_Right )
+            {
+                break;
+            }
+
+            ImGuiMouseButton mouseButton;
+            if ( isButtonSwapped )
+            {
+                if ( buttonIndex == ImGuiMouseButton_Left )
+                {
+                    mouseButton = ImGuiMouseButton_Right;
+                }
+                else if ( buttonIndex == ImGuiMouseButton_Right )
+                {
+                    mouseButton = ImGuiMouseButton_Left;
+                }
+                else
+                {
+                    mouseButton = buttonIndex;
+                }
+            }
+            else
+            {
+                mouseButton = buttonIndex;
+            }
+
+            const auto isMouseDown = ( isButtonDown & 0x80 );
+            isButtonDown &= ~0x80;
+
+            if ( isMouseDown )
+            {
+                if ( !ImGui::IsMouseDown( mouseButton ) )
+                {
+                    UINT   msg;
+                    WPARAM wParam;
+                    switch ( mouseButton )
+                    {
+                    case ImGuiMouseButton_Left:
+                        msg    = WM_LBUTTONDOWN;
+                        wParam = VK_LBUTTON;
+                        break;
+                    case ImGuiMouseButton_Right:
+                        msg    = WM_RBUTTONDOWN;
+                        wParam = VK_RBUTTON;
+                        break;
+                    default:
+                        msg    = {};
+                        wParam = {};
+                        break;
+                    }
+
+                    POINT point;
+                    std::ignore = context.getUser32().getCursorPos( context.getUser32().gadgetAddress, &point );
+
+                    std::ignore = context.getUser32().postMessage( context.getUser32().gadgetAddress,
+                                                                   context.getPlatform().getWindow().getHandle(),
+                                                                   msg,
+                                                                   wParam,
+                                                                   MAKELPARAM( point.x, point.y ) );
+                }
+            }
+            else
+            {
+                if ( ImGui::IsMouseDown( mouseButton ) && !ImGui::IsMouseReleased( mouseButton ) )
+                {
+                    UINT   msg;
+                    WPARAM wParam;
+                    switch ( mouseButton )
+                    {
+                    case ImGuiMouseButton_Left:
+                        msg    = WM_LBUTTONUP;
+                        wParam = VK_LBUTTON;
+                        break;
+                    case ImGuiMouseButton_Right:
+                        msg    = WM_RBUTTONUP;
+                        wParam = VK_RBUTTON;
+                        break;
+                    default:
+                        msg    = {};
+                        wParam = {};
+                        break;
+                    }
+
+                    POINT point;
+                    std::ignore = context.getUser32().getCursorPos( context.getUser32().gadgetAddress, &point );
+
+                    std::ignore = context.getUser32().postMessage( context.getUser32().gadgetAddress,
+                                                                   context.getPlatform().getWindow().getHandle(),
+                                                                   msg,
+                                                                   wParam,
+                                                                   MAKELPARAM( point.x, point.y ) );
+                }
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    return result;
 }
 
 HRESULT STDMETHODCALLTYPE
@@ -108,7 +334,7 @@ void orion::core::Input::hookDirectInput8() noexcept
 void orion::core::to_json( nlohmann::json& json, const Input& input ) noexcept
 {
     json = {
-        { xorstr_( "ldr" ), reinterpret_cast<std::uintptr_t>( input.ldr ) },
+        { xorstr_( "ldr" ), ( std::uintptr_t )( input.ldr ) },
         { xorstr_( "hooks" ), input.hooks },
     };
 }

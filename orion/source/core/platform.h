@@ -36,6 +36,11 @@ struct Platform final
 
     static void newFrame() noexcept;
 
+    _NODISCARD constexpr auto& getWindow() const noexcept
+    {
+        return window;
+    }
+
   private:
     struct Window final
     {
@@ -56,6 +61,11 @@ struct Platform final
 
         void hook() const noexcept;
         void unhook() const noexcept;
+
+        _NODISCARD constexpr auto& getHandle() const noexcept
+        {
+            return handle;
+        }
 
       private:
         static BOOL CALLBACK    enumWindowsProc( HWND window, Window& self ) noexcept;
