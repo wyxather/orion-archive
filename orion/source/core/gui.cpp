@@ -49,8 +49,9 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     fontConfig.OversampleV      = 1;
     fontConfig.FontBuilderFlags = 1;
 
-    auto& imguiIO       = imguiContext.IO;
-    imguiIO.IniFilename = nullptr;
+    auto& imguiIO           = imguiContext.IO;
+    imguiIO.IniFilename     = nullptr;
+    imguiIO.MouseDrawCursor = open;
 
     auto& fonts = *imguiIO.Fonts;
     fonts.AddFontFromMemoryCompressedTTF(
@@ -73,7 +74,8 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
 
 void orion::core::Gui::toggleOpen() noexcept
 {
-    open = !open;
+    open                           = !open;
+    ImGui::GetIO().MouseDrawCursor = open;
 }
 
 bool orion::core::Gui::isOpen() const noexcept
