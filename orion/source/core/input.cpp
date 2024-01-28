@@ -83,12 +83,12 @@ HRESULT STDMETHODCALLTYPE orion::core::Input::directInputDevice8GetDeviceState(
                 }
                 else
                 {
-                    mouseButton = buttonIndex;
+                    mouseButton = static_cast<ImGuiMouseButton>( buttonIndex );
                 }
             }
             else
             {
-                mouseButton = buttonIndex;
+                mouseButton = static_cast<ImGuiMouseButton>( buttonIndex );
             }
 
             const auto isMouseDown = ( isButtonDown & 0x80 );
@@ -188,12 +188,12 @@ HRESULT STDMETHODCALLTYPE orion::core::Input::directInputDevice8GetDeviceState(
                 }
                 else
                 {
-                    mouseButton = buttonIndex;
+                    mouseButton = static_cast<ImGuiMouseButton>( buttonIndex );
                 }
             }
             else
             {
-                mouseButton = buttonIndex;
+                mouseButton = static_cast<ImGuiMouseButton>( buttonIndex );
             }
 
             const auto isMouseDown = ( isButtonDown & 0x80 );
