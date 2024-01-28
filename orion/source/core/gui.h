@@ -94,109 +94,27 @@ struct Gui final
 
     explicit Gui( const Platform&, ImGuiContext& ) noexcept;
 
-    constexpr void draw( std::invocable auto postProcessInvoker ) const noexcept
+    constexpr void draw( std::invocable auto postProcessInvoker ) noexcept
     {
+        constexpr auto windowFlags =
+            ( ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse |
+              ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoSavedSettings );
+
         if ( !isOpen() )
         {
             return;
         }
 
-        constexpr auto windowFlags =
-            ( ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse |
-              ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoSavedSettings );
-        const auto&  style = ImGui::GetStyle();
-        const ImVec2 windowSize( 820.0f, 586.0f );
+        ImGui::SetNextWindowSize( size );
 
-        ImGui::SetNextWindowSize( windowSize );
-        ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2() );
         if ( ImGui::Begin( ImStrv( xorstr( "Window" ) ), nullptr, windowFlags ) ) [[likely]]
         {
             std::invoke( postProcessInvoker );
-
-            const ImVec2 watermarkSize( 191.0f, 60.0f );
-            const ImVec2 tabsSize( watermarkSize.x, windowSize.y - watermarkSize.y - 2.0f );
-            const ImVec2 subTabsSize( 0.0f, 70.0f );
-
-            ImGui::BeginGroup();
-            if ( ImGui::BeginChild( ImStrv( xorstr( "Tabs" ) ), tabsSize, ImGuiChildFlags_None, windowFlags ) )
-                [[likely]]
-            {
-                ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
-                                                           ImGui::GetCursorScreenPos() + tabsSize,
-                                                           ImGui::GetColorU32( ImGuiCol_ChildBg, 0.85f ),
-                                                           style.WindowRounding,
-                                                           ImDrawFlags_RoundCornersTopLeft );
-                ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[1] );
-                auto       logo     = xorstr( "NEVERLOSE" );
-                const auto logoSize = ImGui::CalcTextSize( ImStrv( logo.crypt_get(), logo.size() ) );
-                const auto logoPos =
-                    ImGui::GetCursorScreenPos() +
-                    ImVec2( ( tabsSize.x - logoSize.x ) * 0.5f, ( subTabsSize.y - logoSize.y ) * 0.5f + 3.0f );
-                ImGui::GetWindowDrawList()->AddText(
-                    logoPos - ImVec2( 1.0f, 0.0f ), IM_COL32( 65, 186, 217, 255 ), ImStrv( logo.get(), logo.size() ) );
-                ImGui::GetWindowDrawList()->AddText(
-                    logoPos, IM_COL32( 240, 240, 240, 255 ), ImStrv( logo.get(), logo.size() ) );
-                ImGui::PopFont();
-            }
-            ImGui::EndChild();
-
-            ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() - ImVec2( 0.0f, style.ItemSpacing.y ) );
-            ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
-                                                       ImGui::GetCursorScreenPos() + ImVec2( tabsSize.x, 2.0f ),
-                                                       ImGui::GetColorU32( ImGuiCol_Border ) );
-            ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() + ImVec2( 0.0f, 2.0f ) );
-
-            if ( ImGui::BeginChild(
-                     ImStrv( xorstr( "Watermark" ) ), watermarkSize, ImGuiChildFlags_None, windowFlags ) ) [[likely]]
-            {
-                ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
-                                                           ImGui::GetCursorScreenPos() + watermarkSize,
-                                                           ImGui::GetColorU32( ImGuiCol_ChildBg, 0.85f ),
-                                                           style.WindowRounding,
-                                                           ImDrawFlags_RoundCornersBottomLeft );
-            }
-            ImGui::EndChild();
-            ImGui::EndGroup();
-
-            ImGui::SameLine( 0.0f, 2.0f );
-            ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
-                                                       ImGui::GetCursorScreenPos() + ImVec2( -2.0f, windowSize.y ),
-                                                       ImGui::GetColorU32( ImGuiCol_Border ) );
-
-            ImGui::BeginGroup();
-            if ( ImGui::BeginChild( ImStrv( xorstr( "Subtabs" ) ), subTabsSize, ImGuiChildFlags_None, windowFlags ) )
-                [[likely]]
-            {
-                ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
-                                                           ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                                                           ImGui::GetColorU32( ImGuiCol_ChildBg ),
-                                                           style.WindowRounding,
-                                                           ImDrawFlags_RoundCornersTopRight );
-            }
-            ImGui::EndChild();
-
-            ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() - ImVec2( 0.0f, style.ItemSpacing.y ) );
-            ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
-                                                       ImGui::GetCursorScreenPos() +
-                                                           ImVec2( ImGui::GetContentRegionAvail().x, 2.0f ),
-                                                       ImGui::GetColorU32( ImGuiCol_Border ) );
-            ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() + ImVec2( 0.0f, 2.0f ) );
-
-            if ( ImGui::BeginChild(
-                     ImStrv( xorstr( "Content" ) ), ImVec2(), ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground ) )
-                [[likely]]
-            {
-                ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
-                                                           ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                                                           ImGui::GetColorU32( ImGuiCol_ChildBg ),
-                                                           style.WindowRounding,
-                                                           ImDrawFlags_RoundCornersBottomRight );
-            }
-            ImGui::EndChild();
-            ImGui::EndGroup();
+            draw( windowFlags );
         }
         ImGui::End();
-        ImGui::PopStyleVar();
+
+        editor();
     }
 
     void               toggleOpen() noexcept;
@@ -206,9 +124,25 @@ struct Gui final
     [[nodiscard]] utilities::Option<PostProcess2, false>& getPostProcess2() noexcept;
 
   private:
+    void draw( ImGuiWindowFlags windowFlags ) const noexcept;
+    void editor() noexcept;
+
     bool                                   open = true;
     utilities::Option<PostProcess, false>  postProcess;
     utilities::Option<PostProcess2, false> postProcess2;
+
+    ImVec2 size = { 820.0f, 585.0f };
+    ImVec2 pos  = {};
+
+    struct
+    {
+        ImVec4 leftBar    = ImColor( 8, 8, 8 );
+        ImVec4 background = ImColor( 8, 8, 8 );
+        ImVec4 border     = ImColor( 26, 26, 26 );
+        ImVec4 logo       = ImColor( 255, 255, 248 );
+        ImVec4 logoShadow = ImColor( 65, 186, 217 );
+
+    } colors;
 };
 
 } // namespace orion::core

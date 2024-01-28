@@ -44,32 +44,23 @@
 
 orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& imguiContext ) noexcept
 {
-    ImFontConfig fontConfig;
-    fontConfig.OversampleH      = 1;
-    fontConfig.OversampleV      = 1;
-    fontConfig.FontBuilderFlags = 1;
-
     auto& imguiIO           = imguiContext.IO;
     imguiIO.IniFilename     = nullptr;
     imguiIO.MouseDrawCursor = open;
 
     auto& fonts = *imguiIO.Fonts;
     fonts.AddFontFromMemoryCompressedTTF(
-        museo_sans_cyrl_500_compressed_data, ( museo_sans_cyrl_500_compressed_size / 4 ), 16.0f, &fontConfig );
+        museo_sans_cyrl_700_compressed_data, ( museo_sans_cyrl_700_compressed_size / 4 ), 14.0f ); // Default
     fonts.AddFontFromMemoryCompressedTTF(
-        museo_sans_cyrl_900_compressed_data, ( museo_sans_cyrl_900_compressed_size / 4 ), 31.0f );
+        museo_sans_cyrl_900_compressed_data, ( museo_sans_cyrl_900_compressed_size / 4 ), 32.0f ); // Logo
     fonts.AddFontFromMemoryCompressedTTF(
-        museo_sans_cyrl_700_compressed_data, ( museo_sans_cyrl_700_compressed_size / 4 ), 16.0f, &fontConfig );
-    fonts.AddFontFromMemoryCompressedTTF(
-        museo_sans_cyrl_500_compressed_data, ( museo_sans_cyrl_500_compressed_size / 4 ), 11.0f, &fontConfig );
+        museo_sans_cyrl_700_compressed_data, ( museo_sans_cyrl_700_compressed_size / 4 ), 14.0f ); // Tab Group
 
-    auto& style            = imguiContext.Style;
-    style.WindowRounding   = 10.0f;
-    style.WindowBorderSize = 0.0f;
-
-    auto colors              = style.Colors;
-    colors[ImGuiCol_ChildBg] = ImColor( 8, 8, 8, 255 );
-    colors[ImGuiCol_Border]  = ImColor( 26, 26, 26, 255 );
+    auto& style              = imguiContext.Style;
+    style.WindowPadding      = ImVec2( 0.0f, 0.0f );
+    style.WindowRounding     = 10.0f;
+    style.WindowBorderSize   = 0.0f;
+    style.RoundCornersUseTex = false;
 }
 
 void orion::core::Gui::toggleOpen() noexcept
@@ -91,6 +82,135 @@ orion::utilities::Option<orion::core::Gui::PostProcess, false>& orion::core::Gui
 orion::utilities::Option<orion::core::Gui::PostProcess2, false>& orion::core::Gui::getPostProcess2() noexcept
 {
     return postProcess2;
+}
+
+void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
+{
+    if ( ImGui::BeginChild( ImStrv( xorstr( "Left" ) ),
+                            ImVec2( 191.0f, ImGui::GetWindowSize().y ),
+                            ImGuiChildFlags_None,
+                            windowFlags ) )
+    {
+        if ( ImGui::BeginChild( ImStrv( xorstr( "Logo" ) ),
+                                ImVec2( ImGui::GetContentRegionAvail().x, 70.0f ),
+                                ImGuiChildFlags_None,
+                                windowFlags ) )
+        {
+            ImGui::GetWindowDrawList()->AddRectFilled(
+                ImGui::GetCursorScreenPos(),
+                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ),
+                ImGui::GetStyle().WindowRounding,
+                ImDrawFlags_RoundCornersTopLeft );
+
+            ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[1] );
+            auto       logo     = xorstr( "NEVERLOSE" );
+            const auto logoSize = ImGui::CalcTextSize( ImStrv( logo.crypt_get(), logo.size() ) );
+            const auto logoPos  = ImGui::GetCursorScreenPos() + ( ImGui::GetContentRegionAvail() - logoSize ) * 0.5f;
+            ImGui::GetWindowDrawList()->AddText( logoPos - ImVec2( 1.0f, 0.0f ),
+                                                 ImGui::GetColorU32( colors.logoShadow ),
+                                                 ImStrv( logo.get(), logo.size() ) );
+            ImGui::GetWindowDrawList()->AddText(
+                logoPos, ImGui::GetColorU32( colors.logo ), ImStrv( logo.get(), logo.size() ) );
+            ImGui::PopFont();
+        }
+        ImGui::EndChild();
+
+        ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() - ImVec2( 0.0f, ImGui::GetStyle().ItemSpacing.y ) );
+
+        if ( ImGui::BeginChild( ImStrv( xorstr( "Tab" ) ),
+                                ImGui::GetContentRegionAvail() - ImVec2( 0.0f, 62.0f ),
+                                ImGuiChildFlags_None,
+                                windowFlags ) )
+        {
+            ImGui::GetWindowDrawList()->AddRectFilled(
+                ImGui::GetCursorScreenPos(),
+                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ) );
+
+            ImGui::SetCursorPos( ImVec2( 20.0f, 0.0f ) );
+            ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
+            ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Aimbot" ) );
+            ImGui::PopFont();
+        }
+        ImGui::EndChild();
+
+        ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() - ImVec2( 0.0f, ImGui::GetStyle().ItemSpacing.y ) );
+        ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
+                                                   ImGui::GetCursorScreenPos() +
+                                                       ImVec2( ImGui::GetContentRegionAvail().x, 2.0f ),
+                                                   ImGui::GetColorU32( colors.border ) );
+        ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() + ImVec2( 0.0f, 2.0f ) );
+
+        if ( ImGui::BeginChild(
+                 ImStrv( xorstr( "Watermark" ) ), ImGui::GetContentRegionAvail(), ImGuiChildFlags_None, windowFlags ) )
+        {
+            ImGui::GetWindowDrawList()->AddRectFilled(
+                ImGui::GetCursorScreenPos(),
+                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ),
+                ImGui::GetStyle().WindowRounding,
+                ImDrawFlags_RoundCornersBottomLeft );
+        }
+        ImGui::EndChild();
+    }
+    ImGui::EndChild();
+
+    ImGui::SameLine( 0.0f, 2.0f );
+    ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
+                                               ImGui::GetCursorScreenPos() + ImVec2( -2.0f, ImGui::GetWindowSize().y ),
+                                               ImGui::GetColorU32( colors.border ) );
+
+    if ( ImGui::BeginChild(
+             ImStrv( xorstr( "Right" ) ), ImGui::GetContentRegionAvail(), ImGuiChildFlags_None, windowFlags ) )
+    {
+        if ( ImGui::BeginChild( ImStrv( xorstr( "Utility" ) ),
+                                ImVec2( ImGui::GetContentRegionAvail().x, 70.0f ),
+                                ImGuiChildFlags_None,
+                                windowFlags ) )
+        {
+            ImGui::GetWindowDrawList()->AddRectFilled(
+                ImGui::GetCursorScreenPos(),
+                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.96f ),
+                ImGui::GetStyle().WindowRounding,
+                ImDrawFlags_RoundCornersTopRight );
+        }
+        ImGui::EndChild();
+
+        ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() - ImVec2( 0.0f, ImGui::GetStyle().ItemSpacing.y ) );
+        ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
+                                                   ImGui::GetCursorScreenPos() +
+                                                       ImVec2( ImGui::GetContentRegionAvail().x, 2.0f ),
+                                                   ImGui::GetColorU32( colors.border ) );
+        ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() + ImVec2( 0.0f, 2.0f ) );
+
+        if ( ImGui::BeginChild(
+                 ImStrv( xorstr( "Content" ) ), ImGui::GetContentRegionAvail(), ImGuiChildFlags_None, windowFlags ) )
+        {
+            ImGui::GetWindowDrawList()->AddRectFilled(
+                ImGui::GetCursorScreenPos(),
+                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.99f ),
+                ImGui::GetStyle().WindowRounding,
+                ImDrawFlags_RoundCornersBottomRight );
+        }
+        ImGui::EndChild();
+    }
+    ImGui::EndChild();
+}
+
+void orion::core::Gui::editor() noexcept
+{
+    if ( ImGui::Begin( ImStrv( xorstr( "Editor" ) ) ) )
+    {
+        ImGui::SliderFloat( ImStrv( xorstr( "size.x" ) ), &size.x, 800.0f, 1000.0f );
+        ImGui::SliderFloat( ImStrv( xorstr( "size.y" ) ), &size.y, 400.0f, 600.0f );
+
+        ImGui::SliderFloat( ImStrv( xorstr( "pos.x" ) ), &pos.x, 0.0f, size.x );
+        ImGui::SliderFloat( ImStrv( xorstr( "pos.y" ) ), &pos.y, 0.0f, size.y );
+    }
+    ImGui::End();
 }
 
 void orion::core::to_json( nlohmann::json& json, const Gui& gui ) noexcept
