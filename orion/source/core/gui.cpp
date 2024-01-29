@@ -128,9 +128,19 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                 ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
                 ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ) );
 
-            ImGui::SetCursorPos( ImVec2( 20.0f, 0.0f ) );
+            ImGui::SetCursorPos( ImVec2( 20.0f, 1.0f ) );
             ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
             ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Aimbot" ) );
+            ImGui::PopFont();
+
+            ImGui::SetCursorPos( ImVec2( 20.0f, 140.0f ) );
+            ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
+            ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Visuals" ) );
+            ImGui::PopFont();
+
+            ImGui::SetCursorPos( pos );
+            ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
+            ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Miscellaneous" ) );
             ImGui::PopFont();
         }
         ImGui::EndChild();
