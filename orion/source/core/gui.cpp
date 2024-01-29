@@ -104,7 +104,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                 ImDrawFlags_RoundCornersTopLeft );
 
             ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[1] );
-            auto       logo     = xorstr( "NEVERLOSE" );
+            auto       logo     = xorstr( "ORION" );
             const auto logoSize = ImGui::CalcTextSize( ImStrv( logo.crypt_get(), logo.size() ) );
             const auto logoPos  = ImGui::GetCursorScreenPos() + ( ImGui::GetContentRegionAvail() - logoSize ) * 0.5f;
             ImGui::GetWindowDrawList()->AddText( logoPos - ImVec2( 1.0f, 0.0f ),
@@ -123,25 +123,57 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                 ImGuiChildFlags_None,
                                 windowFlags ) )
         {
+            constexpr ImVec2 buttonSize( 171.0f, 30.0f );
+            constexpr ImVec2 buttonOffset( 10.0f, 0.0f );
+
             ImGui::GetWindowDrawList()->AddRectFilled(
                 ImGui::GetCursorScreenPos(),
                 ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
                 ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ) );
+
+            ImGui::PushStyleVar( ImGuiStyleVar_FrameRounding, 5.0f );
+            ImGui::PushStyleColor( ImGuiCol_Button, ImVec4() );
+            ImGui::PushStyleColor( ImGuiCol_ButtonActive, ImVec4() );
+            ImGui::PushStyleColor( ImGuiCol_ButtonHovered, ImVec4() );
 
             ImGui::SetCursorPos( ImVec2( 20.0f, 1.0f ) );
             ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
             ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Aimbot" ) );
             ImGui::PopFont();
 
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "Ragebot" ) ), buttonSize );
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "Anti Aim" ) ), buttonSize );
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "Legitbot" ) ), buttonSize );
+
             ImGui::SetCursorPos( ImVec2( 20.0f, 140.0f ) );
             ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
             ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Visuals" ) );
             ImGui::PopFont();
 
-            ImGui::SetCursorPos( pos );
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "Player" ) ), buttonSize );
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "World" ) ), buttonSize );
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "View" ) ), buttonSize );
+
+            ImGui::SetCursorPos( ImVec2( 20.0f, 279.0f ) );
             ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
             ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Miscellaneous" ) );
             ImGui::PopFont();
+
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "Main" ) ), buttonSize );
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "Inventory" ) ), buttonSize );
+            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+            ImGui::Button( ImStrv( xorstr( "Configs" ) ), buttonSize );
+
+            ImGui::PopStyleVar();
+            ImGui::PopStyleColor( 3 );
         }
         ImGui::EndChild();
 
@@ -201,7 +233,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
             ImGui::GetWindowDrawList()->AddRectFilled(
                 ImGui::GetCursorScreenPos(),
                 ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.99f ),
+                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.98f ),
                 ImGui::GetStyle().WindowRounding,
                 ImDrawFlags_RoundCornersBottomRight );
         }
@@ -214,8 +246,8 @@ void orion::core::Gui::editor() noexcept
 {
     if ( ImGui::Begin( ImStrv( xorstr( "Editor" ) ) ) )
     {
-        ImGui::SliderFloat( ImStrv( xorstr( "size.x" ) ), &size.x, 800.0f, 1000.0f );
-        ImGui::SliderFloat( ImStrv( xorstr( "size.y" ) ), &size.y, 400.0f, 600.0f );
+        ImGui::SliderFloat( ImStrv( xorstr( "size.x" ) ), &size.x, 0.0f, 1000.0f );
+        ImGui::SliderFloat( ImStrv( xorstr( "size.y" ) ), &size.y, 0.0f, 1000.0f );
 
         ImGui::SliderFloat( ImStrv( xorstr( "pos.x" ) ), &pos.x, 0.0f, size.x );
         ImGui::SliderFloat( ImStrv( xorstr( "pos.y" ) ), &pos.y, 0.0f, size.y );

@@ -105,7 +105,7 @@ struct Gui final
             return;
         }
 
-        ImGui::SetNextWindowSize( size );
+        ImGui::SetNextWindowSize( ImVec2( 820.0f, 585.0f ) );
 
         if ( ImGui::Begin( ImStrv( xorstr( "Window" ) ), nullptr, windowFlags ) ) [[likely]]
         {
@@ -131,7 +131,7 @@ struct Gui final
     utilities::Option<PostProcess, false>  postProcess;
     utilities::Option<PostProcess2, false> postProcess2;
 
-    ImVec2 size = { 820.0f, 585.0f };
+    ImVec2 size = {};
     ImVec2 pos  = {};
 
     struct
