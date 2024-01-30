@@ -138,7 +138,7 @@ struct Gui final
     {
         ImVec4 leftBar    = ImColor( 8, 8, 8 );
         ImVec4 background = ImColor( 8, 8, 8 );
-        ImVec4 border     = ImColor( 26, 26, 26 );
+        ImVec4 border     = ImColor( 26, 26, 26, 220 );
         ImVec4 logo       = ImColor( 255, 255, 248 );
         ImVec4 logoShadow = ImColor( 65, 186, 217 );
 
