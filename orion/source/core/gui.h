@@ -107,7 +107,7 @@ struct Gui final
 
         ImGui::SetNextWindowSize( ImVec2( 820.0f, 585.0f ) );
 
-        if ( ImGui::Begin( ImStrv( xorstr( "Window" ) ), nullptr, windowFlags ) ) [[likely]]
+        if ( ImGui::Begin( ImStrv( xorstr( "Orion" ) ), nullptr, windowFlags ) ) [[likely]]
         {
             std::invoke( postProcessInvoker );
             draw( windowFlags );
@@ -127,22 +127,26 @@ struct Gui final
     void draw( ImGuiWindowFlags windowFlags ) const noexcept;
     void editor() noexcept;
 
+    static constexpr std::array<ImWchar, 3> FONT_AWESOME_GLYPH_RANGE = { 0xe000, 0xf8ff, 0x0 };
+
     bool                                   open = true;
     utilities::Option<PostProcess, false>  postProcess;
     utilities::Option<PostProcess2, false> postProcess2;
 
-    ImVec2 size = {};
-    ImVec2 pos  = {};
-
     struct
     {
-        ImVec4 leftBar    = ImColor( 8, 8, 8 );
+        ImVec4 accent     = ImColor( 0, 165, 243 );
         ImVec4 background = ImColor( 8, 8, 8 );
         ImVec4 border     = ImColor( 26, 26, 26, 220 );
+        ImVec4 leftBar    = ImColor( 8, 8, 8 );
         ImVec4 logo       = ImColor( 255, 255, 248 );
         ImVec4 logoShadow = ImColor( 65, 186, 217 );
+        ImVec4 text       = ImColor( 255, 255, 255 );
 
     } colors;
+
+    ImVec2 size = {};
+    ImVec2 pos  = {};
 };
 
 } // namespace orion::core

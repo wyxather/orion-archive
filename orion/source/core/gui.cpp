@@ -1,5 +1,6 @@
 #include "source/core/gui.h"
 
+#include "source/resources/fonts/font_awesome_6_pro_solid_900.h"
 #include "source/resources/fonts/museo_sans_cyrl_300.h"
 #include "source/resources/fonts/museo_sans_cyrl_500.h"
 #include "source/resources/fonts/museo_sans_cyrl_700.h"
@@ -49,12 +50,20 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     imguiIO.MouseDrawCursor = open;
 
     auto& fonts = *imguiIO.Fonts;
-    fonts.AddFontFromMemoryCompressedTTF(
-        museo_sans_cyrl_700_compressed_data, ( museo_sans_cyrl_700_compressed_size / 4 ), 14.0f ); // Default
-    fonts.AddFontFromMemoryCompressedTTF(
-        museo_sans_cyrl_900_compressed_data, ( museo_sans_cyrl_900_compressed_size / 4 ), 32.0f ); // Logo
-    fonts.AddFontFromMemoryCompressedTTF(
-        museo_sans_cyrl_700_compressed_data, ( museo_sans_cyrl_700_compressed_size / 4 ), 14.0f ); // Tab Group
+    fonts.AddFontFromMemoryCompressedTTF( museo_sans_cyrl_700_compressed_data.data(),
+                                          static_cast<int>( museo_sans_cyrl_700_compressed_data.size() ),
+                                          16.0f ); // Default
+    ImFontConfig museo_sans_cyrl_700_compressed_config;
+    museo_sans_cyrl_700_compressed_config.MergeMode = true;
+    fonts.AddFontFromMemoryCompressedTTF( font_awesome_6_pro_solid_900_compressed_data.data(),
+                                          static_cast<int>( font_awesome_6_pro_solid_900_compressed_data.size() ),
+                                          14.0f,
+                                          &museo_sans_cyrl_700_compressed_config,
+                                          FONT_AWESOME_GLYPH_RANGE.data() );
+
+    fonts.AddFontFromMemoryCompressedTTF( museo_sans_cyrl_900_compressed_data.data(),
+                                          static_cast<int>( museo_sans_cyrl_900_compressed_data.size() ),
+                                          32.0f ); // Logo, Tab Group
 
     auto& style              = imguiContext.Style;
     style.WindowPadding      = ImVec2( 0.0f, 0.0f );
@@ -123,57 +132,52 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                 ImGuiChildFlags_None,
                                 windowFlags ) )
         {
-            constexpr ImVec2 buttonSize( 171.0f, 30.0f );
-            constexpr ImVec2 buttonOffset( 10.0f, 0.0f );
-
             ImGui::GetWindowDrawList()->AddRectFilled(
                 ImGui::GetCursorScreenPos(),
                 ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
                 ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ) );
 
-            ImGui::PushStyleVar( ImGuiStyleVar_FrameRounding, 5.0f );
-            ImGui::PushStyleColor( ImGuiCol_Button, ImVec4() );
-            ImGui::PushStyleColor( ImGuiCol_ButtonActive, ImVec4() );
-            ImGui::PushStyleColor( ImGuiCol_ButtonHovered, ImVec4() );
+            constexpr auto group = []( const ImVec2& groupPos, const char* const groupText ) noexcept
+            {
+                ImGui::SetCursorPos( groupPos );
+                ImGui::SetWindowFontScale( 14.0f / ImGui::GetIO().Fonts->Fonts[1]->FontSize );
+                ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[1] );
+                ImGui::TextColored( ImColor( 70, 70, 70 ).Value, groupText );
+                ImGui::PopFont();
+                ImGui::SetWindowFontScale( 1.0f );
+            };
 
-            ImGui::SetCursorPos( ImVec2( 20.0f, 1.0f ) );
-            ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
-            ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Aimbot" ) );
-            ImGui::PopFont();
+            const auto button = [&]( const ImStrv buttonIcon, const ImStrv buttonLabel ) noexcept
+            {
+                // constexpr auto   buttonRounding = 5.0f;
+                constexpr ImVec2 buttonOffset( 10.0f, 1.0f );
+                constexpr ImVec2 buttonSize( 171.0f, 30.0f );
+                const auto       buttonIconColor  = ImGui::ColorConvertFloat4ToU32( colors.accent );
+                const auto       buttonLabelColor = ImGui::ColorConvertFloat4ToU32( colors.text );
+                const auto       buttonLabelSize  = ImGui::CalcTextSize( buttonLabel );
+                ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
+                const auto buttonPos = ImGui::GetCursorScreenPos();
+                ImGui::InvisibleButton( buttonLabel, buttonSize );
+                const ImVec2 buttonTextPos( buttonPos.x, buttonPos.y + ( buttonSize.y - buttonLabelSize.y ) * 0.5f );
+                auto&        drawList = *ImGui::GetWindowDrawList();
+                drawList.AddText( buttonTextPos + ImVec2( 13.0, -1.0f ), buttonIconColor, buttonIcon );
+                drawList.AddText( buttonTextPos + ImVec2( 40.0f, 0.0f ), buttonLabelColor, buttonLabel );
+            };
 
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "Ragebot" ) ), buttonSize );
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "Anti Aim" ) ), buttonSize );
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "Legitbot" ) ), buttonSize );
+            group( ImVec2( 20.0f, 1.0f ), xorstr_( "Aimbot" ) );
+            button( ImStrv( xorstr( "\xef\x81\x9b" ) ), ImStrv( xorstr( "Ragebot" ) ) );
+            button( ImStrv( xorstr( "\xef\x8b\xaa" ) ), ImStrv( xorstr( "Anti Aim" ) ) );
+            button( ImStrv( xorstr( "\xef\xa3\x8c" ) ), ImStrv( xorstr( "Legitbot" ) ) );
 
-            ImGui::SetCursorPos( ImVec2( 20.0f, 140.0f ) );
-            ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
-            ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Visuals" ) );
-            ImGui::PopFont();
+            group( ImVec2( 20.0f, 140.0f ), xorstr_( "Visuals" ) );
+            button( ImStrv( xorstr( "\xef\x80\x87" ) ), ImStrv( xorstr( "Player" ) ) );
+            button( ImStrv( xorstr( "\xef\x95\xbe" ) ), ImStrv( xorstr( "World" ) ) );
+            button( ImStrv( xorstr( "\xef\xa2\xa9" ) ), ImStrv( xorstr( "View" ) ) );
 
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "Player" ) ), buttonSize );
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "World" ) ), buttonSize );
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "View" ) ), buttonSize );
-
-            ImGui::SetCursorPos( ImVec2( 20.0f, 279.0f ) );
-            ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[2] );
-            ImGui::TextColored( ImColor( 75, 75, 75 ), xorstr_( "Miscellaneous" ) );
-            ImGui::PopFont();
-
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "Main" ) ), buttonSize );
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "Inventory" ) ), buttonSize );
-            ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
-            ImGui::Button( ImStrv( xorstr( "Configs" ) ), buttonSize );
-
-            ImGui::PopStyleVar();
-            ImGui::PopStyleColor( 3 );
+            group( ImVec2( 20.0f, 279.0f ), xorstr_( "Miscellaneous" ) );
+            button( ImStrv( xorstr( "\xef\x9f\x99" ) ), ImStrv( xorstr( "Main" ) ) );
+            button( ImStrv( xorstr( "\xef\x97\x94" ) ), ImStrv( xorstr( "Inventory" ) ) );
+            button( ImStrv( xorstr( "\xef\x80\x93" ) ), ImStrv( xorstr( "Configs" ) ) );
         }
         ImGui::EndChild();
 
