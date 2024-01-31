@@ -218,7 +218,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
             ImGui::GetWindowDrawList()->AddRectFilled(
                 ImGui::GetCursorScreenPos(),
                 ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.96f ),
+                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.90f ),
                 ImGui::GetStyle().WindowRounding,
                 ImDrawFlags_RoundCornersTopRight );
         }
@@ -237,7 +237,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
             ImGui::GetWindowDrawList()->AddRectFilled(
                 ImGui::GetCursorScreenPos(),
                 ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.98f ),
+                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.97f ),
                 ImGui::GetStyle().WindowRounding,
                 ImDrawFlags_RoundCornersBottomRight );
         }
