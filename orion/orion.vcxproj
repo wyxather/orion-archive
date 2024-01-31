@@ -234,6 +234,7 @@
     <ClInclude Include="source\core\platform.h" />
     <ClInclude Include="source\core\renderer.h" />
     <ClInclude Include="source\dllmain.h" />
+    <ClInclude Include="source\resources\fonts\font_awesome_6_pro_solid_900.h" />
     <ClInclude Include="source\resources\fonts\museo_sans_cyrl_300.h" />
     <ClInclude Include="source\resources\fonts\museo_sans_cyrl_500.h" />
     <ClInclude Include="source\resources\fonts\museo_sans_cyrl_700.h" />
