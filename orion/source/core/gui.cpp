@@ -37,6 +37,15 @@
 
 orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& imguiContext ) noexcept
 {
+    colors.accent            = ImColor( 0, 165, 243, 255 );
+    colors.backgroundContent = ImColor( 8, 8, 8, 240 );
+    colors.backgroundUtility = ImColor( 10, 10, 10, 230 );
+    colors.border            = ImColor( 15, 15, 15, 214 );
+    colors.leftBar           = ImColor( 8, 8, 8, 217 );
+    colors.logo              = ImColor( 255, 255, 248, 255 );
+    colors.logoShadow        = ImColor( 65, 186, 217, 255 );
+    colors.text              = ImColor( 255, 255, 255, 255 );
+
     auto& imguiIO           = imguiContext.IO;
     imguiIO.IniFilename     = nullptr;
     imguiIO.MouseDrawCursor = open;
@@ -97,12 +106,11 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                 ImGuiChildFlags_None,
                                 windowFlags ) )
         {
-            ImGui::GetWindowDrawList()->AddRectFilled(
-                ImGui::GetCursorScreenPos(),
-                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ),
-                ImGui::GetStyle().WindowRounding,
-                ImDrawFlags_RoundCornersTopLeft );
+            ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
+                                                       ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBar ),
+                                                       ImGui::GetStyle().WindowRounding,
+                                                       ImDrawFlags_RoundCornersTopLeft );
 
             ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[1] );
             auto       logo     = xorstr( "ORION" );
@@ -124,10 +132,9 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                 ImGuiChildFlags_None,
                                 windowFlags ) )
         {
-            ImGui::GetWindowDrawList()->AddRectFilled(
-                ImGui::GetCursorScreenPos(),
-                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ) );
+            ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
+                                                       ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBar ) );
 
             constexpr auto group = []( const ImVec2& groupPos, const char* const groupText ) noexcept
             {
@@ -183,12 +190,11 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
         if ( ImGui::BeginChild(
                  ImStrv( xorstr( "Watermark" ) ), ImGui::GetContentRegionAvail(), ImGuiChildFlags_None, windowFlags ) )
         {
-            ImGui::GetWindowDrawList()->AddRectFilled(
-                ImGui::GetCursorScreenPos(),
-                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ),
-                ImGui::GetStyle().WindowRounding,
-                ImDrawFlags_RoundCornersBottomLeft );
+            ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
+                                                       ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBar ),
+                                                       ImGui::GetStyle().WindowRounding,
+                                                       ImDrawFlags_RoundCornersBottomLeft );
 
             ImGui::GetWindowDrawList()->AddCircleFilled(
                 ImGui::GetCursorScreenPos() + ImVec2( 30.0f, 30.0f ), 19.0f, IM_COL32_BLACK );
@@ -214,12 +220,11 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                 ImGuiChildFlags_None,
                                 windowFlags ) )
         {
-            ImGui::GetWindowDrawList()->AddRectFilled(
-                ImGui::GetCursorScreenPos(),
-                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.90f ),
-                ImGui::GetStyle().WindowRounding,
-                ImDrawFlags_RoundCornersTopRight );
+            ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
+                                                       ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                                                       ImGui::ColorConvertFloat4ToU32( colors.backgroundUtility ),
+                                                       ImGui::GetStyle().WindowRounding,
+                                                       ImDrawFlags_RoundCornersTopRight );
         }
         ImGui::EndChild();
 
@@ -233,12 +238,11 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
         if ( ImGui::BeginChild(
                  ImStrv( xorstr( "Content" ) ), ImGui::GetContentRegionAvail(), ImGuiChildFlags_None, windowFlags ) )
         {
-            ImGui::GetWindowDrawList()->AddRectFilled(
-                ImGui::GetCursorScreenPos(),
-                ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                ImColor( colors.background.x, colors.background.y, colors.background.z, colors.background.w * 0.97f ),
-                ImGui::GetStyle().WindowRounding,
-                ImDrawFlags_RoundCornersBottomRight );
+            ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
+                                                       ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
+                                                       ImGui::ColorConvertFloat4ToU32( colors.backgroundContent ),
+                                                       ImGui::GetStyle().WindowRounding,
+                                                       ImDrawFlags_RoundCornersBottomRight );
         }
         ImGui::EndChild();
     }
@@ -255,13 +259,15 @@ void orion::core::Gui::editor() noexcept
         ImGui::SliderFloat( ImStrv( xorstr( "pos.x" ) ), &pos.x, 0.0f, 1000.0f );
         ImGui::SliderFloat( ImStrv( xorstr( "pos.y" ) ), &pos.y, 0.0f, 1000.0f );
 
-        ImGui::ColorEdit4( ImStrv( xorstr( "Accent" ) ), &colors.accent.x );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Background" ) ), &colors.background.x );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Border" ) ), &colors.border.x );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Left Bar" ) ), &colors.leftBar.x );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Logo" ) ), &colors.logo.x );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Logo Shadow" ) ), &colors.logoShadow.x );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Text" ) ), &colors.text.x );
+        constexpr auto colorEditFlags = ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview;
+        ImGui::ColorEdit4( ImStrv( xorstr( "Accent" ) ), &colors.accent.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Background Content" ) ), &colors.backgroundContent.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Background Utility" ) ), &colors.backgroundUtility.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Border" ) ), &colors.border.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Left Bar" ) ), &colors.leftBar.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Logo" ) ), &colors.logo.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Logo Shadow" ) ), &colors.logoShadow.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Text" ) ), &colors.text.x, colorEditFlags );
     }
     ImGui::End();
 }

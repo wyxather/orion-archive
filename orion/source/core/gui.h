@@ -158,14 +158,14 @@ struct Gui final
 
     struct
     {
-        ImVec4 accent     = ImColor( 0, 165, 243 );
-        ImVec4 background = ImColor( 8, 8, 8 );
-        ImVec4 border     = ImColor( 26, 26, 26, 220 );
-        ImVec4 leftBar    = ImColor( 8, 8, 8 );
-        ImVec4 logo       = ImColor( 255, 255, 248 );
-        ImVec4 logoShadow = ImColor( 65, 186, 217 );
-        ImVec4 text       = ImColor( 255, 255, 255 );
-
+        ImVec4 accent            = {};
+        ImVec4 backgroundContent = {};
+        ImVec4 backgroundUtility = {};
+        ImVec4 border            = {};
+        ImVec4 leftBar           = {};
+        ImVec4 logo              = {};
+        ImVec4 logoShadow        = {};
+        ImVec4 text              = {};
     } colors;
 
     ImVec2 size = {};
