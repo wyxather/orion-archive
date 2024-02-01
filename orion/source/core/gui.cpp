@@ -324,22 +324,21 @@ void orion::core::Gui::PostProcess::draw( ImDrawList& drawList ) noexcept
         }
     }
 
+    const auto pMin  = ImGui::GetWindowPos();
+    const auto pMax  = ImGui::GetWindowSize() + pMin;
+    const auto uvMin = pMin / textureSize;
+    const auto uvMax = pMax / textureSize;
+
     drawList.AddCallback( &begin, this );
     for ( auto i = 0; i < 8; ++i )
     {
         drawList.AddCallback( &firstPass, this );
-        drawList.AddImage( texture, ImVec2(), textureSize );
+        drawList.AddImage( texture, pMin, pMax, uvMin, uvMax );
         drawList.AddCallback( &secondPass, this );
-        drawList.AddImage( texture, ImVec2(), textureSize );
+        drawList.AddImage( texture, pMin, pMax, uvMin, uvMax );
     }
     drawList.AddCallback( &end, this );
-    drawList.AddImageRounded( texture,
-                              ImVec2(),
-                              textureSize,
-                              ImVec2(),
-                              ImVec2( 1.0f, 1.0f ),
-                              IM_COL32_WHITE,
-                              ImGui::GetStyle().WindowRounding );
+    drawList.AddImageRounded( texture, pMin, pMax, uvMin, uvMax, IM_COL32_WHITE, ImGui::GetStyle().WindowRounding );
     drawList.AddCallback( ImDrawCallback_ResetRenderState, nullptr );
 }
 
@@ -472,21 +471,20 @@ void orion::core::Gui::PostProcess2::draw( ImDrawList& drawList ) noexcept
     textureBox.right      = static_cast<UINT>( std::clamp( windowPos.x + windowSize.x, 0.0f, textureSize.x ) );
     textureBox.bottom     = static_cast<UINT>( std::clamp( windowPos.y + windowSize.y, 0.0f, textureSize.y ) );
 
+    const auto&  pMin = windowPos;
+    const ImVec2 pMax( static_cast<float>( textureBox.right ), static_cast<float>( textureBox.bottom ) );
+    const auto   uvMin = pMin / textureSize;
+    const auto   uvMax = pMax / textureSize;
+
     drawList.AddCallback( &begin, this );
     for ( auto i = 0; i < 8; ++i )
     {
         drawList.AddCallback( &firstPass, this );
-        drawList.AddImage( textureView, ImVec2(), textureSize );
+        drawList.AddImage( textureView, pMin, pMax, uvMin, uvMax );
         drawList.AddCallback( &secondPass, this );
-        drawList.AddImage( textureView, ImVec2(), textureSize );
+        drawList.AddImage( textureView, pMin, pMax, uvMin, uvMax );
     }
-    drawList.AddImageRounded( textureView,
-                              ImVec2(),
-                              textureSize,
-                              ImVec2(),
-                              ImVec2( 1.0f, 1.0f ),
-                              IM_COL32_WHITE,
-                              ImGui::GetStyle().WindowRounding );
+    drawList.AddImageRounded( textureView, pMin, pMax, uvMin, uvMax, IM_COL32_WHITE, ImGui::GetStyle().WindowRounding );
     drawList.AddCallback( ImDrawCallback_ResetRenderState, nullptr );
 }
 
