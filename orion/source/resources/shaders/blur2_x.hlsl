@@ -1,30 +1,26 @@
-static const float OFFSETS[3] = { 0.000000000f, 1.3846153846f, 3.2307692308f };
-static const float WEIGHTS[3] = { 0.227027027f, 0.3162162162f, 0.0702702703f };
-
-cbuffer CONST_BUFFER : register(b0)
+cbuffer CBUFFER : register(b0)
 {
-    float4 PARAMS : register(b0);
+    const float SAMPLE_OFFSETS[15];
+    const float SAMPLE_WEIGHTS[15];
 };
 
-Texture2D TEX : register(t0);
+const sampler SAMPLER : register(s0);
 
-sampler TEX_SAMPLER : register(s0);
+const Texture2D TEXTURE2D : register(t0);
 
-struct PS_INPUT
+struct INPUT
 {
     float4 pos : SV_POSITION;
     float4 col : COLOR0;
     float2 uv : TEXCOORD0;
 };
 
-float4 main(PS_INPUT input) : SV_TARGET
+float4 main(const INPUT input) : SV_TARGET
 {
-    float4 color = TEX.Sample(TEX_SAMPLER, input.uv);
-    color.rgb *= WEIGHTS[0];
-    for (uint i = 1; i < 3; ++i)
+    float4 color = 0.0f;
+    for (uint i = 0; i < 15; ++i)
     {
-        color.rgb += TEX.Sample(TEX_SAMPLER, float2(input.uv.x - PARAMS.x * OFFSETS[i], input.uv.y)).rgb * WEIGHTS[i];
-        color.rgb += TEX.Sample(TEX_SAMPLER, float2(input.uv.x + PARAMS.x * OFFSETS[i], input.uv.y)).rgb * WEIGHTS[i];
+        color += TEXTURE2D.Sample(SAMPLER, float2(input.uv.x + SAMPLE_OFFSETS[i], input.uv.y)) * SAMPLE_WEIGHTS[i];
     }
     return color;
 }

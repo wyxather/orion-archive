@@ -7,6 +7,29 @@ struct Platform;
 
 struct Gui final
 {
+    class BlurParams final
+    {
+        struct alignas( 16 ) Float final
+        {
+            void operator=( float other ) noexcept;
+            void operator/=( float other ) noexcept;
+
+            float value = 0.0f;
+        };
+
+        std::array<Float, 15> sampleOffsets = {};
+        std::array<Float, 15> sampleWeights = {};
+
+      public:
+        constexpr BlurParams() noexcept                               = default;
+        constexpr BlurParams( BlurParams&& ) noexcept                 = default;
+        constexpr BlurParams& operator=( BlurParams&& ) noexcept      = default;
+        constexpr BlurParams( const BlurParams& ) noexcept            = default;
+        constexpr BlurParams& operator=( const BlurParams& ) noexcept = default;
+
+        BlurParams( float texelSize, float blurAmount ) noexcept;
+    };
+
     struct PostProcess final
     {
         PostProcess( PostProcess&& )                 = delete;
@@ -34,8 +57,8 @@ struct Gui final
         LPDIRECT3DPIXELSHADER9 pixelShaderX = nullptr;
         LPDIRECT3DPIXELSHADER9 pixelShaderY = nullptr;
 
-        std::array<float, 4> pixeShaderConstX {};
-        std::array<float, 4> pixeShaderConstY {};
+        BlurParams pixeShaderConstX = {};
+        BlurParams pixeShaderConstY = {};
 
         LPDIRECT3DTEXTURE9 texture        = nullptr;
         LPDIRECT3DSURFACE9 textureSurface = nullptr;

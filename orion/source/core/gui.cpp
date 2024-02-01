@@ -32,14 +32,6 @@
 #endif
 #endif
 
-#pragma push_macro( "SAFE_RELEASE" )
-#define SAFERELEASE( v )                                                                                               \
-    if ( v != nullptr )                                                                                                \
-    {                                                                                                                  \
-        v->Release();                                                                                                  \
-        v = nullptr;                                                                                                   \
-    }
-
 // https://github.com/wyxather/imgui-neverlose/blob/master/imgui.cpp#L5794
 // https://github.com/wyxather/orion/blob/backup/game/octopath_traveler_2/orion/source/core/gui.cpp
 
@@ -281,6 +273,14 @@ void orion::core::to_json( nlohmann::json& json, const Gui& gui ) noexcept
     };
 }
 
+#pragma push_macro( "SAFE_RELEASE" )
+#define SAFERELEASE( v )                                                                                               \
+    if ( v != nullptr )                                                                                                \
+    {                                                                                                                  \
+        v->Release();                                                                                                  \
+        v = nullptr;                                                                                                   \
+    }
+
 orion::core::Gui::PostProcess::PostProcess( IDirect3DDevice9& direct3DDevice9 ) noexcept
     : direct3DDevice9( direct3DDevice9 )
 {
@@ -334,8 +334,8 @@ void orion::core::Gui::PostProcess::draw( ImDrawList& drawList ) noexcept
                                            nullptr );
             texture->GetSurfaceLevel( 0, &textureSurface );
 
-            pixeShaderConstX = { 1.0f / textureSize.x };
-            pixeShaderConstY = { 1.0f / textureSize.y };
+            pixeShaderConstX = { 1.0f / textureSize.x, 8.0f };
+            pixeShaderConstY = { 1.0f / textureSize.y, 8.0f };
         }
     }
 
@@ -369,14 +369,16 @@ void orion::core::Gui::PostProcess::firstPass( const ImDrawList*, const ImDrawCm
 {
     const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
     postProcess.direct3DDevice9.SetPixelShader( postProcess.pixelShaderX );
-    postProcess.direct3DDevice9.SetPixelShaderConstantF( 0, postProcess.pixeShaderConstX.data(), 1 );
+    postProcess.direct3DDevice9.SetPixelShaderConstantF(
+        0, (const float*)( &postProcess.pixeShaderConstX ), ( sizeof( postProcess.pixeShaderConstX ) / 16 ) );
 }
 
 void orion::core::Gui::PostProcess::secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
 {
     const auto& postProcess = *static_cast<PostProcess*>( cmd->UserCallbackData );
     postProcess.direct3DDevice9.SetPixelShader( postProcess.pixelShaderY );
-    postProcess.direct3DDevice9.SetPixelShaderConstantF( 0, postProcess.pixeShaderConstY.data(), 1 );
+    postProcess.direct3DDevice9.SetPixelShaderConstantF(
+        0, (const float*)( &postProcess.pixeShaderConstY ), ( sizeof( postProcess.pixeShaderConstX ) / 16 ) );
 }
 
 void orion::core::Gui::PostProcess::end( const ImDrawList*, const ImDrawCmd* cmd ) noexcept
@@ -412,7 +414,7 @@ void orion::core::Gui::PostProcess2::createDeviceObjects() noexcept
 
     D3D11_BUFFER_DESC bufferDesc {};
     bufferDesc.Usage          = D3D11_USAGE_DYNAMIC;
-    bufferDesc.ByteWidth      = sizeof( std::array<float, 4> );
+    bufferDesc.ByteWidth      = sizeof( BlurParams );
     bufferDesc.BindFlags      = D3D11_BIND_CONSTANT_BUFFER;
     bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     d3D11Device.CreateBuffer( &bufferDesc, nullptr, &pixelShaderConstX );
@@ -466,15 +468,15 @@ void orion::core::Gui::PostProcess2::draw( ImDrawList& drawList ) noexcept
         if ( d3D11DeviceContext.Map( pixelShaderConstX, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource ) == S_OK )
             [[likely]]
         {
-            const std::array<float, 4> v { 1.0f / textureSize.x };
-            std::memcpy( mappedResource.pData, &v, sizeof( v ) );
+            const BlurParams blurParams( 1.0f / textureSize.x, 8.0f );
+            std::memcpy( mappedResource.pData, &blurParams, sizeof( blurParams ) );
             d3D11DeviceContext.Unmap( pixelShaderConstX, 0 );
         }
         if ( d3D11DeviceContext.Map( pixelShaderConstY, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource ) == S_OK )
             [[likely]]
         {
-            const std::array<float, 4> v { 1.0f / textureSize.y };
-            std::memcpy( mappedResource.pData, &v, sizeof( v ) );
+            const BlurParams blurParams( 1.0f / textureSize.y, 8.0f );
+            std::memcpy( mappedResource.pData, &blurParams, sizeof( blurParams ) );
             d3D11DeviceContext.Unmap( pixelShaderConstY, 0 );
         }
     }
@@ -540,3 +542,46 @@ void orion::core::Gui::PostProcess2::secondPass( const ImDrawList*, const ImDraw
 }
 
 #pragma pop_macro( "SAFE_RELEASE" )
+
+orion::core::Gui::BlurParams::BlurParams( const float texelSize, const float blurAmount ) noexcept
+{
+    constexpr auto computeGaussian = []( const float value, const float theta ) noexcept
+    {
+        constexpr auto v = 2.0f * std::numbers::pi_v<float>;
+        return ( 1.0f / std::sqrt( v * theta ) ) * std::exp( -( value * value ) / ( 2.0f * theta * theta ) );
+    };
+
+    sampleOffsets[0] = 0.0f;
+    sampleWeights[0] = computeGaussian( 0.0f, blurAmount );
+
+    auto totalWeight = sampleWeights[0].value;
+
+    for ( std::size_t i = 0; i < ( 15 / 2 ); ++i )
+    {
+        const auto offset = texelSize * ( static_cast<float>( i ) * 2.0f + 1.5f );
+        const auto weight = computeGaussian( static_cast<float>( i ) + 1.0f, blurAmount );
+
+        sampleOffsets[i * 2 + 1] = offset;
+        sampleOffsets[i * 2 + 2] = -offset;
+
+        sampleWeights[i * 2 + 1] = weight;
+        sampleWeights[i * 2 + 2] = weight;
+
+        totalWeight += weight * 2.0f;
+    }
+
+    for ( auto&& sampleWeight : sampleWeights )
+    {
+        sampleWeight /= totalWeight;
+    }
+}
+
+void orion::core::Gui::BlurParams::Float::operator=( const float other ) noexcept
+{
+    value = other;
+}
+
+void orion::core::Gui::BlurParams::Float::operator/=( const float other ) noexcept
+{
+    value /= other;
+}
