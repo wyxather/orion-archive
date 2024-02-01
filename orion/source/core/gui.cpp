@@ -197,6 +197,13 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                 ImColor( colors.leftBar.x, colors.leftBar.y, colors.leftBar.z, colors.leftBar.w * 0.85f ),
                 ImGui::GetStyle().WindowRounding,
                 ImDrawFlags_RoundCornersBottomLeft );
+
+            ImGui::GetWindowDrawList()->AddCircleFilled(
+                ImGui::GetCursorScreenPos() + ImVec2( 30.0f, 30.0f ), 19.0f, IM_COL32_BLACK );
+
+            ImGui::GetWindowDrawList()->AddText( ImGui::GetCursorScreenPos() + ImVec2( 24.0f, 20.0f ),
+                                                 IM_COL32_WHITE,
+                                                 ImStrv( xorstr( "\xef\x88\x9b" ) ) );
         }
         ImGui::EndChild();
     }
@@ -253,8 +260,16 @@ void orion::core::Gui::editor() noexcept
         ImGui::SliderFloat( ImStrv( xorstr( "size.x" ) ), &size.x, 0.0f, 1000.0f );
         ImGui::SliderFloat( ImStrv( xorstr( "size.y" ) ), &size.y, 0.0f, 1000.0f );
 
-        ImGui::SliderFloat( ImStrv( xorstr( "pos.x" ) ), &pos.x, 0.0f, size.x );
-        ImGui::SliderFloat( ImStrv( xorstr( "pos.y" ) ), &pos.y, 0.0f, size.y );
+        ImGui::SliderFloat( ImStrv( xorstr( "pos.x" ) ), &pos.x, 0.0f, 1000.0f );
+        ImGui::SliderFloat( ImStrv( xorstr( "pos.y" ) ), &pos.y, 0.0f, 1000.0f );
+
+        ImGui::ColorEdit4( ImStrv( xorstr( "Accent" ) ), &colors.accent.x );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Background" ) ), &colors.background.x );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Border" ) ), &colors.border.x );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Left Bar" ) ), &colors.leftBar.x );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Logo" ) ), &colors.logo.x );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Logo Shadow" ) ), &colors.logoShadow.x );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Text" ) ), &colors.text.x );
     }
     ImGui::End();
 }
