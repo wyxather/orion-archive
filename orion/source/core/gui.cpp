@@ -50,21 +50,27 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     imguiIO.IniFilename     = nullptr;
     imguiIO.MouseDrawCursor = open;
 
+    ImFontConfig font_awesome_6_pro_solid_900_compressed_config;
+    font_awesome_6_pro_solid_900_compressed_config.MergeMode = true;
+
     auto& fonts = *imguiIO.Fonts;
     fonts.AddFontFromMemoryCompressedTTF( museo_sans_cyrl_700_compressed_data.data(),
                                           static_cast<int>( museo_sans_cyrl_700_compressed_data.size() ),
                                           16.0f ); // Default
-    ImFontConfig museo_sans_cyrl_700_compressed_config;
-    museo_sans_cyrl_700_compressed_config.MergeMode = true;
     fonts.AddFontFromMemoryCompressedTTF( font_awesome_6_pro_solid_900_compressed_data.data(),
                                           static_cast<int>( font_awesome_6_pro_solid_900_compressed_data.size() ),
                                           14.0f,
-                                          &museo_sans_cyrl_700_compressed_config,
+                                          &font_awesome_6_pro_solid_900_compressed_config,
                                           FONT_AWESOME_GLYPH_RANGE.data() );
 
     fonts.AddFontFromMemoryCompressedTTF( museo_sans_cyrl_900_compressed_data.data(),
                                           static_cast<int>( museo_sans_cyrl_900_compressed_data.size() ),
                                           32.0f ); // Logo, Tab Group
+    fonts.AddFontFromMemoryCompressedTTF( font_awesome_6_pro_solid_900_compressed_data.data(),
+                                          static_cast<int>( font_awesome_6_pro_solid_900_compressed_data.size() ),
+                                          32.0f,
+                                          &font_awesome_6_pro_solid_900_compressed_config,
+                                          FONT_AWESOME_GLYPH_RANGE.data() );
 
     auto& style              = imguiContext.Style;
     style.WindowPadding      = ImVec2( 0.0f, 0.0f );
@@ -199,9 +205,29 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
             ImGui::GetWindowDrawList()->AddCircleFilled(
                 ImGui::GetCursorScreenPos() + ImVec2( 30.0f, 30.0f ), 19.0f, IM_COL32_BLACK );
 
-            ImGui::GetWindowDrawList()->AddText( ImGui::GetCursorScreenPos() + ImVec2( 24.0f, 20.0f ),
-                                                 IM_COL32_WHITE,
+            ImGui::GetWindowDrawList()->AddText( ImGui::GetIO().Fonts->Fonts[1],
+                                                 20.0f,
+                                                 ImGui::GetCursorScreenPos() + ImVec2( 21.0f, 19.0f ),
+                                                 ImGui::ColorConvertFloat4ToU32( colors.text ),
                                                  ImStrv( xorstr( "\xef\x88\x9b" ) ) );
+
+            ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(),
+                                                 15.0f,
+                                                 ImGui::GetCursorScreenPos() + ImVec2( 58.0f, 12.0f ),
+                                                 ImGui::ColorConvertFloat4ToU32( colors.text ),
+                                                 ImStrv( xorstr( "Wyxather" ) ) );
+
+            ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(),
+                                                 15.0f,
+                                                 ImGui::GetCursorScreenPos() + ImVec2( 58.0f, 32.0f ),
+                                                 IM_COL32( 69, 69, 69, 255 * ImGui::GetStyle().Alpha ),
+                                                 ImStrv( xorstr( "Build:" ) ) );
+
+            ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(),
+                                                 15.0f,
+                                                 ImGui::GetCursorScreenPos() + ImVec2( 99.0f, 32.0f ),
+                                                 ImGui::ColorConvertFloat4ToU32( colors.accent ),
+                                                 ImStrv( xorstr( __DATE__ ) ) );
         }
         ImGui::EndChild();
     }
