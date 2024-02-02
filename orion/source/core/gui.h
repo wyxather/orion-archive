@@ -52,19 +52,15 @@ struct Gui final
 
         IDirect3DDevice9& direct3DDevice9;
 
-        LPDIRECT3DSURFACE9 backBuffer = nullptr;
+        LPDIRECT3DSURFACE9 backBuffer           = nullptr;
+        LPDIRECT3DSURFACE9 originalRenderTarget = nullptr;
 
-        LPDIRECT3DPIXELSHADER9 pixelShaderX = nullptr;
-        LPDIRECT3DPIXELSHADER9 pixelShaderY = nullptr;
-
-        BlurParams pixeShaderConstX = {};
-        BlurParams pixeShaderConstY = {};
+        std::array<LPDIRECT3DPIXELSHADER9, 2> pixelShader      = {};
+        std::array<BlurParams, 2>             pixelShaderConst = {};
 
         LPDIRECT3DTEXTURE9 texture        = nullptr;
         LPDIRECT3DSURFACE9 textureSurface = nullptr;
         ImVec2             textureSize;
-
-        LPDIRECT3DSURFACE9 originalRenderTarget = nullptr;
     };
 
     struct PostProcess2 final
@@ -88,24 +84,23 @@ struct Gui final
         static void begin( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
         static void firstPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
         static void secondPass( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
+        static void end( const ImDrawList*, const ImDrawCmd* cmd ) noexcept;
 
         IDXGISwapChain&      dXGISwapChain;
         ID3D11Device&        d3D11Device;
         ID3D11DeviceContext& d3D11DeviceContext;
 
-        ID3D11RenderTargetView* renderTarget = nullptr;
-        ID3D11Texture2D*        backBuffer   = nullptr;
+        ID3D11Texture2D*        backBuffer    = nullptr;
+        ID3D11RenderTargetView* backBufferRTV = nullptr;
 
-        ID3D11PixelShader* pixelShaderX = nullptr;
-        ID3D11PixelShader* pixelShaderY = nullptr;
+        std::array<ID3D11PixelShader*, 2> pixelShader      = {};
+        std::array<ID3D11Buffer*, 2>      pixelShaderConst = {};
 
-        ID3D11Buffer* pixelShaderConstX = nullptr;
-        ID3D11Buffer* pixelShaderConstY = nullptr;
-
-        ID3D11Texture2D*          texture     = nullptr;
-        ID3D11ShaderResourceView* textureView = nullptr;
-        ImVec2                    textureSize;
-        CD3D11_BOX                textureBox;
+        std::array<ID3D11Texture2D*, 2>          texture    = {};
+        std::array<ID3D11RenderTargetView*, 2>   textureRTV = {};
+        std::array<ID3D11ShaderResourceView*, 2> textureSRV = {};
+        ImVec2                                   textureSize;
+        CD3D11_BOX                               textureBox;
     };
 
     friend void to_json( nlohmann::json& json, const Gui& gui ) noexcept;
