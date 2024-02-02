@@ -37,18 +37,6 @@
 
 orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& imguiContext ) noexcept
 {
-    colors.contentBackground  = ImColor( 8, 8, 8, 240 );
-    colors.leftBackground     = ImColor( 8, 8, 8, 217 );
-    colors.leftGroupText      = ImColor( 70, 70, 70, 255 );
-    colors.logo               = ImColor( 255, 255, 248, 255 );
-    colors.logoShadow         = ImColor( 65, 186, 217, 255 );
-    colors.separator          = ImColor( 15, 15, 15, 214 );
-    colors.stamp              = ImColor( 0, 165, 243, 255 );
-    colors.text               = ImColor( 255, 255, 255, 255 );
-    colors.utilityBackground  = ImColor( 10, 10, 10, 230 );
-    colors.utilityFrameBorder = ImColor( 53, 53, 53, 75 );
-    colors.utilityText        = ImColor( 186, 202, 203, 176 );
-
     auto& imguiIO           = imguiContext.IO;
     imguiIO.IniFilename     = nullptr;
     imguiIO.MouseDrawCursor = open;
@@ -80,6 +68,20 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     style.WindowRounding     = 10.0f;
     style.WindowBorderSize   = 0.0f;
     style.RoundCornersUseTex = false;
+
+    style.Colors[ImGuiCol_WindowShadow] = ImColor( 0, 0, 0, 255 );
+
+    colors.contentBackground  = ImColor( 8, 8, 8, 240 );
+    colors.leftBackground     = ImColor( 8, 8, 8, 217 );
+    colors.leftGroupText      = ImColor( 70, 70, 70, 255 );
+    colors.logo               = ImColor( 255, 255, 248, 255 );
+    colors.logoShadow         = ImColor( 65, 186, 217, 255 );
+    colors.separator          = ImColor( 15, 15, 15, 214 );
+    colors.stamp              = ImColor( 0, 165, 243, 255 );
+    colors.text               = ImColor( 255, 255, 255, 255 );
+    colors.utilityBackground  = ImColor( 10, 10, 10, 230 );
+    colors.utilityFrameBorder = ImColor( 53, 53, 53, 75 );
+    colors.utilityText        = ImColor( 186, 202, 203, 176 );
 }
 
 void orion::core::Gui::toggleOpen() noexcept
