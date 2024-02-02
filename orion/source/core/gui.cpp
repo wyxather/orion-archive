@@ -37,12 +37,13 @@
 
 orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& imguiContext ) noexcept
 {
-    colors.accent             = ImColor( 0, 165, 243, 255 );
-    colors.border             = ImColor( 15, 15, 15, 214 );
     colors.contentBackground  = ImColor( 8, 8, 8, 240 );
-    colors.leftBar            = ImColor( 8, 8, 8, 217 );
+    colors.leftBackground     = ImColor( 8, 8, 8, 217 );
+    colors.leftGroupText      = ImColor( 70, 70, 70, 255 );
     colors.logo               = ImColor( 255, 255, 248, 255 );
     colors.logoShadow         = ImColor( 65, 186, 217, 255 );
+    colors.separator          = ImColor( 15, 15, 15, 214 );
+    colors.stamp              = ImColor( 0, 165, 243, 255 );
     colors.text               = ImColor( 255, 255, 255, 255 );
     colors.utilityBackground  = ImColor( 10, 10, 10, 230 );
     colors.utilityFrameBorder = ImColor( 53, 53, 53, 75 );
@@ -116,7 +117,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
         {
             ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
                                                        ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBar ),
+                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBackground ),
                                                        ImGui::GetStyle().WindowRounding,
                                                        ImDrawFlags_RoundCornersTopLeft );
 
@@ -125,10 +126,10 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
             const auto logoSize = ImGui::CalcTextSize( ImStrv( logo.crypt_get(), logo.size() ) );
             const auto logoPos  = ImGui::GetCursorScreenPos() + ( ImGui::GetContentRegionAvail() - logoSize ) * 0.5f;
             ImGui::GetWindowDrawList()->AddText( logoPos - ImVec2( 1.0f, 0.0f ),
-                                                 ImGui::GetColorU32( colors.logoShadow ),
+                                                 ImGui::ColorConvertFloat4ToU32( colors.logoShadow ),
                                                  ImStrv( logo.get(), logo.size() ) );
             ImGui::GetWindowDrawList()->AddText(
-                logoPos, ImGui::GetColorU32( colors.logo ), ImStrv( logo.get(), logo.size() ) );
+                logoPos, ImGui::ColorConvertFloat4ToU32( colors.logo ), ImStrv( logo.get(), logo.size() ) );
             ImGui::PopFont();
         }
         ImGui::EndChild();
@@ -142,26 +143,29 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
         {
             ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
                                                        ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBar ) );
+                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBackground ) );
 
-            constexpr auto group = []( const ImVec2& groupPos, const char* const groupText ) noexcept
+            const auto group = [&]( const ImVec2& groupPos, const ImStrv groupText ) noexcept
             {
+                const auto&    font     = *ImGui::GetIO().Fonts->Fonts[1];
+                constexpr auto fontSize = 14.0f;
                 ImGui::SetCursorPos( groupPos );
-                ImGui::SetWindowFontScale( 14.0f / ImGui::GetIO().Fonts->Fonts[1]->FontSize );
-                ImGui::PushFont( ImGui::GetIO().Fonts->Fonts[1] );
-                ImGui::TextColored( ImColor( 70, 70, 70 ).Value, groupText );
-                ImGui::PopFont();
-                ImGui::SetWindowFontScale( 1.0f );
+                ImGui::GetWindowDrawList()->AddText( &font,
+                                                     fontSize,
+                                                     ImGui::GetCursorScreenPos(),
+                                                     ImGui::ColorConvertFloat4ToU32( colors.leftGroupText ),
+                                                     groupText );
+                ImGui::Dummy( font.CalcTextSizeA( fontSize, FLT_MAX, 0.0f, groupText ) );
             };
 
-            const auto button = [&]( const ImStrv buttonIcon, const ImStrv buttonLabel ) noexcept
+            const auto buttonIconColor  = ImGui::ColorConvertFloat4ToU32( colors.stamp );
+            const auto buttonLabelColor = ImGui::ColorConvertFloat4ToU32( colors.text );
+            const auto button           = [&]( const ImStrv buttonIcon, const ImStrv buttonLabel ) noexcept
             {
-                // constexpr auto   buttonRounding = 5.0f;
+                constexpr auto   buttonRounding = 5.0f;
                 constexpr ImVec2 buttonOffset( 10.0f, 1.0f );
                 constexpr ImVec2 buttonSize( 171.0f, 30.0f );
-                const auto       buttonIconColor  = ImGui::ColorConvertFloat4ToU32( colors.accent );
-                const auto       buttonLabelColor = ImGui::ColorConvertFloat4ToU32( colors.text );
-                const auto       buttonLabelSize  = ImGui::CalcTextSize( buttonLabel );
+                const auto       buttonLabelSize = ImGui::CalcTextSize( buttonLabel );
                 ImGui::SetCursorPos( ImGui::GetCursorPos() + buttonOffset );
                 const auto buttonPos = ImGui::GetCursorScreenPos();
                 ImGui::InvisibleButton( buttonLabel, buttonSize );
@@ -171,17 +175,17 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                 drawList.AddText( buttonTextPos + ImVec2( 40.0f, 0.0f ), buttonLabelColor, buttonLabel );
             };
 
-            group( ImVec2( 20.0f, 1.0f ), xorstr_( "Aimbot" ) );
+            group( ImVec2( 20.0f, 1.0f ), ImStrv( xorstr( "Aimbot" ) ) );
             button( ImStrv( xorstr( "\xef\x81\x9b" ) ), ImStrv( xorstr( "Ragebot" ) ) );
             button( ImStrv( xorstr( "\xef\x8b\xaa" ) ), ImStrv( xorstr( "Anti Aim" ) ) );
             button( ImStrv( xorstr( "\xef\xa3\x8c" ) ), ImStrv( xorstr( "Legitbot" ) ) );
 
-            group( ImVec2( 20.0f, 140.0f ), xorstr_( "Visuals" ) );
+            group( ImVec2( 20.0f, 140.0f ), ImStrv( xorstr( "Visuals" ) ) );
             button( ImStrv( xorstr( "\xef\x80\x87" ) ), ImStrv( xorstr( "Player" ) ) );
             button( ImStrv( xorstr( "\xef\x95\xbe" ) ), ImStrv( xorstr( "World" ) ) );
             button( ImStrv( xorstr( "\xef\xa2\xa9" ) ), ImStrv( xorstr( "View" ) ) );
 
-            group( ImVec2( 20.0f, 279.0f ), xorstr_( "Miscellaneous" ) );
+            group( ImVec2( 20.0f, 279.0f ), ImStrv( xorstr( "Miscellaneous" ) ) );
             button( ImStrv( xorstr( "\xef\x9f\x99" ) ), ImStrv( xorstr( "Main" ) ) );
             button( ImStrv( xorstr( "\xef\x97\x94" ) ), ImStrv( xorstr( "Inventory" ) ) );
             button( ImStrv( xorstr( "\xef\x80\x93" ) ), ImStrv( xorstr( "Configs" ) ) );
@@ -192,7 +196,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
         ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
                                                    ImGui::GetCursorScreenPos() +
                                                        ImVec2( ImGui::GetContentRegionAvail().x, 2.0f ),
-                                                   ImGui::GetColorU32( colors.border ) );
+                                                   ImGui::ColorConvertFloat4ToU32( colors.separator ) );
         ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() + ImVec2( 0.0f, 2.0f ) );
 
         if ( ImGui::BeginChild(
@@ -200,13 +204,13 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
         {
             ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
                                                        ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail(),
-                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBar ),
+                                                       ImGui::ColorConvertFloat4ToU32( colors.leftBackground ),
                                                        ImGui::GetStyle().WindowRounding,
                                                        ImDrawFlags_RoundCornersBottomLeft );
 
             ImGui::GetWindowDrawList()->AddCircleFilled( ImGui::GetCursorScreenPos() + ImVec2( 30.0f, 30.0f ),
                                                          19.0f,
-                                                         IM_COL32( 0, 0, 0, 255 * ImGui::GetStyle().Alpha ) );
+                                                         IM_COL32( 0, 0, 0, 115 * ImGui::GetStyle().Alpha ) );
 
             ImGui::GetWindowDrawList()->AddText( ImGui::GetIO().Fonts->Fonts[1],
                                                  20.0f,
@@ -223,13 +227,13 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
             ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(),
                                                  15.0f,
                                                  ImGui::GetCursorScreenPos() + ImVec2( 58.0f, 32.0f ),
-                                                 IM_COL32( 69, 69, 69, 255 * ImGui::GetStyle().Alpha ),
+                                                 ImGui::ColorConvertFloat4ToU32( colors.leftGroupText ),
                                                  ImStrv( xorstr( "Build:" ) ) );
 
             ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(),
                                                  15.0f,
                                                  ImGui::GetCursorScreenPos() + ImVec2( 99.0f, 32.0f ),
-                                                 ImGui::ColorConvertFloat4ToU32( colors.accent ),
+                                                 ImGui::ColorConvertFloat4ToU32( colors.stamp ),
                                                  ImStrv( xorstr( __DATE__ ) ) );
         }
         ImGui::EndChild();
@@ -239,7 +243,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
     ImGui::SameLine( 0.0f, 2.0f );
     ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
                                                ImGui::GetCursorScreenPos() + ImVec2( -2.0f, ImGui::GetWindowSize().y ),
-                                               ImGui::GetColorU32( colors.border ) );
+                                               ImGui::ColorConvertFloat4ToU32( colors.separator ) );
 
     if ( ImGui::BeginChild(
              ImStrv( xorstr( "Right" ) ), ImGui::GetContentRegionAvail(), ImGuiChildFlags_None, windowFlags ) )
@@ -280,7 +284,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
         ImGui::GetWindowDrawList()->AddRectFilled( ImGui::GetCursorScreenPos(),
                                                    ImGui::GetCursorScreenPos() +
                                                        ImVec2( ImGui::GetContentRegionAvail().x, 2.0f ),
-                                                   ImGui::GetColorU32( colors.border ) );
+                                                   ImGui::ColorConvertFloat4ToU32( colors.separator ) );
         ImGui::SetCursorScreenPos( ImGui::GetCursorScreenPos() + ImVec2( 0.0f, 2.0f ) );
 
         if ( ImGui::BeginChild(
@@ -308,12 +312,12 @@ void orion::core::Gui::editor() noexcept
         ImGui::SliderFloat( ImStrv( xorstr( "pos.y" ) ), &pos.y, 0.0f, 1000.0f );
 
         constexpr auto colorEditFlags = ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview;
-        ImGui::ColorEdit4( ImStrv( xorstr( "Accent" ) ), &colors.accent.x, colorEditFlags );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Border" ) ), &colors.border.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Content Background" ) ), &colors.contentBackground.x, colorEditFlags );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Left Bar" ) ), &colors.leftBar.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Left Background" ) ), &colors.leftBackground.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Logo" ) ), &colors.logo.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Logo Shadow" ) ), &colors.logoShadow.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Separator" ) ), &colors.separator.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Stamp" ) ), &colors.stamp.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Text" ) ), &colors.text.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Utility Background" ) ), &colors.utilityBackground.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Utility Frame Border" ) ), &colors.utilityFrameBorder.x, colorEditFlags );

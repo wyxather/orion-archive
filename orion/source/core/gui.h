@@ -153,12 +153,13 @@ struct Gui final
 
     struct
     {
-        ImVec4 accent             = {};
-        ImVec4 border             = {};
         ImVec4 contentBackground  = {};
-        ImVec4 leftBar            = {};
+        ImVec4 leftBackground     = {};
+        ImVec4 leftGroupText      = {};
         ImVec4 logo               = {};
         ImVec4 logoShadow         = {};
+        ImVec4 separator          = {};
+        ImVec4 stamp              = {};
         ImVec4 text               = {};
         ImVec4 utilityBackground  = {};
         ImVec4 utilityFrameBorder = {};
