@@ -67,9 +67,12 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     style.WindowPadding      = ImVec2( 0.0f, 0.0f );
     style.WindowRounding     = 10.0f;
     style.WindowBorderSize   = 0.0f;
+    style.ChildRounding      = 9.0f;
+    style.ScrollbarSize      = 9.0f;
     style.RoundCornersUseTex = false;
 
     style.Colors[ImGuiCol_WindowShadow] = ImColor( 0, 0, 0, 255 );
+    style.Colors[ImGuiCol_ChildBg]      = ImColor( 10, 12, 14, 200 );
 
     colors.contentBackground  = ImColor( 8, 8, 8, 240 );
     colors.leftBackground     = ImColor( 8, 8, 8, 217 );
@@ -297,6 +300,95 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                                        ImGui::ColorConvertFloat4ToU32( colors.contentBackground ),
                                                        ImGui::GetStyle().WindowRounding,
                                                        ImDrawFlags_RoundCornersBottomRight );
+
+            ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 20.0f, 20.0f ) );
+
+            if ( ImGui::BeginChild( ImStrv( xorstr( "Padding" ) ),
+                                    ImGui::GetContentRegionAvail(),
+                                    ImGuiChildFlags_AlwaysUseWindowPadding,
+                                    windowFlags ) )
+            {
+                if ( ImGui::BeginChild( ImStrv( xorstr( "Scollbar" ) ),
+                                        ImGui::GetContentRegionAvail(),
+                                        ImGuiChildFlags_None,
+                                        windowFlags &
+                                            ~( ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse ) ) )
+                {
+                    const ImVec2 groupSpacing( 10.0f, 0.0f );
+                    const auto   groupWidth = ImGui::GetContentRegionAvail().x * 0.5f - groupSpacing.x;
+
+                    ImGui::BeginGroup();
+
+                    if ( ImGui::BeginChild( ImStrv( xorstr( "Main" ) ),
+                                            ImVec2( groupWidth, 0.0f ),
+                                            ImGuiChildFlags_AutoResizeY,
+                                            windowFlags & ~ImGuiWindowFlags_NoBackground ) )
+                    {
+                        ImGui::TextUnformatted( ImStrv( xorstr( "Main" ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                    }
+                    ImGui::EndChild();
+
+                    ImGui::Spacing();
+
+                    if ( ImGui::BeginChild( ImStrv( xorstr( "Accuracy" ) ),
+                                            ImVec2( groupWidth, 0.0f ),
+                                            ImGuiChildFlags_AutoResizeY,
+                                            windowFlags & ~ImGuiWindowFlags_NoBackground ) )
+                    {
+                        ImGui::TextUnformatted( ImStrv( xorstr( "Accuracy" ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                    }
+                    ImGui::EndChild();
+
+                    ImGui::EndGroup();
+
+                    ImGui::SameLine( 0.0f, 10.0f );
+
+                    ImGui::BeginGroup();
+
+                    if ( ImGui::BeginChild( ImStrv( xorstr( "Selection" ) ),
+                                            ImVec2( groupWidth, 0.0f ),
+                                            ImGuiChildFlags_AutoResizeY,
+                                            windowFlags & ~ImGuiWindowFlags_NoBackground ) )
+                    {
+                        ImGui::TextUnformatted( ImStrv( xorstr( "Selection" ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                    }
+                    ImGui::EndChild();
+
+                    ImGui::Spacing();
+
+                    if ( ImGui::BeginChild( ImStrv( xorstr( "Safety" ) ),
+                                            ImVec2( groupWidth, 0.0f ),
+                                            ImGuiChildFlags_AutoResizeY,
+                                            windowFlags & ~ImGuiWindowFlags_NoBackground ) )
+                    {
+                        ImGui::TextUnformatted( ImStrv( xorstr( "Safety" ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+                    }
+                    ImGui::EndChild();
+
+                    ImGui::EndGroup();
+                }
+                ImGui::EndChild();
+            }
+            ImGui::EndChild();
+
+            ImGui::PopStyleVar();
         }
         ImGui::EndChild();
     }
