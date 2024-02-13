@@ -67,7 +67,7 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     style.WindowPadding      = ImVec2( 0.0f, 0.0f );
     style.WindowRounding     = 10.0f;
     style.WindowBorderSize   = 0.0f;
-    style.ChildRounding      = 9.0f;
+    style.ChildRounding      = 3.0f;
     style.ScrollbarSize      = 9.0f;
     style.RoundCornersUseTex = false;
 
@@ -75,6 +75,7 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     style.Colors[ImGuiCol_ChildBg]      = ImColor( 10, 12, 14, 200 );
 
     colors.contentBackground  = ImColor( 8, 8, 8, 240 );
+    colors.groupSeparator     = ImColor( 132, 132, 132, 29 );
     colors.leftBackground     = ImColor( 8, 8, 8, 217 );
     colors.leftGroupText      = ImColor( 70, 70, 70, 255 );
     colors.logo               = ImColor( 255, 255, 248, 255 );
@@ -317,19 +318,26 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                     const ImVec2 groupSpacing( 10.0f, 0.0f );
                     const auto   groupWidth = ImGui::GetContentRegionAvail().x * 0.5f - groupSpacing.x;
 
+                    ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 10.0f, 7.0f ) );
+
                     ImGui::BeginGroup();
 
                     if ( ImGui::BeginChild( ImStrv( xorstr( "Main" ) ),
                                             ImVec2( groupWidth, 0.0f ),
-                                            ImGuiChildFlags_AutoResizeY,
+                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Main" ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
+
+                        ImGui::Spacing();
+                        ImGui::GetWindowDrawList()->AddLine( ImGui::GetCursorScreenPos(),
+                                                             ImGui::GetCursorScreenPos() +
+                                                                 ImVec2( ImGui::GetContentRegionAvail().x, 0.0f ),
+                                                             ImGui::ColorConvertFloat4ToU32( colors.groupSeparator ),
+                                                             2.0f );
+                        ImGui::Dummy( ImVec2( 0.0f, 19.0f ) );
+
+                        ImGui::TextUnformatted( ImStrv( xorstr( "Button" ) ) );
                     }
                     ImGui::EndChild();
 
@@ -337,13 +345,10 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
 
                     if ( ImGui::BeginChild( ImStrv( xorstr( "Accuracy" ) ),
                                             ImVec2( groupWidth, 0.0f ),
-                                            ImGuiChildFlags_AutoResizeY,
+                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Accuracy" ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
                     }
                     ImGui::EndChild();
 
@@ -355,15 +360,10 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
 
                     if ( ImGui::BeginChild( ImStrv( xorstr( "Selection" ) ),
                                             ImVec2( groupWidth, 0.0f ),
-                                            ImGuiChildFlags_AutoResizeY,
+                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Selection" ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
                     }
                     ImGui::EndChild();
 
@@ -371,18 +371,16 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
 
                     if ( ImGui::BeginChild( ImStrv( xorstr( "Safety" ) ),
                                             ImVec2( groupWidth, 0.0f ),
-                                            ImGuiChildFlags_AutoResizeY,
+                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Safety" ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
-                        ImGui::TextUnformatted( ImStrv( xorstr( " " ) ) );
                     }
                     ImGui::EndChild();
 
                     ImGui::EndGroup();
+
+                    ImGui::PopStyleVar();
                 }
                 ImGui::EndChild();
             }
@@ -407,6 +405,7 @@ void orion::core::Gui::editor() noexcept
 
         constexpr auto colorEditFlags = ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview;
         ImGui::ColorEdit4( ImStrv( xorstr( "Content Background" ) ), &colors.contentBackground.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Group Separator" ) ), &colors.groupSeparator.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Left Background" ) ), &colors.leftBackground.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Logo" ) ), &colors.logo.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Logo Shadow" ) ), &colors.logoShadow.x, colorEditFlags );
