@@ -340,7 +340,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                     const auto   groupWidth = ImGui::GetContentRegionAvail().x * 0.5f - groupSpacing.x;
                     const ImVec2 groupDummySize( 0.0f, 14.0f );
 
-                    ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 10.0f, 7.0f ) );
+                    ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 10.0f, 8.0f ) );
 
                     ImGui::BeginGroup();
 
