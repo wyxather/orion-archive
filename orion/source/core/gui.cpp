@@ -67,7 +67,7 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     style.WindowPadding      = ImVec2( 0.0f, 0.0f );
     style.WindowRounding     = 10.0f;
     style.WindowBorderSize   = 0.0f;
-    style.ChildRounding      = 3.0f;
+    style.ChildRounding      = 10.0f;
     style.ScrollbarSize      = 9.0f;
     style.RoundCornersUseTex = false;
 
@@ -77,12 +77,11 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
     colors.contentBackground  = ImColor( 8, 8, 8, 240 );
     colors.groupSeparator     = ImColor( 132, 132, 132, 29 );
     colors.leftBackground     = ImColor( 8, 8, 8, 217 );
-    colors.leftGroupText      = ImColor( 70, 70, 70, 255 );
+    colors.leftText           = ImColor( 70, 70, 70, 255 );
     colors.logo               = ImColor( 255, 255, 248, 255 );
     colors.logoShadow         = ImColor( 65, 186, 217, 255 );
     colors.separator          = ImColor( 15, 15, 15, 214 );
     colors.stamp              = ImColor( 0, 165, 243, 255 );
-    colors.text               = ImColor( 255, 255, 255, 255 );
     colors.utilityBackground  = ImColor( 10, 10, 10, 230 );
     colors.utilityFrameBorder = ImColor( 53, 53, 53, 75 );
     colors.utilityText        = ImColor( 186, 202, 203, 176 );
@@ -159,14 +158,13 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                 ImGui::GetWindowDrawList()->AddText( &font,
                                                      fontSize,
                                                      ImGui::GetCursorScreenPos(),
-                                                     ImGui::ColorConvertFloat4ToU32( colors.leftGroupText ),
+                                                     ImGui::ColorConvertFloat4ToU32( colors.leftText ),
                                                      groupText );
                 ImGui::Dummy( font.CalcTextSizeA( fontSize, FLT_MAX, 0.0f, groupText ) );
             };
 
-            const auto buttonIconColor  = ImGui::ColorConvertFloat4ToU32( colors.stamp );
-            const auto buttonLabelColor = ImGui::ColorConvertFloat4ToU32( colors.text );
-            const auto button           = [&]( const ImStrv buttonIcon, const ImStrv buttonLabel ) noexcept
+            const auto buttonIconColor = ImGui::ColorConvertFloat4ToU32( colors.stamp );
+            const auto button          = [&]( const ImStrv buttonIcon, const ImStrv buttonLabel ) noexcept
             {
                 constexpr auto   buttonRounding = 5.0f;
                 constexpr ImVec2 buttonOffset( 10.0f, 1.0f );
@@ -178,7 +176,8 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                 const ImVec2 buttonTextPos( buttonPos.x, buttonPos.y + ( buttonSize.y - buttonLabelSize.y ) * 0.5f );
                 auto&        drawList = *ImGui::GetWindowDrawList();
                 drawList.AddText( buttonTextPos + ImVec2( 13.0, -1.0f ), buttonIconColor, buttonIcon );
-                drawList.AddText( buttonTextPos + ImVec2( 40.0f, 0.0f ), buttonLabelColor, buttonLabel );
+                drawList.AddText(
+                    buttonTextPos + ImVec2( 40.0f, 0.0f ), ImGui::GetColorU32( ImGuiCol_Text ), buttonLabel );
             };
 
             group( ImVec2( 20.0f, 1.0f ), ImStrv( xorstr( "Aimbot" ) ) );
@@ -221,19 +220,19 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
             ImGui::GetWindowDrawList()->AddText( ImGui::GetIO().Fonts->Fonts[1],
                                                  20.0f,
                                                  ImGui::GetCursorScreenPos() + ImVec2( 21.0f, 19.0f ),
-                                                 ImGui::ColorConvertFloat4ToU32( colors.text ),
+                                                 ImGui::GetColorU32( ImGuiCol_Text ),
                                                  ImStrv( xorstr( "\xef\x88\x9b" ) ) );
 
             ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(),
                                                  15.0f,
                                                  ImGui::GetCursorScreenPos() + ImVec2( 58.0f, 12.0f ),
-                                                 ImGui::ColorConvertFloat4ToU32( colors.text ),
+                                                 ImGui::GetColorU32( ImGuiCol_Text ),
                                                  ImStrv( xorstr( "Wyxather" ) ) );
 
             ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(),
                                                  15.0f,
                                                  ImGui::GetCursorScreenPos() + ImVec2( 58.0f, 32.0f ),
-                                                 ImGui::ColorConvertFloat4ToU32( colors.leftGroupText ),
+                                                 ImGui::ColorConvertFloat4ToU32( colors.leftText ),
                                                  ImStrv( xorstr( "Build:" ) ) );
 
             ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(),
@@ -315,8 +314,31 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                         windowFlags &
                                             ~( ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse ) ) )
                 {
+                    const auto toggleButton = [&]( const ImStrv label ) noexcept
+                    {
+                        const auto window = ImGui::GetCurrentWindow();
+                        if ( window->SkipItems )
+                        {
+                            return;
+                        }
+
+                        const auto   itemId = window->GetID( label );
+                        const ImVec2 itemSize( ImGui::GetContentRegionAvail().x, 27.0f );
+                        const auto   itemPos = ImGui::GetCursorScreenPos();
+                        const ImRect itemRect( itemPos, itemPos + itemSize );
+
+                        const auto labelSize = ImGui::CalcTextSize( label );
+                        const auto labelPos  = itemPos + ImVec2( 0.0f, ( itemSize.y - labelSize.y ) * 0.5f );
+
+                        ImGui::ItemSize( itemRect );
+                        ImGui::ItemAdd( itemRect, itemId );
+
+                        window->DrawList->AddText( labelPos, ImGui::GetColorU32( ImGuiCol_TextDisabled ), label );
+                    };
+
                     const ImVec2 groupSpacing( 10.0f, 0.0f );
                     const auto   groupWidth = ImGui::GetContentRegionAvail().x * 0.5f - groupSpacing.x;
+                    const ImVec2 groupDummySize( 0.0f, 14.0f );
 
                     ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 10.0f, 7.0f ) );
 
@@ -335,9 +357,13 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                                                  ImVec2( ImGui::GetContentRegionAvail().x, 0.0f ),
                                                              ImGui::ColorConvertFloat4ToU32( colors.groupSeparator ),
                                                              2.0f );
-                        ImGui::Dummy( ImVec2( 0.0f, 19.0f ) );
+                        ImGui::Dummy( groupDummySize );
 
-                        ImGui::TextUnformatted( ImStrv( xorstr( "Button" ) ) );
+                        toggleButton( ImStrv( xorstr( "Enabled" ) ) );
+                        toggleButton( ImStrv( xorstr( "Peak Assist" ) ) );
+                        toggleButton( ImStrv( xorstr( "Hide Shots" ) ) );
+                        toggleButton( ImStrv( xorstr( "Double Tap" ) ) );
+                        toggleButton( ImStrv( xorstr( "Field of View" ) ) );
                     }
                     ImGui::EndChild();
 
@@ -349,6 +375,17 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Accuracy" ) ) );
+
+                        ImGui::Spacing();
+                        ImGui::GetWindowDrawList()->AddLine( ImGui::GetCursorScreenPos(),
+                                                             ImGui::GetCursorScreenPos() +
+                                                                 ImVec2( ImGui::GetContentRegionAvail().x, 0.0f ),
+                                                             ImGui::ColorConvertFloat4ToU32( colors.groupSeparator ),
+                                                             2.0f );
+                        ImGui::Dummy( groupDummySize );
+
+                        toggleButton( ImStrv( xorstr( "Auto Scope" ) ) );
+                        toggleButton( ImStrv( xorstr( "Auto Stop" ) ) );
                     }
                     ImGui::EndChild();
 
@@ -364,6 +401,20 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Selection" ) ) );
+
+                        ImGui::Spacing();
+                        ImGui::GetWindowDrawList()->AddLine( ImGui::GetCursorScreenPos(),
+                                                             ImGui::GetCursorScreenPos() +
+                                                                 ImVec2( ImGui::GetContentRegionAvail().x, 0.0f ),
+                                                             ImGui::ColorConvertFloat4ToU32( colors.groupSeparator ),
+                                                             2.0f );
+                        ImGui::Dummy( groupDummySize );
+
+                        toggleButton( ImStrv( xorstr( "Hitboxes" ) ) );
+                        toggleButton( ImStrv( xorstr( "Multipoint" ) ) );
+                        toggleButton( ImStrv( xorstr( "Hit Chance" ) ) );
+                        toggleButton( ImStrv( xorstr( "Minimum Damage" ) ) );
+                        toggleButton( ImStrv( xorstr( "Penetrate Walls" ) ) );
                     }
                     ImGui::EndChild();
 
@@ -375,6 +426,18 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Safety" ) ) );
+
+                        ImGui::Spacing();
+                        ImGui::GetWindowDrawList()->AddLine( ImGui::GetCursorScreenPos(),
+                                                             ImGui::GetCursorScreenPos() +
+                                                                 ImVec2( ImGui::GetContentRegionAvail().x, 0.0f ),
+                                                             ImGui::ColorConvertFloat4ToU32( colors.groupSeparator ),
+                                                             2.0f );
+                        ImGui::Dummy( groupDummySize );
+
+                        toggleButton( ImStrv( xorstr( "Body Aim" ) ) );
+                        toggleButton( ImStrv( xorstr( "Safe Points" ) ) );
+                        toggleButton( ImStrv( xorstr( "Ensure Hitbox Safety" ) ) );
                     }
                     ImGui::EndChild();
 
@@ -411,7 +474,6 @@ void orion::core::Gui::editor() noexcept
         ImGui::ColorEdit4( ImStrv( xorstr( "Logo Shadow" ) ), &colors.logoShadow.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Separator" ) ), &colors.separator.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Stamp" ) ), &colors.stamp.x, colorEditFlags );
-        ImGui::ColorEdit4( ImStrv( xorstr( "Text" ) ), &colors.text.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Utility Background" ) ), &colors.utilityBackground.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Utility Frame Border" ) ), &colors.utilityFrameBorder.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Utility Frame Text" ) ), &colors.utilityText.x, colorEditFlags );

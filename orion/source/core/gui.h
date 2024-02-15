@@ -156,12 +156,11 @@ struct Gui final
         ImVec4 contentBackground  = {};
         ImVec4 groupSeparator     = {};
         ImVec4 leftBackground     = {};
-        ImVec4 leftGroupText      = {};
+        ImVec4 leftText           = {};
         ImVec4 logo               = {};
         ImVec4 logoShadow         = {};
         ImVec4 separator          = {};
         ImVec4 stamp              = {};
-        ImVec4 text               = {};
         ImVec4 utilityBackground  = {};
         ImVec4 utilityFrameBorder = {};
         ImVec4 utilityText        = {};
