@@ -63,19 +63,27 @@ orion::core::Gui::Gui( [[maybe_unused]] const Platform& platform, ImGuiContext& 
                                           &font_awesome_6_pro_solid_900_compressed_config,
                                           FONT_AWESOME_GLYPH_RANGE.data() );
 
-    auto& style              = imguiContext.Style;
-    style.WindowPadding      = ImVec2( 0.0f, 0.0f );
-    style.WindowRounding     = 10.0f;
-    style.WindowBorderSize   = 0.0f;
-    style.ChildRounding      = 10.0f;
-    style.ScrollbarSize      = 9.0f;
+    auto& style            = imguiContext.Style;
+    style.WindowPadding    = ImVec2( 0.0f, 0.0f );
+    style.WindowRounding   = 10.0f;
+    style.WindowBorderSize = 0.0f;
+    style.ChildRounding    = 10.0f;
+    style.ScrollbarSize    = 9.0f;
+
     style.RoundCornersUseTex = false;
+
+    style.CurveTessellationTol       = 0.1f;
+    style.CircleTessellationMaxError = 0.1f;
 
     style.Colors[ImGuiCol_WindowShadow] = ImColor( 0, 0, 0, 255 );
     style.Colors[ImGuiCol_ChildBg]      = ImColor( 10, 12, 14, 200 );
+    style.Colors[ImGuiCol_Border]       = ImColor( 36, 36, 39, 25 );
 
     colors.contentBackground  = ImColor( 8, 8, 8, 240 );
     colors.groupSeparator     = ImColor( 132, 132, 132, 29 );
+    colors.knobBackground     = ImColor( 16, 31, 69, 103 );
+    colors.knobBorder         = ImColor( 0, 18, 37, 218 );
+    colors.knobCircle         = ImColor( 28, 176, 248, 218 );
     colors.leftBackground     = ImColor( 8, 8, 8, 217 );
     colors.leftText           = ImColor( 70, 70, 70, 255 );
     colors.logo               = ImColor( 255, 255, 248, 255 );
@@ -334,6 +342,28 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                         ImGui::ItemAdd( itemRect, itemId );
 
                         window->DrawList->AddText( labelPos, ImGui::GetColorU32( ImGuiCol_TextDisabled ), label );
+
+                        constexpr auto knobSize = 14.0f;
+                        const auto     knobPos  = itemPos + ImVec2( itemSize.x - knobSize * 0.5f, itemSize.y * 0.5f );
+
+                        constexpr ImVec2 sliderSize( 18.0f, 10.0f );
+                        const ImVec2     sliderPos( knobPos.x - sliderSize.x,
+                                                itemPos.y + ( itemSize.y - sliderSize.y ) * 0.5f );
+
+                        window->DrawList->AddRectFilled( sliderPos,
+                                                         sliderPos + sliderSize,
+                                                         ImGui::ColorConvertFloat4ToU32( colors.knobBackground ),
+                                                         4.0f,
+                                                         ImDrawFlags_RoundCornersAll );
+
+                        window->DrawList->AddRect( sliderPos,
+                                                   sliderPos + sliderSize,
+                                                   ImGui::ColorConvertFloat4ToU32( colors.knobBorder ),
+                                                   4.0f,
+                                                   ImDrawFlags_RoundCornersAll );
+
+                        window->DrawList->AddCircleFilled(
+                            knobPos, knobSize * 0.5f, ImGui::ColorConvertFloat4ToU32( colors.knobCircle ) );
                     };
 
                     const ImVec2 groupSpacing( 10.0f, 0.0f );
@@ -346,7 +376,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
 
                     if ( ImGui::BeginChild( ImStrv( xorstr( "Main" ) ),
                                             ImVec2( groupWidth, 0.0f ),
-                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
+                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Border,
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Main" ) ) );
@@ -371,7 +401,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
 
                     if ( ImGui::BeginChild( ImStrv( xorstr( "Accuracy" ) ),
                                             ImVec2( groupWidth, 0.0f ),
-                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
+                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Border,
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Accuracy" ) ) );
@@ -397,7 +427,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
 
                     if ( ImGui::BeginChild( ImStrv( xorstr( "Selection" ) ),
                                             ImVec2( groupWidth, 0.0f ),
-                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
+                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Border,
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Selection" ) ) );
@@ -422,7 +452,7 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
 
                     if ( ImGui::BeginChild( ImStrv( xorstr( "Safety" ) ),
                                             ImVec2( groupWidth, 0.0f ),
-                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
+                                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Border,
                                             windowFlags & ~ImGuiWindowFlags_NoBackground ) )
                     {
                         ImGui::TextUnformatted( ImStrv( xorstr( "Safety" ) ) );
@@ -469,6 +499,9 @@ void orion::core::Gui::editor() noexcept
         constexpr auto colorEditFlags = ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview;
         ImGui::ColorEdit4( ImStrv( xorstr( "Content Background" ) ), &colors.contentBackground.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Group Separator" ) ), &colors.groupSeparator.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Knob Background" ) ), &colors.knobBackground.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Knob Border" ) ), &colors.knobBorder.x, colorEditFlags );
+        ImGui::ColorEdit4( ImStrv( xorstr( "Knob Circle" ) ), &colors.knobCircle.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Left Background" ) ), &colors.leftBackground.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Logo" ) ), &colors.logo.x, colorEditFlags );
         ImGui::ColorEdit4( ImStrv( xorstr( "Logo Shadow" ) ), &colors.logoShadow.x, colorEditFlags );

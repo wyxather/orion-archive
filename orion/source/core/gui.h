@@ -155,6 +155,9 @@ struct Gui final
     {
         ImVec4 contentBackground  = {};
         ImVec4 groupSeparator     = {};
+        ImVec4 knobBackground     = {};
+        ImVec4 knobBorder         = {};
+        ImVec4 knobCircle         = {};
         ImVec4 leftBackground     = {};
         ImVec4 leftText           = {};
         ImVec4 logo               = {};
