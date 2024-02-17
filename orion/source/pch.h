@@ -87,6 +87,7 @@
 #ifdef __cplusplus
 #include "source/utilities/math.h"
 #include "source/utilities/memory.h"
+#include "source/utilities/pointer.h"
 #include "source/utilities/ret_spoof.h"
 
 #include "source/utilities/minhook.h"

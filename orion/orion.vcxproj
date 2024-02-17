@@ -240,6 +240,7 @@
     <ClInclude Include="source\resources\fonts\museo_sans_cyrl_700.h" />
     <ClInclude Include="source\resources\fonts\museo_sans_cyrl_900.h" />
     <ClInclude Include="source\utilities\minhook.h" />
+    <ClInclude Include="source\utilities\pointer.h" />
     <ClInclude Include="source\utilities\ret_spoof.h" />
     <ClInclude Include="source\imports\kernel32.h" />
     <ClInclude Include="source\imports\msvcrt.h" />

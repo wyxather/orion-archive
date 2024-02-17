@@ -150,6 +150,9 @@
     <ClInclude Include="source\resources\fonts\font_awesome_6_pro_solid_900.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\utilities\pointer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp">
