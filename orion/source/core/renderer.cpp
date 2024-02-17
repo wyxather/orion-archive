@@ -269,20 +269,11 @@ bool orion::core::Renderer::hookDirect3D9RTSS() noexcept
     }
     const auto rttsBytes = utilities::Memory::getModuleBytes( *rttsEnumerator.value );
 #ifndef _WIN64
-    auto direct3DDevice9ResetDetour = utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 40 D8 45 13 00">::find( rttsBytes );
-    if ( direct3DDevice9ResetDetour == nullptr )
-    {
-        direct3DDevice9ResetDetour =
-            utilities::Memory::Pattern<"68 ?? ?? ?? ?? 50 57 E8 ?? ?? ?? ?? 83 C4 24 83 3D">::find( rttsBytes );
-        if ( direct3DDevice9ResetDetour != nullptr ) [[unlikely]]
-        {
-            direct3DDevice9ResetDetour = *(std::uint8_t**)( ( std::uintptr_t )( direct3DDevice9ResetDetour ) + 1 );
-        }
-    }
+    const auto direct3DDevice9ResetDetour =
+        utilities::Memory::Pattern<"68 ?? ?? ?? ?? 50 53 E8 ?? ?? ?? ?? 83 C4 24 83 3D">::find( rttsBytes );
 #else
-    const auto direct3DDevice9ResetDetour = utilities::Memory::Pattern<
-        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 F0 0F BA 2D E7 D9 45 03 00 48 8B DA">::
-        find( rttsBytes );
+    const auto direct3DDevice9ResetDetour =
+        utilities::Memory::Pattern<"4C 8D 05 ?? ?? ?? ?? 48 8B CE E8 ?? ?? ?? ?? 83 3D">::find( rttsBytes );
 #endif
     if ( direct3DDevice9ResetDetour == nullptr ) [[unlikely]]
     {
@@ -290,25 +281,20 @@ bool orion::core::Renderer::hookDirect3D9RTSS() noexcept
         return false;
     }
 #ifndef _WIN64
-    auto direct3DDevice9PresentDetour =
-        utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 78 D6 45 13 00">::find( rttsBytes );
-    if ( direct3DDevice9PresentDetour == nullptr )
-    {
-        direct3DDevice9PresentDetour = utilities::Memory::Pattern<
-            "68 ?? ?? ?? ?? 50 57 E8 ?? ?? ?? ?? 83 C4 24 85 C0 74 10 83 3D ?? ?? ?? ?? ?? BD 01 00 00 00 74 02 8B DD "
-            "83 3D ?? ?? ?? ?? ?? 74 34 A1 ?? ?? ?? ?? 85 C0 74 2B 8B 0D ?? ?? ?? ?? 68 ?? ?? ?? ?? 51 56 68 ?? ?? ?? "
-            "?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 50 57 E8 ?? ?? ?? ?? 83 C4 24 A1 ?? ?? ?? ?? 85 C0 74 2B "
-            "8B 15 ?? ?? ?? ?? 68 ?? ?? ?? ?? 52 56 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 50 57 "
-            "E8 ?? ?? ?? ?? 83 C4 24 83 3D">::find( rttsBytes );
-        if ( direct3DDevice9PresentDetour != nullptr ) [[unlikely]]
-        {
-            direct3DDevice9PresentDetour = *(std::uint8_t**)( ( std::uintptr_t )( direct3DDevice9PresentDetour ) + 1 );
-        }
-    }
+    const auto direct3DDevice9PresentDetour = utilities::Memory::Pattern<
+        "68 ?? ?? ?? ?? 50 53 E8 ?? ?? ?? ?? 83 C4 24 85 C0 74 18 39 3D ?? ?? ?? ?? B8 01 00 00 00 C7 85 EC FE FF FF "
+        "01 00 00 00 0F 45 F8 83 3D ?? ?? ?? ?? ?? 74 33 A1 ?? ?? ?? ?? 85 C0 74 2A 68 ?? ?? ?? ?? FF 35 ?? ?? ?? ?? "
+        "56 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 50 53 E8 ?? ?? ?? ?? 83 C4 24 A1 ?? ?? ?? ?? "
+        "85 C0 74 2A 68 ?? ?? ?? ?? FF 35 ?? ?? ?? ?? 56 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? "
+        "50 53 E8 ?? ?? ?? ?? 83 C4 24 83 3D">::find( rttsBytes );
 #else
-    const auto direct3DDevice9PresentDetour =
-        utilities::Memory::Pattern<"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 55 41 56 48 "
-                                   "83 EC 30 F0 0F BA 2D DD D9 45 03 00 49 8B E9 4D 8B E0 4C 8B EA">::find( rttsBytes );
+    const auto direct3DDevice9PresentDetour = utilities::Memory::Pattern<
+        "4C 8D 05 ?? ?? ?? ?? 48 8B CE E8 ?? ?? ?? ?? 85 C0 74 0D 45 8B F7 39 3D ?? ?? ?? ?? 41 0F 45 FF 83 3D ?? ?? "
+        "?? ?? ?? 74 52 8B 15 ?? ?? ?? ?? 85 D2 74 48 48 8D 05 ?? ?? ?? ?? 48 89 44 24 40 8B 05 ?? ?? ?? ?? 89 44 24 "
+        "38 89 5C 24 30 48 8D 05 ?? ?? ?? ?? 48 89 44 24 28 48 8D 05 ?? ?? ?? ?? 48 89 44 24 20 4C 8D 0D ?? ?? ?? ?? "
+        "4C 8D 05 ?? ?? ?? ?? 48 8B CE E8 ?? ?? ?? ?? 8B 15 ?? ?? ?? ?? 85 D2 74 48 48 8D 05 ?? ?? ?? ?? 48 89 44 24 "
+        "40 8B 05 ?? ?? ?? ?? 89 44 24 38 89 5C 24 30 48 8D 05 ?? ?? ?? ?? 48 89 44 24 28 48 8D 05 ?? ?? ?? ?? 48 89 "
+        "44 24 20">::find( rttsBytes );
 #endif
     if ( direct3DDevice9PresentDetour == nullptr ) [[unlikely]]
     {
@@ -322,11 +308,29 @@ bool orion::core::Renderer::hookDirect3D9RTSS() noexcept
         return false;
     }
     hooks.emplace( rttsGadget );
-    if ( !hooks->hookAt( 0, direct3DDevice9ResetDetour, &direct3DDevice9Reset ) ) [[unlikely]]
+#ifndef _WIN64
+    if ( !hooks->hookAt( 0,
+                         utilities::Pointer( direct3DDevice9ResetDetour ).add( 1 ).deref<std::uint32_t>().as<void*>(),
+                         &direct3DDevice9Reset ) )
+#else
+    if ( !hooks->hookAt(
+             0, utilities::Pointer( direct3DDevice9ResetDetour ).add( 3 ).abs().as<void*>(), &direct3DDevice9Reset ) )
+
+#endif
+        [[unlikely]]
     {
         log::error( xorstr_( "Failed to hook IDirect3DDevice9::Reset (Detour)." ) );
     }
-    if ( !hooks->hookAt( 1, direct3DDevice9PresentDetour, &direct3DDevice9Present ) ) [[unlikely]]
+#ifndef _WIN64
+    if ( !hooks->hookAt( 1,
+                         utilities::Pointer( direct3DDevice9PresentDetour ).add( 1 ).deref<std::uint32_t>().as<void*>(),
+                         &direct3DDevice9Present ) )
+#else
+    if ( !hooks->hookAt( 1,
+                         utilities::Pointer( direct3DDevice9PresentDetour ).add( 3 ).abs().as<void*>(),
+                         &direct3DDevice9Present ) )
+#endif
+        [[unlikely]]
     {
         log::error( xorstr_( "Failed to hook IDirect3DDevice9::Present (Detour)." ) );
     }
@@ -400,7 +404,7 @@ void orion::core::Renderer::hookDirect3D11() noexcept
         log::error( xorstr_( "Failed to create ID3D11Device & IDXGISwapChain." ) );
         return;
     }
-    if ( !hookDirect3D11RTTS() )
+    if ( !hookDirect3D11RTSS() )
     {
         const auto virtualMethod = *(void***)( dXGISwapChain );
         hooks.emplace( direct3D11 );
@@ -418,7 +422,7 @@ void orion::core::Renderer::hookDirect3D11() noexcept
     dXGISwapChain->Release();
 }
 
-bool orion::core::Renderer::hookDirect3D11RTTS() noexcept
+bool orion::core::Renderer::hookDirect3D11RTSS() noexcept
 {
 #ifndef _WIN64
     const auto rttsEnumerator = LI_MOD( "rtsshooks.dll" )::enumerator();
@@ -431,11 +435,13 @@ bool orion::core::Renderer::hookDirect3D11RTTS() noexcept
     }
     const auto rttsBytes = utilities::Memory::getModuleBytes( *rttsEnumerator.value );
 #ifndef _WIN64
-    const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 38">::find( rttsBytes );
+    const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
+        "68 ?? ?? ?? ?? 50 57 E8 ?? ?? ?? ?? 83 C4 24 85 C0 74 18 6A 01 E8 ?? ?? ?? ?? 83 "
+        "C4 04 83 3D ?? ?? ?? ?? ?? 74 05 E8 ?? ?? ?? ?? 83 3D ?? ?? ?? ?? ?? 75 33">::find( rttsBytes );
 #else
     const auto dXGISwapChainPresentDetour = utilities::Memory::Pattern<
-        "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 48 83 EC 20 F0 0F BA 2D B1 D6">::
-        find( rttsBytes );
+        "4C 8D 05 ?? ?? ?? ?? 48 8B CF E8 ?? ?? ?? ?? 85 C0 74 15 8B CD E8 ?? ?? ?? ?? 83 "
+        "3D ?? ?? ?? ?? ?? 74 05 E8 ?? ?? ?? ?? 83 3D ?? ?? ?? ?? ?? 75 52">::find( rttsBytes );
 #endif
     if ( dXGISwapChainPresentDetour == nullptr ) [[unlikely]]
     {
@@ -443,11 +449,11 @@ bool orion::core::Renderer::hookDirect3D11RTTS() noexcept
         return false;
     }
 #ifndef _WIN64
-    const auto dXGISwapChainResizeBuffersDetour = utilities::Memory::Pattern<"9C 60 F0 0F BA 2D 00">::find( rttsBytes );
+    const auto dXGISwapChainResizeBuffersDetour =
+        utilities::Memory::Pattern<"68 ?? ?? ?? ?? 50 57 E8 ?? ?? ?? ?? 83 C4 24 68">::find( rttsBytes );
 #else
     const auto dXGISwapChainResizeBuffersDetour =
-        utilities::Memory::Pattern<"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC "
-                                   "30 F0 0F BA 2D AF D3 45 03 00 4D 8B E1 4D 8B E8 4C 8B F2 4C 8B">::find( rttsBytes );
+        utilities::Memory::Pattern<"4C 8D 05 ?? ?? ?? ?? 48 8B CF E8 ?? ?? ?? ?? 48 8D 0D">::find( rttsBytes );
 #endif
     if ( dXGISwapChainResizeBuffersDetour == nullptr ) [[unlikely]]
     {
@@ -461,11 +467,29 @@ bool orion::core::Renderer::hookDirect3D11RTTS() noexcept
         return false;
     }
     hooks.emplace( rttsGadget );
-    if ( !hooks->hookAt( 0, dXGISwapChainPresentDetour, &dXGISwapChainPresent ) ) [[unlikely]]
+#ifndef _WIN64
+    if ( !hooks->hookAt( 0,
+                         utilities::Pointer( dXGISwapChainPresentDetour ).add( 1 ).deref<std::uint32_t>().as<void*>(),
+                         &dXGISwapChainPresent ) )
+#else
+    if ( !hooks->hookAt(
+             0, utilities::Pointer( dXGISwapChainPresentDetour ).add( 3 ).abs().as<void*>(), &dXGISwapChainPresent ) )
+#endif
+        [[unlikely]]
     {
         log::error( xorstr_( "Failed to hook IDXGISwapChain::Present (Detour)." ) );
     }
-    if ( !hooks->hookAt( 1, dXGISwapChainResizeBuffersDetour, &dXGISwapChainResizeBuffers ) ) [[unlikely]]
+#ifndef _WIN64
+    if ( !hooks->hookAt(
+             1,
+             utilities::Pointer( dXGISwapChainResizeBuffersDetour ).add( 1 ).deref<std::uint32_t>().as<void*>(),
+             &dXGISwapChainResizeBuffers ) )
+#else
+    if ( !hooks->hookAt( 1,
+                         utilities::Pointer( dXGISwapChainResizeBuffersDetour ).add( 3 ).abs().as<void*>(),
+                         &dXGISwapChainResizeBuffers ) )
+#endif
+        [[unlikely]]
     {
         log::error( xorstr_( "Failed to hook IDXGISwapChain::ResizeBuffers (Detour)." ) );
     }

@@ -57,7 +57,7 @@ struct Renderer final
     void            hookDirect3D9() noexcept;
     _NODISCARD bool hookDirect3D9RTSS() noexcept;
     void            hookDirect3D11() noexcept;
-    _NODISCARD bool hookDirect3D11RTTS() noexcept;
+    _NODISCARD bool hookDirect3D11RTSS() noexcept;
 
     struct WindowClass final
     {
