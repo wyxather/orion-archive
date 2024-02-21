@@ -85,6 +85,7 @@ MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 PointerAlignment: Left
 ReflowComments: true
+RemoveParentheses: ReturnStatement
 RemoveSemicolon: true
 SortIncludes: true
 SeparateDefinitionBlocks: Always
