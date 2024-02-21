@@ -322,6 +322,135 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                         windowFlags &
                                             ~( ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse ) ) )
                 {
+                    class Feature final
+                    {
+                        struct Label final
+                        {
+                            Label( Label&& )                 = delete;
+                            Label& operator=( Label&& )      = delete;
+                            Label( const Label& )            = delete;
+                            Label& operator=( const Label& ) = delete;
+
+                            explicit Label( Feature& feature, const ImStrv text, const ImU32 color ) noexcept
+                            {
+                                feature.window.DrawList->AddText(
+                                    { ImVec2( feature.bb.Min.x,
+                                              feature.bb.Min.y +
+                                                  ( feature.height - ImGui::CalcTextSize( text ).y ) * 0.5f ) },
+                                    color,
+                                    text );
+                            }
+                        };
+
+                        class Toggle final
+                        {
+                            [[nodiscard]] bool reserveSpace( Feature& feature, const float toggleWidth ) noexcept
+                            {
+                                rect = { ImVec2( feature.bb.Min.x + feature.width - toggleWidth, feature.bb.Min.y ),
+                                         feature.bb.Min + ImVec2( feature.width, feature.height ) };
+
+                                const auto status = ImGui::ItemAdd( rect, feature.id );
+                                if ( status )
+                                {
+                                    feature.width -= toggleWidth;
+                                }
+                                return status;
+                            }
+
+                            void addBehavior( const ImGuiID toggleId, bool& value ) const noexcept
+                            {
+                                if ( ImGui::ButtonBehavior( rect, toggleId, nullptr, nullptr ) )
+                                {
+                                    value = !value;
+                                }
+                            }
+
+                            void drawBackground( ImDrawList& drawList, const float centerHeight ) noexcept
+                            {
+                                rect = { ImVec2( rect.Min.x, centerHeight - 5.0f ),
+                                         ImVec2( rect.Max.x, centerHeight + 5.0f ) };
+
+                                drawList.AddRectFilled( rect.Min,
+                                                        rect.Max,
+                                                        IM_COL32( 16, 31, 69, 103 ),
+                                                        4.0f,
+                                                        ImDrawFlags_RoundCornersAll );
+                            }
+
+                            void drawBorder( ImDrawList& drawList ) const noexcept
+                            {
+                                drawList.AddRect(
+                                    rect.Min, rect.Max, IM_COL32( 0, 18, 37, 218 ), 4.0f, ImDrawFlags_RoundCornersAll );
+                            }
+
+                            void drawKnob( ImDrawList& drawList, const float centerHeight, const bool value ) noexcept
+                            {
+                                rect = { ImVec2( rect.Min.x + 7.0f, centerHeight ),
+                                         ImVec2( rect.Max.x - 7.0f, centerHeight ) };
+
+                                drawList.AddCircleFilled( ImLerp( rect.Min, rect.Max, value ? 1.0f : 0.0f ),
+                                                          7.0f,
+                                                          IM_COL32( 28, 176, 248, 218 ) );
+                            }
+
+                          public:
+                            Toggle( Toggle&& )                 = delete;
+                            Toggle& operator=( Toggle&& )      = delete;
+                            Toggle( const Toggle& )            = delete;
+                            Toggle& operator=( const Toggle& ) = delete;
+
+                            explicit Toggle( Feature& feature, bool& value ) noexcept
+                            {
+                                if ( !reserveSpace( feature, 25.0f ) )
+                                {
+                                    return;
+                                }
+                                addBehavior( feature.id, value );
+                                const auto centerHeight = ( rect.Min.y + rect.Max.y ) * 0.5f;
+                                drawBackground( *feature.window.DrawList, centerHeight );
+                                drawBorder( *feature.window.DrawList );
+                                drawKnob( *feature.window.DrawList, centerHeight, value );
+                            }
+
+                          private:
+                            ImRect rect;
+                        };
+
+                      public:
+                        Feature( Feature&& )                 = delete;
+                        Feature& operator=( Feature&& )      = delete;
+                        Feature( const Feature& )            = delete;
+                        Feature& operator=( const Feature& ) = delete;
+
+                        explicit Feature( const ImStrv name, bool& value ) noexcept
+                        {
+                            if ( window.SkipItems )
+                            {
+                                return;
+                            }
+
+                            id     = window.GetID( &value );
+                            width  = ImGui::GetContentRegionAvail().x;
+                            bb.Min = ImGui::GetCursorScreenPos();
+                            bb.Max = bb.Min + ImVec2( width, height );
+
+                            ImGui::ItemSize( bb );
+
+                            Toggle( *this, value );
+                            Label( *this,
+                                   name,
+                                   value ? ImGui::GetColorU32( ImGuiCol_Text )
+                                         : ImGui::GetColorU32( ImGuiCol_TextDisabled ) );
+                        }
+
+                      private:
+                        ImGuiWindow& window = *ImGui::GetCurrentWindow();
+                        ImGuiID      id     = {};
+                        const float  height = 27.0f;
+                        float        width  = {};
+                        ImRect       bb     = {};
+                    };
+
                     const auto toggleButton = [&]( const ImStrv label ) noexcept
                     {
                         const auto window = ImGui::GetCurrentWindow();
@@ -389,11 +518,12 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                                              2.0f );
                         ImGui::Dummy( groupDummySize );
 
-                        toggleButton( ImStrv( xorstr( "Enabled" ) ) );
-                        toggleButton( ImStrv( xorstr( "Peak Assist" ) ) );
-                        toggleButton( ImStrv( xorstr( "Hide Shots" ) ) );
-                        toggleButton( ImStrv( xorstr( "Double Tap" ) ) );
-                        toggleButton( ImStrv( xorstr( "Field of View" ) ) );
+                        static std::array<bool, 5> boolean;
+                        Feature { ImStrv( xorstr( "Enabled" ) ), boolean[0] };
+                        Feature { ImStrv( xorstr( "Peak Assist" ) ), boolean[1] };
+                        Feature { ImStrv( xorstr( "Hide Shots" ) ), boolean[2] };
+                        Feature { ImStrv( xorstr( "Double Tap" ) ), boolean[3] };
+                        Feature { ImStrv( xorstr( "Field of View" ) ), boolean[4] };
                     }
                     ImGui::EndChild();
 
@@ -414,8 +544,9 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                                              2.0f );
                         ImGui::Dummy( groupDummySize );
 
-                        toggleButton( ImStrv( xorstr( "Auto Scope" ) ) );
-                        toggleButton( ImStrv( xorstr( "Auto Stop" ) ) );
+                        static std::array<bool, 2> boolean;
+                        Feature { ImStrv( xorstr( "Auto Scope" ) ), boolean[0] };
+                        Feature { ImStrv( xorstr( "Auto Stop" ) ), boolean[1] };
                     }
                     ImGui::EndChild();
 
@@ -440,11 +571,12 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                                              2.0f );
                         ImGui::Dummy( groupDummySize );
 
-                        toggleButton( ImStrv( xorstr( "Hitboxes" ) ) );
-                        toggleButton( ImStrv( xorstr( "Multipoint" ) ) );
-                        toggleButton( ImStrv( xorstr( "Hit Chance" ) ) );
-                        toggleButton( ImStrv( xorstr( "Minimum Damage" ) ) );
-                        toggleButton( ImStrv( xorstr( "Penetrate Walls" ) ) );
+                        static std::array<bool, 5> boolean;
+                        Feature { ImStrv( xorstr( "Hitboxes" ) ), boolean[0] };
+                        Feature { ImStrv( xorstr( "Multipoint" ) ), boolean[1] };
+                        Feature { ImStrv( xorstr( "Hit Chance" ) ), boolean[2] };
+                        Feature { ImStrv( xorstr( "Minimum Damage" ) ), boolean[3] };
+                        Feature { ImStrv( xorstr( "Penetrate Walls" ) ), boolean[4] };
                     }
                     ImGui::EndChild();
 
@@ -465,9 +597,10 @@ void orion::core::Gui::draw( const ImGuiWindowFlags windowFlags ) const noexcept
                                                              2.0f );
                         ImGui::Dummy( groupDummySize );
 
-                        toggleButton( ImStrv( xorstr( "Body Aim" ) ) );
-                        toggleButton( ImStrv( xorstr( "Safe Points" ) ) );
-                        toggleButton( ImStrv( xorstr( "Ensure Hitbox Safety" ) ) );
+                        static std::array<bool, 3> boolean;
+                        Feature { ImStrv( xorstr( "Body Aim" ) ), boolean[0] };
+                        Feature { ImStrv( xorstr( "Safe Points" ) ), boolean[1] };
+                        Feature { ImStrv( xorstr( "Ensure Hitbox Safety" ) ), boolean[2] };
                     }
                     ImGui::EndChild();
 
