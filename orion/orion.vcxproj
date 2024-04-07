@@ -28,6 +28,7 @@
     <ClInclude Include="source\utility\module\image_optional_header.h" />
     <ClInclude Include="source\utility\module\image_section_header.h" />
     <ClInclude Include="source\utility\module\ldr_data_table_entry.h" />
+    <ClInclude Include="source\utility\module\ldr_data_table_entry_iterator.h" />
     <ClInclude Include="source\utility\module\list_entry.h" />
     <ClInclude Include="source\utility\option.h" />
     <ClInclude Include="source\utility\pattern.h" />
@@ -54,6 +55,7 @@
     <ClCompile Include="source\utility\module\image_optional_header.cpp" />
     <ClCompile Include="source\utility\module\image_section_header.cpp" />
     <ClCompile Include="source\utility\module\ldr_data_table_entry.cpp" />
+    <ClCompile Include="source\utility\module\ldr_data_table_entry_iterator.cpp" />
     <ClCompile Include="source\utility\module\list_entry.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
