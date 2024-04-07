@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\utility\memory.h" />
+    <ClInclude Include="source\utility\module.h" />
     <ClInclude Include="source\utility\module\image_data_directory.h" />
     <ClInclude Include="source\utility\module\image_directory_entry.h" />
     <ClInclude Include="source\utility\module\image_dos_header.h" />
@@ -50,6 +51,7 @@
     </MASM>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\utility\module.cpp" />
     <ClCompile Include="source\utility\module\image_data_directory.cpp" />
     <ClCompile Include="source\utility\module\image_dos_header.cpp" />
     <ClCompile Include="source\utility\module\image_export_directory.cpp" />
