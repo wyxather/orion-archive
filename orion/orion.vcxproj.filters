@@ -48,10 +48,18 @@
     <ClInclude Include="source\utility\windows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\utility\module\image_data_directory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\utility\retspoof.asm">
       <Filter>Source Files</Filter>
     </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\utility\module\image_data_directory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
