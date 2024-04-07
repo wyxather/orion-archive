@@ -1,5 +1,6 @@
 #pragma once
 
+#include "source/import/ntdll.h"
 #include "source/utility/option.h"
 #include "source/utility/windows.h"
 
@@ -8,6 +9,7 @@ namespace orion {
     class Context final {
     public:
         utility::Option<const HMODULE> handle;
+        utility::Option<const import::Ntdll> ntdll;
 
         consteval Context() noexcept = default;
 

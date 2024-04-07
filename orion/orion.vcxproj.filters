@@ -90,6 +90,9 @@
     <ClInclude Include="source\context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\import\ntdll.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\utility\retspoof.asm">
@@ -137,6 +140,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\import\ntdll.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

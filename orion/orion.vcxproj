@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\context.h" />
+    <ClInclude Include="source\import\ntdll.h" />
     <ClInclude Include="source\utility\memory.h" />
     <ClInclude Include="source\utility\module.h" />
     <ClInclude Include="source\utility\module\image_data_directory.h" />
@@ -53,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp" />
+    <ClCompile Include="source\import\ntdll.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\utility\module.cpp" />
     <ClCompile Include="source\utility\module\image_data_directory.cpp" />
