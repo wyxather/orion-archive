@@ -113,6 +113,7 @@
       <EnableUAC>false</EnableUAC>
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
       <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -157,6 +158,7 @@
       <EnableUAC>false</EnableUAC>
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
       <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
