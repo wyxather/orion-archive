@@ -45,6 +45,9 @@
     <ClInclude Include="source\utility\option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\utility\windows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\utility\retspoof.asm">

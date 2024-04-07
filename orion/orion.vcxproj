@@ -26,6 +26,7 @@
     <ClInclude Include="source\utility\reference.h" />
     <ClInclude Include="source\utility\retspoof.h" />
     <ClInclude Include="source\utility\string.h" />
+    <ClInclude Include="source\utility\windows.h" />
     <ClInclude Include="source\utility\xorarr.h" />
     <ClInclude Include="source\utility\xorpat.h" />
     <ClInclude Include="source\utility\xorstr.h" />
