@@ -22,6 +22,7 @@
     <ClInclude Include="source\utility\memory.h" />
     <ClInclude Include="source\utility\module\image_data_directory.h" />
     <ClInclude Include="source\utility\module\image_directory_entry.h" />
+    <ClInclude Include="source\utility\module\image_dos_header.h" />
     <ClInclude Include="source\utility\option.h" />
     <ClInclude Include="source\utility\pattern.h" />
     <ClInclude Include="source\utility\pointer.h" />
@@ -41,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\utility\module\image_data_directory.cpp" />
+    <ClCompile Include="source\utility\module\image_dos_header.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
