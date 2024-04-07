@@ -25,6 +25,7 @@
     <ClInclude Include="source\utility\reference.h" />
     <ClInclude Include="source\utility\string.h" />
     <ClInclude Include="source\utility\xorarr.h" />
+    <ClInclude Include="source\utility\xorstr.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
