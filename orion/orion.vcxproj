@@ -116,6 +116,7 @@
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
       <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
