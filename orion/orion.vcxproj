@@ -22,6 +22,7 @@
     <ClInclude Include="source\utility\memory.h" />
     <ClInclude Include="source\utility\pointer.h" />
     <ClInclude Include="source\utility\reference.h" />
+    <ClInclude Include="source\utility\string.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
