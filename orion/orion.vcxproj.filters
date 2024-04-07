@@ -36,5 +36,8 @@
     <ClInclude Include="source\utility\xorstr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\utility\xorpat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
