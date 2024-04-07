@@ -24,6 +24,7 @@
     <ClInclude Include="source\utility\module\image_directory_entry.h" />
     <ClInclude Include="source\utility\module\image_dos_header.h" />
     <ClInclude Include="source\utility\module\image_export_directory.h" />
+    <ClInclude Include="source\utility\module\image_nt_headers.h" />
     <ClInclude Include="source\utility\module\image_optional_header.h" />
     <ClInclude Include="source\utility\module\image_section_header.h" />
     <ClInclude Include="source\utility\option.h" />
@@ -47,6 +48,7 @@
     <ClCompile Include="source\utility\module\image_data_directory.cpp" />
     <ClCompile Include="source\utility\module\image_dos_header.cpp" />
     <ClCompile Include="source\utility\module\image_export_directory.cpp" />
+    <ClCompile Include="source\utility\module\image_nt_headers.cpp" />
     <ClCompile Include="source\utility\module\image_optional_header.cpp" />
     <ClCompile Include="source\utility\module\image_section_header.cpp" />
   </ItemGroup>
