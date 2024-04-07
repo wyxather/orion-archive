@@ -1,5 +1,6 @@
 #pragma once
 
+#include "source/import/kernel32.h"
 #include "source/import/ntdll.h"
 #include "source/utility/option.h"
 #include "source/utility/windows.h"
@@ -10,6 +11,7 @@ namespace orion {
     public:
         utility::Option<const HMODULE> handle;
         utility::Option<const import::Ntdll> ntdll;
+        utility::Option<const import::Kernel32> kernel32;
 
         consteval Context() noexcept = default;
 

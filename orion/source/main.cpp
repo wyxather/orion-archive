@@ -8,6 +8,7 @@ using orion::utility::Module;
 using orion::utility::XorStr;
 
 static constexpr auto ntdll = XorStr<"ntdll"> {};
+static constexpr auto kernel32 = XorStr<"kernel32"> {};
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
@@ -18,6 +19,10 @@ BOOL APIENTRY DllEntryPoint(const HMODULE module_handle, const DWORD reason_for_
         context.ntdll.emplace(*Module::find_module(std::string_view {
             decltype(ntdll)::access().data(),
             decltype(ntdll)::size(),
+        }));
+        context.kernel32.emplace(*Module::find_module(std::string_view {
+            decltype(kernel32)::access().data(),
+            decltype(kernel32)::size(),
         }));
     }
     return crt_init;
