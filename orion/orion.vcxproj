@@ -30,6 +30,7 @@
     <ClInclude Include="source\utility\module\ldr_data_table_entry.h" />
     <ClInclude Include="source\utility\module\ldr_data_table_entry_iterator.h" />
     <ClInclude Include="source\utility\module\list_entry.h" />
+    <ClInclude Include="source\utility\module\peb.h" />
     <ClInclude Include="source\utility\module\peb_ldr_data.h" />
     <ClInclude Include="source\utility\option.h" />
     <ClInclude Include="source\utility\pattern.h" />
@@ -58,6 +59,7 @@
     <ClCompile Include="source\utility\module\ldr_data_table_entry.cpp" />
     <ClCompile Include="source\utility\module\ldr_data_table_entry_iterator.cpp" />
     <ClCompile Include="source\utility\module\list_entry.cpp" />
+    <ClCompile Include="source\utility\module\peb.cpp" />
     <ClCompile Include="source\utility\module\peb_ldr_data.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
