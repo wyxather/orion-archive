@@ -23,10 +23,17 @@
     <ClInclude Include="source\utility\pattern.h" />
     <ClInclude Include="source\utility\pointer.h" />
     <ClInclude Include="source\utility\reference.h" />
+    <ClInclude Include="source\utility\retspoof.h" />
     <ClInclude Include="source\utility\string.h" />
     <ClInclude Include="source\utility\xorarr.h" />
     <ClInclude Include="source\utility\xorpat.h" />
     <ClInclude Include="source\utility\xorstr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="source\utility\retspoof.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </MASM>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
