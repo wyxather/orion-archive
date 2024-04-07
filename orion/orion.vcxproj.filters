@@ -21,5 +21,8 @@
     <ClInclude Include="source\utility\reference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\utility\memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
