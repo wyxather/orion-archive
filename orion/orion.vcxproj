@@ -51,6 +51,7 @@
     </MASM>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\utility\module.cpp" />
     <ClCompile Include="source\utility\module\image_data_directory.cpp" />
     <ClCompile Include="source\utility\module\image_dos_header.cpp" />
