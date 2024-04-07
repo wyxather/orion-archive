@@ -57,6 +57,9 @@
     <ClInclude Include="source\utility\module\image_dos_header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\utility\module\image_export_directory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\utility\retspoof.asm">
@@ -68,6 +71,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\utility\module\image_dos_header.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\utility\module\image_export_directory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
