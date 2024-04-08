@@ -18,4 +18,10 @@ static constexpr auto jmp_rbx = XorPat<"FF 23", 0> {};
 Ntdll::Ntdll(const utility::Module &ntdll) noexcept {
     gadget_address =
         Pointer { decltype(jmp_rbx)::find(ntdll.get_code_section()) }.value<std::uintptr_t>();
+    snprintf = decltype(snprintf) {
+        ntdll.get_export_function(XorStr<"_snprintf">::access().data()),
+    };
+    snwprintf = decltype(snwprintf) {
+        ntdll.get_export_function(XorStr<"_snwprintf">::access().data()),
+    };
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstdio>
 
 #include "source/utility/retspoof.h"
 #include "source/utility/windows.h"
@@ -18,6 +19,8 @@ namespace orion {
         class Ntdll final {
         public:
             std::uintptr_t gadget_address;
+            utility::RetSpoof<decltype(&_snprintf)> snprintf;
+            utility::RetSpoof<decltype(&_snwprintf)> snwprintf;
 
             explicit Ntdll(const utility::Module &ntdll) noexcept;
 

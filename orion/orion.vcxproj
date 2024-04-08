@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\context.h" />
+    <ClInclude Include="source\core\console.h" />
     <ClInclude Include="source\import\kernel32.h" />
     <ClInclude Include="source\import\ntdll.h" />
     <ClInclude Include="source\import\user32.h" />
@@ -56,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\context.cpp" />
+    <ClCompile Include="source\core\console.cpp" />
     <ClCompile Include="source\import\kernel32.cpp" />
     <ClCompile Include="source\import\ntdll.cpp" />
     <ClCompile Include="source\import\user32.cpp" />

@@ -18,6 +18,8 @@ namespace orion {
         class User32 final {
         public:
             std::uintptr_t gadget_address;
+            utility::RetSpoof<decltype(&GetWindowLongPtr)> get_window_long_ptr;
+            utility::RetSpoof<decltype(&SetWindowLongPtr)> set_window_long_ptr;
 
             explicit User32(const utility::Module &user32) noexcept;
 
