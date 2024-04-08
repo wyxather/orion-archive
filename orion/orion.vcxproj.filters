@@ -102,6 +102,9 @@
     <ClInclude Include="source\import\user32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="source\redirect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -133,6 +136,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dependency\imgui\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -224,6 +230,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dependency\imgui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\platform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -28,8 +28,10 @@
     <ClInclude Include="dependency\imgui\imstb_rectpack.h" />
     <ClInclude Include="dependency\imgui\imstb_textedit.h" />
     <ClInclude Include="dependency\imgui\imstb_truetype.h" />
+    <ClInclude Include="source\application.h" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\core\console.h" />
+    <ClInclude Include="source\core\platform.h" />
     <ClInclude Include="source\import\kernel32.h" />
     <ClInclude Include="source\import\ntdll.h" />
     <ClInclude Include="source\import\user32.h" />
@@ -75,8 +77,10 @@
     <ClCompile Include="dependency\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="dependency\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependency\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\context.cpp" />
     <ClCompile Include="source\core\console.cpp" />
+    <ClCompile Include="source\core\platform.cpp" />
     <ClCompile Include="source\import\kernel32.cpp" />
     <ClCompile Include="source\import\ntdll.cpp" />
     <ClCompile Include="source\import\user32.cpp" />

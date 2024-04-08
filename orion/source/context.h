@@ -1,6 +1,7 @@
 #pragma once
 
 #include "source/core/console.h"
+#include "source/core/platform.h"
 #include "source/import/kernel32.h"
 #include "source/import/ntdll.h"
 #include "source/import/user32.h"
@@ -16,6 +17,7 @@ namespace orion {
         utility::Option<const import::Kernel32> kernel32;
         utility::Option<const import::User32> user32;
         utility::Option<const core::Console> console;
+        utility::Option<core::Platform> platform;
 
         consteval Context() noexcept = default;
 

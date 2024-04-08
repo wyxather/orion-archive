@@ -33,6 +33,11 @@ namespace orion {
             utility::RetSpoof<decltype(&GetTimeFormatW)> get_time_format_w;
             utility::RetSpoof<decltype(&GetDateFormatA)> get_date_format_a;
             utility::RetSpoof<decltype(&GetDateFormatW)> get_date_format_w;
+            utility::RetSpoof<decltype(&GetCurrentProcessId)> get_current_process_id;
+            utility::RetSpoof<decltype(&CreateThread)> create_thread;
+            utility::RetSpoof<decltype(&CloseHandle)> close_handle;
+            utility::RetSpoof<decltype(&Sleep)> sleep;
+            utility::RetSpoof<decltype(&FreeLibraryAndExitThread)> free_library_and_exit_thread;
 
             explicit Kernel32(const utility::Module &kernel32) noexcept;
 

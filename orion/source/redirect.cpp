@@ -109,3 +109,12 @@ auto __CRTDECL operator delete[](void *block, size_t) noexcept -> void {
         block
     );
 }
+
+auto Redirect::imgui_alloc(const std::size_t size, void *const user_data) noexcept -> void * {
+    return context.ntdll->rtl_allocate_heap(context.ntdll->gadget_address, user_data, 0, size);
+}
+
+auto Redirect::imgui_free(void *const ptr, void *const user_data) noexcept -> void {
+    std::ignore =
+        context.kernel32->heap_free(context.kernel32->gadget_address, user_data, 0, ptr);
+}

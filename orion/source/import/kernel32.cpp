@@ -63,4 +63,21 @@ Kernel32::Kernel32(const utility::Module &kernel32) noexcept {
     get_date_format_w = decltype(get_date_format_w) {
         kernel32.get_export_function(XorStr<"GetDateFormatW">::access().data()),
     };
+    get_current_process_id = decltype(get_current_process_id) {
+        kernel32.get_export_function(XorStr<"GetCurrentProcessId">::access().data()),
+    };
+    create_thread = decltype(create_thread) {
+        kernel32.get_export_function(XorStr<"CreateThread">::access().data()),
+    };
+    close_handle = decltype(close_handle) {
+        kernel32.get_export_function(XorStr<"CloseHandle">::access().data()),
+    };
+    sleep = decltype(sleep) {
+        kernel32.get_export_function(XorStr<"Sleep">::access().data()),
+    };
+    free_library_and_exit_thread = decltype(free_library_and_exit_thread) {
+        kernel32.get_export_function(
+            XorStr<"FreeLibraryAndExitThread">::access().data()
+        ),
+    };
 }
