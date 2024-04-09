@@ -19,6 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependency\imgui\imconfig.h" />
+    <ClInclude Include="dependency\imgui\imgui.h" />
+    <ClInclude Include="dependency\imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="dependency\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="dependency\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="dependency\imgui\imgui_internal.h" />
+    <ClInclude Include="dependency\imgui\imstb_rectpack.h" />
+    <ClInclude Include="dependency\imgui\imstb_textedit.h" />
+    <ClInclude Include="dependency\imgui\imstb_truetype.h" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\core\console.h" />
     <ClInclude Include="source\import\kernel32.h" />
@@ -58,6 +67,14 @@
     </MASM>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dependency\imgui\imgui.cpp" />
+    <ClCompile Include="dependency\imgui\imgui_demo.cpp" />
+    <ClCompile Include="dependency\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependency\imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="dependency\imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="dependency\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="dependency\imgui\imgui_tables.cpp" />
+    <ClCompile Include="dependency\imgui\imgui_widgets.cpp" />
     <ClCompile Include="source\context.cpp" />
     <ClCompile Include="source\core\console.cpp" />
     <ClCompile Include="source\import\kernel32.cpp" />
@@ -205,7 +222,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
-      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;dwmapi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
@@ -262,7 +279,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <EntryPointSymbol>DllEntryPoint</EntryPointSymbol>
-      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcmt.lib;libvcruntime.lib;libucrt.lib;libcpmt.lib;dwmapi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
