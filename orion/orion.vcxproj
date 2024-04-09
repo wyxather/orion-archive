@@ -24,6 +24,7 @@
     <ClInclude Include="source\import\kernel32.h" />
     <ClInclude Include="source\import\ntdll.h" />
     <ClInclude Include="source\import\user32.h" />
+    <ClInclude Include="source\redirect.h" />
     <ClInclude Include="source\utility\memory.h" />
     <ClInclude Include="source\utility\module.h" />
     <ClInclude Include="source\utility\module\image_data_directory.h" />
@@ -62,6 +63,7 @@
     <ClCompile Include="source\import\ntdll.cpp" />
     <ClCompile Include="source\import\user32.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\redirect.cpp" />
     <ClCompile Include="source\utility\module.cpp" />
     <ClCompile Include="source\utility\module\image_data_directory.cpp" />
     <ClCompile Include="source\utility\module\image_dos_header.cpp" />

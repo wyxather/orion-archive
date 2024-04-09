@@ -18,6 +18,12 @@ static constexpr auto jmp_rbx = XorPat<"FF 23", 0> {};
 Kernel32::Kernel32(const utility::Module &kernel32) noexcept {
     gadget_address =
         Pointer { decltype(jmp_rbx)::find(kernel32.get_code_section()) }.value<std::uintptr_t>();
+    get_process_heap = decltype(get_process_heap) {
+        kernel32.get_export_function(XorStr<"GetProcessHeap">::access().data()),
+    };
+    heap_free = decltype(heap_free) {
+        kernel32.get_export_function(XorStr<"HeapFree">::access().data()),
+    };
     alloc_console = decltype(alloc_console) {
         kernel32.get_export_function(XorStr<"AllocConsole">::access().data()),
     };

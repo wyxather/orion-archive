@@ -18,6 +18,9 @@ static constexpr auto jmp_rbx = XorPat<"FF 23", 0> {};
 Ntdll::Ntdll(const utility::Module &ntdll) noexcept {
     gadget_address =
         Pointer { decltype(jmp_rbx)::find(ntdll.get_code_section()) }.value<std::uintptr_t>();
+    rtl_allocate_heap = decltype(rtl_allocate_heap) {
+        ntdll.get_export_function(XorStr<"RtlAllocateHeap">::access().data()),
+    };
     snprintf = decltype(snprintf) {
         ntdll.get_export_function(XorStr<"_snprintf">::access().data()),
     };

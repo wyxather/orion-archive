@@ -19,6 +19,7 @@ namespace orion {
         class Ntdll final {
         public:
             std::uintptr_t gadget_address;
+            utility::RetSpoof<decltype(&HeapAlloc)> rtl_allocate_heap;
             utility::RetSpoof<decltype(&_snprintf)> snprintf;
             utility::RetSpoof<decltype(&_snwprintf)> snwprintf;
 

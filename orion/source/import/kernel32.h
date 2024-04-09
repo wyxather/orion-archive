@@ -18,6 +18,8 @@ namespace orion {
         class Kernel32 final {
         public:
             std::uintptr_t gadget_address;
+            utility::RetSpoof<decltype(&GetProcessHeap)> get_process_heap;
+            utility::RetSpoof<decltype(&HeapFree)> heap_free;
             utility::RetSpoof<decltype(&AllocConsole)> alloc_console;
             utility::RetSpoof<decltype(&FreeConsole)> free_console;
             utility::RetSpoof<decltype(&SetConsoleCtrlHandler)> set_console_ctrl_handler;
