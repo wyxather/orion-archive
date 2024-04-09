@@ -28,6 +28,14 @@
     <ClInclude Include="dependency\imgui\imstb_rectpack.h" />
     <ClInclude Include="dependency\imgui\imstb_textedit.h" />
     <ClInclude Include="dependency\imgui\imstb_truetype.h" />
+    <ClInclude Include="dependency\minhook\include\MinHook.h" />
+    <ClInclude Include="dependency\minhook\src\buffer.h" />
+    <ClInclude Include="dependency\minhook\src\hde\hde32.h" />
+    <ClInclude Include="dependency\minhook\src\hde\hde64.h" />
+    <ClInclude Include="dependency\minhook\src\hde\pstdint.h" />
+    <ClInclude Include="dependency\minhook\src\hde\table32.h" />
+    <ClInclude Include="dependency\minhook\src\hde\table64.h" />
+    <ClInclude Include="dependency\minhook\src\trampoline.h" />
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\core\console.h" />
@@ -77,6 +85,36 @@
     <ClCompile Include="dependency\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="dependency\imgui\imgui_tables.cpp" />
     <ClCompile Include="dependency\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="dependency\minhook\src\buffer.c">
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\hde\hde32.c">
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\hde\hde64.c">
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\hook.c">
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\trampoline.c">
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\context.cpp" />
     <ClCompile Include="source\core\console.cpp" />
@@ -90,6 +128,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="pch_c.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="source\redirect.cpp" />
     <ClCompile Include="source\utility\module.cpp" />

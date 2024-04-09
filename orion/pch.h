@@ -2,6 +2,7 @@
 #define PCH_H
 
 #ifdef __cplusplus
+    #define NOMINMAX
     #define IMGUI_DEFINE_MATH_OPERATORS
     #define IM_STRV_CLASS_EXTRA \
         constexpr explicit ImStrv(const char *const str, const int size) noexcept { \
@@ -27,5 +28,7 @@
     #include "dependency/imgui/imgui.h"
     #include "dependency/imgui/imgui_internal.h"
 #endif
+
+#include "dependency/minhook/include/MinHook.h"
 
 #endif  //PCH_H

@@ -141,6 +141,30 @@
     <ClInclude Include="source\application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dependency\minhook\include\MinHook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependency\minhook\src\hde\hde32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependency\minhook\src\hde\hde64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependency\minhook\src\hde\pstdint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependency\minhook\src\hde\table32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependency\minhook\src\hde\table64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependency\minhook\src\buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependency\minhook\src\trampoline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\utility\retspoof.asm">
@@ -236,6 +260,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\hde\hde32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\hde\hde64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\buffer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\hook.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dependency\minhook\src\trampoline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch_c.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
