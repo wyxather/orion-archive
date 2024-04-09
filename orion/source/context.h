@@ -2,6 +2,7 @@
 
 #include "source/core/console.h"
 #include "source/core/platform.h"
+#include "source/core/renderer.h"
 #include "source/import/kernel32.h"
 #include "source/import/ntdll.h"
 #include "source/import/user32.h"
@@ -18,6 +19,7 @@ namespace orion {
         utility::Option<const import::User32> user32;
         utility::Option<const core::Console> console;
         utility::Option<core::Platform> platform;
+        utility::Option<core::Renderer> renderer;
 
         consteval Context() noexcept = default;
 

@@ -31,6 +31,7 @@ BOOL APIENTRY DllEntryPoint(const HMODULE module_handle, const DWORD reason_for_
         }));
         context.console.emplace(*context.ntdll, *context.kernel32, *context.user32);
         context.platform.emplace(*context.ntdll, *context.kernel32, *context.user32);
+        context.renderer.emplace(*context.ntdll, *context.kernel32, *context.user32);
         context.platform->hook();
     }
     return crt_init;

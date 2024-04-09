@@ -27,4 +27,7 @@ Ntdll::Ntdll(const utility::Module &ntdll) noexcept {
     snwprintf = decltype(snwprintf) {
         ntdll.get_export_function(XorStr<"_snwprintf">::access().data()),
     };
+    ntdll_def_window_proc_a = decltype(ntdll_def_window_proc_a) {
+        ntdll.get_export_function(XorStr<"NtdllDefWindowProc_A">::access().data()),
+    };
 }

@@ -3,6 +3,7 @@
 using orion::Context;
 
 Context::~Context() noexcept {
+    renderer.reset();
     platform.reset();
     console.reset();
     user32.reset();

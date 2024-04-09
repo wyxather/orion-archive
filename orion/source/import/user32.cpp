@@ -54,4 +54,19 @@ User32::User32(const utility::Module &user32) noexcept {
             XorStr<resolve_macro(CallWindowProc)>::access().data()
         ),
     };
+    message_box_w = decltype(message_box_w) {
+        user32.get_export_function(XorStr<"MessageBoxW">::access().data()),
+    };
+    register_class_ex_a = decltype(register_class_ex_a) {
+        user32.get_export_function(XorStr<"RegisterClassExA">::access().data()),
+    };
+    unregister_class_a = decltype(unregister_class_a) {
+        user32.get_export_function(XorStr<"UnregisterClassA">::access().data()),
+    };
+    create_window_ex_a = decltype(create_window_ex_a) {
+        user32.get_export_function(XorStr<"CreateWindowExA">::access().data()),
+    };
+    destroy_window = decltype(destroy_window) {
+        user32.get_export_function(XorStr<"DestroyWindow">::access().data()),
+    };
 }

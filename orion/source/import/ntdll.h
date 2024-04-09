@@ -22,6 +22,7 @@ namespace orion {
             utility::RetSpoof<decltype(&HeapAlloc)> rtl_allocate_heap;
             utility::RetSpoof<decltype(&_snprintf)> snprintf;
             utility::RetSpoof<decltype(&_snwprintf)> snwprintf;
+            utility::RetSpoof<decltype(&DefWindowProcA)> ntdll_def_window_proc_a;
 
             explicit Ntdll(const utility::Module &ntdll) noexcept;
 

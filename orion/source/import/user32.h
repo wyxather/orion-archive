@@ -28,6 +28,11 @@ namespace orion {
             utility::RetSpoof<decltype(&GetWindowTextA)> get_window_text_a;
             utility::RetSpoof<decltype(&MessageBoxA)> message_box_a;
             utility::RetSpoof<decltype(&CallWindowProc)> call_window_proc;
+            utility::RetSpoof<decltype(&MessageBoxW)> message_box_w;
+            utility::RetSpoof<decltype(&RegisterClassExA)> register_class_ex_a;
+            utility::RetSpoof<decltype(&UnregisterClassA)> unregister_class_a;
+            utility::RetSpoof<decltype(&CreateWindowExA)> create_window_ex_a;
+            utility::RetSpoof<decltype(&DestroyWindow)> destroy_window;
 
             explicit User32(const utility::Module &user32) noexcept;
 
