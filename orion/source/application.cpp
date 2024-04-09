@@ -1,16 +1,29 @@
 #include "source/application.h"
 
 #include "source/context.h"
+#include "source/core/console.h"
 #include "source/core/platform.h"
 #include "source/import/kernel32.h"
+#include "source/utility/xorstr.h"
 
 using orion::Application;
+using orion::utility::XorStr;
 
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
-auto Application::setup() noexcept -> void {}
+auto Application::setup() noexcept -> void {
+    if ( MH_Initialize() != MH_OK ) [[unlikely]] {
+        log::error(XorStr<"Failed to initialize MinHook.">::access().data());
+    }
+    if ( MH_EnableHook(MH_ALL_HOOKS) != MH_OK ) [[unlikely]] {
+        log::error(XorStr<"Failed to enable MinHook.">::access().data());
+    }
+}
 
 auto Application::exit(const bool should_unload) noexcept -> void {
+    if ( MH_Uninitialize() != MH_OK ) [[unlikely]] {
+        log::error(XorStr<"Failed to uninitialize MinHook.">::access().data());
+    }
     context.platform->unhook();
     if ( should_unload ) {
         const auto thread_handle = context.kernel32->create_thread(

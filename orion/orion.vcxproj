@@ -46,6 +46,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="source\redirect.h" />
     <ClInclude Include="source\utility\memory.h" />
+    <ClInclude Include="source\utility\minhook.h" />
     <ClInclude Include="source\utility\module.h" />
     <ClInclude Include="source\utility\module\image_data_directory.h" />
     <ClInclude Include="source\utility\module\image_directory_entry.h" />

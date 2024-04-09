@@ -165,6 +165,9 @@
     <ClInclude Include="dependency\minhook\src\trampoline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\utility\minhook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\utility\retspoof.asm">
