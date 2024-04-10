@@ -69,4 +69,13 @@ User32::User32(const utility::Module &user32) noexcept {
     destroy_window = decltype(destroy_window) {
         user32.get_export_function(XorStr<"DestroyWindow">::access().data()),
     };
+    get_system_metrics = decltype(get_system_metrics) {
+        user32.get_export_function(XorStr<"GetSystemMetrics">::access().data()),
+    };
+    get_cursor_pos = decltype(get_cursor_pos) {
+        user32.get_export_function(XorStr<"GetCursorPos">::access().data()),
+    };
+    post_message = decltype(post_message) {
+        user32.get_export_function(XorStr<resolve_macro(PostMessage)>::access().data()),
+    };
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "source/core/console.h"
+#include "source/core/input.h"
 #include "source/core/platform.h"
 #include "source/core/renderer.h"
 #include "source/import/kernel32.h"
@@ -20,6 +21,7 @@ namespace orion {
         utility::Option<const core::Console> console;
         utility::Option<core::Platform> platform;
         utility::Option<core::Renderer> renderer;
+        utility::Option<core::Input> input;
 
         consteval Context() noexcept = default;
 

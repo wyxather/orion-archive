@@ -33,6 +33,9 @@ namespace orion {
             utility::RetSpoof<decltype(&UnregisterClassA)> unregister_class_a;
             utility::RetSpoof<decltype(&CreateWindowExA)> create_window_ex_a;
             utility::RetSpoof<decltype(&DestroyWindow)> destroy_window;
+            utility::RetSpoof<decltype(&GetSystemMetrics)> get_system_metrics;
+            utility::RetSpoof<decltype(&GetCursorPos)> get_cursor_pos;
+            utility::RetSpoof<decltype(&PostMessage)> post_message;
 
             explicit User32(const utility::Module &user32) noexcept;
 

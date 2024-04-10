@@ -39,6 +39,7 @@
     <ClInclude Include="source\application.h" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\core\console.h" />
+    <ClInclude Include="source\core\input.h" />
     <ClInclude Include="source\core\platform.h" />
     <ClInclude Include="source\core\renderer.h" />
     <ClInclude Include="source\import\kernel32.h" />
@@ -120,6 +121,7 @@
     <ClCompile Include="source\application.cpp" />
     <ClCompile Include="source\context.cpp" />
     <ClCompile Include="source\core\console.cpp" />
+    <ClCompile Include="source\core\input.cpp" />
     <ClCompile Include="source\core\platform.cpp" />
     <ClCompile Include="source\core\renderer.cpp" />
     <ClCompile Include="source\import\kernel32.cpp" />
