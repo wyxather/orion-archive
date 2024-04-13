@@ -7,6 +7,7 @@
 #include "dependency/imgui/imgui_impl_dx11.h"
 #include "dependency/imgui/imgui_impl_dx9.h"
 #include "source/context.h"
+#include "source/core/gui.h"
 #include "source/import/ntdll.h"
 #include "source/import/user32.h"
 #include "source/utility/module.h"
@@ -93,9 +94,11 @@ auto Renderer::unhook() const noexcept -> void {
         return;
     }
     if ( String<char>::strcmp(decltype(imgui_impl_dx11)::access().data(), name) == 0 ) {
+        context.gui->post_process_dx11.invalidate_device_objects();
         return ImGui_ImplDX11_Shutdown();
     }
     if ( String<char>::strcmp(decltype(imgui_impl_dx9)::access().data(), name) == 0 ) {
+        context.gui->post_process_dx9.invalidate_device_objects();
         return ImGui_ImplDX9_Shutdown();
     }
 }
@@ -303,12 +306,20 @@ auto Renderer::hook_d3d11() noexcept -> void {
             DXGI_MODE_DESC {
                 .Width = 100,
                 .Height = 100,
-                .RefreshRate = DXGI_RATIONAL { .Numerator = 60, .Denominator = 1 },
+                .RefreshRate =
+                    DXGI_RATIONAL {
+                        .Numerator = 60,
+                        .Denominator = 1,
+                    },
                 .Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM,
                 .ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED,
                 .Scaling = DXGI_MODE_SCALING::DXGI_MODE_SCALING_UNSPECIFIED,
             },
-        .SampleDesc = DXGI_SAMPLE_DESC { .Count = 1, .Quality = 0 },
+        .SampleDesc =
+            DXGI_SAMPLE_DESC {
+                .Count = 1,
+                .Quality = 0,
+            },
         .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
         .BufferCount = 1,
         .OutputWindow = window.handle,
@@ -316,7 +327,7 @@ auto Renderer::hook_d3d11() noexcept -> void {
         .SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD,
         .Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH,
     };
-    IDXGISwapChain *dxgiswapchain = {};
+    IDXGISwapChain *dxgiswapchain {};
     ID3D11Device *d3d11device {};
     ID3D11DeviceContext *d3d11devicecontext {};
     if ( d3d11createdeviceandswapchain(
@@ -325,8 +336,10 @@ auto Renderer::hook_d3d11() noexcept -> void {
              D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_HARDWARE,
              nullptr,
              0,
-             std::array<D3D_FEATURE_LEVEL, 2> { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_10_1,
-                                                D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0 }
+             std::array<D3D_FEATURE_LEVEL, 2> {
+                 D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_10_1,
+                 D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0,
+             }
                  .data(),
              2,
              D3D11_SDK_VERSION,
@@ -459,10 +472,12 @@ auto STDMETHODCALLTYPE Renderer::direct3ddevice9_reset(
     if ( ImGui::GetIO().BackendRendererUserData == nullptr ) [[unlikely]] {
         return context.renderer->minhook.stdcall<0, HRESULT>(direct3ddevice9, presentation_parameters);
     }
+    context.gui->post_process_dx9.invalidate_device_objects();
     ImGui_ImplDX9_InvalidateDeviceObjects();
     const auto result =
         context.renderer->minhook.stdcall<0, HRESULT>(direct3ddevice9, presentation_parameters);
     ImGui_ImplDX9_CreateDeviceObjects();
+    context.gui->post_process_dx9.create_device_objects();
     return result;
 }
 
@@ -475,10 +490,15 @@ auto STDMETHODCALLTYPE Renderer::direct3ddevice9_present(
 ) noexcept -> HRESULT {
     if ( ImGui::GetIO().BackendRendererUserData == nullptr ) [[unlikely]] {
         ImGui_ImplDX9_Init(direct3ddevice9);
+        context.gui->post_process_dx9.initialize(*direct3ddevice9);
+        context.gui->post_process_dx9.create_device_objects();
     }
     ImGui_ImplDX9_NewFrame();
     Platform::new_frame();
     ImGui::NewFrame();
+    context.gui->draw([]() noexcept {
+        context.gui->post_process_dx9.draw(*ImGui::GetWindowDrawList());
+    });
     ImGui::ShowDemoWindow();
     ImGui::EndFrame();
     if ( direct3ddevice9->BeginScene() == D3D_OK ) [[likely]] {
@@ -501,6 +521,8 @@ auto STDMETHODCALLTYPE Renderer::dxgiswapchain_present(
             ID3D11DeviceContext *d3d11devicecontext;
             d3d11device->GetImmediateContext(&d3d11devicecontext);
             ImGui_ImplDX11_Init(d3d11device, d3d11devicecontext);
+            context.gui->post_process_dx11.initialize(*dxgiswapchain, *d3d11device, *d3d11devicecontext);
+            context.gui->post_process_dx11.create_device_objects();
             d3d11devicecontext->Release();
             d3d11device->Release();
         }
@@ -508,6 +530,10 @@ auto STDMETHODCALLTYPE Renderer::dxgiswapchain_present(
     ImGui_ImplDX11_NewFrame();
     Platform::new_frame();
     ImGui::NewFrame();
+    context.gui->post_process_dx11.set_rendertarget();
+    context.gui->draw([]() noexcept {
+        context.gui->post_process_dx11.draw(*ImGui::GetWindowDrawList());
+    });
     ImGui::ShowDemoWindow();
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -526,10 +552,12 @@ auto STDMETHODCALLTYPE Renderer::dxgiswapchain_resizebuffers(
         return context.renderer->minhook
             .stdcall<1, HRESULT>(dxgiswapchain, buffer_count, width, height, new_format, swapchain_flags);
     }
+    context.gui->post_process_dx11.invalidate_device_objects();
     ImGui_ImplDX11_InvalidateDeviceObjects();
     const auto result =
         context.renderer->minhook.stdcall<1, HRESULT>(dxgiswapchain, buffer_count, width, height, new_format, swapchain_flags);
     ImGui_ImplDX11_CreateDeviceObjects();
+    context.gui->post_process_dx11.create_device_objects();
     return result;
 }
 

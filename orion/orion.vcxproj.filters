@@ -171,7 +171,37 @@
     <ClInclude Include="source\core\renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="source\core\input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource\font\museo_sans_cyrl_900.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource\font\font_awesome_6_pro_light_300.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource\font\font_awesome_6_pro_regular_400.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource\font\font_awesome_6_pro_solid_900.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource\font\font_awesome_6_pro_thin_100.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource\font\museo_sans_cyrl_300.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource\font\museo_sans_cyrl_500.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource\font\museo_sans_cyrl_700.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utility\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -292,8 +322,17 @@
     <ClCompile Include="source\core\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\core\gui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="source\core\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="source\resource\shader\blur_x_dx9.hlsl" />
+    <FxCompile Include="source\resource\shader\blur_x_dx11.hlsl" />
+    <FxCompile Include="source\resource\shader\blur_y_dx9.hlsl" />
+    <FxCompile Include="source\resource\shader\blur_y_dx11.hlsl" />
   </ItemGroup>
 </Project>

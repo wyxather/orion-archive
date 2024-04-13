@@ -2,6 +2,7 @@
 
 #include "source/context.h"
 #include "source/core/console.h"
+#include "source/core/gui.h"
 #include "source/core/input.h"
 #include "source/core/platform.h"
 #include "source/core/renderer.h"
@@ -14,6 +15,7 @@ using orion::utility::XorStr;
 EXTERN_C BOOL WINAPI _CRT_INIT(HMODULE, DWORD, LPVOID);
 
 auto Application::setup() noexcept -> void {
+    context.gui.emplace(*context.platform, *ImGui::GetCurrentContext());
     if ( MH_Initialize() != MH_OK ) [[unlikely]] {
         log::error(XorStr<"Failed to initialize MinHook.">::access().data());
     }

@@ -4,6 +4,7 @@
 #include <string_view>
 
 #include "source/context.h"
+#include "source/core/gui.h"
 #include "source/import/user32.h"
 #include "source/utility/module.h"
 #include "source/utility/pointer.h"
@@ -128,6 +129,9 @@ auto STDMETHODCALLTYPE Input::directinputdevice8_getdevicestate(
     const auto result =
         context.input->minhook.stdcall<0, HRESULT>(directinputdevice8, data_size_in_bytes, data);
     if ( result != DI_OK ) [[unlikely]] {
+        return result;
+    }
+    if ( !context.gui->is_open() ) [[likely]] {
         return result;
     }
     switch ( data_size_in_bytes ) {

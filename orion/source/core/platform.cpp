@@ -6,6 +6,7 @@
 #include "dependency/imgui/imgui_impl_win32.h"
 #include "source/application.h"
 #include "source/context.h"
+#include "source/core/gui.h"
 #include "source/import/kernel32.h"
 #include "source/import/user32.h"
 #include "source/redirect.h"
@@ -115,6 +116,9 @@ auto Platform::window_proc(const HWND window, const UINT message, const WPARAM w
                 case VK_END:
                     Application::exit(true);
                     return FALSE;
+                case VK_INSERT:
+                    context.gui->toggle_open();
+                    break;
                 default:
                     [[likely]] break;
             }
@@ -122,6 +126,32 @@ auto Platform::window_proc(const HWND window, const UINT message, const WPARAM w
         }
         default:
             [[likely]] break;
+    }
+    if ( context.gui->is_open() ) [[unlikely]] {
+        switch ( message ) {
+            case WM_LBUTTONDOWN:
+            case WM_LBUTTONDBLCLK:
+            case WM_RBUTTONDOWN:
+            case WM_RBUTTONDBLCLK:
+            case WM_MBUTTONDOWN:
+            case WM_MBUTTONDBLCLK:
+            case WM_XBUTTONDOWN:
+            case WM_XBUTTONDBLCLK:
+            case WM_LBUTTONUP:
+            case WM_RBUTTONUP:
+            case WM_MBUTTONUP:
+            case WM_XBUTTONUP:
+            case WM_MOUSEWHEEL:
+            case WM_MOUSEHWHEEL:
+            case WM_KEYDOWN:
+            case WM_KEYUP:
+            case WM_SYSKEYDOWN:
+            case WM_SYSKEYUP:
+            case WM_CHAR:
+                return FALSE;
+            default:
+                break;
+        }
     }
     return call_window_proc(gadget_address, original_window_proc, window, message, w_param, l_param);
 }
