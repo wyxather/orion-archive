@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orion", "orion\orion.vcxproj", "{9DED57DD-0485-43EC-B3A5-CF14C380BEC9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "shared\shared.vcxitems", "{E560F14B-5AB0-41EC-9A10-E9A3D4273A5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,5 +29,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {066B20ED-0D0C-4528-9AAE-42D35AAA41E8}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		shared\shared.vcxitems*{9ded57dd-0485-43ec-b3a5-cf14c380bec9}*SharedItemsImports = 4
+		shared\shared.vcxitems*{e560f14b-5ab0-41ec-9a10-e9a3d4273a5f}*SharedItemsImports = 9
 	EndGlobalSection
 EndGlobal

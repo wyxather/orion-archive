@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\error.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\manually_construct.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\manually_construct_destruct.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\manually_destruct.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\path.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\result.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\string.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\xorstr.h" />
+  </ItemGroup>
+</Project>

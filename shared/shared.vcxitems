@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{e560f14b-5ab0-41ec-9a10-e9a3d4273a5f}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\error.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\manually_construct.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\manually_construct_destruct.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\manually_destruct.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\path.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\result.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\string.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\xorstr.h" />
+  </ItemGroup>
+</Project>
