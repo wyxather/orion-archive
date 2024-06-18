@@ -1,6 +1,8 @@
 #ifndef PCH_H
 #define PCH_H
 
+#include "platform/windows.h"
+
 #ifdef __cplusplus
     #include "utility/error.h"
     #include "utility/manually_construct.h"

@@ -9,5 +9,31 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)utility\result.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)utility\string.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)utility\xorstr.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_data_directory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_directory_entry.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_dos_header.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_export_directory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_nt_headers.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_optional_header.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_section_header.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data\list_entry.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data\table_entry.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_data_directory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_dos_header.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_export_directory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_nt_headers.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_optional_header.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_section_header.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data\list_entry.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data\table_entry.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block.cpp" />
   </ItemGroup>
 </Project>
