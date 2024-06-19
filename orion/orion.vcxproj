@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="source\context.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
