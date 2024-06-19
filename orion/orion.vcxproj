@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="source\context.h" />
+    <ClInclude Include="source\global.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

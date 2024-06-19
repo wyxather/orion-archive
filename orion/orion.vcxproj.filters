@@ -21,6 +21,9 @@
     <ClInclude Include="source\context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
