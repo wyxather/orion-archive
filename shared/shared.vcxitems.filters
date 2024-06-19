@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)platform\windows.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\return_address_spoofer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable\image_data_directory.cpp" />
@@ -35,5 +36,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\portable_executable.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)utility\return_address_spoofer.asm" />
   </ItemGroup>
 </Project>

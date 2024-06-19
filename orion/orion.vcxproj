@@ -227,4 +227,9 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
+  <ItemGroup>
+    <MASM Update="C:\Users\Wyxather\source\repos\wyxather\orion\shared\utility\return_address_spoofer.asm">
+      <FileType>Document</FileType>
+    </MASM>
+  </ItemGroup>
 </Project>

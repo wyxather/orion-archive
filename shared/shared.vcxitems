@@ -33,6 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)utility\manually_destruct.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)utility\path.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)utility\result.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utility\return_address_spoofer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)utility\string.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)utility\xorstr.h" />
   </ItemGroup>
@@ -48,5 +49,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data\list_entry.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)platform\windows\process_environment_block\loader_data\table_entry.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="$(MSBuildThisFileDirectory)utility\return_address_spoofer.asm" />
   </ItemGroup>
 </Project>
