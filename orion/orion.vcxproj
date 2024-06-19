@@ -22,6 +22,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="source\context.h" />
     <ClInclude Include="source\global.h" />
+    <ClInclude Include="source\memory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -41,6 +42,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)_c.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\memory.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
